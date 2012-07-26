@@ -23,23 +23,23 @@
 const BYTE HEX_IMPASSABLE			=1;
 const BYTE HEX_IMPASSABLE_NOT_RAKED	=2;
 
-//поиск пути
-//максимальный путь
+//РїРѕРёСЃРє РїСѓС‚Рё
+//РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РїСѓС‚СЊ
 const BYTE FINDPATH_MAX_PATH		=50;
-//возвращаемые ошибки
+//РІРѕР·РІСЂР°С‰Р°РµРјС‹Рµ РѕС€РёР±РєРё
 const BYTE FP_ERROR					=0;
 const BYTE FP_OK					=1;
 const BYTE FP_DEADLOCK				=2;
 const BYTE FP_TOOFAR				=3;
 const BYTE FP_ALREADY_HERE			=4;
 
-//поиск цели
+//РїРѕРёСЃРє С†РµР»Рё
 const BYTE FINDTARGET_BARRIER		=10;
 const BYTE FINDTARGET_TOOFAR		=11;
 const BYTE FINDTARGET_ERROR			=12;
 const BYTE FINDTARGET_INVALID_TARG	=13;
 
-//прозрачность
+//РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ
 #define TILE_ALPHA	255
 #define ROOF_ALPHA	opt_roof_alpha
 //!Cvet ----------------------
@@ -47,7 +47,7 @@ const BYTE FINDTARGET_INVALID_TARG	=13;
 #define ADD_X 2
 #define ADD_Y 2
 
-// Область видимости 
+// РћР±Р»Р°СЃС‚СЊ РІРёРґРёРјРѕСЃС‚Рё 
 //#define VIEW_WIDTH  (opt_screen_mode?35:27)
 //#define VIEW_HEIGHT (opt_screen_mode?65:51)
 //#define VIEW_CX (opt_screen_mode?16:14)
@@ -58,7 +58,7 @@ const BYTE FINDTARGET_INVALID_TARG	=13;
 #define VIEW_CX (view_cx[opt_screen_mode])
 #define VIEW_CY (view_cy[opt_screen_mode])
 
-#define MAX_WALL_CNT 3 // флаг стен
+#define MAX_WALL_CNT 3 // С„Р»Р°Рі СЃС‚РµРЅ
 
 struct ViewField
 {
@@ -128,28 +128,28 @@ struct MiscObj //!Cvet
 
 typedef vector<MiscObj*> misc_vect;
 */
-// структура поля для рисования
+// СЃС‚СЂСѓРєС‚СѓСЂР° РїРѕР»СЏ РґР»СЏ СЂРёСЃРѕРІР°РЅРёСЏ
 struct Field
 {
-	CCritter* lpcrit; //криттер
+	CCritter* lpcrit; //РєСЂРёС‚С‚РµСЂ
 
 	int to_draw;
 
 	int scr_x, scr_y;
 
-	WORD tile_id; //тайл земли
-	WORD roof_id; //тайл крыши
-	WORD wall_id[MAX_WALL_CNT]; //стены
-	scen_vect sc_obj; //сценери
-	item_vect itm_obj; //итемы
-//	misc_vect msc_obj; //!Cvet другое
+	WORD tile_id; //С‚Р°Р№Р» Р·РµРјР»Рё
+	WORD roof_id; //С‚Р°Р№Р» РєСЂС‹С€Рё
+	WORD wall_id[MAX_WALL_CNT]; //СЃС‚РµРЅС‹
+	scen_vect sc_obj; //СЃС†РµРЅРµСЂРё
+	item_vect itm_obj; //РёС‚РµРјС‹
+//	misc_vect msc_obj; //!Cvet РґСЂСѓРіРѕРµ
 
 	DWORD pos;
 
 	WORD flags;
-	BOOL scroll_block; //!Cvet - скролл-локер
+	BOOL scroll_block; //!Cvet - СЃРєСЂРѕР»Р»-Р»РѕРєРµСЂ
 
-	int track; //!Cvet траектория
+	int track; //!Cvet С‚СЂР°РµРєС‚РѕСЂРёСЏ
 
 	Field(): scr_x(0),scr_y(0),tile_id(0),roof_id(0),lpcrit(NULL),to_draw(0),flags(0),
 		scroll_block(FALSE),track(0) {for(int i=0;i<MAX_WALL_CNT;i++) wall_id[i]=0;}
@@ -193,26 +193,26 @@ public:
 	int CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE* end_y, BYTE count_correct);
 	int FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, BYTE max_weapon_distance);
 
-//траектория
+//С‚СЂР°РµРєС‚РѕСЂРёСЏ
 	WORD pic_track1,pic_track2;
 	bool ShowTrack;
 	void SwitchShowTrack();
 	BOOL IsShowTrack(){if(ShowTrack==true) return TRUE; return FALSE;}
 
-//загрузка карт
+//Р·Р°РіСЂСѓР·РєР° РєР°СЂС‚
 	BOOL MapLoaded;
 	BOOL IsMapLoaded() { if(MapLoaded==TRUE) return 1; return 0; };
 
-//добавление/удаление объектов по ходу игры
+//РґРѕР±Р°РІР»РµРЅРёРµ/СѓРґР°Р»РµРЅРёРµ РѕР±СЉРµРєС‚РѕРІ РїРѕ С…РѕРґСѓ РёРіСЂС‹
 	int AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, WORD tile_flags);
 	void ChangeObj(stat_obj* chn_sobj, HexTYPE x, HexTYPE y, WORD tile_flags);
 	void DelObj(stat_obj* del_sobj, HexTYPE x, HexTYPE y);
 
-//обработака дин. объектов
+//РѕР±СЂР°Р±РѕС‚Р°РєР° РґРёРЅ. РѕР±СЉРµРєС‚РѕРІ
 	void ProcessObj();
-	item_vect all_obj; //список всех объектов
+	item_vect all_obj; //СЃРїРёСЃРѕРє РІСЃРµС… РѕР±СЉРµРєС‚РѕРІ
 
-//поиск и установка нового центра
+//РїРѕРёСЃРє Рё СѓСЃС‚Р°РЅРѕРІРєР° РЅРѕРІРѕРіРѕ С†РµРЅС‚СЂР°
 	void FindSetCenter(int x, int y);
 
 	WORD egg;
@@ -224,7 +224,7 @@ public:
 	void PreRestore();
 	void PostRestore();
  
-	int LoadMap(char* fname); //загрузка карты
+	int LoadMap(char* fname); //Р·Р°РіСЂСѓР·РєР° РєР°СЂС‚С‹
 	int UnLoadMap(); //!Cvet
 
 	void SetCenter2(int x, int y);
@@ -254,7 +254,7 @@ public:
 
 	void RemoveCrit(CCritter* pcrit);
 
-	void RebuildTiles(); //!Cvet вынес из привата
+	void RebuildTiles(); //!Cvet РІС‹РЅРµСЃ РёР· РїСЂРёРІР°С‚Р°
 
 	int GetTilePixel(int pix_x, int pix_y, HexTYPE* tile_x, HexTYPE* tile_y);
 	ItemObj* GetItemPixel(int pix_x, int pix_y);
@@ -272,8 +272,8 @@ private:
 	int cnt_x,cnt_y;
 
 //tiles
-	LPDIRECT3DVERTEXBUFFER8 lpVBpr_tile; //подгототвленный буфер
-	onesurf_vec prep_vec_tile; //указывается очередность смен текстур при прорисовке буфера
+	LPDIRECT3DVERTEXBUFFER8 lpVBpr_tile; //РїРѕРґРіРѕС‚РѕС‚РІР»РµРЅРЅС‹Р№ Р±СѓС„РµСЂ
+	onesurf_vec prep_vec_tile; //СѓРєР°Р·С‹РІР°РµС‚СЃСЏ РѕС‡РµСЂРµРґРЅРѕСЃС‚СЊ СЃРјРµРЅ С‚РµРєСЃС‚СѓСЂ РїСЂРё РїСЂРѕСЂРёСЃРѕРІРєРµ Р±СѓС„РµСЂР°
 	WORD prep_cnt_tile;
 //!Cvet roof
 	LPDIRECT3DVERTEXBUFFER8 lpVBpr_roof;
@@ -297,11 +297,11 @@ private:
 	char_map tile_fnames;
 //	char_map misc_fnames; //!Cvet
 	
-	dtree_map dtree; //дерево порядка отрисовки объектов.
-	dtree_map dtree_roof_rain; //дождь на крыше
+	dtree_map dtree; //РґРµСЂРµРІРѕ РїРѕСЂСЏРґРєР° РѕС‚СЂРёСЃРѕРІРєРё РѕР±СЉРµРєС‚РѕРІ.
+	dtree_map dtree_roof_rain; //РґРѕР¶РґСЊ РЅР° РєСЂС‹С€Рµ
 
 	CFileMngr fm;
-	//когда fm загружает файл, он стирает кэш старого, а при загрузке карты он должен оставаться.
+	//РєРѕРіРґР° fm Р·Р°РіСЂСѓР¶Р°РµС‚ С„Р°Р№Р», РѕРЅ СЃС‚РёСЂР°РµС‚ РєСЌС€ СЃС‚Р°СЂРѕРіРѕ, Р° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РєР°СЂС‚С‹ РѕРЅ РґРѕР»Р¶РµРЅ РѕСЃС‚Р°РІР°С‚СЊСЃСЏ.
 	CFileMngr fm_map; 
 
 	CSpriteManager* lpSM;
@@ -317,7 +317,7 @@ private:
 
 	int v2h,v2w,v2c_x,v2c_y;
 
-	void InitView2(int cx,int cy); // Инициализация области видимости
+	void InitView2(int cx,int cy); // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕР±Р»Р°СЃС‚Рё РІРёРґРёРјРѕСЃС‚Рё
 
 	int ParseItemObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax); //!Cvet
 	int ParseItemObjCont(DWORD proto_id,DWORD x,DWORD y); //!Cvet

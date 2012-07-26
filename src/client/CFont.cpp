@@ -55,7 +55,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 			D3DFMT_UNKNOWN,D3DPOOL_MANAGED,D3DX_DEFAULT,D3DX_DEFAULT,D3DCOLOR_ARGB(255,0,0,0),NULL,NULL,&fonts[cur_f].font_surf);
 		if(hr!=D3D_OK)
 		{
-			ErrMsg("CFont CreateFontSurf","Íå ìîãó ñîçäàòü òåêñòóðó %s",path);
+			ErrMsg("CFont CreateFontSurf","ÐÐµ Ð¼Ð¾Ð³Ñƒ ÑÐ¾Ð·Ð´Ð°Ñ‚ÑŒ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñƒ %s",path);
 			return 0;
 		} 
 
@@ -73,7 +73,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 
 		if(hFile==INVALID_HANDLE_VALUE)
 		{
-			ErrMsg("CFont LoadLetters","Íå ìîãó íàéòè %s",path);
+			ErrMsg("CFont LoadLetters","ÐÐµ Ð¼Ð¾Ð³Ñƒ Ð½Ð°Ð¹Ñ‚Ð¸ %s",path);
 			return 0;
 		}
 
@@ -81,8 +81,8 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 
 		CloseHandle(hFile);
 
-		fonts[cur_f].eth=fonts[cur_f].let[(BYTE)'à'].h;
-		fonts[cur_f].etw=fonts[cur_f].let[(BYTE)'à'].w;
+		fonts[cur_f].eth=fonts[cur_f].let[(BYTE)'Ð°'].h;
+		fonts[cur_f].etw=fonts[cur_f].let[(BYTE)'Ð°'].w;
 
 		D3DSURFACE_DESC sd;
 		fonts[cur_f].font_surf->GetLevelDesc(0,&sd);
@@ -160,11 +160,11 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 	char* alloc_str=str;
 	strcpy(str,astr);
 
-	//ñíà÷àëà äåëàåì ïåðåíîñ ñòðîê èëè îáðåçêó
-	//åñëè ïåðåíåñòè íåëüçÿ èëè íå ïîìåùàåòñÿ
+	//ÑÐ½Ð°Ñ‡Ð°Ð»Ð° Ð´ÐµÐ»Ð°ÐµÐ¼ Ð¿ÐµÑ€ÐµÐ½Ð¾Ñ ÑÑ‚Ñ€Ð¾Ðº Ð¸Ð»Ð¸ Ð¾Ð±Ñ€ÐµÐ·ÐºÑƒ
+	//ÐµÑÐ»Ð¸ Ð¿ÐµÑ€ÐµÐ½ÐµÑÑ‚Ð¸ Ð½ÐµÐ»ÑŒÐ·Ñ Ð¸Ð»Ð¸ Ð½Ðµ Ð¿Ð¾Ð¼ÐµÑ‰Ð°ÐµÑ‚ÑÑ
 
-//!Cvet ïåðåäåëàë+++++++++++++
-	int strcnt_r=0; //êîë-âî ñòðîê â ïðÿìîóãîëüíèêå
+//!Cvet Ð¿ÐµÑ€ÐµÐ´ÐµÐ»Ð°Ð»+++++++++++++
+	int strcnt_r=0; //ÐºÐ¾Ð»-Ð²Ð¾ ÑÑ‚Ñ€Ð¾Ðº Ð² Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐµ
 
 	for(int i=0;str[i];i++)
 	{
@@ -234,7 +234,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 
 	if(!strcnt_r) strcnt_r=strcnt;
 
-	//âûáèðàåì íóæíûå ñòðîêè èñõîäÿ èç äîïîëíèòåëüíûõ ôëàãîâ
+	//Ð²Ñ‹Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ð½ÑƒÐ¶Ð½Ñ‹Ðµ ÑÑ‚Ñ€Ð¾ÐºÐ¸ Ð¸ÑÑ…Ð¾Ð´Ñ Ð¸Ð· Ð´Ð¾Ð¿Ð¾Ð»Ð½Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ñ‹Ñ… Ñ„Ð»Ð°Ð³Ð¾Ð²
 	if((flags & FT_UPPER) && strcnt>strcnt_r)
 	{
 	  int i = 0;
@@ -247,7 +247,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 	}
 //!Cvet -------------
 
-	//õîðîøî, òåïåðü ïðèêèíåì â êàêèå ðàçìåðû ìû ïîìåñòèëèñü ïîñëå âñåãî ýòîãî
+	//Ñ…Ð¾Ñ€Ð¾ÑˆÐ¾, Ñ‚ÐµÐ¿ÐµÑ€ÑŒ Ð¿Ñ€Ð¸ÐºÐ¸Ð½ÐµÐ¼ Ð² ÐºÐ°ÐºÐ¸Ðµ Ñ€Ð°Ð·Ð¼ÐµÑ€Ñ‹ Ð¼Ñ‹ Ð¿Ð¾Ð¼ÐµÑÑ‚Ð¸Ð»Ð¸ÑÑŒ Ð¿Ð¾ÑÐ»Ðµ Ð²ÑÐµÐ³Ð¾ ÑÑ‚Ð¾Ð³Ð¾
 	curx=r.left+1;
 	cury=r.top+4;
 
@@ -281,7 +281,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 		}
 	}
 
-	//à âîò òåïåðü ðèñóåì âçàïðàâäó
+	//Ð° Ð²Ð¾Ñ‚ Ñ‚ÐµÐ¿ÐµÑ€ÑŒ Ñ€Ð¸ÑÑƒÐµÐ¼ Ð²Ð·Ð°Ð¿Ñ€Ð°Ð²Ð´Ñƒ
 	curstr=0;
 	curx=r.left+((flags & FT_CENTERX)?(r.right-font->maxx[curstr])/2:1);
 
@@ -377,7 +377,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 
 int CFOFont::Flush(int* cur_pos) //!Cvet int* cur_pos
 {
-	//êîòîðûé ïîòîì ðàçîì ñëèâàåòñÿ â áóôåð âåðøèí
+	//ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¹ Ð¿Ð¾Ñ‚Ð¾Ð¼ Ñ€Ð°Ð·Ð¾Ð¼ ÑÐ»Ð¸Ð²Ð°ÐµÑ‚ÑÑ Ð² Ð±ÑƒÑ„ÐµÑ€ Ð²ÐµÑ€ÑˆÐ¸Ð½
 	if(!crtd) return 0;
 	void* pBuffer;
 	int mulpos=4*(*cur_pos);
@@ -385,7 +385,7 @@ int CFOFont::Flush(int* cur_pos) //!Cvet int* cur_pos
 		memcpy(pBuffer,lpWaitBuf,sizeof(MYVERTEX)*mulpos);
 	lpVB->Unlock();
 
-	//ðèñóåì ñïðàéòû
+	//Ñ€Ð¸ÑÑƒÐµÐ¼ ÑÐ¿Ñ€Ð°Ð¹Ñ‚Ñ‹
 	lpDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,mulpos,0,2*(*cur_pos));
 
 	*cur_pos=0;

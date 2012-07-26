@@ -28,11 +28,11 @@ public:
 	void RotCW();
 	void RotCCW();
 
-	void Animate(BYTE action, BYTE num_frame); //!Cvet анимация стойки с объектом weapon
+	void Animate(BYTE action, BYTE num_frame); //!Cvet Р°РЅРёРјР°С†РёСЏ СЃС‚РѕР№РєРё СЃ РѕР±СЉРµРєС‚РѕРј weapon
 	void SetAnimation(); //!Cvet
 	void Action(Byte action, DWORD action_tick); //!Cvet
 
-	void Process(); //!Cvet CBufMngr дал указатель чтоб чезен мог работать с сетью
+	void Process(); //!Cvet CBufMngr РґР°Р» СѓРєР°Р·Р°С‚РµР»СЊ С‡С‚РѕР± С‡РµР·РµРЅ РјРѕРі СЂР°Р±РѕС‚Р°С‚СЊ СЃ СЃРµС‚СЊСЋ
 
 	DWORD text_color; //!Cvet
 	void SetText(char* str, DWORD color); //!Cvet DWORD text_color
@@ -40,26 +40,26 @@ public:
 	void DrawText(CFOFont* lpfnt);
 	void SetVisible(bool av) {visible=av;};
     
-    // Смещения координаты фрейма в пикселях координатах
+    // РЎРјРµС‰РµРЅРёСЏ РєРѕРѕСЂРґРёРЅР°С‚С‹ С„СЂРµР№РјР° РІ РїРёРєСЃРµР»СЏС… РєРѕРѕСЂРґРёРЅР°С‚Р°С…
 	WORD cur_id,miniplayer;
 	short cur_ox;
 	short cur_oy;
-    // Координаты Дюда в хексах Den Baster
+    // РљРѕРѕСЂРґРёРЅР°С‚С‹ Р”СЋРґР° РІ С…РµРєСЃР°С… Den Baster
     HexTYPE hex_x;
 	HexTYPE hex_y;
-	BYTE cur_dir; // направление
+	BYTE cur_dir; // РЅР°РїСЂР°РІР»РµРЅРёРµ
 
 	CrID id;
-// Перенес из привата
-	BYTE weapon; // Тип оружия в руках для анимаций Den Baster !Cvet (предпоследняя буква)
+// РџРµСЂРµРЅРµСЃ РёР· РїСЂРёРІР°С‚Р°
+	BYTE weapon; // РўРёРї РѕСЂСѓР¶РёСЏ РІ СЂСѓРєР°С… РґР»СЏ Р°РЅРёРјР°С†РёР№ Den Baster !Cvet (РїСЂРµРґРїРѕСЃР»РµРґРЅСЏСЏ Р±СѓРєРІР°)
 
 	char name[MAX_NAME+1];
 	char cases[5][MAX_NAME+1];
 	
-	bool human; //!Cvet является ли чезен игроком 0-нет 1-да
-	WORD st[ALL_STATS]; //!Cvet статы 4-х значный XXXX
-	WORD sk[ALL_SKILLS]; //!Cvet скилы 3-х значный XXX
-	BYTE pe[ALL_PERKS]; //!Cvet перки 1-а значный X
+	bool human; //!Cvet СЏРІР»СЏРµС‚СЃСЏ Р»Рё С‡РµР·РµРЅ РёРіСЂРѕРєРѕРј 0-РЅРµС‚ 1-РґР°
+	WORD st[ALL_STATS]; //!Cvet СЃС‚Р°С‚С‹ 4-С… Р·РЅР°С‡РЅС‹Р№ XXXX
+	WORD sk[ALL_SKILLS]; //!Cvet СЃРєРёР»С‹ 3-С… Р·РЅР°С‡РЅС‹Р№ XXX
+	BYTE pe[ALL_PERKS]; //!Cvet РїРµСЂРєРё 1-Р° Р·РЅР°С‡РЅС‹Р№ X
 
 	BYTE cond; //!Cvet
 	BYTE cond_ext; //!Cvet
@@ -69,22 +69,22 @@ public:
 	CrTYPE type;
 	CrTYPE type_ext; //!Cvet
 
-//!Cvet ++++++++++++++++++++++++++++++++++  Инвентарь
-	dyn_map obj; //все объекты у игрока
-	dyn_obj* a_obj; //активный объект в слот1
-	dyn_obj* a_obj2; //активный объект в слот2
-	dyn_obj* a_obj_arm; //активный объект в слоте армор
+//!Cvet ++++++++++++++++++++++++++++++++++  РРЅРІРµРЅС‚Р°СЂСЊ
+	dyn_map obj; //РІСЃРµ РѕР±СЉРµРєС‚С‹ Сѓ РёРіСЂРѕРєР°
+	dyn_obj* a_obj; //Р°РєС‚РёРІРЅС‹Р№ РѕР±СЉРµРєС‚ РІ СЃР»РѕС‚1
+	dyn_obj* a_obj2; //Р°РєС‚РёРІРЅС‹Р№ РѕР±СЉРµРєС‚ РІ СЃР»РѕС‚2
+	dyn_obj* a_obj_arm; //Р°РєС‚РёРІРЅС‹Р№ РѕР±СЉРµРєС‚ РІ СЃР»РѕС‚Рµ Р°СЂРјРѕСЂ
 	dyn_obj* m_obj; //mouse object
 
 	void AddObject(BYTE aslot,DWORD o_id,DWORD broken_info,DWORD time_wear,stat_obj* s_obj);
 	int GetMaxDistance();
 
-	void Initialization(); //инициализация остальных криттеров
+	void Initialization(); //РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕСЃС‚Р°Р»СЊРЅС‹С… РєСЂРёС‚С‚РµСЂРѕРІ
 
 	void RefreshWeap();
 	void RefreshType();
 
-	int Move(BYTE dir); // Анимация движения
+	int Move(BYTE dir); // РђРЅРёРјР°С†РёСЏ РґРІРёР¶РµРЅРёСЏ
 
 	BYTE next_step[4];
 	BYTE cur_step;
@@ -93,26 +93,26 @@ public:
 	void ChangeCur_offs(short change_ox, short change_oy);
 	void AccamulateCur_offs();
 
-	BYTE move_type; //0- 1-бежать
+	BYTE move_type; //0- 1-Р±РµР¶Р°С‚СЊ
 
-	BYTE rate_object; //тип использования объекта
+	BYTE rate_object; //С‚РёРї РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РѕР±СЉРµРєС‚Р°
 
 	dyn_obj def_obj1;
 	dyn_obj def_obj2;
 
-	BYTE alpha; //прозрачность криттера
+	BYTE alpha; //РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ РєСЂРёС‚С‚РµСЂР°
 //!Cvet ----------------------------------
 
 	INTRECT drect;
 	
-	dtree_map::iterator rit; // индекс по которому можно найти любого Перса
+	dtree_map::iterator rit; // РёРЅРґРµРєСЃ РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РјРѕР¶РЅРѕ РЅР°Р№С‚Рё Р»СЋР±РѕРіРѕ РџРµСЂСЃР°
 
 	CCritter(CSpriteManager* alpSM):lpSM(alpSM),cur_anim(NULL),cur_dir(0),cur_id(0),stay_wait(0),stay_tkr(0),text_str(NULL),visible(0),weapon(0){strcpy(name,"none");};
 	~CCritter(){SAFEDELA(text_str);};
 
 //!Cvet ++++++++++++++++++++++++++++
-	int Tick_count; //продолжительность действия
-	TICK Tick_start; //время начала действия
+	int Tick_count; //РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ РґРµР№СЃС‚РІРёСЏ
+	TICK Tick_start; //РІСЂРµРјСЏ РЅР°С‡Р°Р»Р° РґРµР№СЃС‚РІРёСЏ
 
 	void Tick_Start(TICK tick_count) { Tick_count=tick_count; Tick_start=GetTickCount(); };
 	void Tick_Null(){ Tick_count=0; };
@@ -123,18 +123,18 @@ public:
 	WORD ticks_per_turn;
 //!Cvet ----------------------------
 
-	CritFrames* cur_anim; // текущий тип анимации //!Cvet вынес в паблик
+	CritFrames* cur_anim; // С‚РµРєСѓС‰РёР№ С‚РёРї Р°РЅРёРјР°С†РёРё //!Cvet РІС‹РЅРµСЃ РІ РїР°Р±Р»РёРє
 	
 private:
 
 	CSpriteManager* lpSM;
 	
 	
-	TICK anim_tkr;//время начала анимации
+	TICK anim_tkr;//РІСЂРµРјСЏ РЅР°С‡Р°Р»Р° Р°РЅРёРјР°С†РёРё
 	WORD cur_afrm;
-	TICK change_tkr;//время со смены кадра
+	TICK change_tkr;//РІСЂРµРјСЏ СЃРѕ СЃРјРµРЅС‹ РєР°РґСЂР°
 
-	int stay_wait; // для стоячей анимации
+	int stay_wait; // РґР»СЏ СЃС‚РѕСЏС‡РµР№ Р°РЅРёРјР°С†РёРё
 
 	TICK stay_tkr;
 
@@ -147,7 +147,7 @@ private:
 	bool visible;
 };
 
-//список critters, которые присутствуют
+//СЃРїРёСЃРѕРє critters, РєРѕС‚РѕСЂС‹Рµ РїСЂРёСЃСѓС‚СЃС‚РІСѓСЋС‚
 typedef map<CrID, CCritter*, less<CrID> > crit_map;
 
 #endif//__CRITTER_H__

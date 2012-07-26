@@ -11,7 +11,7 @@
 	
 	purpose:	
 *********************************************************************/
-// стандартные обьекты карты
+// СЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ РѕР±СЊРµРєС‚С‹ РєР°СЂС‚С‹
 #define DRAW_ORDER_HEX  0
 //#define DRAW_ORDER_MISC 1 //!Cvet
 #define DRAW_ORDER_WALL 2
@@ -19,7 +19,7 @@
 #define DRAW_ORDER_ITEM 4
 #define DRAW_ORDER_CRIT 5
 
-//специальные объекты
+//СЃРїРµС†РёР°Р»СЊРЅС‹Рµ РѕР±СЉРµРєС‚С‹
 #define SP_SCEN_LIGHT		141 //Light Source
 #define SP_SCEN_MARKER		49 //Exit Grid Map Marker
 #define SP_SCEN_BLOCK		67 //Secret Blocking Hex
@@ -41,7 +41,7 @@ CHexField::CHexField()
 
 	for(int i=0;i<MAXTILEX;i++)
 		for(int j=0;j<MAXTILEY;j++)
-			hex_field[i][j].pos=i*MAXTILEX*10+j*10; //!Cvet вместо 2000 => MAXTILEX
+			hex_field[i][j].pos=i*MAXTILEX*10+j*10; //!Cvet РІРјРµСЃС‚Рѕ 2000 => MAXTILEX
 
 	hbegin=0;
 	hend=0;
@@ -194,10 +194,10 @@ int CHexField::LoadList(char* lname,int PathType,char_map* pmap)
 		if(!pos)
 		{	
 			i++;
-			WriteLog("CHexField LoadList> в list файле найдена строка без имени файла: %s\n",str);
+			WriteLog("CHexField LoadList> РІ list С„Р°Р№Р»Рµ РЅР°Р№РґРµРЅР° СЃС‚СЂРѕРєР° Р±РµР· РёРјРµРЅРё С„Р°Р№Р»Р°: %s\n",str);
 			continue; 
 		}
-		pos[4]=0;//отсекаем комментарии
+		pos[4]=0;//РѕС‚СЃРµРєР°РµРј РєРѕРјРјРµРЅС‚Р°СЂРёРё
 		rec=new char[strlen(str)+1];
 		strcpy(rec,str);
 		(*pmap)[i++]=rec;
@@ -210,7 +210,7 @@ int CHexField::LoadList(char* lname,int PathType,char_map* pmap)
 
 int CHexField::LoadMap(char* fname)
 {
-	WriteLog("Загрузка карты %s...\n",fname);
+	WriteLog("Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚С‹ %s...\n",fname);
 	TICK gc=GetTickCount();
 
 	UnLoadMap(); //!Cvet
@@ -224,10 +224,10 @@ int CHexField::LoadMap(char* fname)
 	fm_map.SetCurPos(0x30);
 	DWORD ngv=fm_map.GetDWord();//global vars
 
-	fm_map.SetCurPos(0x28); //!Cvet размеры карты
+	fm_map.SetCurPos(0x28); //!Cvet СЂР°Р·РјРµСЂС‹ РєР°СЂС‚С‹
 	DWORD count_tiles_y=fm_map.GetDWord(); //!Cvet
 
-	fm_map.SetCurPos(0xEC+4*(nlv+ngv)); //начало секции тайлов
+	fm_map.SetCurPos(0xEC+4*(nlv+ngv)); //РЅР°С‡Р°Р»Рѕ СЃРµРєС†РёРё С‚Р°Р№Р»РѕРІ
 
 	WORD tile; //ground_tile
 	WORD rtile; //roof_tile
@@ -238,17 +238,17 @@ int CHexField::LoadMap(char* fname)
 		{
 			rtile=fm_map.GetWord();
 			tile=fm_map.GetWord();
-			if(tile>1) //1 значит пустой тайл
+			if(tile>1) //1 Р·РЅР°С‡РёС‚ РїСѓСЃС‚РѕР№ С‚Р°Р№Р»
 			{
 				it=loaded_tile.find(tile);
-				if(it==loaded_tile.end()) //этот тайл не загружен
+				if(it==loaded_tile.end()) //СЌС‚РѕС‚ С‚Р°Р№Р» РЅРµ Р·Р°РіСЂСѓР¶РµРЅ
 				{
 					WORD id=lpSM->LoadSprite(tile_fnames[tile],PT_ART_TILES);
 					if(!id) return 0;
 					loaded_tile[tile]=id;
 					hex_field[2*y][2*x].tile_id=id;
 				}
-				else //загружен и даем ссылку на ID SpriteMngr
+				else //Р·Р°РіСЂСѓР¶РµРЅ Рё РґР°РµРј СЃСЃС‹Р»РєСѓ РЅР° ID SpriteMngr
 				{
 					hex_field[2*y][2*x].tile_id=(*it).second;
 				}
@@ -271,7 +271,7 @@ int CHexField::LoadMap(char* fname)
 			}
 		}
 
-//!Cvet ++++ перешагиваем через оставшиеся уровни
+//!Cvet ++++ РїРµСЂРµС€Р°РіРёРІР°РµРј С‡РµСЂРµР· РѕСЃС‚Р°РІС€РёРµСЃСЏ СѓСЂРѕРІРЅРё
 	switch (count_tiles_y)
 	{
 		case 0x00:
@@ -283,7 +283,7 @@ int CHexField::LoadMap(char* fname)
 	}
 //!Cvet ----
 
-	if(!DropScript()) return 0; //переходим через секцию скриптов
+	if(!DropScript()) return 0; //РїРµСЂРµС…РѕРґРёРј С‡РµСЂРµР· СЃРµРєС†РёСЋ СЃРєСЂРёРїС‚РѕРІ
 
 	if(!LoadObj()) return 0;
 
@@ -291,7 +291,7 @@ int CHexField::LoadMap(char* fname)
 
 	MapLoaded=TRUE;
 
-	WriteLog("карта загружена за %d ms\n",GetTickCount()-gc);
+	WriteLog("РєР°СЂС‚Р° Р·Р°РіСЂСѓР¶РµРЅР° Р·Р° %d ms\n",GetTickCount()-gc);
 //	WriteLog("ac1=%d ac2=%d ac3=%d ac4=%d ac5=%d ac6=%d ac7=%d acres=%d\n",ac1,ac2,ac3,ac4,ac5,ac6,ac7,acres);
 	return 1;
 }
@@ -299,7 +299,7 @@ int CHexField::LoadMap(char* fname)
 int CHexField::DropScript()
 {
 	int cnt=0;
-	int all_cnt=0; //!Cvet кол-во всех скрипты
+	int all_cnt=0; //!Cvet РєРѕР»-РІРѕ РІСЃРµС… СЃРєСЂРёРїС‚С‹
 
 	for(int i=0;i<5;i++)
 	{
@@ -318,7 +318,7 @@ int CHexField::DropScript()
 			{
 				BYTE group=fm_map.GetByte();
 
-			//!Cvet уточнение для типов групп ++++
+			//!Cvet СѓС‚РѕС‡РЅРµРЅРёРµ РґР»СЏ С‚РёРїРѕРІ РіСЂСѓРїРї ++++
 				switch (group)
 				{
 				case 1:
@@ -337,7 +337,7 @@ int CHexField::DropScript()
 					fm_map.GoForward(0x3F);
 					break;
 				}
-			//!Cvet уточнение для типов групп ----
+			//!Cvet СѓС‚РѕС‡РЅРµРЅРёРµ РґР»СЏ С‚РёРїРѕРІ РіСЂСѓРїРї ----
 
 				if((j % 16) == 15)
 				{
@@ -352,7 +352,7 @@ int CHexField::DropScript()
 
 			if(check!=cnt)
 			{
-				ErrMsg("CHexField DropScript","Ошибка при прохождении секции скриптов");
+				ErrMsg("CHexField DropScript","РћС€РёР±РєР° РїСЂРё РїСЂРѕС…РѕР¶РґРµРЅРёРё СЃРµРєС†РёРё СЃРєСЂРёРїС‚РѕРІ");
 				return 0;
 			}
 
@@ -370,35 +370,35 @@ int CHexField::LoadObj()
 	DWORD cnt1=fm_map.GetDWord();
 	DWORD cnt2=fm_map.GetDWord();
 
-	WORD hbmax=0; //подсчитаем максимальные размеры спрайтов
-	WORD hemax=0; //чтобы правильно сделать оптимизцию области видимости
+	WORD hbmax=0; //РїРѕРґСЃС‡РёС‚Р°РµРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Рµ СЂР°Р·РјРµСЂС‹ СЃРїСЂР°Р№С‚РѕРІ
+	WORD hemax=0; //С‡С‚РѕР±С‹ РїСЂР°РІРёР»СЊРЅРѕ СЃРґРµР»Р°С‚СЊ РѕРїС‚РёРјРёР·С†РёСЋ РѕР±Р»Р°СЃС‚Рё РІРёРґРёРјРѕСЃС‚Рё
 	WORD wrmax=0;
 	WORD wlmax=0;
 
-	DWORD itm_cnt=0; //!Cvet кол-во итемов
-	DWORD cr_cnt=0; //!Cvet кол-во криттеров
-	DWORD sc_cnt=0; //количество scenery
-	DWORD wl_cnt=0; //количество walls
+	DWORD itm_cnt=0; //!Cvet РєРѕР»-РІРѕ РёС‚РµРјРѕРІ
+	DWORD cr_cnt=0; //!Cvet РєРѕР»-РІРѕ РєСЂРёС‚С‚РµСЂРѕРІ
+	DWORD sc_cnt=0; //РєРѕР»РёС‡РµСЃС‚РІРѕ scenery
+	DWORD wl_cnt=0; //РєРѕР»РёС‡РµСЃС‚РІРѕ walls
 
 	for(int cic=0;cic<cnt2;cic++)
 	{
 		DWORD buf=fm_map.GetDWord();
 
-		DWORD pos=fm_map.GetDWord();//позиция
+		DWORD pos=fm_map.GetDWord();//РїРѕР·РёС†РёСЏ
 		DWORD y=pos/200;
-		DWORD x=pos%200; //координаты в файле карте (по х остаток)
+		DWORD x=pos%200; //РєРѕРѕСЂРґРёРЅР°С‚С‹ РІ С„Р°Р№Р»Рµ РєР°СЂС‚Рµ (РїРѕ С… РѕСЃС‚Р°С‚РѕРє)
 
 		DWORD offs_x=fm_map.GetDWord(); //!Cvet
 		DWORD offs_y=fm_map.GetDWord(); //!Cvet
 
-		fm_map.GoForward(8); //??? что связанное со смещениями
+		fm_map.GoForward(8); //??? С‡С‚Рѕ СЃРІСЏР·Р°РЅРЅРѕРµ СЃРѕ СЃРјРµС‰РµРЅРёСЏРјРё
 
 		DWORD frm_num=fm_map.GetDWord(); //frame number
-		DWORD ori=fm_map.GetDWord(); //ориентация
+		DWORD ori=fm_map.GetDWord(); //РѕСЂРёРµРЅС‚Р°С†РёСЏ
 
 		buf=fm_map.GetDWord(); //frm pid
-		DWORD type=buf >> 0x18; //тип объекта (scenery, walls etc)
-		DWORD id=buf & 0xFFFF; //идентефикатор
+		DWORD type=buf >> 0x18; //С‚РёРї РѕР±СЉРµРєС‚Р° (scenery, walls etc)
+		DWORD id=buf & 0xFFFF; //РёРґРµРЅС‚РµС„РёРєР°С‚РѕСЂ
 
 		DWORD flags=fm_map.GetDWord();
 
@@ -411,11 +411,11 @@ int CHexField::LoadObj()
 		DWORD lights=fm_map.GetDWord();
 		DWORD lighti=fm_map.GetDWord();
 
-		fm_map.GoForward(12); //проходим через Uncknown поля
+		fm_map.GoForward(12); //РїСЂРѕС…РѕРґРёРј С‡РµСЂРµР· Uncknown РїРѕР»СЏ
 
-		DWORD num_obj=fm_map.GetDWord(); //кол-во объектов в контейнере
+		DWORD num_obj=fm_map.GetDWord(); //РєРѕР»-РІРѕ РѕР±СЉРµРєС‚РѕРІ РІ РєРѕРЅС‚РµР№РЅРµСЂРµ
 
-		fm_map.GoForward(12); //проходим через Uncknown поля
+		fm_map.GoForward(12); //РїСЂРѕС…РѕРґРёРј С‡РµСЂРµР· Uncknown РїРѕР»СЏ
 
 		switch(type)
 		{
@@ -463,16 +463,16 @@ int CHexField::LoadObj()
 	WriteLog("Scenery> %d\n",sc_cnt);
 	WriteLog("Walls> %d\n",wl_cnt);
 
-	hbegin=(hbmax-24-6)/12; //верхняя граница
+	hbegin=(hbmax-24-6)/12; //РІРµСЂС…РЅСЏСЏ РіСЂР°РЅРёС†Р°
 	hbegin+=hbegin%2;
 	
-	hend=(hemax-24-6)/12; //нижнаяя
+	hend=(hemax-24-6)/12; //РЅРёР¶РЅР°СЏСЏ
 	hend+=hend%2;
 
-	wright=(wrmax-32-16)/32; //правая
+	wright=(wrmax-32-16)/32; //РїСЂР°РІР°СЏ
 	wright+=wright%2;
 
-	wleft=(wlmax-0-16)/32; //левая
+	wleft=(wlmax-0-16)/32; //Р»РµРІР°СЏ
 	wleft+=wleft%2+2;
 
 	if(hbegin<0) hbegin=0;
@@ -480,15 +480,15 @@ int CHexField::LoadObj()
 	if(wright<0) wright=0;
 	if(wleft<0) wleft=0;
 
-	v2h=VIEW_HEIGHT+hbegin+hend; //высота видимой области
-	v2w=VIEW_WIDTH+wright+wleft; //ширина
+	v2h=VIEW_HEIGHT+hbegin+hend; //РІС‹СЃРѕС‚Р° РІРёРґРёРјРѕР№ РѕР±Р»Р°СЃС‚Рё
+	v2w=VIEW_WIDTH+wright+wleft; //С€РёСЂРёРЅР°
 
-	v2c_x=VIEW_CX+wright; //центры
+	v2c_x=VIEW_CX+wright; //С†РµРЅС‚СЂС‹
 	v2c_y=VIEW_CY+hbegin;
 
 	SAFEDELA(view2);
 
-	view2=new ViewField[v2h*v2w]; //создаем новую видимую область
+	view2=new ViewField[v2h*v2w]; //СЃРѕР·РґР°РµРј РЅРѕРІСѓСЋ РІРёРґРёРјСѓСЋ РѕР±Р»Р°СЃС‚СЊ
 
 	WriteLog("hbegin=%d,hend=%d,wright=%d,wleft=%d\n",hbegin,hend,wright,wleft);
 
@@ -503,7 +503,7 @@ int CHexField::ParseItemObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 	proto_id&=0xFFFF; //???Cvet 0xFFFFFF
 
 	if(!fm.LoadFile(item_proto[(proto_id)-1],PT_PRO_ITEMS)) return 0;
-	fm.SetCurPos(0x20); //Подтип итемов
+	fm.SetCurPos(0x20); //РџРѕРґС‚РёРї РёС‚РµРјРѕРІ
 	sub_type=fm.GetDWord();
 	fm.UnloadFile();
 
@@ -523,7 +523,7 @@ int CHexField::ParseItemObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 		break;
 	}
 
-	return 1; //не грузим!!!
+	return 1; //РЅРµ РіСЂСѓР·РёРј!!!
 /*
 	SpriteInfo* lpinf;
 	word_map::iterator it;
@@ -563,7 +563,7 @@ int CHexField::ParseItemObjCont(DWORD proto_id,DWORD x,DWORD y)
 	proto_id&=0xFFFF; //???0xFFFFFF
 
 	if(!fm.LoadFile(item_proto[(proto_id)-1],PT_PRO_ITEMS)) return 0;
-	fm.SetCurPos(0x20); //Подтип итемов
+	fm.SetCurPos(0x20); //РџРѕРґС‚РёРї РёС‚РµРјРѕРІ
 	sub_type=fm.GetDWord();
 	fm.SetCurPos(0x34); //Inv FID
 	frm_inv=fm.GetDWord();
@@ -653,7 +653,7 @@ int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, WORD tile_flags)
 	WORD pic_id=add_sobj->p[OBJ_PIC_MAP];
 	BYTE type_obj=add_sobj->type;
 
-	if(type_obj==OBJ_TYPE_DOOR) //связано с тем что двери находяться в сценери
+	if(type_obj==OBJ_TYPE_DOOR) //СЃРІСЏР·Р°РЅРѕ СЃ С‚РµРј С‡С‚Рѕ РґРІРµСЂРё РЅР°С…РѕРґСЏС‚СЊСЃСЏ РІ СЃС†РµРЅРµСЂРё
 	{
 		it=loaded_scen.find(pic_id);
 		if(it==loaded_scen.end())
@@ -704,7 +704,7 @@ int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, WORD tile_flags)
 
 		if(!res)
 		{
-			WriteLog("Ошибка - не удалось загрузить анимацию при добавлении итема\n");
+			WriteLog("РћС€РёР±РєР° - РЅРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ Р°РЅРёРјР°С†РёСЋ РїСЂРё РґРѕР±Р°РІР»РµРЅРёРё РёС‚РµРјР°\n");
 			SAFEDEL(newitm);
 			return 0;
 		}
@@ -741,7 +741,7 @@ void CHexField::ChangeObj(stat_obj* chn_sobj, HexTYPE x, HexTYPE y, WORD tile_fl
 
 	if(it_i==hex_field[y][x].itm_obj.end())
 	{
-		WriteLog("не найден объект на карте\n");
+		WriteLog("РЅРµ РЅР°Р№РґРµРЅ РѕР±СЉРµРєС‚ РЅР° РєР°СЂС‚Рµ\n");
 		return;
 	}
 
@@ -817,7 +817,7 @@ void CHexField::ProcessObj()
 }
 //Cvet --------------------------------------------------------------------
 
-//proto_id - ищем информацию об объекте. id - это frm_id - идентификатор картинки
+//proto_id - РёС‰РµРј РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РѕР±СЉРµРєС‚Рµ. id - СЌС‚Рѕ frm_id - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°СЂС‚РёРЅРєРё
 int CHexField::ParseScenObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax)
 {
 	DWORD sub_type;
@@ -851,13 +851,13 @@ int CHexField::ParseScenObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 	{
 	case SP_SCEN_BLOCK:
 	case SP_SCEN_IBLOCK:
-		SETFLAG(hex_field[y][x].flags,FT_BLOCK); //!Cvet проходимость
+		SETFLAG(hex_field[y][x].flags,FT_BLOCK); //!Cvet РїСЂРѕС…РѕРґРёРјРѕСЃС‚СЊ
 	case SP_SCEN_LIGHT:
 	case SP_SCEN_MARKER:
-		noload=1; //не загружаем пока спец-объекты
+		noload=1; //РЅРµ Р·Р°РіСЂСѓР¶Р°РµРј РїРѕРєР° СЃРїРµС†-РѕР±СЉРµРєС‚С‹
 		break;
 	default:
-		SETFLAG(hex_field[y][x].flags,FT_BLOCK); //!Cvet проходимость
+		SETFLAG(hex_field[y][x].flags,FT_BLOCK); //!Cvet РїСЂРѕС…РѕРґРёРјРѕСЃС‚СЊ
 		break;
 	}
 
@@ -868,12 +868,12 @@ int CHexField::ParseScenObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 	WORD spr_id;
 
 	it=loaded_scen.find(id);
-	if(it==loaded_scen.end()) //картинка этого объекта не загружена еще
+	if(it==loaded_scen.end()) //РєР°СЂС‚РёРЅРєР° СЌС‚РѕРіРѕ РѕР±СЉРµРєС‚Р° РЅРµ Р·Р°РіСЂСѓР¶РµРЅР° РµС‰Рµ
 	{
 		spr_id=lpSM->LoadSprite(scen_fnames[id],PT_ART_SCENERY,&lpinf);
 		if(!spr_id) return 0;
 			
-		loaded_scen[id]=spr_id;//добавляем в список загруженных
+		loaded_scen[id]=spr_id;//РґРѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє Р·Р°РіСЂСѓР¶РµРЅРЅС‹С…
 	}
 	else
 	{
@@ -893,7 +893,7 @@ int CHexField::ParseScenObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 	return 1;
 }
 
-//proto_id - ищем информацию об объекте. id - это frm_id - идентификатор картинки
+//proto_id - РёС‰РµРј РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РѕР±СЉРµРєС‚Рµ. id - СЌС‚Рѕ frm_id - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°СЂС‚РёРЅРєРё
 int CHexField::ParseWallObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax)
 {
 	proto_id&=0xFFFF;
@@ -910,8 +910,8 @@ int CHexField::ParseWallObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 
 	if(x>=MAXTILEX || y>=MAXTILEY) return 1; //!Cvet
 
-	SETFLAG(hex_field[y][x].flags,FT_BLOCK); //!Cvet проходимость
-	SETFLAG(hex_field[y][x].flags,FT_NOTRAKE); //!Cvet простреливаемость
+	SETFLAG(hex_field[y][x].flags,FT_BLOCK); //!Cvet РїСЂРѕС…РѕРґРёРјРѕСЃС‚СЊ
+	SETFLAG(hex_field[y][x].flags,FT_NOTRAKE); //!Cvet РїСЂРѕСЃС‚СЂРµР»РёРІР°РµРјРѕСЃС‚СЊ
 
 	if(noload) return 1;
 
@@ -920,12 +920,12 @@ int CHexField::ParseWallObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 	WORD spr_id;
 
 	it=loaded_wall.find(id);
-	if(it==loaded_wall.end()) //картинка этого объекта не загружена еще
+	if(it==loaded_wall.end()) //РєР°СЂС‚РёРЅРєР° СЌС‚РѕРіРѕ РѕР±СЉРµРєС‚Р° РЅРµ Р·Р°РіСЂСѓР¶РµРЅР° РµС‰Рµ
 	{
 		spr_id=lpSM->LoadSprite(wall_fnames[id],PT_ART_WALLS,&lpinf);
 		if(!spr_id) return 0;
 
-		loaded_wall[id]=spr_id;//добавляем в список загруженных
+		loaded_wall[id]=spr_id;//РґРѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє Р·Р°РіСЂСѓР¶РµРЅРЅС‹С…
 	}
 	else
 	{
@@ -933,7 +933,7 @@ int CHexField::ParseWallObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 		lpinf=lpSM->GetSpriteInfo(spr_id);
 	}
 
-//обновляем максимальные размеры
+//РѕР±РЅРѕРІР»СЏРµРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Рµ СЂР°Р·РјРµСЂС‹
 	if(lpinf->offs_y>(*hbmax)) (*hbmax)=lpinf->offs_y;
 	if( (lpinf->h-lpinf->offs_y) > (*hemax)) (*hemax)=lpinf->h-lpinf->offs_y;
 	if( ((lpinf->w >> 1)-lpinf->offs_x)>(*wrmax)) (*wrmax)=(lpinf->w >> 1)-lpinf->offs_x;
@@ -942,7 +942,7 @@ int CHexField::ParseWallObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 	for(int i=0;i<MAX_WALL_CNT;i++)
 		if(!hex_field[y][x].wall_id[i])
 		{
-			hex_field[y][x].wall_id[i]=spr_id;//и заносим в hex id картинки
+			hex_field[y][x].wall_id[i]=spr_id;//Рё Р·Р°РЅРѕСЃРёРј РІ hex id РєР°СЂС‚РёРЅРєРё
 			break;
 		}
 
@@ -961,7 +961,7 @@ void CHexField::SetCenter2(int x, int y)
 	int y2=0;
 	int vpos;
 
-	//уберем флаги отрисовки со старых позиций
+	//СѓР±РµСЂРµРј С„Р»Р°РіРё РѕС‚СЂРёСЃРѕРІРєРё СЃРѕ СЃС‚Р°СЂС‹С… РїРѕР·РёС†РёР№
 	for(ty=0;ty<v2h;ty++)
 	{
 		for(int tx=0;tx<v2w;tx++)
@@ -977,7 +977,7 @@ void CHexField::SetCenter2(int x, int y)
 
 	y2=0;
 
-	//Обрисуем флагами гексы, которые видимы на данный момент. и их координаты на экране.
+	//РћР±СЂРёСЃСѓРµРј С„Р»Р°РіР°РјРё РіРµРєСЃС‹, РєРѕС‚РѕСЂС‹Рµ РІРёРґРёРјС‹ РЅР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚. Рё РёС… РєРѕРѕСЂРґРёРЅР°С‚С‹ РЅР° СЌРєСЂР°РЅРµ.
 	for(ty=0;ty<v2h;ty++)
 	{
 		for(int tx=0;tx<v2w;tx++)
@@ -997,10 +997,10 @@ void CHexField::SetCenter2(int x, int y)
 		y2+=v2w;
 	}
 
-	//подготовим дерево из тайлов и по нему подготовим буфер вершин, рисуемых в один вызов
+	//РїРѕРґРіРѕС‚РѕРІРёРј РґРµСЂРµРІРѕ РёР· С‚Р°Р№Р»РѕРІ Рё РїРѕ РЅРµРјСѓ РїРѕРґРіРѕС‚РѕРІРёРј Р±СѓС„РµСЂ РІРµСЂС€РёРЅ, СЂРёСЃСѓРµРјС‹С… РІ РѕРґРёРЅ РІС‹Р·РѕРІ
 	RebuildTiles();
 
-	//очистим дерево, в котором будут объекты.
+	//РѕС‡РёСЃС‚РёРј РґРµСЂРµРІРѕ, РІ РєРѕС‚РѕСЂРѕРј Р±СѓРґСѓС‚ РѕР±СЉРµРєС‚С‹.
 	for(dtree_map::iterator jt=dtree.begin();jt!=dtree.end();jt++)
 		SAFEDEL((*jt).second);
 	dtree.clear();
@@ -1040,7 +1040,7 @@ void CHexField::SetCenter2(int x, int y)
 					new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,hex_field[ny][nx].scroll_block?hexb:hex)));
 			}
 
-//!Cvet дождь +++++
+//!Cvet РґРѕР¶РґСЊ +++++
 			if(ShowRain)
 			{
 				if(x>wright && x<(v2w-wleft) && ty>hbegin && ty<(v2h-hend))
@@ -1088,7 +1088,7 @@ void CHexField::SetCenter2(int x, int y)
 				{
 					if(!IsVisible(nx, ny, (*mi)->spr_id)) continue;
 					
-					//иначе заносим его в дерево. будет больше объектов надо будет все что в цикле в отдельную процедуру вывести
+					//РёРЅР°С‡Рµ Р·Р°РЅРѕСЃРёРј РµРіРѕ РІ РґРµСЂРµРІРѕ. Р±СѓРґРµС‚ Р±РѕР»СЊС€Рµ РѕР±СЉРµРєС‚РѕРІ РЅР°РґРѕ Р±СѓРґРµС‚ РІСЃРµ С‡С‚Рѕ РІ С†РёРєР»Рµ РІ РѕС‚РґРµР»СЊРЅСѓСЋ РїСЂРѕС†РµРґСѓСЂСѓ РІС‹РІРµСЃС‚Рё
 					//dtree[hex_field[ny][nx].pos+DRAW_ORDER_SCEN]=new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,(*si)->spr_id);
 					dtree.insert(dtree_map::value_type(hex_field[ny][nx].pos+DRAW_ORDER_MISC, new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,(*mi)->spr_id)));
 				}
@@ -1098,7 +1098,7 @@ void CHexField::SetCenter2(int x, int y)
 				{
 					if(!IsVisible(nx, ny, (*si)->spr_id)) continue;
 					
-					//иначе заносим его в дерево. будет больше объектов надо будет все что в цикле в отдельную процедуру вывести
+					//РёРЅР°С‡Рµ Р·Р°РЅРѕСЃРёРј РµРіРѕ РІ РґРµСЂРµРІРѕ. Р±СѓРґРµС‚ Р±РѕР»СЊС€Рµ РѕР±СЉРµРєС‚РѕРІ РЅР°РґРѕ Р±СѓРґРµС‚ РІСЃРµ С‡С‚Рѕ РІ С†РёРєР»Рµ РІ РѕС‚РґРµР»СЊРЅСѓСЋ РїСЂРѕС†РµРґСѓСЂСѓ РІС‹РІРµСЃС‚Рё
 					//dtree[hex_field[ny][nx].pos+DRAW_ORDER_SCEN]=new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,(*si)->spr_id);
 					dtree.insert(dtree_map::value_type(hex_field[ny][nx].pos+DRAW_ORDER_SCEN, new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,(*si)->spr_id)));
 				}
@@ -1108,7 +1108,7 @@ void CHexField::SetCenter2(int x, int y)
 				{
 					if(!IsVisible(nx, ny, (*ti)->spr_id)) continue;
 					
-					//иначе заносим его в дерево. будет больше объектов надо будет все что в цикле в отдельную процедуру вывести
+					//РёРЅР°С‡Рµ Р·Р°РЅРѕСЃРёРј РµРіРѕ РІ РґРµСЂРµРІРѕ. Р±СѓРґРµС‚ Р±РѕР»СЊС€Рµ РѕР±СЉРµРєС‚РѕРІ РЅР°РґРѕ Р±СѓРґРµС‚ РІСЃРµ С‡С‚Рѕ РІ С†РёРєР»Рµ РІ РѕС‚РґРµР»СЊРЅСѓСЋ РїСЂРѕС†РµРґСѓСЂСѓ РІС‹РІРµСЃС‚Рё
 					//dtree[hex_field[ny][nx].pos+DRAW_ORDER_SCEN]=new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,(*si)->spr_id);
 					dtree.insert(dtree_map::value_type(hex_field[ny][nx].pos+DRAW_ORDER_ITEM,
 						new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,0,
@@ -1140,7 +1140,7 @@ void CHexField::SetCenter2(int x, int y)
 
 				hex_field[ny][nx].lpcrit->rit=dtree.insert(dtree_map::value_type(hex_field[ny][nx].pos+DRAW_ORDER_CRIT, prep));
 
-					// не ясно что тут? возможна ли ошибка
+					// РЅРµ СЏСЃРЅРѕ С‡С‚Рѕ С‚СѓС‚? РІРѕР·РјРѕР¶РЅР° Р»Рё РѕС€РёР±РєР°
 				//	hex_field[ny][nx].lpcrit->rx=x;
 				//	hex_field[ny][nx].lpcrit->ry=y;
 				lpSM->GetDrawCntrRect(prep, &hex_field[ny][nx].lpcrit->drect);
@@ -1155,9 +1155,9 @@ void CHexField::SetCenter2(int x, int y)
 	cnt_y=my;
 }
 
-void CHexField::RebuildTiles() //!Cvet переделал. добавил подготовку крыши
+void CHexField::RebuildTiles() //!Cvet РїРµСЂРµРґРµР»Р°Р». РґРѕР±Р°РІРёР» РїРѕРґРіРѕС‚РѕРІРєСѓ РєСЂС‹С€Рё
 {
-	//подготовим дерево из тайлов и по нему подготовим буфер вершин, рисуемых в один вызов
+	//РїРѕРґРіРѕС‚РѕРІРёРј РґРµСЂРµРІРѕ РёР· С‚Р°Р№Р»РѕРІ Рё РїРѕ РЅРµРјСѓ РїРѕРґРіРѕС‚РѕРІРёРј Р±СѓС„РµСЂ РІРµСЂС€РёРЅ, СЂРёСЃСѓРµРјС‹С… РІ РѕРґРёРЅ РІС‹Р·РѕРІ
 	dtree_map ttree_t;
 	dtree_map ttree_r; //!Cvet
 
@@ -1209,14 +1209,14 @@ void CHexField::RebuildTiles() //!Cvet переделал. добавил подготовку крыши
 
 int CHexField::IsVisible(int nx, int ny,WORD id)
 {
-	if(!hex_field[ny][nx].to_draw) return 0; //!Cvet ночь отдал чтобы эту ебню вписать...
+	if(!hex_field[ny][nx].to_draw) return 0; //!Cvet РЅРѕС‡СЊ РѕС‚РґР°Р» С‡С‚РѕР±С‹ СЌС‚Сѓ РµР±РЅСЋ РІРїРёСЃР°С‚СЊ...
 
 	SpriteInfo* lpinf=lpSM->GetSpriteInfo(id);
 	if(!lpinf) return 0;
 	int chx=hex_field[ny][nx].scr_x+16-(lpinf->w >> 1)+lpinf->offs_x;
 	int chy=hex_field[ny][nx].scr_y+6-lpinf->h+lpinf->offs_y;
 
-	//если спрайт не попадает на экран - не рисуем его
+	//РµСЃР»Рё СЃРїСЂР°Р№С‚ РЅРµ РїРѕРїР°РґР°РµС‚ РЅР° СЌРєСЂР°РЅ - РЅРµ СЂРёСЃСѓРµРј РµРіРѕ
 	if(chx+lpinf->w+32<0 || chx-32>MODE_WIDTH || chy-24>MODE_HEIGHT || chy+lpinf->h+24<0) return 0;
 		else return 1;
 }
@@ -1245,8 +1245,8 @@ void CHexField::SwitchShowTrack() //!Cvet
 	SetCenter2(cnt_x,cnt_y);
 }
 
-//здесь мы будем заносить в view координаты гексов
-//которые они в данный момент представляют
+//Р·РґРµСЃСЊ РјС‹ Р±СѓРґРµРј Р·Р°РЅРѕСЃРёС‚СЊ РІ view РєРѕРѕСЂРґРёРЅР°С‚С‹ РіРµРєСЃРѕРІ
+//РєРѕС‚РѕСЂС‹Рµ РѕРЅРё РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‚
 void CHexField::InitView2(int cx,int cy)
 {
 	int x;
@@ -1358,11 +1358,11 @@ int CHexField::Scroll()
 			break;
 		}
 
-	//до этого мы отрабатывали плавный скролинг
+	//РґРѕ СЌС‚РѕРіРѕ РјС‹ РѕС‚СЂР°Р±Р°С‚С‹РІР°Р»Рё РїР»Р°РІРЅС‹Р№ СЃРєСЂРѕР»РёРЅРі
 	cmn_scr_ox+=xmod*opt_scroll_step;
 	cmn_scr_oy+=-ymod*step_y;
 
-	//а теперь отработаем переключение CenterView
+	//Р° С‚РµРїРµСЂСЊ РѕС‚СЂР°Р±РѕС‚Р°РµРј РїРµСЂРµРєР»СЋС‡РµРЅРёРµ CenterView
 	int set=0;
 
 	if(cmn_scr_ox>=32)
@@ -1413,7 +1413,7 @@ int CHexField::Scroll()
 		int lb_pos=(VIEW_HEIGHT+hbegin+ymod)*v2w+VIEW_WIDTH+wright+xmod;
 		int lt_pos=(hbegin+ymod)*v2w+VIEW_WIDTH+wright+xmod;
 
-		//!!!пр. на грн.
+		//!!!РїСЂ. РЅР° РіСЂРЅ.
 
 		int rt_x=view2[rt_pos].cur_x;
 		int rt_y=view2[rt_pos].cur_y;
@@ -1435,11 +1435,11 @@ int CHexField::Scroll()
 
 		//if(cnt_x)
 
-//WriteLog("право-верх	x=%d,y=%d\n",rt_x,rt_y);
-//WriteLog("право-низ		x=%d,y=%d\n",rb_x,rb_y);
-//WriteLog("лево-низ		x=%d,y=%d\n",lb_x,lb_y);
-//WriteLog("лево-верх		x=%d,y=%d\n",lt_x,lt_y);
-//WriteLog("центр			x=%d,y=%d\n",cnt_x,cnt_y);
+//WriteLog("РїСЂР°РІРѕ-РІРµСЂС…	x=%d,y=%d\n",rt_x,rt_y);
+//WriteLog("РїСЂР°РІРѕ-РЅРёР·		x=%d,y=%d\n",rb_x,rb_y);
+//WriteLog("Р»РµРІРѕ-РЅРёР·		x=%d,y=%d\n",lb_x,lb_y);
+//WriteLog("Р»РµРІРѕ-РІРµСЂС…		x=%d,y=%d\n",lt_x,lt_y);
+//WriteLog("С†РµРЅС‚СЂ			x=%d,y=%d\n",cnt_x,cnt_y);
 
 	//!Cvet ------
 
@@ -1482,7 +1482,7 @@ WriteLog("Added visible!\n");
 	PrepSprite* prep=new PrepSprite(hex_field[y][x].scr_x+16,hex_field[y][x].scr_y+6,0,&hex_field[y][x].lpcrit->cur_id,&hex_field[y][x].lpcrit->cur_ox,&hex_field[y][x].lpcrit->cur_oy,&hex_field[y][x].lpcrit->alpha);
 	pcrit->rit=dtree.insert(dtree_map::value_type(hex_field[y][x].pos+DRAW_ORDER_CRIT, prep));
 
-//	pcrit->hex_x=x; //!Cvet вынес в AddCritter // Текущие координаты Дюда 
+//	pcrit->hex_x=x; //!Cvet РІС‹РЅРµСЃ РІ AddCritter // РўРµРєСѓС‰РёРµ РєРѕРѕСЂРґРёРЅР°С‚С‹ Р”СЋРґР° 
 //	pcrit->hex_y=y;
 	lpSM->GetDrawCntrRect(prep, &hex_field[y][x].lpcrit->drect);
 }
@@ -1494,7 +1494,7 @@ void CHexField::RemoveCrit(CCritter* pcrit)
 	UNSETFLAG(hex_field[pcrit->hex_y][pcrit->hex_x].flags,FT_PLAYER); //!Cvet
 
 	if(pcrit->rit!=NULL) 
-	{ //!Cvet исправил. был баг
+	{ //!Cvet РёСЃРїСЂР°РІРёР». Р±С‹Р» Р±Р°Рі
 		dtree_map::iterator it=dtree.find((*pcrit->rit).first);
 
 		if(it!=dtree.end())
@@ -1509,7 +1509,7 @@ void CHexField::RemoveCrit(CCritter* pcrit)
 		pcrit->rit=NULL;
 
 	}
-    // отладка сетевых сообщений
+    // РѕС‚Р»Р°РґРєР° СЃРµС‚РµРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
     WriteLog("CritRemoved...\n");
 }
 
@@ -1544,7 +1544,7 @@ void CHexField::TransitCritter(CCritter* pcrit, int dir, int x, int y, bool null
 	pcrit->cur_dir=dir;
 
 	if(pcrit->rit!=NULL) 
-	{ //!Cvet исправил. был баг
+	{ //!Cvet РёСЃРїСЂР°РІРёР». Р±С‹Р» Р±Р°Рі
 		dtree_map::iterator it=dtree.find((*pcrit->rit).first);
 
 		if(it!=dtree.end())
@@ -1859,13 +1859,13 @@ ItemObj* CHexField::GetItemPixel(int pix_x, int pix_y)
 
 int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, BYTE* steps)
 {
-//	LONGLONG fp; тест скорости
+//	LONGLONG fp; С‚РµСЃС‚ СЃРєРѕСЂРѕСЃС‚Рё
 //	LONGLONG fp2;
 //	QueryPerformanceCounter((PLARGE_INTEGER)&fp);
 
 	int FindPath[MAXTILEX][MAXTILEY];
-	int numindex=1; //текущий индекс
-	bool indexing; // ставится флаг если хоть одна метка была нанесена
+	int numindex=1; //С‚РµРєСѓС‰РёР№ РёРЅРґРµРєСЃ
+	bool indexing; // СЃС‚Р°РІРёС‚СЃСЏ С„Р»Р°Рі РµСЃР»Рё С…РѕС‚СЊ РѕРґРЅР° РјРµС‚РєР° Р±С‹Р»Р° РЅР°РЅРµСЃРµРЅР°
 	int x1=0;
 	int y1=0;
 	int tx1=start_x;
@@ -1874,7 +1874,7 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 	int ty2=end_y;
 	int cur_step=0;
 
-	//проверяем границы
+	//РїСЂРѕРІРµСЂСЏРµРј РіСЂР°РЅРёС†С‹
 	if(tx1<0 || ty1>=MAXTILEX || tx2<0 || ty2>=MAXTILEY) return FP_ERROR;
 
 	if(tx1==tx2 && ty1==ty2) return FP_ALREADY_HERE;
@@ -1890,57 +1890,57 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 	if((ex+=FINDPATH_MAX_PATH)>=MAXTILEX-1) ex=MAXTILEX-2;
 	if((ey+=FINDPATH_MAX_PATH)>=MAXTILEY-1) ey=MAXTILEY-2;
 
-	//очищаем массив для путя 
+	//РѕС‡РёС‰Р°РµРј РјР°СЃСЃРёРІ РґР»СЏ РїСѓС‚СЏ 
 	for(x1=bx-1;x1<ex+1;x1++)
 		for(y1=by-1;y1<ey+1;y1++) FindPath[x1][y1]=0;
-	//на том месте где стоит чел индекс будет 1, от него и будем отталкиваться
+	//РЅР° С‚РѕРј РјРµСЃС‚Рµ РіРґРµ СЃС‚РѕРёС‚ С‡РµР» РёРЅРґРµРєСЃ Р±СѓРґРµС‚ 1, РѕС‚ РЅРµРіРѕ Рё Р±СѓРґРµРј РѕС‚С‚Р°Р»РєРёРІР°С‚СЊСЃСЏ
 	FindPath[tx1][ty1]=numindex;
-	//Находим путь - наченаем раз за разом проходить массив, обозначать каждый шаг
+	//РќР°С…РѕРґРёРј РїСѓС‚СЊ - РЅР°С‡РµРЅР°РµРј СЂР°Р· Р·Р° СЂР°Р·РѕРј РїСЂРѕС…РѕРґРёС‚СЊ РјР°СЃСЃРёРІ, РѕР±РѕР·РЅР°С‡Р°С‚СЊ РєР°Р¶РґС‹Р№ С€Р°Рі
 	while(true)
 	{
-		//обозначаем индекс, что б узнать поменяется ли он в конце цикла
+		//РѕР±РѕР·РЅР°С‡Р°РµРј РёРЅРґРµРєСЃ, С‡С‚Рѕ Р± СѓР·РЅР°С‚СЊ РїРѕРјРµРЅСЏРµС‚СЃСЏ Р»Рё РѕРЅ РІ РєРѕРЅС†Рµ С†РёРєР»Р°
 		indexing=false;
-		//прочесываем карту индексов ходов
+		//РїСЂРѕС‡РµСЃС‹РІР°РµРј РєР°СЂС‚Сѓ РёРЅРґРµРєСЃРѕРІ С…РѕРґРѕРІ
 		for(x1=bx;x1<ex;x1++)
 		{
 			for(y1=by;y1<ey;y1++)
 			{
-				if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //1)нашли пункт назначения - вылазим
+				if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //1)РЅР°С€Р»Рё РїСѓРЅРєС‚ РЅР°Р·РЅР°С‡РµРЅРёСЏ - РІС‹Р»Р°Р·РёРј
 
 				if(FindPath[x1][y1]==numindex)
 				{
-				//а теперь метим во всех направлениях в которых дозволено
+				//Р° С‚РµРїРµСЂСЊ РјРµС‚РёРј РІРѕ РІСЃРµС… РЅР°РїСЂР°РІР»РµРЅРёСЏС… РІ РєРѕС‚РѕСЂС‹С… РґРѕР·РІРѕР»РµРЅРѕ
 					if(!FLAG(hex_field[y1-1][x1].flags,FT_NOWAY) && !FindPath[x1][y1-1]) { FindPath[x1][y1-1]=numindex+1; indexing=true; }
 					if(!FLAG(hex_field[y1][x1+1].flags,FT_NOWAY) && !FindPath[x1+1][y1]) { FindPath[x1+1][y1]=numindex+1; indexing=true; }
 					if(!FLAG(hex_field[y1+1][x1].flags,FT_NOWAY) && !FindPath[x1][y1+1]) { FindPath[x1][y1+1]=numindex+1; indexing=true; }
 					if(!FLAG(hex_field[y1][x1-1].flags,FT_NOWAY) && !FindPath[x1-1][y1]) { FindPath[x1-1][y1]=numindex+1; indexing=true; }
-				//здесь идет поправка на чет-нечет по оси Х
-					if((x1%2)) //нечет
+				//Р·РґРµСЃСЊ РёРґРµС‚ РїРѕРїСЂР°РІРєР° РЅР° С‡РµС‚-РЅРµС‡РµС‚ РїРѕ РѕСЃРё РҐ
+					if((x1%2)) //РЅРµС‡РµС‚
 					{
 						if(!FLAG(hex_field[y1-1][x1-1].flags,FT_NOWAY) && !FindPath[x1-1][y1-1]) { FindPath[x1-1][y1-1]=numindex+1; indexing=true; }
 						if(!FLAG(hex_field[y1-1][x1+1].flags,FT_NOWAY) && !FindPath[x1+1][y1-1]) { FindPath[x1+1][y1-1]=numindex+1; indexing=true; }
 					}
-					else //чет
+					else //С‡РµС‚
 					{
 						if(!FLAG(hex_field[y1+1][x1+1].flags,FT_NOWAY) && !FindPath[x1+1][y1+1]) { FindPath[x1+1][y1+1]=numindex+1; indexing=true; }
 						if(!FLAG(hex_field[y1+1][x1-1].flags,FT_NOWAY) && !FindPath[x1-1][y1+1]) { FindPath[x1-1][y1+1]=numindex+1; indexing=true; }
 					}
 				}
 			}
-			if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //2)продолжаем вылазить
+			if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //2)РїСЂРѕРґРѕР»Р¶Р°РµРј РІС‹Р»Р°Р·РёС‚СЊ
 		}
-		if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //3)и последний раз
-		//обозначаем индекс, что б узнать поменяется ли он в конце цикла
+		if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //3)Рё РїРѕСЃР»РµРґРЅРёР№ СЂР°Р·
+		//РѕР±РѕР·РЅР°С‡Р°РµРј РёРЅРґРµРєСЃ, С‡С‚Рѕ Р± СѓР·РЅР°С‚СЊ РїРѕРјРµРЅСЏРµС‚СЃСЏ Р»Рё РѕРЅ РІ РєРѕРЅС†Рµ С†РёРєР»Р°
 		if(indexing) numindex++;
-		else return FP_DEADLOCK; //индекс не увеличился - значит тупик
+		else return FP_DEADLOCK; //РёРЅРґРµРєСЃ РЅРµ СѓРІРµР»РёС‡РёР»СЃСЏ - Р·РЅР°С‡РёС‚ С‚СѓРїРёРє
 
 		if(numindex >= FINDPATH_MAX_PATH) return FP_TOOFAR;
 	}
 
-	//подготавливаем массив для шагов
+	//РїРѕРґРіРѕС‚Р°РІР»РёРІР°РµРј РјР°СЃСЃРёРІ РґР»СЏ С€Р°РіРѕРІ
 	if(steps) for(int i=0;i<FINDPATH_MAX_PATH;i++) steps[i]=0xFF;
 
-	//Идем с конца в начало
+	//РРґРµРј СЃ РєРѕРЅС†Р° РІ РЅР°С‡Р°Р»Рѕ
 	bool switcher=false;
 	while(numindex>1)
 	{
@@ -1948,7 +1948,7 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 
 		numindex--;
 
-		//чет-нечет
+		//С‡РµС‚-РЅРµС‡РµС‚
 		if(switcher==true)
 		{
 			if(FindPath[x1][y1-1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1,y1-1,x1,y1); y1--; continue; }
@@ -1956,12 +1956,12 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 			if(FindPath[x1][y1+1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1,y1+1,x1,y1); y1++; continue; }
 			if(FindPath[x1-1][y1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1-1,y1,x1,y1); x1--; continue; }
 
-			if((x1%2)) //нечет
+			if((x1%2)) //РЅРµС‡РµС‚
 			{
 				if(FindPath[x1-1][y1-1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1-1,y1-1,x1,y1); x1--; y1--; continue; }
 				if(FindPath[x1+1][y1-1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1+1,y1-1,x1,y1); x1++; y1--; continue; }
 			}
-			else //чет
+			else //С‡РµС‚
 			{
 				if(FindPath[x1+1][y1+1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1+1,y1+1,x1,y1); x1++; y1++; continue; }
 				if(FindPath[x1-1][y1+1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1-1,y1+1,x1,y1); x1--; y1++; continue; }
@@ -1969,12 +1969,12 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 		}
 		else
 		{
-			if((x1%2)) //нечет
+			if((x1%2)) //РЅРµС‡РµС‚
 			{
 				if(FindPath[x1-1][y1-1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1-1,y1-1,x1,y1); x1--; y1--; continue; }
 				if(FindPath[x1+1][y1-1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1+1,y1-1,x1,y1); x1++; y1--; continue; }
 			}
-			else //чет
+			else //С‡РµС‚
 			{
 				if(FindPath[x1+1][y1+1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1+1,y1+1,x1,y1); x1++; y1++; continue; }
 				if(FindPath[x1-1][y1+1]==numindex) { if(steps) steps[numindex-1]=GetDir(x1-1,y1+1,x1,y1); x1--; y1++; continue; }
@@ -1989,7 +1989,7 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 		return FP_ERROR;
 	}
 
-	//если я стою в четной 6 позиций
+	//РµСЃР»Рё СЏ СЃС‚РѕСЋ РІ С‡РµС‚РЅРѕР№ 6 РїРѕР·РёС†РёР№
 /*	if(!(tx1%2))
 	{
 		x1=x1-tx1;
@@ -2001,7 +2001,7 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 		if(x1==+1 && y1== 0) steps[0]=4;
 		if(x1== 0 && y1==-1) steps[0]=5;
 	}
-	//если я стаю в нечетно 6 позиций
+	//РµСЃР»Рё СЏ СЃС‚Р°СЋ РІ РЅРµС‡РµС‚РЅРѕ 6 РїРѕР·РёС†РёР№
 	else
 	{
 		x1=x1-tx1;
@@ -2022,8 +2022,8 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE* end_y, BYTE count_correct)
 {
 	int FindPath[MAXTILEX][MAXTILEY];
-	int numindex=1; //текущий индекс
-	bool indexing; // ставится флаг если хоть одна метка была нанесена
+	int numindex=1; //С‚РµРєСѓС‰РёР№ РёРЅРґРµРєСЃ
+	bool indexing; // СЃС‚Р°РІРёС‚СЃСЏ С„Р»Р°Рі РµСЃР»Рё С…РѕС‚СЊ РѕРґРЅР° РјРµС‚РєР° Р±С‹Р»Р° РЅР°РЅРµСЃРµРЅР°
 	int x1=0;
 	int y1=0;
 	int tx1=start_x;
@@ -2031,7 +2031,7 @@ int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE
 	int tx2=*end_x;
 	int ty2=*end_y;
 
-	//проверяем границы
+	//РїСЂРѕРІРµСЂСЏРµРј РіСЂР°РЅРёС†С‹
 	if(tx1<0 || ty1>=MAXTILEX || tx2<0 || ty2>=MAXTILEY) return FP_ERROR;
 
 	if(tx1==tx2 && ty1==ty2) return 0;
@@ -2045,26 +2045,26 @@ int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE
 	if((ex+=FINDPATH_MAX_PATH)>=MAXTILEX-1) ex=MAXTILEX-2;
 	if((ey+=FINDPATH_MAX_PATH)>=MAXTILEY-1) ey=MAXTILEY-2;
 
-	//очищаем массив для путя 
+	//РѕС‡РёС‰Р°РµРј РјР°СЃСЃРёРІ РґР»СЏ РїСѓС‚СЏ 
 	for(x1=bx-1;x1<ex+1;x1++)
 		for(y1=by-1;y1<ey+1;y1++) FindPath[x1][y1]=0;
-	//на том месте где стоит чел индекс будет 1, от него и будем отталкиваться
+	//РЅР° С‚РѕРј РјРµСЃС‚Рµ РіРґРµ СЃС‚РѕРёС‚ С‡РµР» РёРЅРґРµРєСЃ Р±СѓРґРµС‚ 1, РѕС‚ РЅРµРіРѕ Рё Р±СѓРґРµРј РѕС‚С‚Р°Р»РєРёРІР°С‚СЊСЃСЏ
 	FindPath[tx1][ty1]=numindex;
-	//Находим путь - наченаем раз за разом проходить массив, обозначать каждый шаг
+	//РќР°С…РѕРґРёРј РїСѓС‚СЊ - РЅР°С‡РµРЅР°РµРј СЂР°Р· Р·Р° СЂР°Р·РѕРј РїСЂРѕС…РѕРґРёС‚СЊ РјР°СЃСЃРёРІ, РѕР±РѕР·РЅР°С‡Р°С‚СЊ РєР°Р¶РґС‹Р№ С€Р°Рі
 	while(true)
 	{
-		//обозначаем индекс, что б узнать поменяется ли он в конце цикла
+		//РѕР±РѕР·РЅР°С‡Р°РµРј РёРЅРґРµРєСЃ, С‡С‚Рѕ Р± СѓР·РЅР°С‚СЊ РїРѕРјРµРЅСЏРµС‚СЃСЏ Р»Рё РѕРЅ РІ РєРѕРЅС†Рµ С†РёРєР»Р°
 		indexing=false;
-		//прочесываем карту индексов ходов
+		//РїСЂРѕС‡РµСЃС‹РІР°РµРј РєР°СЂС‚Сѓ РёРЅРґРµРєСЃРѕРІ С…РѕРґРѕРІ
 		for(x1=bx;x1<ex;x1++)
 		{
 			for(y1=by;y1<ey;y1++)
 			{
-				if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //1)нашли пункт назначения - вылазим
+				if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //1)РЅР°С€Р»Рё РїСѓРЅРєС‚ РЅР°Р·РЅР°С‡РµРЅРёСЏ - РІС‹Р»Р°Р·РёРј
 
 				if(FindPath[x1][y1]==numindex)
 				{
-				//а теперь метим во всех направлениях в которых дозволено
+				//Р° С‚РµРїРµСЂСЊ РјРµС‚РёРј РІРѕ РІСЃРµС… РЅР°РїСЂР°РІР»РµРЅРёСЏС… РІ РєРѕС‚РѕСЂС‹С… РґРѕР·РІРѕР»РµРЅРѕ
 					if(x1  ==tx2 && y1-1==ty2) { x1=tx2; y1=ty2; FindPath[x1][y1]=++numindex; break; }
 					if(!FLAG(hex_field[y1-1][x1].flags,FT_NOWAY) && !FindPath[x1][y1-1]) { FindPath[x1][y1-1]=numindex+1; indexing=true; }
 					if(x1+1==tx2 && y1  ==ty2) { x1=tx2; y1=ty2; FindPath[x1][y1]=++numindex; break; }
@@ -2073,15 +2073,15 @@ int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE
 					if(!FLAG(hex_field[y1+1][x1].flags,FT_NOWAY) && !FindPath[x1][y1+1]) { FindPath[x1][y1+1]=numindex+1; indexing=true; }
 					if(x1-1==tx2 && y1  ==ty2) { x1=tx2; y1=ty2; FindPath[x1][y1]=++numindex; break; }
 					if(!FLAG(hex_field[y1][x1-1].flags,FT_NOWAY) && !FindPath[x1-1][y1]) { FindPath[x1-1][y1]=numindex+1; indexing=true; }
-				//здесь идет поправка на чет-нечет по оси Х
-					if(x1%2) //нечет
+				//Р·РґРµСЃСЊ РёРґРµС‚ РїРѕРїСЂР°РІРєР° РЅР° С‡РµС‚-РЅРµС‡РµС‚ РїРѕ РѕСЃРё РҐ
+					if(x1%2) //РЅРµС‡РµС‚
 					{
 						if(x1-1==tx2 && y1-1==ty2) { x1=tx2; y1=ty2; FindPath[x1][y1]=++numindex; break; }
 						if(!FLAG(hex_field[y1-1][x1-1].flags,FT_NOWAY) && !FindPath[x1-1][y1-1]) { FindPath[x1-1][y1-1]=numindex+1; indexing=true; }
 						if(x1+1==tx2 && y1-1==ty2) { x1=tx2; y1=ty2; FindPath[x1][y1]=++numindex; break; }
 						if(!FLAG(hex_field[y1-1][x1+1].flags,FT_NOWAY) && !FindPath[x1+1][y1-1]) { FindPath[x1+1][y1-1]=numindex+1; indexing=true; }
 					}
-					else //чет
+					else //С‡РµС‚
 					{
 						if(x1+1==tx2 && y1+1==ty2) { x1=tx2; y1=ty2; FindPath[x1][y1]=++numindex; break; }
 						if(!FLAG(hex_field[y1+1][x1+1].flags,FT_NOWAY) && !FindPath[x1+1][y1+1]) { FindPath[x1+1][y1+1]=numindex+1; indexing=true; }
@@ -2090,12 +2090,12 @@ int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE
 					}
 				}
 			}
-			if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //2)продолжаем вылазить
+			if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //2)РїСЂРѕРґРѕР»Р¶Р°РµРј РІС‹Р»Р°Р·РёС‚СЊ
 		}
-		if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //3)и последний раз
-		//обозначаем индекс, что б узнать поменяется ли он в конце цикла
+		if(x1==tx2 && y1==ty2 && FindPath[x1][y1]==numindex) break; //3)Рё РїРѕСЃР»РµРґРЅРёР№ СЂР°Р·
+		//РѕР±РѕР·РЅР°С‡Р°РµРј РёРЅРґРµРєСЃ, С‡С‚Рѕ Р± СѓР·РЅР°С‚СЊ РїРѕРјРµРЅСЏРµС‚СЃСЏ Р»Рё РѕРЅ РІ РєРѕРЅС†Рµ С†РёРєР»Р°
 		if(indexing) numindex++;
-		else return 0; //индекс не увеличился - значит тупик
+		else return 0; //РёРЅРґРµРєСЃ РЅРµ СѓРІРµР»РёС‡РёР»СЃСЏ - Р·РЅР°С‡РёС‚ С‚СѓРїРёРє
 
 		if(numindex >= FINDPATH_MAX_PATH) return 0;
 	}
@@ -2108,7 +2108,7 @@ int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE
 		numindex--;
 		count_correct--;
 
-		//чет-нечет
+		//С‡РµС‚-РЅРµС‡РµС‚
 		if(switcher==true)
 		{
 			if(FindPath[x1][y1-1]==numindex) { y1--; continue; }
@@ -2116,12 +2116,12 @@ int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE
 			if(FindPath[x1][y1+1]==numindex) { y1++; continue; }
 			if(FindPath[x1-1][y1]==numindex) { x1--; continue; }
 
-			if((x1%2)) //нечет
+			if((x1%2)) //РЅРµС‡РµС‚
 			{
 				if(FindPath[x1-1][y1-1]==numindex) { x1--; y1--; continue; }
 				if(FindPath[x1+1][y1-1]==numindex) { x1++; y1--; continue; }
 			}
-			else //чет
+			else //С‡РµС‚
 			{
 				if(FindPath[x1+1][y1+1]==numindex) { x1++; y1++; continue; }
 				if(FindPath[x1-1][y1+1]==numindex) { x1--; y1++; continue; }
@@ -2129,12 +2129,12 @@ int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE
 		}
 		else
 		{
-			if((x1%2)) //нечет
+			if((x1%2)) //РЅРµС‡РµС‚
 			{
 				if(FindPath[x1-1][y1-1]==numindex) { x1--; y1--; continue; }
 				if(FindPath[x1+1][y1-1]==numindex) { x1++; y1--; continue; }
 			}
-			else //чет
+			else //С‡РµС‚
 			{
 				if(FindPath[x1+1][y1+1]==numindex) { x1++; y1++; continue; }
 				if(FindPath[x1-1][y1+1]==numindex) { x1--; y1++; continue; }

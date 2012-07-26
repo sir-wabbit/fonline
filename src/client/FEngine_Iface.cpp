@@ -4,7 +4,7 @@
 
 	author:		Anton Tsvetinsky
 	
-	purpose from baster:	дополнительная фенечка
+	purpose from baster:	РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ С„РµРЅРµС‡РєР°
 *********************************************************************/
 #include "stdafx.h"
 
@@ -23,23 +23,23 @@ const BYTE DLG_HOLD_ANSW	=2;
 char* LoginMess[50]=
 {
 	{""}, //0
-	{"ОШИБКА!!! Логин не может быть короче четырех символов."}, //1
-	{"ОШИБКА!!! Пароль не может быть короче четырех символов."}, //2
-	{"ОШИБКА ПРИ РЕГИСТРАЦИИ!!! Аккаунт с таким именем уже есть - измените логин."}, //3
-	{"ОШИБКА ПРИ АУНТЕФИКАЦИИ!!! Игрок под этим логином уже в игре - обязательно обратитесь к администратору сервера."}, //4
-	{"ОШИБКА ПРИ РЕГИСТРАЦИИ!!! Неверные данные SPECIAL."}, //5
-	{"РЕГИСТРАЦИЯ ПРОЙДЕНА УСПЕШНО. ЖДИТЕ ПОДТВЕЖДЕНИЯ НА ВАШ E-MAIL."}, //6
-	{"ИДЕТ СОЕДИНЕНИЕ С СЕРВЕРОМ.... ЖДИТЕ...."}, //7
-	{"СБОЙ СОЕДИНЕНИЯ!!! При повторениях сбоя - обратитесь к админестратору сервера."}, //8
-	{"ОШИБКА ПРИ АУНТЕФИКАЦИИ!!! Неверный логин или пароль."}, //9
-	{"СОЕДИНЕНИЕ УСТАНОВЛЕНО.... АУНТЕФИКАЦИЯ.... ЖДИТЕ...."}, //10
-	{"ОШИБКА!!! Клетка занята... попробуйте немного позже"}, //11
-	{"ОТКЛЮЧЕНИЕ ПО КОМАНДЕ ИГРОКА"}, //12
-	{"ОШИБКА ПРИ РЕГИСТРАЦИИ!!! Длинное или короткое имя."}, //13
-	{"ОШИБКА ПРИ РЕГИСТРАЦИИ!!! Длинное или короткое одно(несколько) из склонений."}, //14
-	{"ОШИБКА ПРИ РЕГИСТРАЦИИ!!! Невеный пол."}, //15
-	{"ОШИБКА ПРИ РЕГИСТРАЦИИ!!! Неверный возраст."}, //16
-	{"ОШИБКА!!! Нудалось подключиться к серверу игры."}, //17
+	{"РћРЁРР‘РљРђ!!! Р›РѕРіРёРЅ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РєРѕСЂРѕС‡Рµ С‡РµС‚С‹СЂРµС… СЃРёРјРІРѕР»РѕРІ."}, //1
+	{"РћРЁРР‘РљРђ!!! РџР°СЂРѕР»СЊ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РєРѕСЂРѕС‡Рµ С‡РµС‚С‹СЂРµС… СЃРёРјРІРѕР»РѕРІ."}, //2
+	{"РћРЁРР‘РљРђ РџР Р Р Р•Р“РРЎРўР РђР¦РР!!! РђРєРєР°СѓРЅС‚ СЃ С‚Р°РєРёРј РёРјРµРЅРµРј СѓР¶Рµ РµСЃС‚СЊ - РёР·РјРµРЅРёС‚Рµ Р»РѕРіРёРЅ."}, //3
+	{"РћРЁРР‘РљРђ РџР Р РђРЈРќРўР•Р¤РРљРђР¦РР!!! РРіСЂРѕРє РїРѕРґ СЌС‚РёРј Р»РѕРіРёРЅРѕРј СѓР¶Рµ РІ РёРіСЂРµ - РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РѕР±СЂР°С‚РёС‚РµСЃСЊ Рє Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂСѓ СЃРµСЂРІРµСЂР°."}, //4
+	{"РћРЁРР‘РљРђ РџР Р Р Р•Р“РРЎРўР РђР¦РР!!! РќРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ SPECIAL."}, //5
+	{"Р Р•Р“РРЎРўР РђР¦РРЇ РџР РћР™Р”Р•РќРђ РЈРЎРџР•РЁРќРћ. Р–Р”РРўР• РџРћР”РўР’Р•Р–Р”Р•РќРРЇ РќРђ Р’РђРЁ E-MAIL."}, //6
+	{"РР”Р•Рў РЎРћР•Р”РРќР•РќРР• РЎ РЎР•Р Р’Р•Р РћРњ.... Р–Р”РРўР•...."}, //7
+	{"РЎР‘РћР™ РЎРћР•Р”РРќР•РќРРЇ!!! РџСЂРё РїРѕРІС‚РѕСЂРµРЅРёСЏС… СЃР±РѕСЏ - РѕР±СЂР°С‚РёС‚РµСЃСЊ Рє Р°РґРјРёРЅРµСЃС‚СЂР°С‚РѕСЂСѓ СЃРµСЂРІРµСЂР°."}, //8
+	{"РћРЁРР‘РљРђ РџР Р РђРЈРќРўР•Р¤РРљРђР¦РР!!! РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ."}, //9
+	{"РЎРћР•Р”РРќР•РќРР• РЈРЎРўРђРќРћР’Р›Р•РќРћ.... РђРЈРќРўР•Р¤РРљРђР¦РРЇ.... Р–Р”РРўР•...."}, //10
+	{"РћРЁРР‘РљРђ!!! РљР»РµС‚РєР° Р·Р°РЅСЏС‚Р°... РїРѕРїСЂРѕР±СѓР№С‚Рµ РЅРµРјРЅРѕРіРѕ РїРѕР·Р¶Рµ"}, //11
+	{"РћРўРљР›Р®Р§Р•РќРР• РџРћ РљРћРњРђРќР”Р• РР“Р РћРљРђ"}, //12
+	{"РћРЁРР‘РљРђ РџР Р Р Р•Р“РРЎРўР РђР¦РР!!! Р”Р»РёРЅРЅРѕРµ РёР»Рё РєРѕСЂРѕС‚РєРѕРµ РёРјСЏ."}, //13
+	{"РћРЁРР‘РљРђ РџР Р Р Р•Р“РРЎРўР РђР¦РР!!! Р”Р»РёРЅРЅРѕРµ РёР»Рё РєРѕСЂРѕС‚РєРѕРµ РѕРґРЅРѕ(РЅРµСЃРєРѕР»СЊРєРѕ) РёР· СЃРєР»РѕРЅРµРЅРёР№."}, //14
+	{"РћРЁРР‘РљРђ РџР Р Р Р•Р“РРЎРўР РђР¦РР!!! РќРµРІРµРЅС‹Р№ РїРѕР»."}, //15
+	{"РћРЁРР‘РљРђ РџР Р Р Р•Р“РРЎРўР РђР¦РР!!! РќРµРІРµСЂРЅС‹Р№ РІРѕР·СЂР°СЃС‚."}, //16
+	{"РћРЁРР‘РљРђ!!! РќСѓРґР°Р»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє СЃРµСЂРІРµСЂСѓ РёРіСЂС‹."}, //17
 };
 
 //==============================================================================================================================
@@ -48,7 +48,7 @@ char* LoginMess[50]=
 
 int CFEngine::Init_Iface()
 {
-	WriteLog("Инициализация интерфейса...\n");
+	WriteLog("РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РёРЅС‚РµСЂС„РµР№СЃР°...\n");
 
 	CreateStringsParamsMaps();
 
@@ -63,7 +63,7 @@ int CFEngine::Init_Iface()
 	numIface=GetPrivateProfileInt("Game","Iface",0,CFG_FILE);
 	sprintf(key1,"Iface%d",numIface);
 
-//берем настройки для инвентаря
+//Р±РµСЂРµРј РЅР°СЃС‚СЂРѕР№РєРё РґР»СЏ РёРЅРІРµРЅС‚Р°СЂСЏ
 	InvX=GetPrivateProfileInt(key1,"InvX",100,CFG_INT_FILE);
 	InvY=GetPrivateProfileInt(key1,"InvY",100,CFG_INT_FILE);
 	scroll_items=0;
@@ -83,7 +83,7 @@ int CFEngine::Init_Iface()
 
 	for(IB=0;IB<=3;IB++) { sprintf(key2,"txtObject%d",IB); txtObject[IB]=GetPrivateProfileInt(key1,key2,1,CFG_INT_FILE);}
 
-//берем настройки для интерфейса
+//Р±РµСЂРµРј РЅР°СЃС‚СЂРѕР№РєРё РґР»СЏ РёРЅС‚РµСЂС„РµР№СЃР°
 	IntX=GetPrivateProfileInt(key1,"IntX",-1,CFG_INT_FILE);
 	switch(IntX)
 	{
@@ -142,22 +142,22 @@ int CFEngine::Init_Iface()
 	for(IB=0;IB<=3;IB++) { sprintf(key2,"IntAC%d",IB); IntAC[IB]=GetPrivateProfileInt(key1,key2,1,CFG_INT_FILE);
 	if(IB%2==0) IntAC[IB]+=IntX; else IntAC[IB]+=IntY;}
 
-	//инициализация интерфейсбокса
+	//РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РёРЅС‚РµСЂС„РµР№СЃР±РѕРєСЃР°
 	max_mess=0; scr_mess=0;
-//	AddMess("Загрузка ПипБоя...");
-//	AddMess("Загрузка голодисков...");
-//	AddMess("Загрузка предметов...");
-//	AddMess("Загрузка статистики...");
-//	AddMess("Загрузка $$$$$$...");
-//	AddMess("Загрузка завершена...");
-//	AddMess("Загрузка ПипБоя...");
-//	AddMess("Загрузка голодисков...");
-//	AddMess("Загрузка предметов...");
-//	AddMess("Загрузка статистики...");
-//	AddMess("Загрузка $$$$$$...");
-//	AddMess("Загрузка завершена...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° РџРёРїР‘РѕСЏ...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° РіРѕР»РѕРґРёСЃРєРѕРІ...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° РїСЂРµРґРјРµС‚РѕРІ...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° СЃС‚Р°С‚РёСЃС‚РёРєРё...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° $$$$$$...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° Р·Р°РІРµСЂС€РµРЅР°...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° РџРёРїР‘РѕСЏ...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° РіРѕР»РѕРґРёСЃРєРѕРІ...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° РїСЂРµРґРјРµС‚РѕРІ...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° СЃС‚Р°С‚РёСЃС‚РёРєРё...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° $$$$$$...");
+//	AddMess("Р—Р°РіСЂСѓР·РєР° Р·Р°РІРµСЂС€РµРЅР°...");
 
-	//мессаги чезена
+	//РјРµСЃСЃР°РіРё С‡РµР·РµРЅР°
 	IntMess[2]=GetPrivateProfileInt(key1,"IntMessW",50,CFG_INT_FILE);
 	IntMess[3]=GetPrivateProfileInt(key1,"IntMessH",40,CFG_INT_FILE);
 	IntMessX=GetPrivateProfileInt(key1,"IntMessX",0,CFG_INT_FILE);
@@ -165,7 +165,7 @@ int CFEngine::Init_Iface()
 	IntMessStepX=GetPrivateProfileInt(key1,"IntMessStepX",0,CFG_INT_FILE);
 	IntMessStepY=GetPrivateProfileInt(key1,"IntMessStepY",40,CFG_INT_FILE);
 
-//берем настройки для меню логин/пасс
+//Р±РµСЂРµРј РЅР°СЃС‚СЂРѕР№РєРё РґР»СЏ РјРµРЅСЋ Р»РѕРіРёРЅ/РїР°СЃСЃ
 	LogX=(MODE_WIDTH-GetPrivateProfileInt(key1,"LogMain2",0,CFG_INT_FILE))/2;
 	LogY=(MODE_HEIGHT-GetPrivateProfileInt(key1,"LogMain3",0,CFG_INT_FILE))/2;
 	LogFocus=0;
@@ -183,7 +183,7 @@ int CFEngine::Init_Iface()
 	for(IB=0;IB<=3;IB++) { sprintf(key2,"LogBExit%d",IB); LogBExit[IB]=GetPrivateProfileInt(key1,key2,1,CFG_INT_FILE);
 	if(IB%2==0) LogBExit[IB]+=LogX; else LogBExit[IB]+=LogY;}
 
-//Регистрация
+//Р РµРіРёСЃС‚СЂР°С†РёСЏ
 	RegX=(MODE_WIDTH-GetPrivateProfileInt(key1,"RegMain2",300,CFG_INT_FILE))/2;
 	RegY=(MODE_HEIGHT-GetPrivateProfileInt(key1,"RegMain3",300,CFG_INT_FILE))/2;
 	RegFocus=0;
@@ -238,18 +238,18 @@ int CFEngine::Init_Iface()
 	New_cr.st[ST_AGILITY	]=5;
 	New_cr.st[ST_LUCK		]=5;
 	strcpy(New_cr.name,"noname");
-	strcpy(New_cr.cases[0],"кого");
-	strcpy(New_cr.cases[1],"кому");
-	strcpy(New_cr.cases[2],"кого");
-	strcpy(New_cr.cases[3],"с кем");
-	strcpy(New_cr.cases[4],"о ком");
+	strcpy(New_cr.cases[0],"РєРѕРіРѕ");
+	strcpy(New_cr.cases[1],"РєРѕРјСѓ");
+	strcpy(New_cr.cases[2],"РєРѕРіРѕ");
+	strcpy(New_cr.cases[3],"СЃ РєРµРј");
+	strcpy(New_cr.cases[4],"Рѕ РєРѕРј");
 	strcpy(New_cr.login,"login");
 	strcpy(New_cr.pass,"password");
 	New_cr.base_type=0;
 	New_cr.st[ST_AGE]=22;
 	New_cr.st[ST_GENDER]=0;
 
-//Диалог
+//Р”РёР°Р»РѕРі
 	DlgX=GetPrivateProfileInt(key1,"DlgX",100,CFG_INT_FILE);
 	DlgY=GetPrivateProfileInt(key1,"DlgY",100,CFG_INT_FILE);
 
@@ -275,15 +275,15 @@ int CFEngine::Init_Iface()
 
 	LMenu_node_height=GetPrivateProfileInt(key1,"LMenu_node_height",40,CFG_INT_FILE);
 
-	//ноды крита
+	//РЅРѕРґС‹ РєСЂРёС‚Р°
 	LMenu_crit_nodes.push_back(LMENU_NODE_LOOK);
 	LMenu_crit_nodes.push_back(LMENU_NODE_BREAK);
-	//ноды сценери
+	//РЅРѕРґС‹ СЃС†РµРЅРµСЂРё
 	LMenu_scenery_nodes.push_back(LMENU_NODE_BREAK);
-	//ноды объектов
+	//РЅРѕРґС‹ РѕР±СЉРµРєС‚РѕРІ
 	LMenu_item_nodes.push_back(LMENU_NODE_BREAK);
 
-//Мини-карта
+//РњРёРЅРё-РєР°СЂС‚Р°
 	LmapX=GetPrivateProfileInt(key1,"LmapX",100,CFG_INT_FILE);
 	LmapY=GetPrivateProfileInt(key1,"LmapY",100,CFG_INT_FILE);
 
@@ -396,9 +396,9 @@ int CFEngine::Init_Iface()
 	gmapvecty=0;
 	GmapMapScrollEnable=false;
 
-//загрузка графики=============================================================================
+//Р·Р°РіСЂСѓР·РєР° РіСЂР°С„РёРєРё=============================================================================
 	char f_name[64];
-//Интерфейс
+//РРЅС‚РµСЂС„РµР№СЃ
 	GetPrivateProfileString(key1,"IntMainPic","error",f_name,64,CFG_INT_FILE);
 	if(!(ifacen=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
@@ -434,8 +434,8 @@ int CFEngine::Init_Iface()
 	int t1;
 	FILE *cf;
 
-	//картинка использования
-	WriteLog("Загрузка названий типов использования объектов...");
+	//РєР°СЂС‚РёРЅРєР° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
+	WriteLog("Р—Р°РіСЂСѓР·РєР° РЅР°Р·РІР°РЅРёР№ С‚РёРїРѕРІ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РѕР±СЉРµРєС‚РѕРІ...");
 	if((cf = fopen("data\\objects\\pic_use.txt", "rt")) != NULL)
 	{
 		t1=0;
@@ -446,26 +446,26 @@ int CFEngine::Init_Iface()
 
 			if(!pic_use[t1])
 			{
-				WriteLog("Ошибка загрузки %s\n",f_name);
+				WriteLog("РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё %s\n",f_name);
 				return 0;
 			}
 
 			t1++;
 		}
 		fclose(cf);
-		WriteLog("Выполнено\n");
+		WriteLog("Р’С‹РїРѕР»РЅРµРЅРѕ\n");
 	} 
 	else
 	{
-		WriteLog("Файл не найден\n");
+		WriteLog("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ\n");
 		return 0;
 	}
 
-	//картинка мессаги чезена
+	//РєР°СЂС‚РёРЅРєР° РјРµСЃСЃР°РіРё С‡РµР·РµРЅР°
 	GetPrivateProfileString(key1,"IntMessPic","error",f_name,64,CFG_INT_FILE);
 	if(!(chosen_mess_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
-//Инвентарь
+//РРЅРІРµРЅС‚Р°СЂСЊ
 	GetPrivateProfileString(key1,"InvMainPic","error",f_name,64,CFG_INT_FILE);
 	if(!(invbox=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
@@ -488,8 +488,8 @@ int CFEngine::Init_Iface()
 	GetPrivateProfileString(key1,"InvBDnPicNa","error",f_name,64,CFG_INT_FILE);
 	if(!(invscrdwoff=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
-	//большая и малая картинка в инвентаре
-	WriteLog("Загрузка картинок в инвентарь статических объектов...");
+	//Р±РѕР»СЊС€Р°СЏ Рё РјР°Р»Р°СЏ РєР°СЂС‚РёРЅРєР° РІ РёРЅРІРµРЅС‚Р°СЂРµ
+	WriteLog("Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚РёРЅРѕРє РІ РёРЅРІРµРЅС‚Р°СЂСЊ СЃС‚Р°С‚РёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ...");
 	if((cf = fopen("data\\objects\\pic_inv.txt", "rt")) != NULL)
 	{
 		t1=0;
@@ -501,30 +501,30 @@ int CFEngine::Init_Iface()
 
 			if((!inv_pic_b[t1])||(!inv_pic_s[t1]))
 			{
-				WriteLog("Ошибка %d=%s\n",t1,f_name);
+				WriteLog("РћС€РёР±РєР° %d=%s\n",t1,f_name);
 				return 0;
 			}
 
 			t1++;
 		}
 		fclose(cf);
-		WriteLog("Выполнено\n");
+		WriteLog("Р’С‹РїРѕР»РЅРµРЅРѕ\n");
 	} 
 	else
 	{
-		WriteLog("Файл не найден\n");
+		WriteLog("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ\n");
 		return 0;
 	}
 
-//Логин/пасс
+//Р›РѕРіРёРЅ/РїР°СЃСЃ
 	GetPrivateProfileString(key1,"LogMainPic","error",f_name,64,CFG_INT_FILE);
 	if(!(loginpic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
-//Регистрация
+//Р РµРіРёСЃС‚СЂР°С†РёСЏ
 	GetPrivateProfileString(key1,"RegMainPic","error",f_name,64,CFG_INT_FILE);
 	if(!(registpic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
-//Диалог
+//Р”РёР°Р»РѕРі
 	GetPrivateProfileString(key1,"DlgBeginPic","error",f_name,64,CFG_INT_FILE);
 	if(!(dialog_begin=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"DlgAnswPic","error",f_name,64,CFG_INT_FILE);
@@ -532,7 +532,7 @@ int CFEngine::Init_Iface()
 	GetPrivateProfileString(key1,"DlgEndPic","error",f_name,64,CFG_INT_FILE);
 	if(!(dialog_end=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
-// курсоры
+// РєСѓСЂСЃРѕСЂС‹
 	if(!(cur_move=sm.LoadSprite("msef001.frm",PT_ART_INTRFACE))) return 0;
 	if(!(cur_move_block=sm.LoadSprite("msef002.frm",PT_ART_INTRFACE))) return 0;
 	if(!(cur_use_o=sm.LoadSprite("acttohit.frm",PT_ART_INTRFACE))) return 0;
@@ -552,7 +552,7 @@ int CFEngine::Init_Iface()
 	if(!(cur_rd=sm.LoadSprite("scrseast.frm",PT_ART_INTRFACE))) return 0;
 	if(!(cur_ld=sm.LoadSprite("scrswest.frm",PT_ART_INTRFACE))) return 0;
 
-//Графика LMenu
+//Р“СЂР°С„РёРєР° LMenu
 	GetPrivateProfileString(key1,"LMenuTalkPicUp","error",f_name,64,CFG_INT_FILE);
 	if(!(lm_talk_off=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LMenuTalkPicDn","error",f_name,64,CFG_INT_FILE);
@@ -583,7 +583,7 @@ int CFEngine::Init_Iface()
 	GetPrivateProfileString(key1,"LMenuGMTakePicDn","error",f_name,64,CFG_INT_FILE);
 	if(!(lm_gmtake_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
-//Мини-карта
+//РњРёРЅРё-РєР°СЂС‚Р°
 	GetPrivateProfileString(key1,"LmapMainPic","error",f_name,64,CFG_INT_FILE);
 	if(!(lmap_main=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LmapBOkPicDn","error",f_name,64,CFG_INT_FILE);
@@ -695,7 +695,7 @@ int CFEngine::Init_Iface()
 	}
 //===========================================================================================
 
-//Звуки
+//Р—РІСѓРєРё
 TICK gtime=GetTickCount();
 //	WORD snd1;
 //	if(!(snd1=sdm.LoadSound("01.ogg",PT_SND_MUSIC)))
@@ -709,7 +709,7 @@ WriteLog("time load sound:%d\n",GetTickCount()-gtime);
 
 	SetCur(CUR_DEFAULT);
 
-	WriteLog("Инициализация интерфейса прошла успешно\n");
+	WriteLog("РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РёРЅС‚РµСЂС„РµР№СЃР° РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ\n");
 
 	return 1;
 }
@@ -720,32 +720,32 @@ WriteLog("time load sound:%d\n",GetTickCount()-gtime);
 
 void CFEngine::InvDraw() 
 {
-	sm.DrawSprite(invbox,InvX,InvY,COLOR_DEFAULT); //инвентарь
+	sm.DrawSprite(invbox,InvX,InvY,COLOR_DEFAULT); //РёРЅРІРµРЅС‚Р°СЂСЊ
 
 	if(scroll_items<=0) 
-		sm.DrawSprite(invscrupoff,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх выключена
+		sm.DrawSprite(invscrupoff,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //РєРЅРѕРїРєР° РІРІРµСЂС… РІС‹РєР»СЋС‡РµРЅР°
 	else 
 		if(InvHold==1) 
-			sm.DrawSprite(invscrupin,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх нажата
+			sm.DrawSprite(invscrupin,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //РєРЅРѕРїРєР° РІРІРµСЂС… РЅР°Р¶Р°С‚Р°
 		else 
-			sm.DrawSprite(invscrupout,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх отпущена
+			sm.DrawSprite(invscrupout,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //РєРЅРѕРїРєР° РІРІРµСЂС… РѕС‚РїСѓС‰РµРЅР°
 
 	int count_items=lpChosen->obj.size();
 	if(scroll_items>=count_items-(InvObl[3]-InvObl[1])/HeightItem)
-		sm.DrawSprite(invscrdwoff,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз выключена
+		sm.DrawSprite(invscrdwoff,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //РєРЅРѕРїРєР° РІРЅРёР· РІС‹РєР»СЋС‡РµРЅР°
 	else 
-		if(InvHold==2) sm.DrawSprite(invscrdwin,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз нажата
+		if(InvHold==2) sm.DrawSprite(invscrdwin,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //РєРЅРѕРїРєР° РІРЅРёР· РЅР°Р¶Р°С‚Р°
 		else 
-			sm.DrawSprite(invscrdwout,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз отпущена
+			sm.DrawSprite(invscrdwout,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //РєРЅРѕРїРєР° РІРЅРёР· РѕС‚РїСѓС‰РµРЅР°
 
 	if(InvHold==3) 
-		sm.DrawSprite(invokon,InvBtnOk[0]+InvX,InvBtnOk[1]+InvY,COLOR_DEFAULT); //конопка ОК
+		sm.DrawSprite(invokon,InvBtnOk[0]+InvX,InvBtnOk[1]+InvY,COLOR_DEFAULT); //РєРѕРЅРѕРїРєР° РћРљ
 	else 
-		sm.DrawSprite(invokoff,InvBtnOk[0]+InvX,InvBtnOk[1]+InvY,COLOR_DEFAULT); //конопка ОК
+		sm.DrawSprite(invokoff,InvBtnOk[0]+InvX,InvBtnOk[1]+InvY,COLOR_DEFAULT); //РєРѕРЅРѕРїРєР° РћРљ
 
-	sm.DrawSprite(lpChosen->cur_id,InvChosen[0]+InvX,InvChosen[1]+InvY,COLOR_DEFAULT); //отрисовка чезена
+	sm.DrawSprite(lpChosen->cur_id,InvChosen[0]+InvX,InvChosen[1]+InvY,COLOR_DEFAULT); //РѕС‚СЂРёСЃРѕРІРєР° С‡РµР·РµРЅР°
 
-	//отрисовка объектов в инвентаре
+	//РѕС‚СЂРёСЃРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РІ РёРЅРІРµРЅС‚Р°СЂРµ
 	int IB=0;
 	int IB2=0;
 	SpriteInfo* si;
@@ -763,7 +763,7 @@ void CFEngine::InvDraw()
 		IB++;
 	}
 
-	//отрисовка объектов в слот1
+	//РѕС‚СЂРёСЃРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РІ СЃР»РѕС‚1
 	if(lpChosen->a_obj->object->p[OBJ_PIC_INV])
 	{
 		si=sm.GetSpriteInfo(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]]);
@@ -771,10 +771,10 @@ void CFEngine::InvDraw()
 			InvSlot1[0]+InvX+(InvSlot1[2]-InvSlot1[0]-si->w)/2,
 			InvSlot1[1]+InvY+(InvSlot1[3]-InvSlot1[1]-si->h)/2,COLOR_DEFAULT);
 	}
-	//отрисовка объектов в слот2
+	//РѕС‚СЂРёСЃРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РІ СЃР»РѕС‚2
 	if(lpChosen->a_obj2)
 		sm.DrawSprite(inv_pic_b[lpChosen->a_obj2->object->p[OBJ_PIC_INV]],InvSlot2[0]+InvX,InvSlot2[1]+InvY,COLOR_DEFAULT);
-	//отрисовка объектов в armor
+	//РѕС‚СЂРёСЃРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РІ armor
 	if(lpChosen->a_obj_arm->object->p[OBJ_PIC_INV])
 	{
 		si=sm.GetSpriteInfo(inv_pic_b[lpChosen->a_obj_arm->object->p[OBJ_PIC_INV]]);
@@ -790,23 +790,23 @@ void CFEngine::InvDraw()
 
 	wsprintf(playstr,	"%s\n"
 						"------------------------------------\n"
-						"ST %d  Жизнь: %d\n"
-						"PE %d  Броня: %d\n"
-						"EN %d Нормально 0/0%\n"
-						"CH %d  Лазер     0/0%\n"
-						"IN %d  Огонь     0/0%\n"
-						"AG %d  Плазма    0/0%\n"
-						"LK %d  Взрвчатка 0/0%\n"
+						"ST %d  Р–РёР·РЅСЊ: %d\n"
+						"PE %d  Р‘СЂРѕРЅСЏ: %d\n"
+						"EN %d РќРѕСЂРјР°Р»СЊРЅРѕ 0/0%\n"
+						"CH %d  Р›Р°Р·РµСЂ     0/0%\n"
+						"IN %d  РћРіРѕРЅСЊ     0/0%\n"
+						"AG %d  РџР»Р°Р·РјР°    0/0%\n"
+						"LK %d  Р’Р·СЂРІС‡Р°С‚РєР° 0/0%\n"
 						"------------------------------------\n"
 						"%s\n"
-						"хз\n"
+						"С…Р·\n"
 						"\n"
 						"------------------------------------\n"
-						"Нет предмета\n"
-						"Только для рации\n"
+						"РќРµС‚ РїСЂРµРґРјРµС‚Р°\n"
+						"РўРѕР»СЊРєРѕ РґР»СЏ СЂР°С†РёРё\n"
 						"\n"
 						"\n"
-						"  Общий вес: 4/250",
+						"  РћР±С‰РёР№ РІРµСЃ: 4/250",
 	lpChosen->name,
 	lpChosen->st[ST_STRENGHT	],lpChosen->st[ST_CURRENT_HP	],
 	lpChosen->st[ST_PERCEPTION	],lpChosen->st[ST_ARMOR_CLASS	],
@@ -822,8 +822,8 @@ void CFEngine::InvDraw()
 
 int CFEngine::InvMouseDown()
 {
-	//hold 0-нигде 1-scrup 2-scrdown 3-ОК 4-main
-	//основной инвентарь 
+	//hold 0-РЅРёРіРґРµ 1-scrup 2-scrdown 3-РћРљ 4-main
+	//РѕСЃРЅРѕРІРЅРѕР№ РёРЅРІРµРЅС‚Р°СЂСЊ 
 	if((cur_x>=InvObl[0]+InvX)&&(cur_y>=InvObl[1]+InvY)&&(cur_x<=InvObl[2]+InvX)&&(cur_y<=InvObl[3]+InvY))
 	{
 		int IB=0;
@@ -842,7 +842,7 @@ int CFEngine::InvMouseDown()
 			cur_hold=inv_pic_b[lpChosen->m_obj->object->p[OBJ_PIC_INV]];
 		return 1;
 	}
-	//слот 1
+	//СЃР»РѕС‚ 1
 	if(cur_x>=InvSlot1[0]+InvX && cur_y>=InvSlot1[1]+InvY && cur_x<=InvSlot1[2]+InvX && cur_y<=InvSlot1[3]+InvY && lpChosen->IsFree())
 	{
 		if(!lpChosen->a_obj->object->p[OBJ_HIDDEN])
@@ -866,7 +866,7 @@ int CFEngine::InvMouseDown()
 			return 1;
 		}
 	}
-	//слот 2
+	//СЃР»РѕС‚ 2
 /*	if((cur_x>=InvSlot2[0]+InvX)&&(cur_y>=InvSlot2[1]+InvY)&&(cur_x<=InvSlot2[2]+InvX)&&(cur_y<=InvSlot2[3]+InvY))
 	{
 		if(lpChosen->a_obj2)
@@ -878,7 +878,7 @@ int CFEngine::InvMouseDown()
 			cur_hold=inv_pic_b[lpChosen->m_obj->object->p[9]];
 		return 1;
 	}*///!@!
-	//слот армор	
+	//СЃР»РѕС‚ Р°СЂРјРѕСЂ	
 	if(cur_x>=InvArmor[0]+InvX && cur_y>=InvArmor[1]+InvY && cur_x<=InvArmor[2]+InvX && cur_y<=InvArmor[3]+InvY && lpChosen->IsFree())
 	{
 		if(!lpChosen->a_obj_arm->object->p[OBJ_HIDDEN])
@@ -911,7 +911,7 @@ int CFEngine::InvMouseUp()
 {
 	if(lpChosen->m_obj)
 	{
-	//слот1
+	//СЃР»РѕС‚1
 		if(cur_x>=InvSlot1[0]+InvX && cur_y>=InvSlot1[1]+InvY && cur_x<=InvSlot1[2]+InvX && cur_y<=InvSlot1[3]+InvY && lpChosen->m_obj->object->type!=OBJ_TYPE_ARMOR && lpChosen->a_obj->object->id<500 && lpChosen->IsFree()) 
 		{
 			lpChosen->a_obj=lpChosen->m_obj;
@@ -928,7 +928,7 @@ int CFEngine::InvMouseUp()
 			Net_SendChangeObject(lpChosen->a_obj->id,1);
 			return 1;
 		}
-/*		//слот2
+/*		//СЃР»РѕС‚2
 		if((cur_x>=InvSlot2[0]+InvX)&&(cur_y>=InvSlot2[1]+InvY)&&(cur_x<=InvSlot2[2]+InvX)&&(cur_y<=InvSlot2[3]+InvY)&&(!lpChosen->m_obj->object->p[2])&&(!lpChosen->a_obj2)) 
 		{
 			lpChosen->a_obj2=lpChosen->m_obj;
@@ -936,7 +936,7 @@ int CFEngine::InvMouseUp()
 			cur_hold=0;
 			return 1;
 		}*///!@!
-	//слот армор
+	//СЃР»РѕС‚ Р°СЂРјРѕСЂ
 		if(cur_x>=InvArmor[0]+InvX && cur_y>=InvArmor[1]+InvY && cur_x<=InvArmor[2]+InvX && cur_y<=InvArmor[3]+InvY && lpChosen->m_obj->object->type==OBJ_TYPE_ARMOR && lpChosen->a_obj_arm->object->id<500 && lpChosen->IsFree()) 
 		{
 			lpChosen->a_obj_arm=lpChosen->m_obj;
@@ -961,8 +961,8 @@ int CFEngine::InvMouseUp()
 			cur_hold=0;
 			return 1;
 		}
-	//инвертарь
-		if(lpChosen->m_obj) //все что нипопало никуда - поподает в инвентарь
+	//РёРЅРІРµСЂС‚Р°СЂСЊ
+		if(lpChosen->m_obj) //РІСЃРµ С‡С‚Рѕ РЅРёРїРѕРїР°Р»Рѕ РЅРёРєСѓРґР° - РїРѕРїРѕРґР°РµС‚ РІ РёРЅРІРµРЅС‚Р°СЂСЊ
 		{
 			lpChosen->obj[lpChosen->m_obj->id]=lpChosen->m_obj;
 			lpChosen->m_obj=NULL;
@@ -1046,7 +1046,7 @@ void CFEngine::IntDraw()
 	else
 		sm.DrawSprite(pic_use[10],IntObject[0]+5,IntObject[1],COLOR_DEFAULT);
 
-	//диодики
+	//РґРёРѕРґРёРєРё
 	if(!lpChosen->IsFree())
 	{
 		sm.DrawSprite(diodeG,IntAP[0],IntAP[1],COLOR_DEFAULT);
@@ -1064,10 +1064,10 @@ void CFEngine::IntDraw()
 		}
 	}
 
-	//дефолтное действие
+	//РґРµС„РѕР»С‚РЅРѕРµ РґРµР№СЃС‚РІРёРµ
 	if(Node_stay_mouse) sm.DrawSprite(Node_stay_mouse,cur_x+22,cur_y+21,COLOR_DEFAULT);
 
-	//мессаги чезена
+	//РјРµСЃСЃР°РіРё С‡РµР·РµРЅР°
 	int max_chosen_mess=0;
 	if(lpChosen->pe[PE_HIDE_MODE]) max_chosen_mess++;
 
@@ -1076,7 +1076,7 @@ void CFEngine::IntDraw()
 
 	sm.Flush();
 
-	//текст мессаг чезена
+	//С‚РµРєСЃС‚ РјРµСЃСЃР°Рі С‡РµР·РµРЅР°
 	int cur_chosen_mess=0;
 	RECT rcm={IntMess[0],IntMess[1],IntMess[2],IntMess[3]};
 
@@ -1087,7 +1087,7 @@ void CFEngine::IntDraw()
 		rcm.top=IntMessY+IntMessStepY*cur_chosen_mess;
 		rcm.bottom=IntMessY+IntMessStepY*cur_chosen_mess+IntMess[3];
 		cur_chosen_mess++;
-		fnt.MyDrawText(rcm,"Скрытен",FT_CENTERX|FT_CENTERY);
+		fnt.MyDrawText(rcm,"РЎРєСЂС‹С‚РµРЅ",FT_CENTERX|FT_CENTERY);
 	}
 
 	//HP, AC
@@ -1105,7 +1105,7 @@ void CFEngine::IntDraw()
 	sprintf(bin_str,"%03d",lpChosen->st[ST_ARMOR_CLASS]);
 	fnt.MyDrawText(rac,bin_str,0,COLOR_DEFAULT,FONT_NUM);
 
-	//мессбох
+	//РјРµСЃСЃР±РѕС…
 	MessBoxDrawText();
 
 	if(edit_mode)
@@ -1227,9 +1227,9 @@ int CFEngine::IntMouseUp()
 		if(curTargetCrit->id>=USERS_START_ID)
 		{
 			if(curTargetCrit==lpChosen)
-				AddMess(COLOR_TEXT_DEFAULT,"Вы разглядываете свою пиписку...");
+				AddMess(COLOR_TEXT_DEFAULT,"Р’С‹ СЂР°Р·РіР»СЏРґС‹РІР°РµС‚Рµ СЃРІРѕСЋ РїРёРїРёСЃРєСѓ...");
 			else
-				AddMess(COLOR_TEXT_DEFAULT,"Это %s.",curTargetCrit->name);
+				AddMess(COLOR_TEXT_DEFAULT,"Р­С‚Рѕ %s.",curTargetCrit->name);
 		}
 		else if(curTargetCrit->id>=NPC_MIN_ID && curTargetCrit->id<=NPC_MAX_ID)
 		{
@@ -1366,11 +1366,11 @@ void CFEngine::ShowLogIn()
 {
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 	lpDevice->BeginScene();
-	//графика
+	//РіСЂР°С„РёРєР°
 	sm.DrawSprite(loginpic,LogX,LogY,COLOR_DEFAULT);
 
 	sm.Flush();
-	//текст
+	//С‚РµРєСЃС‚
 	RECT rlogin	={LogWLogin[0],LogWLogin[1],LogWLogin[2],LogWLogin[3]};
 	RECT rpass	={LogWPass[0] ,LogWPass[1] ,LogWPass[2] ,LogWPass[3] };
 
@@ -1389,14 +1389,14 @@ void CFEngine::ShowLogIn()
 	RECT rlogconn={0,15,MODE_WIDTH,30};
 	switch (state)
 	{
-	case STATE_CONN:		fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: СОЕДИНЕНИЕ"				,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_DROPLINK:	fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: ОБРЫВ СВЯЗИ"			,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_DISCONNECT:	fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: ОТСОЕДИНЕН"				,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_GAME:		fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: В ИГРЕ"					,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_LOGINOK:		fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: АУНТЕФИКАЦИЯ ПРОЙДЕНА"	,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_INIT_NET:	fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: ИНИЦИАЛИЗАЦИЯ СЕТИ"		,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_CONN:		fnt.MyDrawText(rlogconn,"РЎРћРЎРўРћРЇРќРР•: РЎРћР•Р”РРќР•РќРР•"				,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_DROPLINK:	fnt.MyDrawText(rlogconn,"РЎРћРЎРўРћРЇРќРР•: РћР‘Р Р«Р’ РЎР’РЇР—Р"			,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_DISCONNECT:	fnt.MyDrawText(rlogconn,"РЎРћРЎРўРћРЇРќРР•: РћРўРЎРћР•Р”РРќР•Рќ"				,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_GAME:		fnt.MyDrawText(rlogconn,"РЎРћРЎРўРћРЇРќРР•: Р’ РР“Р Р•"					,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_LOGINOK:		fnt.MyDrawText(rlogconn,"РЎРћРЎРўРћРЇРќРР•: РђРЈРќРўР•Р¤РРљРђР¦РРЇ РџР РћР™Р”Р•РќРђ"	,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_INIT_NET:	fnt.MyDrawText(rlogconn,"РЎРћРЎРўРћРЇРќРР•: РРќРР¦РРђР›РР—РђР¦РРЇ РЎР•РўР"		,0,D3DCOLOR_XRGB(0,0,255)); break;
 	}
-	//курсор
+	//РєСѓСЂСЃРѕСЂ
 	SpriteInfo* si=sm.GetSpriteInfo(cur);
 	int curx=cur_x-(si->w >> 1)+si->offs_x;
 	int cury=cur_y-si->h+si->offs_y;
@@ -1466,13 +1466,13 @@ void CFEngine::LogInput()
 			if(cur_x>=LogWPass[0] && cur_y>=LogWPass[1] && cur_x<=LogWPass[2] && cur_y<=LogWPass[3]) LogFocus=2;
 			if(cur_x>=LogBOk[0] && cur_y>=LogBOk[1] && cur_x<=LogBOk[2] && cur_y<=LogBOk[3])
 			{
-				//прверка на длинну если < 4 символов то ничего не произойдет
+				//РїСЂРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ РµСЃР»Рё < 4 СЃРёРјРІРѕР»РѕРІ С‚Рѕ РЅРёС‡РµРіРѕ РЅРµ РїСЂРѕРёР·РѕР№РґРµС‚
 				if(opt_login[3]==NULL) { LogMsg=1; return; }
 				if(opt_pass[3]==NULL) { LogMsg=2; return; }
-				//сохраняем логин пасс
+				//СЃРѕС…СЂР°РЅСЏРµРј Р»РѕРіРёРЅ РїР°СЃСЃ
 				WritePrivateProfileString("LOGIN","login",opt_login,CFG_FILE);
 				WritePrivateProfileString("LOGIN","pass",opt_pass,CFG_FILE);
-				//соединяемся с сервером
+				//СЃРѕРµРґРёРЅСЏРµРјСЃСЏ СЃ СЃРµСЂРІРµСЂРѕРј
 				LogMsg=7;
 				state=STATE_INIT_NET;
 
@@ -1498,11 +1498,11 @@ void CFEngine::ShowRegistration()
 {
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 	lpDevice->BeginScene();
-	//графика
+	//РіСЂР°С„РёРєР°
 	sm.DrawSprite(registpic,RegX,RegY,COLOR_DEFAULT);
 
 	sm.Flush();
-	//текст
+	//С‚РµРєСЃС‚
 //	RECT rwall={RegWAllS[0],RegWAllS[1],RegWAllS[2],RegWAllS[3]};
 	RECT rws={RegWS[0],RegWS[1],RegWS[2],RegWS[3]};
 	RECT rwp={RegWP[0],RegWP[1],RegWP[2],RegWP[3]};
@@ -1564,7 +1564,7 @@ void CFEngine::ShowRegistration()
 
 	RECT rlogmess={0,0,MODE_WIDTH,15};
 	fnt.MyDrawText(rlogmess,LoginMess[LogMsg],0,D3DCOLOR_XRGB(255,0,0));
-	//курсор
+	//РєСѓСЂСЃРѕСЂ
 	CurDraw();
 
 	sm.Flush();
@@ -1636,7 +1636,7 @@ void CFEngine::RegInput()
 		DI_ONMOUSE(DIMOFS_X, cur_x+=didod[i].dwData*opt_mouse_speed );
 		DI_ONMOUSE(DIMOFS_Y, cur_y+=didod[i].dwData*opt_mouse_speed );
 
-	//левая кнопка мыши
+	//Р»РµРІР°СЏ РєРЅРѕРїРєР° РјС‹С€Рё
 		DI_ONDOWN(DIMOFS_BUTTON0,
 			RegFocus=0;
 			//login
@@ -1686,7 +1686,7 @@ void CFEngine::RegInput()
 			if(cur_x>=RegBBack[0] && cur_y>=RegBBack[1] && cur_x<=RegBBack[2] && cur_y<=RegBBack[3]) SetScreen(SCREEN_LOGIN);
 		);
 
-	//правая кнопка мыши
+	//РїСЂР°РІР°СЏ РєРЅРѕРїРєР° РјС‹С€Рё
 		DI_ONDOWN(DIMOFS_BUTTON1,
 			RegFocus=0;
 			//S
@@ -1732,7 +1732,7 @@ void CFEngine::DlgDraw()
 	sm.Flush();
 
 	RECT rmt={DlgText[0]+DlgX,DlgText[1]+DlgY,DlgText[2]+DlgX,DlgText[3]+DlgY};
-	fnt.MyDrawText(rmt,text_dialog,0,D3DCOLOR_XRGB(0,200,200)); //текст нпц
+	fnt.MyDrawText(rmt,text_dialog,0,D3DCOLOR_XRGB(0,200,200)); //С‚РµРєСЃС‚ РЅРїС†
 
 	RECT rat={0,0,0,0};
 	for(int ddt=0; ddt<all_answers; ddt++)
@@ -1746,19 +1746,19 @@ void CFEngine::DlgDraw()
 		{
 			if(ddt==DlgCurAnsw)
 			{
-				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,0,220)); //выбор
+				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,0,220)); //РІС‹Р±РѕСЂ
 			}
 			else
-				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,150,0)); //обычный
+				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,150,0)); //РѕР±С‹С‡РЅС‹Р№
 		}
 		else
 		{
 			if(ddt==DlgCurAnsw)
 			{
-				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,240,0)); //подсветка
+				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,240,0)); //РїРѕРґСЃРІРµС‚РєР°
 			}
 			else
-				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,150,0)); //обычный
+				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,150,0)); //РѕР±С‹С‡РЅС‹Р№
 		}
 	}
 }
@@ -1832,15 +1832,15 @@ void CFEngine::DlgMouseUp()
 
 int CFEngine::LoadDialogFromFile(CrID id_npc, DWORD id_dialog, char* dialog)
 {
-//определяем путь
+//РѕРїСЂРµРґРµР»СЏРµРј РїСѓС‚СЊ
 	char path_text[64];
 	sprintf(path_text,"%s%d.dlg",PATH_TEXT_FILES,id_npc);
-//читаем тексты
+//С‡РёС‚Р°РµРј С‚РµРєСЃС‚С‹
 	char key1[24];
 	sprintf(key1,"%d",id_dialog);
 	GetPrivateProfileString("dialogs",key1,"Err",dialog,MAX_DIALOG_TEXT,path_text);
 	if(!stricmp(dialog,"Err")) return 0;
-//считаем кол-во вариантов
+//СЃС‡РёС‚Р°РµРј РєРѕР»-РІРѕ РІР°СЂРёР°РЅС‚РѕРІ
 	int all_texts=0;
 	int find_char=0;
 	for(find_char=0; find_char<strlen(dialog); find_char++)
@@ -1850,19 +1850,19 @@ int CFEngine::LoadDialogFromFile(CrID id_npc, DWORD id_dialog, char* dialog)
 			find_char++;
 		}
 //	if(!all_texts) return 1;
-//выбираем рандомный текст
+//РІС‹Р±РёСЂР°РµРј СЂР°РЅРґРѕРјРЅС‹Р№ С‚РµРєСЃС‚
 	int find_text=random((all_texts+1));
-//создаем временный диалог
+//СЃРѕР·РґР°РµРј РІСЂРµРјРµРЅРЅС‹Р№ РґРёР°Р»РѕРі
 	char temp_dialog[MAX_DIALOG_TEXT+1];
 	strcpy(temp_dialog,dialog);
-//форматируем текст
+//С„РѕСЂРјР°С‚РёСЂСѓРµРј С‚РµРєСЃС‚
 	/*char* text_f;
 	bool none=true;
 	while(void)
 	{
 		if((text_f=strstr(temp_dialog,"@pname"))) {  }
 	}*/
-//выдергиваем текст
+//РІС‹РґРµСЂРіРёРІР°РµРј С‚РµРєСЃС‚
 	int cur_text=0;
 	int cur_char=0;
 	for(find_char=0; find_char<strlen(temp_dialog); find_char++)
@@ -1963,7 +1963,7 @@ void CFEngine::LMenuTryCreate()
 void CFEngine::LMenuDraw()
 {
 	if(!IsLMenu()) return;
-	if(!LMenu_nodes) { WriteLog("!!!WARNING!!! Отрисовка ЛМеню - пустой указатель\n"); return; }
+	if(!LMenu_nodes) { WriteLog("!!!WARNING!!! РћС‚СЂРёСЃРѕРІРєР° Р›РњРµРЅСЋ - РїСѓСЃС‚РѕР№ СѓРєР°Р·Р°С‚РµР»СЊ\n"); return; }
 
 	int count_node=0;
 	for(LMenu_list::iterator it_l=LMenu_nodes->begin(); it_l!=LMenu_nodes->end(); it_l++)
@@ -2007,7 +2007,7 @@ void CFEngine::LMenuDraw()
 				sm.DrawSprite(lm_gmtake_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			break;
 		default:
-			WriteLog("!!!WORNING!!! Отрисовка ЛМеню - неизвестное состояние меню\n");
+			WriteLog("!!!WORNING!!! РћС‚СЂРёСЃРѕРІРєР° Р›РњРµРЅСЋ - РЅРµРёР·РІРµСЃС‚РЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РјРµРЅСЋ\n");
 			break;
 		}
 
@@ -2017,7 +2017,7 @@ void CFEngine::LMenuDraw()
 
 void CFEngine::LMenuMouseMove()
 {
-	if(!LMenu_nodes) { WriteLog("!!!WARNING!!! Движение ЛМеню - невалидный указатель\n"); return; }
+	if(!LMenu_nodes) { WriteLog("!!!WARNING!!! Р”РІРёР¶РµРЅРёРµ Р›РњРµРЅСЋ - РЅРµРІР°Р»РёРґРЅС‹Р№ СѓРєР°Р·Р°С‚РµР»СЊ\n"); return; }
 
 	LMenu_cur_node=(cur_y-LMenu_cur_y)/LMenu_node_height;
 	if(LMenu_cur_node<0) LMenu_cur_node=0;
@@ -2043,9 +2043,9 @@ void CFEngine::LMenuMouseUp()
 			{
 			case LMENU_NODE_LOOK:
 				if(curTargetCrit==lpChosen)
-					AddMess(COLOR_TEXT_DEFAULT,"Вы разглядываете свою пиписку...");
+					AddMess(COLOR_TEXT_DEFAULT,"Р’С‹ СЂР°Р·РіР»СЏРґС‹РІР°РµС‚Рµ СЃРІРѕСЋ РїРёРїРёСЃРєСѓ...");
 				else
-					AddMess(COLOR_TEXT_DEFAULT,"Это %s.",curTargetCrit->name);
+					AddMess(COLOR_TEXT_DEFAULT,"Р­С‚Рѕ %s.",curTargetCrit->name);
 				break;
 			case LMENU_NODE_GMFOLLOW:
 				Net_SendRuleGlobal(GM_RULE_COMMAND_ADDPREPCRIT,curTargetCrit->id);
@@ -2063,7 +2063,7 @@ void CFEngine::LMenuMouseUp()
 			switch (*it_l)
 			{
 			case LMENU_NODE_LOOK:
-				AddMess(COLOR_TEXT_DEFAULT,"Вы разглядываете %s.",curTargetCrit->cases[2]);
+				AddMess(COLOR_TEXT_DEFAULT,"Р’С‹ СЂР°Р·РіР»СЏРґС‹РІР°РµС‚Рµ %s.",curTargetCrit->cases[2]);
 				break;
 			case LMENU_NODE_TALK:
 				tosendTargetCrit=curTargetCrit;
@@ -2188,7 +2188,7 @@ void CFEngine::SetLMenu(BYTE set_lmenu)
 	case LMENU_NPC:
 		if(!curTargetCrit)
 		{
-			WriteLog("Ошибка - SetLMenu - Player or NPC - передача пустого указателя!\n");
+			WriteLog("РћС€РёР±РєР° - SetLMenu - Player or NPC - РїРµСЂРµРґР°С‡Р° РїСѓСЃС‚РѕРіРѕ СѓРєР°Р·Р°С‚РµР»СЏ!\n");
 			SetLMenu(LMENU_OFF);
 			return;
 		}
@@ -2214,7 +2214,7 @@ void CFEngine::SetLMenu(BYTE set_lmenu)
 	case LMENU_ITEM:
 		if(!curTargetObj)
 		{
-			WriteLog("Ошибка - SetLMenu - Item - передача пустого указателя!\n");
+			WriteLog("РћС€РёР±РєР° - SetLMenu - Item - РїРµСЂРµРґР°С‡Р° РїСѓСЃС‚РѕРіРѕ СѓРєР°Р·Р°С‚РµР»СЏ!\n");
 			SetLMenu(LMENU_OFF);
 			return;
 		}
@@ -2243,64 +2243,64 @@ void CFEngine::SetLMenu(BYTE set_lmenu)
 
 void CFEngine::CreateStringsParamsMaps()
 {
-	stats_str_map.insert(params_str_map::value_type(ST_STRENGHT,			"Сила"));
-	stats_str_map.insert(params_str_map::value_type(ST_PERCEPTION,			"Восприятие"));
-	stats_str_map.insert(params_str_map::value_type(ST_ENDURANCE,			"Выносливость"));
-	stats_str_map.insert(params_str_map::value_type(ST_CHARISMA,			"Обояние"));
-	stats_str_map.insert(params_str_map::value_type(ST_INTELLECT,			"Ум"));
-	stats_str_map.insert(params_str_map::value_type(ST_AGILITY,				"Координация"));
-	stats_str_map.insert(params_str_map::value_type(ST_LUCK,				"Удача"));
-	stats_str_map.insert(params_str_map::value_type(ST_MAX_LIFE,			"Максимальные баллы жизней"));
-	stats_str_map.insert(params_str_map::value_type(ST_MAX_COND,			"Максимальная кондиция"));
-	stats_str_map.insert(params_str_map::value_type(ST_ARMOR_CLASS,			"Класс брони"));
-	stats_str_map.insert(params_str_map::value_type(ST_MELEE_DAMAGE,		"Вред невооруженный"));
-	stats_str_map.insert(params_str_map::value_type(ST_WEAPON_DAMAGE,		"Вред оружием"));
-	stats_str_map.insert(params_str_map::value_type(ST_CARRY_WEIGHT,		"Максимальный груз"));
-	stats_str_map.insert(params_str_map::value_type(ST_SEQUENCE,			"Реакция"));
-	stats_str_map.insert(params_str_map::value_type(ST_HEALING_RATE,		"Лечение"));
-	stats_str_map.insert(params_str_map::value_type(ST_CRITICAL_CHANCE,		"Критический шанс"));
-	stats_str_map.insert(params_str_map::value_type(ST_MAX_CRITICAL,		"Максимальный критический шанс"));
-	stats_str_map.insert(params_str_map::value_type(ST_INGURE_ABSORB,		"Порог ранения"));
-	stats_str_map.insert(params_str_map::value_type(ST_LASER_ABSORB,		"Порог повреждения лазером"));
-	stats_str_map.insert(params_str_map::value_type(ST_FIRE_ABSORB,			"Порог повреждения огнем"));
-	stats_str_map.insert(params_str_map::value_type(ST_PLASMA_ABSORB,		"Порог повреждения плазмой"));
-	stats_str_map.insert(params_str_map::value_type(ST_ELECTRO_ABSORB,		"Порог повреждения электричеством"));
-	stats_str_map.insert(params_str_map::value_type(ST_EMP_ABSORB,			"Порог повреждения ЕМП"));
-	stats_str_map.insert(params_str_map::value_type(ST_BLAST_ABSORB,		"Порог повреждения при взрыве"));
-	stats_str_map.insert(params_str_map::value_type(ST_INGURE_RESIST,		"Сопротевляемость ранению"));
-	stats_str_map.insert(params_str_map::value_type(ST_LASER_RESIST,		"Сопротивляемость ранению лазером"));
-	stats_str_map.insert(params_str_map::value_type(ST_FIRE_RESIST,			"Сопротивляемость ранению огнем"));
-	stats_str_map.insert(params_str_map::value_type(ST_PLASMA_RESIST,		"Сопротивляемость ранению плазмой"));
-	stats_str_map.insert(params_str_map::value_type(ST_ELECTRO_RESIST,		"Сопротивляемость ранению электричеством"));
-	stats_str_map.insert(params_str_map::value_type(ST_EMP_RESIST,			"Сопротивляемость ранению ЕМП"));
-	stats_str_map.insert(params_str_map::value_type(ST_BLAST_RESIST,		"Сопротивляемость ранению при взрыве"));
-	stats_str_map.insert(params_str_map::value_type(ST_RADIATION_RESISTANCE,"Сопротивляемость радиации"));
-	stats_str_map.insert(params_str_map::value_type(ST_POISON_RESISTANCE,	"Сопротивляемость ядам"));
-	stats_str_map.insert(params_str_map::value_type(ST_AGE,					"Возраст"));
-	stats_str_map.insert(params_str_map::value_type(ST_GENDER,				"Пол"));
-	stats_str_map.insert(params_str_map::value_type(ST_CURRENT_HP,			"Текущие баллы жизни"));
-	stats_str_map.insert(params_str_map::value_type(ST_POISONING_LEVEL,		"Текужий уровень ядов"));
-	stats_str_map.insert(params_str_map::value_type(ST_RADIATION_LEVEL,		"Текущий уровень радиации"));
-	stats_str_map.insert(params_str_map::value_type(ST_CURRENT_STANDART,	"Текущая кондиция"));
+	stats_str_map.insert(params_str_map::value_type(ST_STRENGHT,			"РЎРёР»Р°"));
+	stats_str_map.insert(params_str_map::value_type(ST_PERCEPTION,			"Р’РѕСЃРїСЂРёСЏС‚РёРµ"));
+	stats_str_map.insert(params_str_map::value_type(ST_ENDURANCE,			"Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ"));
+	stats_str_map.insert(params_str_map::value_type(ST_CHARISMA,			"РћР±РѕСЏРЅРёРµ"));
+	stats_str_map.insert(params_str_map::value_type(ST_INTELLECT,			"РЈРј"));
+	stats_str_map.insert(params_str_map::value_type(ST_AGILITY,				"РљРѕРѕСЂРґРёРЅР°С†РёСЏ"));
+	stats_str_map.insert(params_str_map::value_type(ST_LUCK,				"РЈРґР°С‡Р°"));
+	stats_str_map.insert(params_str_map::value_type(ST_MAX_LIFE,			"РњР°РєСЃРёРјР°Р»СЊРЅС‹Рµ Р±Р°Р»Р»С‹ Р¶РёР·РЅРµР№"));
+	stats_str_map.insert(params_str_map::value_type(ST_MAX_COND,			"РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РєРѕРЅРґРёС†РёСЏ"));
+	stats_str_map.insert(params_str_map::value_type(ST_ARMOR_CLASS,			"РљР»Р°СЃСЃ Р±СЂРѕРЅРё"));
+	stats_str_map.insert(params_str_map::value_type(ST_MELEE_DAMAGE,		"Р’СЂРµРґ РЅРµРІРѕРѕСЂСѓР¶РµРЅРЅС‹Р№"));
+	stats_str_map.insert(params_str_map::value_type(ST_WEAPON_DAMAGE,		"Р’СЂРµРґ РѕСЂСѓР¶РёРµРј"));
+	stats_str_map.insert(params_str_map::value_type(ST_CARRY_WEIGHT,		"РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РіСЂСѓР·"));
+	stats_str_map.insert(params_str_map::value_type(ST_SEQUENCE,			"Р РµР°РєС†РёСЏ"));
+	stats_str_map.insert(params_str_map::value_type(ST_HEALING_RATE,		"Р›РµС‡РµРЅРёРµ"));
+	stats_str_map.insert(params_str_map::value_type(ST_CRITICAL_CHANCE,		"РљСЂРёС‚РёС‡РµСЃРєРёР№ С€Р°РЅСЃ"));
+	stats_str_map.insert(params_str_map::value_type(ST_MAX_CRITICAL,		"РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РєСЂРёС‚РёС‡РµСЃРєРёР№ С€Р°РЅСЃ"));
+	stats_str_map.insert(params_str_map::value_type(ST_INGURE_ABSORB,		"РџРѕСЂРѕРі СЂР°РЅРµРЅРёСЏ"));
+	stats_str_map.insert(params_str_map::value_type(ST_LASER_ABSORB,		"РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ Р»Р°Р·РµСЂРѕРј"));
+	stats_str_map.insert(params_str_map::value_type(ST_FIRE_ABSORB,			"РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕРіРЅРµРј"));
+	stats_str_map.insert(params_str_map::value_type(ST_PLASMA_ABSORB,		"РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ РїР»Р°Р·РјРѕР№"));
+	stats_str_map.insert(params_str_map::value_type(ST_ELECTRO_ABSORB,		"РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ СЌР»РµРєС‚СЂРёС‡РµСЃС‚РІРѕРј"));
+	stats_str_map.insert(params_str_map::value_type(ST_EMP_ABSORB,			"РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ Р•РњРџ"));
+	stats_str_map.insert(params_str_map::value_type(ST_BLAST_ABSORB,		"РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ РїСЂРё РІР·СЂС‹РІРµ"));
+	stats_str_map.insert(params_str_map::value_type(ST_INGURE_RESIST,		"РЎРѕРїСЂРѕС‚РµРІР»СЏРµРјРѕСЃС‚СЊ СЂР°РЅРµРЅРёСЋ"));
+	stats_str_map.insert(params_str_map::value_type(ST_LASER_RESIST,		"РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ СЂР°РЅРµРЅРёСЋ Р»Р°Р·РµСЂРѕРј"));
+	stats_str_map.insert(params_str_map::value_type(ST_FIRE_RESIST,			"РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ СЂР°РЅРµРЅРёСЋ РѕРіРЅРµРј"));
+	stats_str_map.insert(params_str_map::value_type(ST_PLASMA_RESIST,		"РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ СЂР°РЅРµРЅРёСЋ РїР»Р°Р·РјРѕР№"));
+	stats_str_map.insert(params_str_map::value_type(ST_ELECTRO_RESIST,		"РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ СЂР°РЅРµРЅРёСЋ СЌР»РµРєС‚СЂРёС‡РµСЃС‚РІРѕРј"));
+	stats_str_map.insert(params_str_map::value_type(ST_EMP_RESIST,			"РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ СЂР°РЅРµРЅРёСЋ Р•РњРџ"));
+	stats_str_map.insert(params_str_map::value_type(ST_BLAST_RESIST,		"РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ СЂР°РЅРµРЅРёСЋ РїСЂРё РІР·СЂС‹РІРµ"));
+	stats_str_map.insert(params_str_map::value_type(ST_RADIATION_RESISTANCE,"РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ СЂР°РґРёР°С†РёРё"));
+	stats_str_map.insert(params_str_map::value_type(ST_POISON_RESISTANCE,	"РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ СЏРґР°Рј"));
+	stats_str_map.insert(params_str_map::value_type(ST_AGE,					"Р’РѕР·СЂР°СЃС‚"));
+	stats_str_map.insert(params_str_map::value_type(ST_GENDER,				"РџРѕР»"));
+	stats_str_map.insert(params_str_map::value_type(ST_CURRENT_HP,			"РўРµРєСѓС‰РёРµ Р±Р°Р»Р»С‹ Р¶РёР·РЅРё"));
+	stats_str_map.insert(params_str_map::value_type(ST_POISONING_LEVEL,		"РўРµРєСѓР¶РёР№ СѓСЂРѕРІРµРЅСЊ СЏРґРѕРІ"));
+	stats_str_map.insert(params_str_map::value_type(ST_RADIATION_LEVEL,		"РўРµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ СЂР°РґРёР°С†РёРё"));
+	stats_str_map.insert(params_str_map::value_type(ST_CURRENT_STANDART,	"РўРµРєСѓС‰Р°СЏ РєРѕРЅРґРёС†РёСЏ"));
 
-	skills_str_map.insert(params_str_map::value_type(SK_SMALL_GUNS,			"Малое оружие"));
-	skills_str_map.insert(params_str_map::value_type(SK_BIG_GUNS,			"Большое оружие"));
-	skills_str_map.insert(params_str_map::value_type(SK_ENERGY_WEAPONS,		"Энергитическое оружие"));
-	skills_str_map.insert(params_str_map::value_type(SK_UNARMED,			"Безоружный"));
-	skills_str_map.insert(params_str_map::value_type(SK_MELEE_WEAPONS,		"Холодное оружие"));
-	skills_str_map.insert(params_str_map::value_type(SK_THROWING,			"Метательное"));
-	skills_str_map.insert(params_str_map::value_type(SK_FIRST_AID,			"Первая помощь"));
-	skills_str_map.insert(params_str_map::value_type(SK_DOCTOR,				"Доктор"));
-	skills_str_map.insert(params_str_map::value_type(SK_SNEAK,				"Скрытность"));
-	skills_str_map.insert(params_str_map::value_type(SK_LOCKPICK,			"Взломщик"));
-	skills_str_map.insert(params_str_map::value_type(SK_STEAL,				"Воровство"));
-	skills_str_map.insert(params_str_map::value_type(SK_TRAPS,				"Ловушки"));
-	skills_str_map.insert(params_str_map::value_type(SK_SCIENCE,			"Наука"));
-	skills_str_map.insert(params_str_map::value_type(SK_REPAIR,				"Починка"));
-	skills_str_map.insert(params_str_map::value_type(SK_SPEECH,				"Речь"));
-	skills_str_map.insert(params_str_map::value_type(SK_BARTER,				"Бартер"));
-	skills_str_map.insert(params_str_map::value_type(SK_GAMBLING,			"Игра"));
-	skills_str_map.insert(params_str_map::value_type(SK_OUTDOORSMAN,		"Скаут"));
+	skills_str_map.insert(params_str_map::value_type(SK_SMALL_GUNS,			"РњР°Р»РѕРµ РѕСЂСѓР¶РёРµ"));
+	skills_str_map.insert(params_str_map::value_type(SK_BIG_GUNS,			"Р‘РѕР»СЊС€РѕРµ РѕСЂСѓР¶РёРµ"));
+	skills_str_map.insert(params_str_map::value_type(SK_ENERGY_WEAPONS,		"Р­РЅРµСЂРіРёС‚РёС‡РµСЃРєРѕРµ РѕСЂСѓР¶РёРµ"));
+	skills_str_map.insert(params_str_map::value_type(SK_UNARMED,			"Р‘РµР·РѕСЂСѓР¶РЅС‹Р№"));
+	skills_str_map.insert(params_str_map::value_type(SK_MELEE_WEAPONS,		"РҐРѕР»РѕРґРЅРѕРµ РѕСЂСѓР¶РёРµ"));
+	skills_str_map.insert(params_str_map::value_type(SK_THROWING,			"РњРµС‚Р°С‚РµР»СЊРЅРѕРµ"));
+	skills_str_map.insert(params_str_map::value_type(SK_FIRST_AID,			"РџРµСЂРІР°СЏ РїРѕРјРѕС‰СЊ"));
+	skills_str_map.insert(params_str_map::value_type(SK_DOCTOR,				"Р”РѕРєС‚РѕСЂ"));
+	skills_str_map.insert(params_str_map::value_type(SK_SNEAK,				"РЎРєСЂС‹С‚РЅРѕСЃС‚СЊ"));
+	skills_str_map.insert(params_str_map::value_type(SK_LOCKPICK,			"Р’Р·Р»РѕРјС‰РёРє"));
+	skills_str_map.insert(params_str_map::value_type(SK_STEAL,				"Р’РѕСЂРѕРІСЃС‚РІРѕ"));
+	skills_str_map.insert(params_str_map::value_type(SK_TRAPS,				"Р›РѕРІСѓС€РєРё"));
+	skills_str_map.insert(params_str_map::value_type(SK_SCIENCE,			"РќР°СѓРєР°"));
+	skills_str_map.insert(params_str_map::value_type(SK_REPAIR,				"РџРѕС‡РёРЅРєР°"));
+	skills_str_map.insert(params_str_map::value_type(SK_SPEECH,				"Р РµС‡СЊ"));
+	skills_str_map.insert(params_str_map::value_type(SK_BARTER,				"Р‘Р°СЂС‚РµСЂ"));
+	skills_str_map.insert(params_str_map::value_type(SK_GAMBLING,			"РРіСЂР°"));
+	skills_str_map.insert(params_str_map::value_type(SK_OUTDOORSMAN,		"РЎРєР°СѓС‚"));
 
 	perks_str_map.insert(params_str_map::value_type(PE_FAST_METABOLISM,		"1"));
 	perks_str_map.insert(params_str_map::value_type(PE_BRUISER,				"1"));
@@ -3006,18 +3006,18 @@ void CFEngine::GmapDraw()
 		char gmstr[2048];
 		char* str_speed[3]=
 		{
-			{"Осторожный"},
-			{"Нормальный"},
-			{"Быстрый"}
+			{"РћСЃС‚РѕСЂРѕР¶РЅС‹Р№"},
+			{"РќРѕСЂРјР°Р»СЊРЅС‹Р№"},
+			{"Р‘С‹СЃС‚СЂС‹Р№"}
 		};
 
-		sprintf(gmstr,"Текущие координаты:\n"
+		sprintf(gmstr,"РўРµРєСѓС‰РёРµ РєРѕРѕСЂРґРёРЅР°С‚С‹:\n"
 					"%d,%d\n"
-					"Направляетесь в:\n"
+					"РќР°РїСЂР°РІР»СЏРµС‚РµСЃСЊ РІ:\n"
 					"%d,%d\n"
-					"Тип передвижения:\n"
+					"РўРёРї РїРµСЂРµРґРІРёР¶РµРЅРёСЏ:\n"
 					"%s\n"
-					"Группа:%d чел.\n\n"
+					"Р“СЂСѓРїРїР°:%d С‡РµР».\n\n"
 					"fps:%d(sleep:%d)",
 					GmapGroupX,GmapGroupY,GmapMoveX,GmapMoveY,
 					str_speed[GmapSpeed],

@@ -40,7 +40,7 @@ int CFileMngr::Init()
 	master_dat[0]=0;
 	if(!opt_masterpath[0])
 	{
-		ErrMsg("CFileMngr Init","Не найден файл %s или в нем нет раздела master_dat",CFG_FILE);
+		ErrMsg("CFileMngr Init","РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» %s РёР»Рё РІ РЅРµРј РЅРµС‚ СЂР°Р·РґРµР»Р° master_dat",CFG_FILE);
 		return 0;
 	}
 	if(opt_masterpath[0]=='.') strcat(master_dat,".");
@@ -51,7 +51,7 @@ int CFileMngr::Init()
 		lpDAT=new TDatFile(master_dat);	
 		if(lpDAT->ErrorType==ERR_CANNOT_OPEN_FILE)
 		{
-			ErrMsg("CFileMngr Init>","файл %s не найден",master_dat);
+			ErrMsg("CFileMngr Init>","С„Р°Р№Р» %s РЅРµ РЅР°Р№РґРµРЅ",master_dat);
 			return 0;
 		}
 	}
@@ -63,7 +63,7 @@ int CFileMngr::Init()
 	crit_dat[0]=0;
 	if(!opt_critterpath[0])
 	{
-		ErrMsg("CFileMngr Init","Не найден файл %s или в нем нет раздела critter_dat",CFG_FILE);
+		ErrMsg("CFileMngr Init","РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» %s РёР»Рё РІ РЅРµРј РЅРµС‚ СЂР°Р·РґРµР»Р° critter_dat",CFG_FILE);
 		return 0;
 	}
 	if(opt_critterpath[0]=='.') strcat(crit_dat,".");
@@ -74,7 +74,7 @@ int CFileMngr::Init()
 		lpDATcr=new TDatFile(crit_dat);		
 		if(lpDATcr->ErrorType==ERR_CANNOT_OPEN_FILE)
 		{
-			ErrMsg("CFileMngr Init>","файл %s не найден",crit_dat);
+			ErrMsg("CFileMngr Init>","С„Р°Р№Р» %s РЅРµ РЅР°Р№РґРµРЅ",crit_dat);
 			return 0;
 		}
 	}
@@ -85,7 +85,7 @@ int CFileMngr::Init()
 
 	if(!opt_fopath[0])
 	{
-		ErrMsg("CFileMngr Init","Не найден файл %s или в нем нет раздела fonline_dat",CFG_FILE);
+		ErrMsg("CFileMngr Init","РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» %s РёР»Рё РІ РЅРµРј РЅРµС‚ СЂР°Р·РґРµР»Р° fonline_dat",CFG_FILE);
 		return 0;
 	}
 	strcpy(fo_dat,opt_fopath);
@@ -127,7 +127,7 @@ int CFileMngr::LoadFile(char* fname, int PathType)
 {
 		if(!crtd)
 		{
-			ErrMsg("FileMngr LoadFile","FileMngr не был иницилазирован до загрузки файла %s",fname);
+			ErrMsg("FileMngr LoadFile","FileMngr РЅРµ Р±С‹Р» РёРЅРёС†РёР»Р°Р·РёСЂРѕРІР°РЅ РґРѕ Р·Р°РіСЂСѓР·РєРё С„Р°Р№Р»Р° %s",fname);
 			return 0;
 		}
 		UnloadFile();
@@ -141,7 +141,7 @@ int CFileMngr::LoadFile(char* fname, int PathType)
 		strcpy(path,fo_dat);
 		strcat(path,pfname);
 	
-		//данные fo
+		//РґР°РЅРЅС‹Рµ fo
 		WIN32_FIND_DATA fd;
 		HANDLE f=FindFirstFile(path,&fd);
 		if(f!=INVALID_HANDLE_VALUE)
@@ -159,7 +159,7 @@ int CFileMngr::LoadFile(char* fname, int PathType)
 		{
 			if(!lpDATcr)
 			{
-				//попрбуем загрузить из critter_dat если это каталог
+				//РїРѕРїСЂР±СѓРµРј Р·Р°РіСЂСѓР·РёС‚СЊ РёР· critter_dat РµСЃР»Рё СЌС‚Рѕ РєР°С‚Р°Р»РѕРі
 				strcpy(path,crit_dat);
 				strcat(path,pfname);
 		
@@ -169,7 +169,7 @@ int CFileMngr::LoadFile(char* fname, int PathType)
 					LoadSimple(hFile);
 					return 1;
 				}
-				else return 0; //а вот не вышло
+				else return 0; //Р° РІРѕС‚ РЅРµ РІС‹С€Р»Рѕ
 			}	
 
 			if(lpDATcr->DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
@@ -192,7 +192,7 @@ int CFileMngr::LoadFile(char* fname, int PathType)
 		
 		if(!lpDAT)
 		{
-			//попрбуем загрузить из master_dat если это каталог
+			//РїРѕРїСЂР±СѓРµРј Р·Р°РіСЂСѓР·РёС‚СЊ РёР· master_dat РµСЃР»Рё СЌС‚Рѕ РєР°С‚Р°Р»РѕРі
 			strcpy(path,master_dat);
 			strcat(path,pfname);
 	
@@ -202,7 +202,7 @@ int CFileMngr::LoadFile(char* fname, int PathType)
 				LoadSimple(hFile);
 				return 1;
 			}
-			else return 0; //а вот не вышло
+			else return 0; //Р° РІРѕС‚ РЅРµ РІС‹С€Р»Рѕ
 		}
 
 		if(lpDAT->DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
@@ -221,7 +221,7 @@ int CFileMngr::LoadFile(char* fname, int PathType)
 			return 1;
 		}
 
-		WriteLog("FileMngr - Файл %s не найден\n",pfname);//!Cvet
+		WriteLog("FileMngr - Р¤Р°Р№Р» %s РЅРµ РЅР°Р№РґРµРЅ\n",pfname);//!Cvet
 		return 0;
 }
 
@@ -329,7 +329,7 @@ DWORD CFileMngr::GetRDWord() //!Cvet
 	return res;
 }
 
-int CFileMngr::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet полный путь к файлу
+int CFileMngr::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ
 {
 	get_path[0]=0;
 	strcpy(get_path,fo_dat);
@@ -341,7 +341,7 @@ int CFileMngr::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet по
 
 	if(f!=INVALID_HANDLE_VALUE) return 1;
 
-	WriteLog("Файл:|%s|\n",get_path);
+	WriteLog("Р¤Р°Р№Р»:|%s|\n",get_path);
 
 	return 0;
 }

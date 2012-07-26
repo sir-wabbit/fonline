@@ -72,15 +72,15 @@ int CFEngine::Init(HWND _hWnd)
 
 	InitKeyb();
 
-	WriteLog("Создаю Direct3D.....");
+	WriteLog("РЎРѕР·РґР°СЋ Direct3D.....");
 	lpD3D=Direct3DCreate8(D3D_SDK_VERSION);
 	if(!lpD3D){
-		ErrMsg("Engine Init","Не могу создать Direct3D.\nУбедитесь, что установлен DirectX версии 8.1 и выше");
+		ErrMsg("Engine Init","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ Direct3D.\nРЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ СѓСЃС‚Р°РЅРѕРІР»РµРЅ DirectX РІРµСЂСЃРёРё 8.1 Рё РІС‹С€Рµ");
 		return 0;
 	}
 	WriteLog("OK\n");
 
-	WriteLog("параметры режима.....");
+	WriteLog("РїР°СЂР°РјРµС‚СЂС‹ СЂРµР¶РёРјР°.....");
 	D3DDISPLAYMODE d3ddm;
 	hr=lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm);
 	if(hr!=D3D_OK){
@@ -114,11 +114,11 @@ int CFEngine::Init(HWND _hWnd)
 	}
 	WriteLog("OK\n");
 
-	WriteLog("Установка режимов.....");
-	lpDevice->SetRenderState(D3DRS_LIGHTING,FALSE); //выключаем свет
+	WriteLog("РЈСЃС‚Р°РЅРѕРІРєР° СЂРµР¶РёРјРѕРІ.....");
+	lpDevice->SetRenderState(D3DRS_LIGHTING,FALSE); //РІС‹РєР»СЋС‡Р°РµРј СЃРІРµС‚
 	lpDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Disable Z-Buffer
     lpDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE); //Disable Culling
-    //включаем прозрачность - Alpha blending
+    //РІРєР»СЋС‡Р°РµРј РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ - Alpha blending
 	lpDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
 
 //	lpDevice->SetRenderState( D3DRS_SRCBLEND,   D3DBLEND_SRCCOLOR );
@@ -126,12 +126,12 @@ int CFEngine::Init(HWND _hWnd)
 
 	lpDevice->SetRenderState( D3DRS_SRCBLEND,   D3DBLEND_SRCALPHA );
 	lpDevice->SetRenderState( D3DRS_DESTBLEND,  D3DBLEND_INVSRCALPHA );
-    //включаем alpha testing
+    //РІРєР»СЋС‡Р°РµРј alpha testing
 	lpDevice->SetRenderState( D3DRS_ALPHATESTENABLE,  TRUE );
 	lpDevice->SetRenderState( D3DRS_ALPHAREF,         0x08 );
 	lpDevice->SetRenderState( D3DRS_ALPHAFUNC,  D3DCMP_GREATEREQUAL );
 
-	//линейная фильтрация
+	//Р»РёРЅРµР№РЅР°СЏ С„РёР»СЊС‚СЂР°С†РёСЏ
 //lpDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
 //lpDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 //lpDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -190,8 +190,8 @@ int CFEngine::Init(HWND _hWnd)
 
 	SetChosenAction(ACTION_NONE);
 
-//загружаем статические объекты
-	WriteLog("Загрузка статических объектов...");
+//Р·Р°РіСЂСѓР¶Р°РµРј СЃС‚Р°С‚РёС‡РµСЃРєРёРµ РѕР±СЉРµРєС‚С‹
+	WriteLog("Р—Р°РіСЂСѓР·РєР° СЃС‚Р°С‚РёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ...");
 
 	FILE *o_cf;
 	FILE *o_cf2;
@@ -205,7 +205,7 @@ int CFEngine::Init(HWND _hWnd)
 
 	if((o_cf=fopen("data\\objects\\all_obj.st","rt"))==NULL)
 	{
-		WriteLog("Файл all_obj.st не найден\n");
+		WriteLog("Р¤Р°Р№Р» all_obj.st РЅРµ РЅР°Р№РґРµРЅ\n");
 		return 0;
 	}
 
@@ -222,7 +222,7 @@ int CFEngine::Init(HWND _hWnd)
 		sprintf(tmpc,".\\data\\objects\\%d.st",tmpi);
 		if((o_cf2=fopen(tmpc,"rt"))==NULL)
 		{
-			WriteLog("Файл |%s| не найден\n",tmpc);
+			WriteLog("Р¤Р°Р№Р» |%s| РЅРµ РЅР°Р№РґРµРЅ\n",tmpc);
 			return 0;
 		}
 
@@ -234,7 +234,7 @@ int CFEngine::Init(HWND _hWnd)
 		it_o=object_map.find(tmpc);
 		if(it_o==object_map.end())
 		{
-			WriteLog("Параметр |%s| не найден",tmpc);
+			WriteLog("РџР°СЂР°РјРµС‚СЂ |%s| РЅРµ РЅР°Р№РґРµРЅ",tmpc);
 			return 0;
 		}
 		new_obj->type=(*it_o).second;
@@ -246,7 +246,7 @@ int CFEngine::Init(HWND _hWnd)
 			it_o=object_map.find(tmpc);
 			if(it_o==object_map.end())
 			{
-				WriteLog("Параметр |%s| не найден",tmpc);
+				WriteLog("РџР°СЂР°РјРµС‚СЂ |%s| РЅРµ РЅР°Р№РґРµРЅ",tmpc);
 				return 0;
 			}
 			new_obj->p[(*it_o).second]=tmpi;
@@ -259,7 +259,7 @@ int CFEngine::Init(HWND _hWnd)
 	}
 	fclose(o_cf);
 
-	//имена/инфа объектов
+	//РёРјРµРЅР°/РёРЅС„Р° РѕР±СЉРµРєС‚РѕРІ
 	char get_name_obj[MAX_OBJECT_NAME];
 	char get_info_obj[MAX_OBJECT_INFO];
 	char key_obj[64];
@@ -275,7 +275,7 @@ int CFEngine::Init(HWND _hWnd)
 		info_obj.insert(string_map::value_type((*it_so).second->id,(string)(get_info_obj)));
 	}
 
-	WriteLog("OK (%d объектов)\n",cnt_obj);
+	WriteLog("OK (%d РѕР±СЉРµРєС‚РѕРІ)\n",cnt_obj);
 //!Cvet ------------------------------------------------------------------------------------
 
 	if(!hf.Init(&sm)) return 0;
@@ -297,7 +297,7 @@ int CFEngine::Init(HWND _hWnd)
 	ShowCursor(0);
 	cur_x=320;cur_y=240;
 
-	WriteLog("Всего спрайтов загружено: %d\n",sm.GetLoadedCnt());
+	WriteLog("Р’СЃРµРіРѕ СЃРїСЂР°Р№С‚РѕРІ Р·Р°РіСЂСѓР¶РµРЅРѕ: %d\n",sm.GetLoadedCnt());
 
 	WriteLog("FEngine Initialization complete\n");
 	crtd=1;
@@ -311,7 +311,7 @@ int CFEngine::InitDInput()
     HRESULT hr = DirectInput8Create(GetModuleHandle(NULL),DIRECTINPUT_VERSION,IID_IDirectInput8,(void**)&lpDInput,NULL);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу создать DirectInput");
+		ErrMsg("CFEngine InitDInput","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ DirectInput");
 		return 0;
 	}
 
@@ -319,14 +319,14 @@ int CFEngine::InitDInput()
     hr = lpDInput->CreateDevice(GUID_SysKeyboard,&lpKeyboard,NULL);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу создать GUID_SysKeyboard");
+		ErrMsg("CFEngine InitDInput","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ GUID_SysKeyboard");
 		return 0;
 	}
 
     hr = lpDInput->CreateDevice(GUID_SysMouse,&lpMouse,NULL);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу создать GUID_SysMouse");
+		ErrMsg("CFEngine InitDInput","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ GUID_SysMouse");
 		return 0;
 	}
     // Set the data format to "keyboard format" - a predefined data format 
@@ -335,14 +335,14 @@ int CFEngine::InitDInput()
     hr = lpKeyboard->SetDataFormat(&c_dfDIKeyboard);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу установить формат данных для клавиатуры");
+		ErrMsg("CFEngine InitDInput","РќРµ РјРѕРіСѓ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ С„РѕСЂРјР°С‚ РґР°РЅРЅС‹С… РґР»СЏ РєР»Р°РІРёР°С‚СѓСЂС‹");
 		return 0;
 	}
 
     hr = lpMouse->SetDataFormat(&c_dfDIMouse2);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу установить формат данных для мышки");
+		ErrMsg("CFEngine InitDInput","РќРµ РјРѕРіСѓ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ С„РѕСЂРјР°С‚ РґР°РЅРЅС‹С… РґР»СЏ РјС‹С€РєРё");
 		return 0;
 	}
 
@@ -350,15 +350,15 @@ int CFEngine::InitDInput()
     hr = lpKeyboard->SetCooperativeLevel( hWnd,DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Ошибка SetCooperativeLevel для клавиатуры");
+		ErrMsg("CFEngine InitDInput","РћС€РёР±РєР° SetCooperativeLevel РґР»СЏ РєР»Р°РІРёР°С‚СѓСЂС‹");
 		return 0;
 	}
 
 //	hr = lpMouse->SetCooperativeLevel( hWnd,DISCL_FOREGROUND | (opt_fullscr?DISCL_EXCLUSIVE:DISCL_EXCLUSIVE));
-	hr = lpMouse->SetCooperativeLevel( hWnd,DISCL_FOREGROUND | DISCL_EXCLUSIVE);//!Cvet сделал эксклюзив для всего
+	hr = lpMouse->SetCooperativeLevel( hWnd,DISCL_FOREGROUND | DISCL_EXCLUSIVE);//!Cvet СЃРґРµР»Р°Р» СЌРєСЃРєР»СЋР·РёРІ РґР»СЏ РІСЃРµРіРѕ
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Ошибка SetCooperativeLevel для мышки");
+		ErrMsg("CFEngine InitDInput","РћС€РёР±РєР° SetCooperativeLevel РґР»СЏ РјС‹С€РєРё");
 		return 0;
 	}
 
@@ -374,14 +374,14 @@ int CFEngine::InitDInput()
     hr = lpKeyboard->SetProperty(DIPROP_BUFFERSIZE,&dipdw.diph);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Ошибка настройки буфера приема для клавиатуры");
+		ErrMsg("CFEngine InitDInput","РћС€РёР±РєР° РЅР°СЃС‚СЂРѕР№РєРё Р±СѓС„РµСЂР° РїСЂРёРµРјР° РґР»СЏ РєР»Р°РІРёР°С‚СѓСЂС‹");
 		return 0;
 	}
 
     hr = lpMouse->SetProperty(DIPROP_BUFFERSIZE,&dipdw.diph);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Ошибка настройки буфера приема для мышки");
+		ErrMsg("CFEngine InitDInput","РћС€РёР±РєР° РЅР°СЃС‚СЂРѕР№РєРё Р±СѓС„РµСЂР° РїСЂРёРµРјР° РґР»СЏ РјС‹С€РєРё");
 		return 0;
 	}
 
@@ -447,7 +447,7 @@ void CFEngine::RemoveCritter(CrID remid) //!Cvet
 	if(lpChosen->id==remid) lpChosen=NULL;
 }
 
-// карта игрока
+// РєР°СЂС‚Р° РёРіСЂРѕРєР°
 int CFEngine::Console()
 {
 	// 1100
@@ -457,16 +457,16 @@ int CFEngine::Console()
 
 	char str[256],str1[256],str2[256];
 
-	wsprintf(str1,"Ваши Координаты x=%d,y=%d, rit=%d, \ntx=%d, ty=%d\n.  мыша x=%d, y=%d" 
+	wsprintf(str1,"Р’Р°С€Рё РљРѕРѕСЂРґРёРЅР°С‚С‹ x=%d,y=%d, rit=%d, \ntx=%d, ty=%d\n.  РјС‹С€Р° x=%d, y=%d" 
 	,lpChosen->hex_x,lpChosen->hex_y,lpChosen->rit,TargetX,TargetY,cur_x,cur_y);
 
-	wsprintf(str2,"Анимационная инфа: оружие %d, cur_id %d, cur_ox %d, cur_oy %d",lpChosen->weapon,lpChosen->cur_id,lpChosen->cur_ox,lpChosen->cur_oy);
-//	wsprintf(str,"Сетевые данные игроков: движение:%d, присоединился:%d, сказал:%d, вышел:%d"
+	wsprintf(str2,"РђРЅРёРјР°С†РёРѕРЅРЅР°СЏ РёРЅС„Р°: РѕСЂСѓР¶РёРµ %d, cur_id %d, cur_ox %d, cur_oy %d",lpChosen->weapon,lpChosen->cur_id,lpChosen->cur_ox,lpChosen->cur_oy);
+//	wsprintf(str,"РЎРµС‚РµРІС‹Рµ РґР°РЅРЅС‹Рµ РёРіСЂРѕРєРѕРІ: РґРІРёР¶РµРЅРёРµ:%d, РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ:%d, СЃРєР°Р·Р°Р»:%d, РІС‹С€РµР»:%d"
 //	,LstMoveId,LstAddCritId,LstSayCritId,LstDelCritId);
 //	wsprintf(str,"Pwleft:%d, Phbegin:%d"
 //	,hf.Pwleft , hf.Phbegin);
 
-	wsprintf(str,"R=%d,G=%d,B=%d---Время:%d:%d",dayR,dayG,dayB,Game_Hours,Game_Mins);
+	wsprintf(str,"R=%d,G=%d,B=%d---Р’СЂРµРјСЏ:%d:%d",dayR,dayG,dayB,Game_Hours,Game_Mins);
 
 	fnt.MyDrawText(r4,str1,FT_CENTERX,D3DCOLOR_XRGB(255,240,0));
 	fnt.MyDrawText(r5,str2,FT_CENTERX,D3DCOLOR_XRGB(255,240,0));
@@ -491,7 +491,7 @@ int CFEngine::Render()
 	ParseInput();
 	if(!crtd || islost) return 0;
 	
-	//Инициализация сети
+	//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЃРµС‚Рё
 	if(state==STATE_INIT_NET)
 	{
 		if(!InitNet())
@@ -508,9 +508,9 @@ int CFEngine::Render()
 	if(state!=STATE_DISCONNECT)
 		ParseSocket();
 
-//!Cvet логин/пасс
+//!Cvet Р»РѕРіРёРЅ/РїР°СЃСЃ
 	if(IsScreen(SCREEN_LOGIN		)) { ShowLogIn();			return 1; }
-//!Cvet Регистрация
+//!Cvet Р РµРіРёСЃС‚СЂР°С†РёСЏ
 	if(IsScreen(SCREEN_REGISTRATION	)) { ShowRegistration();	return 1; }
 
 	if(state==STATE_DISCONNECT) { SetScreen(SCREEN_LOGIN); return 0; }
@@ -556,13 +556,13 @@ int CFEngine::Render()
 		(*it).second->DrawText(&fnt);
 
 //!Cvet++++++++
-	IntDraw(); //отрисовка интерфейса
-	if(IsScreen(SCREEN_INVENTORY )) InvDraw(); //отрисовка инвентаря
-	if(IsScreen(SCREEN_DIALOG_NPC)) DlgDraw(); //отрисовка диалога
-	if(IsScreen(SCREEN_LOCAL_MAP )) LmapDraw(); //отрисовка мини-карты
+	IntDraw(); //РѕС‚СЂРёСЃРѕРІРєР° РёРЅС‚РµСЂС„РµР№СЃР°
+	if(IsScreen(SCREEN_INVENTORY )) InvDraw(); //РѕС‚СЂРёСЃРѕРІРєР° РёРЅРІРµРЅС‚Р°СЂСЏ
+	if(IsScreen(SCREEN_DIALOG_NPC)) DlgDraw(); //РѕС‚СЂРёСЃРѕРІРєР° РґРёР°Р»РѕРіР°
+	if(IsScreen(SCREEN_LOCAL_MAP )) LmapDraw(); //РѕС‚СЂРёСЃРѕРІРєР° РјРёРЅРё-РєР°СЂС‚С‹
 	if(IsScreen(SCREEN_SKILLBOX	 )) SboxDraw(); //Skillbox
 	if(IsScreen(SCREEN_MENU_OPTION)) MoptDraw(); //Menu option
-	if(IsLMenu()) LMenuDraw(); //отрисовка LMenu
+	if(IsLMenu()) LMenuDraw(); //РѕС‚СЂРёСЃРѕРІРєР° LMenu
 //!Cvet--------
 
 	sm.Flush();
@@ -580,7 +580,7 @@ int CFEngine::Render()
 
 	if(newplayer) if((GetTickCount()-LastCall)>=1000) newplayer=0;
 
-//отрисовка курсора
+//РѕС‚СЂРёСЃРѕРІРєР° РєСѓСЂСЃРѕСЂР°
 	CurDraw();
 
 	sm.Flush();
@@ -642,9 +642,9 @@ void CFEngine::ParseInput()
 	}
 	else
 	{
-	//логин/пасс
+	//Р»РѕРіРёРЅ/РїР°СЃСЃ
 		if(IsScreen(SCREEN_LOGIN)) LogInput();
-	//регистрация
+	//СЂРµРіРёСЃС‚СЂР°С†РёСЏ
 		if(IsScreen(SCREEN_REGISTRATION)) RegInput();
 
 		if(IsScreen(SCREEN_GLOBAL_MAP)) GmapInput();
@@ -652,7 +652,7 @@ void CFEngine::ParseInput()
 
 	if(IsScreen(SCREEN_LOGIN) || IsScreen(SCREEN_REGISTRATION) || IsScreen(SCREEN_GLOBAL_MAP) || IsCur(CUR_WAIT))
 	{
-/*		if(!opt_fullscr) убрал
+/*		if(!opt_fullscr) СѓР±СЂР°Р»
 		{
 			RECT r;
 			GetWindowRect(hWnd,&r);
@@ -722,7 +722,7 @@ void CFEngine::ParseInput()
 		{
 			int fnd=0;
 			WORD tst;
-			for(tst=0;tst<256;tst++) //!Cvet было DI_BUF_SIZE
+			for(tst=0;tst<256;tst++) //!Cvet Р±С‹Р»Рѕ DI_BUF_SIZE
 			{
 				DI_ONDOWN(tst, last_key=NULL; if(GetChar(tst,ed_str,&cur_edit,EDIT_LEN,lang,ShiftDwn)) {fnd=1;break;});
 				DI_ONUP(tst, last_key=NULL;);
@@ -803,7 +803,7 @@ void CFEngine::ParseInput()
 //			SetScreenCastling(SCREEN_MAIN,SCREEN_INVENTORY);			
 //		);
 
-		//!Cvet временное оружие - проверка на читерство
+		//!Cvet РІСЂРµРјРµРЅРЅРѕРµ РѕСЂСѓР¶РёРµ - РїСЂРѕРІРµСЂРєР° РЅР° С‡РёС‚РµСЂСЃС‚РІРѕ
 //		DI_ONDOWN( DIK_C, 
 //			lpChosen->AddObject(44,1100,10000000,0,0);
 //		);
@@ -823,7 +823,7 @@ void CFEngine::ParseInput()
 //!Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	if(!lpChosen) return;
 	//ChosenMouseInput();
-//если живой
+//РµСЃР»Рё Р¶РёРІРѕР№
 	if(lpChosen->cond==COND_LIFE)
 	{
 		for(i=0;i<dwElements;i++) 
@@ -861,7 +861,7 @@ void CFEngine::ParseInput()
 			DI_ONDOWN( DIMOFS_BUTTON0,
 				if(IsScreen(SCREEN_MAIN))
 				{
-					//засекаем время для менюшки
+					//Р·Р°СЃРµРєР°РµРј РІСЂРµРјСЏ РґР»СЏ РјРµРЅСЋС€РєРё
 					if(IsCur(CUR_DEFAULT))
 					{
 						LMenu_try_activated=true;
@@ -870,8 +870,8 @@ void CFEngine::ParseInput()
 
 					if(!IntMouseDown())
 					{
-					//управляем чузеном
-						//ходим
+					//СѓРїСЂР°РІР»СЏРµРј С‡СѓР·РµРЅРѕРј
+						//С…РѕРґРёРј
 						if(IsCur(CUR_MOVE))
 						{
 							if(GetMouseTile(cur_x,cur_y))
@@ -886,7 +886,7 @@ void CFEngine::ParseInput()
 								SetChosenAction(ACTION_MOVE);
 							}
 						}
-						//используем объект
+						//РёСЃРїРѕР»СЊР·СѓРµРј РѕР±СЉРµРєС‚
 						if(IsCur(CUR_USE_OBJECT))
 						{
 							if((curTargetCrit=GetMouseCritter(cur_x,cur_y)))
@@ -901,7 +901,7 @@ void CFEngine::ParseInput()
 							}
 
 						}
-						//используем навык
+						//РёСЃРїРѕР»СЊР·СѓРµРј РЅР°РІС‹Рє
 						if(IsCur(CUR_USE_SKILL))
 						{
 							;;
@@ -950,7 +950,7 @@ void CFEngine::ParseInput()
 	}
 //!Cvet ----------------------------------------------------------
 
-/*	if(!opt_fullscr) //!Cvet закомм.
+/*	if(!opt_fullscr) //!Cvet Р·Р°РєРѕРјРј.
 	{
 		RECT r;
 		GetWindowRect(hWnd,&r);
@@ -1028,7 +1028,7 @@ void CFEngine::Restore()
 {
 	if(!crtd || !islost) return;
 	WriteLog("Restoring...\n");
-	WriteLog("параметры режима.....");
+	WriteLog("РїР°СЂР°РјРµС‚СЂС‹ СЂРµР¶РёРјР°.....");
 	D3DDISPLAYMODE d3ddm;
 	HRESULT hr=lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm);
 	if(hr!=D3D_OK){
@@ -1058,28 +1058,28 @@ void CFEngine::Restore()
 	hr=lpDevice->Reset(&d3dpp);
 	if(hr!=D3D_OK)
 	{
-		//ErrMsg("Device Reset","Не могу перезапустить устройство");
-		WriteLog("Не могу перезапустить устройство\n");
+		//ErrMsg("Device Reset","РќРµ РјРѕРіСѓ РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ");
+		WriteLog("РќРµ РјРѕРіСѓ РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ\n");
 		return;
 	}
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 
 	
-	WriteLog("Установка режимов.....");
-	lpDevice->SetRenderState(D3DRS_LIGHTING,FALSE);//выключаем свет
+	WriteLog("РЈСЃС‚Р°РЅРѕРІРєР° СЂРµР¶РёРјРѕРІ.....");
+	lpDevice->SetRenderState(D3DRS_LIGHTING,FALSE);//РІС‹РєР»СЋС‡Р°РµРј СЃРІРµС‚
 	lpDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Disable Z-Buffer
     lpDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE); // Disable Culling
-    //включаем прозрачность - Alpha blending
+    //РІРєР»СЋС‡Р°РµРј РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ - Alpha blending
 	lpDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
     lpDevice->SetRenderState( D3DRS_SRCBLEND,   D3DBLEND_SRCALPHA );
     lpDevice->SetRenderState( D3DRS_DESTBLEND,  D3DBLEND_INVSRCALPHA );
-    //включаем alpha testing
+    //РІРєР»СЋС‡Р°РµРј alpha testing
 	lpDevice->SetRenderState( D3DRS_ALPHATESTENABLE,  TRUE );
     lpDevice->SetRenderState( D3DRS_ALPHAREF,         0x08 );
     lpDevice->SetRenderState( D3DRS_ALPHAFUNC,  D3DCMP_GREATEREQUAL );
 
 
-	//линейная фильтрация
+	//Р»РёРЅРµР№РЅР°СЏ С„РёР»СЊС‚СЂР°С†РёСЏ
 	lpDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTEXF_LINEAR);
 	lpDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTEXF_LINEAR);
 
@@ -1092,7 +1092,7 @@ void CFEngine::Restore()
 	WriteLog("OK\n");
 	
 	sm.SetColor((0xFF000000)|((dayR+opt_light)<<16)|((dayG+opt_light)<<8)|(dayB+opt_light)); //!Cvet
-	sm.PostRestore(); //именно в таком порядке. ибо sm раньше должен создать IB
+	sm.PostRestore(); //РёРјРµРЅРЅРѕ РІ С‚Р°РєРѕРј РїРѕСЂСЏРґРєРµ. РёР±Рѕ sm СЂР°РЅСЊС€Рµ РґРѕР»Р¶РµРЅ СЃРѕР·РґР°С‚СЊ IB
 	hf.PostRestore();
 	fnt.PostRestore(sm.GetVB(),sm.GetIB());
 
@@ -1106,7 +1106,7 @@ void CFEngine::RestoreDI()
 	if(!crtd || !lpKeyboard) return;
 //	WriteLog("Restoring DI...\n");
 
-	//возвращаем контроль клавиатуре
+	//РІРѕР·РІСЂР°С‰Р°РµРј РєРѕРЅС‚СЂРѕР»СЊ РєР»Р°РІРёР°С‚СѓСЂРµ
 	HRESULT hr=lpKeyboard->Acquire();
 //	if(hr==DI_OK) WriteLog("RestoringDI Keyboard OK\n");
 //		else WriteLog("RestoringDI Keyboard error %s\n",(char*)DXGetErrorString8(hr));
@@ -1152,7 +1152,7 @@ int CFEngine::InitNet()
 		memcpy(&remote.sin_addr,h->h_addr,sizeof(in_addr));
 	}
 
-	#pragma chMSG("Потом убрать отсюда и ввести экран подключения")
+	#pragma chMSG("РџРѕС‚РѕРј СѓР±СЂР°С‚СЊ РѕС‚СЃСЋРґР° Рё РІРІРµСЃС‚Рё СЌРєСЂР°РЅ РїРѕРґРєР»СЋС‡РµРЅРёСЏ")
 	if(!NetCon()) return 0;
 
 	state=STATE_CONN;
@@ -1168,7 +1168,7 @@ int CFEngine::NetCon()
 	sock=socket(AF_INET,SOCK_STREAM,0);
 	if(connect(sock,(sockaddr*)&remote,sizeof(SOCKADDR_IN)))
 	{
-		ErrMsg("CFEngine::NetCon","Не могу подключиться к серверу игры!\r\n");
+		ErrMsg("CFEngine::NetCon","РќРµ РјРѕРіСѓ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ Рє СЃРµСЂРІРµСЂСѓ РёРіСЂС‹!\r\n");
 		return 0;
 	}
 	WriteLog("Connecting OK\n");
@@ -1185,19 +1185,19 @@ int CFEngine::NetCon()
 	zstrmok=1;
 
 	return 1;
-    // отладка сетевых сообщений
+    // РѕС‚Р»Р°РґРєР° СЃРµС‚РµРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
     WriteLog("Net_Con");
 }
 
 void CFEngine::NetDiscon()
 {
-	WriteLog("Отсоединение ");
+	WriteLog("РћС‚СЃРѕРµРґРёРЅРµРЅРёРµ ");
 
 	if(zstrmok) inflateEnd(&zstrm);
 	closesocket(sock);
 	state=STATE_DISCONNECT;
 
-	WriteLog("--> Итоговая статистика сжатия трафика: %d -> %d\n",stat_com,stat_decom);
+	WriteLog("--> РС‚РѕРіРѕРІР°СЏ СЃС‚Р°С‚РёСЃС‚РёРєР° СЃР¶Р°С‚РёСЏ С‚СЂР°С„РёРєР°: %d -> %d\n",stat_com,stat_decom);
 
 	ClearCritters(); //!Cvet
 	hf.UnLoadMap(); //!Cvet
@@ -1225,8 +1225,8 @@ void CFEngine::ParseSocket(WORD wait)
 	{
 		if(!NetInput())
 		{
-		//	ErrMsg("CFEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
-			WriteLog("CFEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
+		//	ErrMsg("CFEngine::ParseSocket","РРіСЂРѕРІРѕР№ СЃРµСЂРІРµСЂ СЂР°Р·РѕСЂРІР°Р» СЃРІСЏР·СЊ!\r\n");
+			WriteLog("CFEngine::ParseSocket","РРіСЂРѕРІРѕР№ СЃРµСЂРІРµСЂ СЂР°Р·РѕСЂРІР°Р» СЃРІСЏР·СЊ!\r\n");
 			sock=-1;
 			state=STATE_DISCONNECT;
 			return;
@@ -1252,7 +1252,7 @@ void CFEngine::NetProcess()
 		{
 		case NETMSG_LOGINOK:
 			state=STATE_LOGINOK;
-			WriteLog("Аунтефикация пройдена\n");
+			WriteLog("РђСѓРЅС‚РµС„РёРєР°С†РёСЏ РїСЂРѕР№РґРµРЅР°\n");
 			LogMsg=0;
 			break;
 		case NETMSG_ADDCRITTER:
@@ -1348,7 +1348,7 @@ void CFEngine::NetProcess()
 	bout << gen;
 
 	state=STATE_NAMESEND;
-    // отладка сетевых сообщений
+    // РѕС‚Р»Р°РґРєР° СЃРµС‚РµРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
     WriteLog("OK\n");
 }*/
 //!Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1363,16 +1363,16 @@ void CFEngine::Net_SendLogIn(char* login, char* pass)
 	bout.push(pass,MAX_LOGIN);
 
 	LogMsg=10;
-    // отладка сетевых сообщений
+    // РѕС‚Р»Р°РґРєР° СЃРµС‚РµРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
     WriteLog("OK\n");
 }
 
 void CFEngine::Net_SendCreatePlayer(crit_info* newcr)
 {
 	int bi;
-	WriteLog("Посылаем данные на сервер...\n");
+	WriteLog("РџРѕСЃС‹Р»Р°РµРј РґР°РЅРЅС‹Рµ РЅР° СЃРµСЂРІРµСЂ...\n");
 
-//ФОРМИРОВАНИЕ ЗАПРОСА
+//Р¤РћР РњРР РћР’РђРќРР• Р—РђРџР РћРЎРђ
 	MSGTYPE msg=NETMSG_CREATE_CLIENT;
 	bout << msg;
 	bout.push(newcr->login,MAX_LOGIN);
@@ -1388,9 +1388,9 @@ void CFEngine::Net_SendCreatePlayer(crit_info* newcr)
 	bout << newcr->st[ST_INTELLECT	];
 	bout << newcr->st[ST_AGILITY	];
 	bout << newcr->st[ST_LUCK		];
-	//возраст
+	//РІРѕР·СЂР°СЃС‚
 	bout << newcr->st[ST_AGE];
-	//пол
+	//РїРѕР»
 	bout << newcr->st[ST_GENDER];
 
 //	WriteLog("log:|%s|\n",newcr->login);
@@ -1421,12 +1421,12 @@ void CFEngine::Net_SendDir()
 
 	bout << msg;
 	bout << lpChosen->cur_dir;
-    // отладка сетевых сообщений
+    // РѕС‚Р»Р°РґРєР° СЃРµС‚РµРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
     WriteLog("OK\n");
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CFEngine::Net_SendMove(BYTE* dir) //переделал
+void CFEngine::Net_SendMove(BYTE* dir) //РїРµСЂРµРґРµР»Р°Р»
 {
 	WriteLog("Net_SendMove...");
 
@@ -1471,7 +1471,7 @@ void CFEngine::Net_SendMove(BYTE* dir) //переделал
 
 void CFEngine::Net_SendUseSkill(BYTE skill, DWORD targ_id, BYTE ori)
 {
-	WriteLog("Отправка использования скилла...");
+	WriteLog("РћС‚РїСЂР°РІРєР° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ СЃРєРёР»Р»Р°...");
 
 	MSGTYPE msg=NETMSG_SEND_USE_SKILL;
 
@@ -1485,7 +1485,7 @@ void CFEngine::Net_SendUseSkill(BYTE skill, DWORD targ_id, BYTE ori)
 
 void CFEngine::Net_SendUseObject(BYTE type_target, DWORD targ_id, BYTE crit_ori, BYTE crit_num_action, BYTE crit_rate_object)
 {
-	WriteLog("Отправка действия над предметом...");
+	WriteLog("РћС‚РїСЂР°РІРєР° РґРµР№СЃС‚РІРёСЏ РЅР°Рґ РїСЂРµРґРјРµС‚РѕРј...");
 
 	MSGTYPE msg=NETMSG_SEND_USE_OBJECT;
 
@@ -1501,7 +1501,7 @@ void CFEngine::Net_SendUseObject(BYTE type_target, DWORD targ_id, BYTE crit_ori,
 
 void CFEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, WORD id_sobj)
 {
-	WriteLog("Отправка взаимодействия с предметом на земле...");
+	WriteLog("РћС‚РїСЂР°РІРєР° РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃ РїСЂРµРґРјРµС‚РѕРј РЅР° Р·РµРјР»Рµ...");
 
 	MSGTYPE msg=NETMSG_SEND_PICK_OBJECT;
 
@@ -1515,7 +1515,7 @@ void CFEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, WORD id_sobj)
 
 void CFEngine::Net_SendChangeObject(DWORD idobj, BYTE num_slot)
 {
-	WriteLog("Отправка смены предмета id=%d, slot=%d...",idobj, num_slot);
+	WriteLog("РћС‚РїСЂР°РІРєР° СЃРјРµРЅС‹ РїСЂРµРґРјРµС‚Р° id=%d, slot=%d...",idobj, num_slot);
 
 	MSGTYPE msg=NETMSG_SEND_CHANGE_OBJECT;
 
@@ -1528,7 +1528,7 @@ void CFEngine::Net_SendChangeObject(DWORD idobj, BYTE num_slot)
 
 void CFEngine::Net_SendTalk(CrID id_to_talk, BYTE answer)
 {
-	WriteLog("Отпрака сообщения по общению с НПЦ id_NPC=%d, ответ=%d...", id_to_talk, answer);
+	WriteLog("РћС‚РїСЂР°РєР° СЃРѕРѕР±С‰РµРЅРёСЏ РїРѕ РѕР±С‰РµРЅРёСЋ СЃ РќРџР¦ id_NPC=%d, РѕС‚РІРµС‚=%d...", id_to_talk, answer);
 
 	MSGTYPE msg=NETMSG_SEND_TALK_NPC;
 
@@ -1543,7 +1543,7 @@ void CFEngine::Net_SendTalk(CrID id_to_talk, BYTE answer)
 
 void CFEngine::Net_SendGetTime()
 {
-	WriteLog("Отпрака сообщения по запросу игрового времени...");
+	WriteLog("РћС‚РїСЂР°РєР° СЃРѕРѕР±С‰РµРЅРёСЏ РїРѕ Р·Р°РїСЂРѕСЃСѓ РёРіСЂРѕРІРѕРіРѕ РІСЂРµРјРµРЅРё...");
 
 	MSGTYPE msg=NETMSG_SEND_GET_TIME;
 
@@ -1554,7 +1554,7 @@ void CFEngine::Net_SendGetTime()
 
 void CFEngine::Net_SendGiveMeMap(WORD map_num)
 {
-	WriteLog("Отпрака сообщения по запросу загрузки карты...");
+	WriteLog("РћС‚РїСЂР°РєР° СЃРѕРѕР±С‰РµРЅРёСЏ РїРѕ Р·Р°РїСЂРѕСЃСѓ Р·Р°РіСЂСѓР·РєРё РєР°СЂС‚С‹...");
 
 	MSGTYPE msg=NETMSG_SEND_GIVE_ME_MAP;
 
@@ -1566,7 +1566,7 @@ void CFEngine::Net_SendGiveMeMap(WORD map_num)
 
 void CFEngine::Net_SendLoadMapOK()
 {
-	WriteLog("Отпрака сообщения по успешной загрузке карты...");
+	WriteLog("РћС‚РїСЂР°РєР° СЃРѕРѕР±С‰РµРЅРёСЏ РїРѕ СѓСЃРїРµС€РЅРѕР№ Р·Р°РіСЂСѓР·РєРµ РєР°СЂС‚С‹...");
 
 	MSGTYPE msg=NETMSG_SEND_LOAD_MAP_OK;
 
@@ -1577,7 +1577,7 @@ void CFEngine::Net_SendLoadMapOK()
 
 void CFEngine::Net_SendGiveGlobalInfo(BYTE info_flags)
 {
-	WriteLog("Отпрака сообщения запросу инфы о глобале №%d...",info_flags);
+	WriteLog("РћС‚РїСЂР°РєР° СЃРѕРѕР±С‰РµРЅРёСЏ Р·Р°РїСЂРѕСЃСѓ РёРЅС„С‹ Рѕ РіР»РѕР±Р°Р»Рµ в„–%d...",info_flags);
 
 	MSGTYPE msg=NETMSG_SEND_GIVE_GLOBAL_INFO;
 
@@ -1589,7 +1589,7 @@ void CFEngine::Net_SendGiveGlobalInfo(BYTE info_flags)
 
 void CFEngine::Net_SendRuleGlobal(BYTE command, DWORD param1, DWORD param2)
 {
-	WriteLog("Отправка запроса управлением группой...");
+	WriteLog("РћС‚РїСЂР°РІРєР° Р·Р°РїСЂРѕСЃР° СѓРїСЂР°РІР»РµРЅРёРµРј РіСЂСѓРїРїРѕР№...");
 
 	MSGTYPE msg=NETMSG_SEND_RULE_GLOBAL;
 
@@ -1604,7 +1604,7 @@ void CFEngine::Net_SendRuleGlobal(BYTE command, DWORD param1, DWORD param2)
 
 void CFEngine::Net_OnAddCritter()
 {
-	WriteLog("Присоединился новый игрок...");
+	WriteLog("РџСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ РЅРѕРІС‹Р№ РёРіСЂРѕРє...");
 	crit_info info;
 
 	info.a_obj=&info.def_obj1;
@@ -1629,8 +1629,8 @@ void CFEngine::Net_OnAddCritter()
 	bin >> info.cond_ext;
 	bin >> info.flags;
 	bin.pop(info.name,MAX_NAME);
-WriteLog("Имя:%s\n",info.name);
-//WriteLog("Имя: %s, cond=%d,cond_ext=%d\n",info.name,info.cond,info.cond_ext);
+WriteLog("РРјСЏ:%s\n",info.name);
+//WriteLog("РРјСЏ: %s, cond=%d,cond_ext=%d\n",info.name,info.cond,info.cond_ext);
 	info.name[MAX_NAME]=0;
 
 	for(int i=0;i<5;i++)
@@ -1641,22 +1641,22 @@ WriteLog("Имя:%s\n",info.name);
 
 	if(bin.IsError())
 	{
-		WriteLog("Net_OnAddCritter","Wrong MSG data forNet_OnAddCritter!\n"); //ErrMsg было
+		WriteLog("Net_OnAddCritter","Wrong MSG data forNet_OnAddCritter!\n"); //ErrMsg Р±С‹Р»Рѕ
 		state=STATE_DISCONNECT;
 		return;
 	}
 
-	LstAddCritId=info.id; // отладка
-	strcpy(newbie,info.name); // погоняло прибывшего
-	newplayer=1; // флаг входа нового игрока
+	LstAddCritId=info.id; // РѕС‚Р»Р°РґРєР°
+	strcpy(newbie,info.name); // РїРѕРіРѕРЅСЏР»Рѕ РїСЂРёР±С‹РІС€РµРіРѕ
+	newplayer=1; // С„Р»Р°Рі РІС…РѕРґР° РЅРѕРІРѕРіРѕ РёРіСЂРѕРєР°
 
 	CCritter* pc=AddCritter(&info);
 
-//	else AddMess(COLOR_TEXT_DEFAULT,"Вы увидели %s",info.cases[2]);
+//	else AddMess(COLOR_TEXT_DEFAULT,"Р’С‹ СѓРІРёРґРµР»Рё %s",info.cases[2]);
 
 //	hf.PostRestore();
 
-    WriteLog("Загрузка игрока закончена. %s, id=%d.\n",info.name,info.id);
+    WriteLog("Р—Р°РіСЂСѓР·РєР° РёРіСЂРѕРєР° Р·Р°РєРѕРЅС‡РµРЅР°. %s, id=%d.\n",info.name,info.id);
 }
 
 void CFEngine::Net_OnRemoveCritter()
@@ -1671,17 +1671,17 @@ void CFEngine::Net_OnRemoveCritter()
 		state=STATE_DISCONNECT;
 		return;
 	}
-    LstDelCritId=remid;// отладка
-    WriteLog("%d клиент получил приказ сервера отключиться...",remid);
+    LstDelCritId=remid;// РѕС‚Р»Р°РґРєР°
+    WriteLog("%d РєР»РёРµРЅС‚ РїРѕР»СѓС‡РёР» РїСЂРёРєР°Р· СЃРµСЂРІРµСЂР° РѕС‚РєР»СЋС‡РёС‚СЊСЃСЏ...",remid);
 
 	crit_map::iterator it=critters.find(remid);
 	if(it==critters.end()) return;
 	CCritter* prem=(*it).second;
 
-	WriteLog("убираем с hexfield...");
+	WriteLog("СѓР±РёСЂР°РµРј СЃ hexfield...");
 	hf.RemoveCrit(prem);
 
-	WriteLog("убираем с critters...");
+	WriteLog("СѓР±РёСЂР°РµРј СЃ critters...");
 	delete (*it).second;
 
 	critters.erase(it);
@@ -1703,7 +1703,7 @@ void CFEngine::Net_OnCritterText()
 		state=STATE_DISCONNECT;
 		return;
 	}
-    LstSayCritId=crid;// отладка
+    LstSayCritId=crid;// РѕС‚Р»Р°РґРєР°
 
 	WORD len;
 	char str[MAX_TEXT+256];
@@ -1766,7 +1766,7 @@ void CFEngine::Net_OnCritterText()
 
 void CFEngine::Net_OnCritterDir()
 {
-	WriteLog("Установка игроку ");
+	WriteLog("РЈСЃС‚Р°РЅРѕРІРєР° РёРіСЂРѕРєСѓ ");
 
 	CrID crid;
 	BYTE new_dir;
@@ -1774,7 +1774,7 @@ void CFEngine::Net_OnCritterDir()
 	bin >> crid;
 	bin >> new_dir;
 
-	WriteLog("%d направления %d...",crid,new_dir);
+	WriteLog("%d РЅР°РїСЂР°РІР»РµРЅРёСЏ %d...",crid,new_dir);
 
 	if(bin.IsError())
 	{
@@ -1785,7 +1785,7 @@ void CFEngine::Net_OnCritterDir()
 
 	if(new_dir>5)
 	{
-		WriteLog("неверное значение\n");
+		WriteLog("РЅРµРІРµСЂРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ\n");
 		return;
 	}
 
@@ -1793,7 +1793,7 @@ void CFEngine::Net_OnCritterDir()
 	CCritter* pcrit=NULL;
 	if(it==critters.end())
 	{
-		WriteLog("ненайден криттер\n");
+		WriteLog("РЅРµРЅР°Р№РґРµРЅ РєСЂРёС‚С‚РµСЂ\n");
 		return;
 	}
 	pcrit=(*it).second;
@@ -1808,7 +1808,7 @@ void CFEngine::Net_OnCritterDir()
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void CFEngine::Net_OnCritterMove()
 {
-	WriteLog("Ходит игрок id=");
+	WriteLog("РҐРѕРґРёС‚ РёРіСЂРѕРє id=");
 
 	CrID crid=0;
 //	BYTE dir=0;
@@ -1818,7 +1818,7 @@ void CFEngine::Net_OnCritterMove()
 
 	WORD move_params=0;
 
-	//присланные данные
+	//РїСЂРёСЃР»Р°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ
 	bin >> crid;
 	bin >> move_params;
 
@@ -1837,7 +1837,7 @@ void CFEngine::Net_OnCritterMove()
 	how_move=MOVE_WALK;
 	if(FLAG(move_params,PMOVE_RUN)) how_move=MOVE_RUN;
 
-//проверка данных
+//РїСЂРѕРІРµСЂРєР° РґР°РЅРЅС‹С…
 	if(new_x>=MAXTILEX || new_y>=MAXTILEY) return;
 	if(!crid) return;
 //	if(dir>5) return;
@@ -1845,7 +1845,7 @@ void CFEngine::Net_OnCritterMove()
 	WriteLog("%d...", crid);
 //	WriteLog("%d dir=%d move_type=%d...", crid, dir, how_move);
 
-	LstMoveId=crid; // для отладки движения
+	LstMoveId=crid; // РґР»СЏ РѕС‚Р»Р°РґРєРё РґРІРёР¶РµРЅРёСЏ
 
 	crit_map::iterator it=critters.find(crid);
 	CCritter* pcrit=NULL;
@@ -1875,7 +1875,7 @@ void CFEngine::Net_OnCritterMove()
 
 void CFEngine::Net_OnCritterAction()
 {
-	WriteLog("Пинг: %d\n",GetTickCount()-Ping);
+	WriteLog("РџРёРЅРі: %d\n",GetTickCount()-Ping);
 
 	CrID crid;
 	BYTE num_action;
@@ -1885,13 +1885,13 @@ void CFEngine::Net_OnCritterAction()
 	BYTE ori;
 
 	bin >> crid;
-	bin >> num_action; //номер действия
-	bin >> id_st_obj; //id статического оружия в руке
-	bin >> id_st_obj_arm; //id статического оружия в слот армор
-	bin >> rate_obj; //режим использования
-	bin >> ori; //ориентация действия
+	bin >> num_action; //РЅРѕРјРµСЂ РґРµР№СЃС‚РІРёСЏ
+	bin >> id_st_obj; //id СЃС‚Р°С‚РёС‡РµСЃРєРѕРіРѕ РѕСЂСѓР¶РёСЏ РІ СЂСѓРєРµ
+	bin >> id_st_obj_arm; //id СЃС‚Р°С‚РёС‡РµСЃРєРѕРіРѕ РѕСЂСѓР¶РёСЏ РІ СЃР»РѕС‚ Р°СЂРјРѕСЂ
+	bin >> rate_obj; //СЂРµР¶РёРј РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
+	bin >> ori; //РѕСЂРёРµРЅС‚Р°С†РёСЏ РґРµР№СЃС‚РІРёСЏ
     
-	WriteLog("Игрок id=%d действует...",crid);
+	WriteLog("РРіСЂРѕРє id=%d РґРµР№СЃС‚РІСѓРµС‚...",crid);
 
 	if(bin.IsError())
 	{
@@ -1900,18 +1900,18 @@ void CFEngine::Net_OnCritterAction()
 		return;
 	}
 
-//находим криттера
+//РЅР°С…РѕРґРёРј РєСЂРёС‚С‚РµСЂР°
 	crit_map::iterator it=critters.find(crid);
 	CCritter* pcrit=NULL;
 	if(it!=critters.end()) pcrit=(*it).second;
 	else return;
-//находим объект в руке
+//РЅР°С…РѕРґРёРј РѕР±СЉРµРєС‚ РІ СЂСѓРєРµ
 	stat_map::iterator it2=all_s_obj.find(id_st_obj);
 	stat_obj* pobj=NULL;
 	if(it2!=all_s_obj.end()) pobj=(*it2).second;
 	else return;
 	pcrit->a_obj->object=pobj;
-//находим предмет в слот армор
+//РЅР°С…РѕРґРёРј РїСЂРµРґРјРµС‚ РІ СЃР»РѕС‚ Р°СЂРјРѕСЂ
 	it2=all_s_obj.find(id_st_obj_arm);
 	stat_obj* pobj_arm=NULL;
 	if(it2!=all_s_obj.end()) pobj_arm=(*it2).second;
@@ -1922,8 +1922,8 @@ void CFEngine::Net_OnCritterAction()
 
 	WriteLog("Net_OnCritterAction - act=%d, rate=%d\n", num_action, rate_obj);
 
-//обробатываем действия
-//достование/скрывание объекта
+//РѕР±СЂРѕР±Р°С‚С‹РІР°РµРј РґРµР№СЃС‚РІРёСЏ
+//РґРѕСЃС‚РѕРІР°РЅРёРµ/СЃРєСЂС‹РІР°РЅРёРµ РѕР±СЉРµРєС‚Р°
 	if(num_action==ACT_SHOW_OBJ)
 	{
 		if(!pobj->p[OBJ_TIME_SHOW]) return;
@@ -1951,7 +1951,7 @@ void CFEngine::Net_OnCritterAction()
 
 		return;
 	}
-//активация/деактивация/использование объекта
+//Р°РєС‚РёРІР°С†РёСЏ/РґРµР°РєС‚РёРІР°С†РёСЏ/РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РѕР±СЉРµРєС‚Р°
 	if(num_action==ACT_ACTIVATE_OBJ)
 	{
 		if(pobj->type!=OBJ_TYPE_WEAPON) return;
@@ -2025,14 +2025,14 @@ void CFEngine::Net_OnCritterAction()
 
 		return;
 	}
-//обновление
+//РѕР±РЅРѕРІР»РµРЅРёРµ
 	if(num_action==ACT_REFRESH)
 	{
 		pcrit->SetAnimation();
 
 		return;
 	}
-//принятие повреждения
+//РїСЂРёРЅСЏС‚РёРµ РїРѕРІСЂРµР¶РґРµРЅРёСЏ
 	if(num_action==ACT_DEFEAT)
 	{
 	//	if(!pcrit->IsFree()) return;
@@ -2064,14 +2064,14 @@ void CFEngine::Net_OnCritterAction()
 
 		return;
 	}
-//смена брони
+//СЃРјРµРЅР° Р±СЂРѕРЅРё
 	if(num_action==ACT_CHANGE_ARM)
 	{
 		pcrit->SetAnimation();
 
 		return;
 	}
-//смерть
+//СЃРјРµСЂС‚СЊ
 	if(num_action==ACT_DEAD)
 	{
 		pcrit->cond=COND_DEAD;
@@ -2120,9 +2120,9 @@ void CFEngine::Net_OnChosenLogin()
 	SetCur(CUR_DEFAULT);
 }
 
-void CFEngine::Net_OnChosenXY() // направление надо передавать?!cvet
+void CFEngine::Net_OnChosenXY() // РЅР°РїСЂР°РІР»РµРЅРёРµ РЅР°РґРѕ РїРµСЂРµРґР°РІР°С‚СЊ?!cvet
 {
-	WriteLog("Проверка или установка места...");
+	WriteLog("РџСЂРѕРІРµСЂРєР° РёР»Рё СѓСЃС‚Р°РЅРѕРІРєР° РјРµСЃС‚Р°...");
 
 	HexTYPE Chex_x;
 	HexTYPE Chex_y;
@@ -2141,38 +2141,38 @@ void CFEngine::Net_OnChosenXY() // направление надо передавать?!cvet
 
 	if(!lpChosen->IsFree())
 	{
-		WriteLog("пропуск. Чезен занят\n");
+		WriteLog("РїСЂРѕРїСѓСЃРє. Р§РµР·РµРЅ Р·Р°РЅСЏС‚\n");
 		return;
 	}
 
 	if(Chex_x>=MAXTILEX || Chex_y>=MAXTILEY || Cori>5)
 	{
-		WriteLog("ОШИБКА в принятых данных |x=%d,y=%d,ori=%d|\n",Chex_x,Chex_y,Cori);
+		WriteLog("РћРЁРР‘РљРђ РІ РїСЂРёРЅСЏС‚С‹С… РґР°РЅРЅС‹С… |x=%d,y=%d,ori=%d|\n",Chex_x,Chex_y,Cori);
 		return;
 	}
 
 	if(lpChosen->cur_dir!=Cori)
 	{
 		lpChosen->cur_dir=Cori;
-		WriteLog("Установлено/Исправлено направление...");
+		WriteLog("РЈСЃС‚Р°РЅРѕРІР»РµРЅРѕ/РСЃРїСЂР°РІР»РµРЅРѕ РЅР°РїСЂР°РІР»РµРЅРёРµ...");
 	}
 
 	if(lpChosen->hex_x!=Chex_x || lpChosen->hex_y!=Chex_y)
 	{
 		hf.TransitCritter(lpChosen,Cori,Chex_x,Chex_y,true);
-		WriteLog("Установлено/Исправлено местоположение...");
+		WriteLog("РЈСЃС‚Р°РЅРѕРІР»РµРЅРѕ/РСЃРїСЂР°РІР»РµРЅРѕ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ...");
 
 		SetChosenAction(ACTION_NONE);
 		lpChosen->SetAnimation();
 	}
 
-    // отладка сетевых сообщений
+    // РѕС‚Р»Р°РґРєР° СЃРµС‚РµРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
     WriteLog("OK\n");
 }
 
 void CFEngine::Net_OnChosenParams()
 {
-	WriteLog("Присланны параметры...");
+	WriteLog("РџСЂРёСЃР»Р°РЅРЅС‹ РїР°СЂР°РјРµС‚СЂС‹...");
 
 	BYTE type_param=0;
 	BYTE all_send_params=0;
@@ -2192,7 +2192,7 @@ void CFEngine::Net_OnChosenParams()
 			bin >> lpChosen->st[num_param];
 
 			params_str_map::iterator it=stats_str_map.find(num_param);
-//			if(it!=stats_str_map.end()) AddMess(COLOR_TEXT_DEFAULT,"Стат %s = %d",(*it).second.c_str(),lpChosen->st[num_param]);
+//			if(it!=stats_str_map.end()) AddMess(COLOR_TEXT_DEFAULT,"РЎС‚Р°С‚ %s = %d",(*it).second.c_str(),lpChosen->st[num_param]);
 		}
 		break;
 	case TYPE_SKILL:
@@ -2203,7 +2203,7 @@ void CFEngine::Net_OnChosenParams()
 			bin >> lpChosen->sk[num_param];
 
 			params_str_map::iterator it=skills_str_map.find(num_param);
-//			if(it!=skills_str_map.end()) AddMess(COLOR_TEXT_DEFAULT,"Навык %s = %d",(*it).second.c_str(),lpChosen->sk[num_param]);
+//			if(it!=skills_str_map.end()) AddMess(COLOR_TEXT_DEFAULT,"РќР°РІС‹Рє %s = %d",(*it).second.c_str(),lpChosen->sk[num_param]);
 		}
 		break;
 	case TYPE_PERK:
@@ -2214,11 +2214,11 @@ void CFEngine::Net_OnChosenParams()
 			bin >> lpChosen->pe[num_param];
 
 			params_str_map::iterator it=perks_str_map.find(num_param);
-//			if(it!=perks_str_map.end()) AddMess(COLOR_TEXT_DEFAULT,"Перк %s",(*it).second.c_str());
+//			if(it!=perks_str_map.end()) AddMess(COLOR_TEXT_DEFAULT,"РџРµСЂРє %s",(*it).second.c_str());
 		}
 		break;
 	default:
-		WriteLog("Ошибка. Неправильный тип параметра №%d\n", type_param);
+		WriteLog("РћС€РёР±РєР°. РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ С‚РёРї РїР°СЂР°РјРµС‚СЂР° в„–%d\n", type_param);
 		return;
 	}
 
@@ -2229,12 +2229,12 @@ void CFEngine::Net_OnChosenParams()
 		return;
 	}
 
-	WriteLog("Загрузка параметров закончена - всего параметров типа %d прислано %d\n", type_param, all_send_params);
+	WriteLog("Р—Р°РіСЂСѓР·РєР° РїР°СЂР°РјРµС‚СЂРѕРІ Р·Р°РєРѕРЅС‡РµРЅР° - РІСЃРµРіРѕ РїР°СЂР°РјРµС‚СЂРѕРІ С‚РёРїР° %d РїСЂРёСЃР»Р°РЅРѕ %d\n", type_param, all_send_params);
 }
 
 void CFEngine::Net_OnChosenParam()
 {
-	WriteLog("Прислан параметр...");
+	WriteLog("РџСЂРёСЃР»Р°РЅ РїР°СЂР°РјРµС‚СЂ...");
 
 	BYTE type_param=0;
 	BYTE num_param=0;
@@ -2255,9 +2255,9 @@ void CFEngine::Net_OnChosenParam()
 //		if(it!=stats_str_map.end())
 //		{
 //			if(lpChosen->st[num_param]>old_count)
-//				AddMess(COLOR_TEXT_DEFAULT,"Стат %s увеличился на %d (всего:%d)",(*it).second.c_str(),lpChosen->st[num_param]-old_count,lpChosen->st[num_param]);
+//				AddMess(COLOR_TEXT_DEFAULT,"РЎС‚Р°С‚ %s СѓРІРµР»РёС‡РёР»СЃСЏ РЅР° %d (РІСЃРµРіРѕ:%d)",(*it).second.c_str(),lpChosen->st[num_param]-old_count,lpChosen->st[num_param]);
 //			else if(lpChosen->st[num_param]<old_count)
-//				AddMess(COLOR_TEXT_DEFAULT,"Стат %s уменьшился на %d (всего:%d)",(*it).second.c_str(),old_count-lpChosen->st[num_param],lpChosen->st[num_param]);
+//				AddMess(COLOR_TEXT_DEFAULT,"РЎС‚Р°С‚ %s СѓРјРµРЅСЊС€РёР»СЃСЏ РЅР° %d (РІСЃРµРіРѕ:%d)",(*it).second.c_str(),old_count-lpChosen->st[num_param],lpChosen->st[num_param]);
 //		}
 
 		break;
@@ -2270,9 +2270,9 @@ void CFEngine::Net_OnChosenParam()
 		if(it!=skills_str_map.end())
 		{
 			if(lpChosen->sk[num_param]>old_count)
-				AddMess(COLOR_TEXT_DEFAULT,"Навык %s увеличился на %d (всего:%d)",(*it).second.c_str(),lpChosen->sk[num_param]-old_count,lpChosen->sk[num_param]);
+				AddMess(COLOR_TEXT_DEFAULT,"РќР°РІС‹Рє %s СѓРІРµР»РёС‡РёР»СЃСЏ РЅР° %d (РІСЃРµРіРѕ:%d)",(*it).second.c_str(),lpChosen->sk[num_param]-old_count,lpChosen->sk[num_param]);
 			else if(lpChosen->sk[num_param]<old_count)
-				AddMess(COLOR_TEXT_DEFAULT,"Навык %s уменьшился на %d (всего:%d)",(*it).second.c_str(),old_count-lpChosen->sk[num_param],lpChosen->sk[num_param]);
+				AddMess(COLOR_TEXT_DEFAULT,"РќР°РІС‹Рє %s СѓРјРµРЅСЊС€РёР»СЃСЏ РЅР° %d (РІСЃРµРіРѕ:%d)",(*it).second.c_str(),old_count-lpChosen->sk[num_param],lpChosen->sk[num_param]);
 		}
 
 		break;
@@ -2285,14 +2285,14 @@ void CFEngine::Net_OnChosenParam()
 //		if(it!=perks_str_map.end())
 //		{
 //			if(lpChosen->pe[num_param]>old_count)
-//				AddMess(COLOR_TEXT_DEFAULT,"Добавлен перк %s",(*it).second.c_str());
+//				AddMess(COLOR_TEXT_DEFAULT,"Р”РѕР±Р°РІР»РµРЅ РїРµСЂРє %s",(*it).second.c_str());
 //			else if(lpChosen->sk[num_param]<old_count)
-//				AddMess(COLOR_TEXT_DEFAULT,"Снят перк %s",(*it).second.c_str());
+//				AddMess(COLOR_TEXT_DEFAULT,"РЎРЅСЏС‚ РїРµСЂРє %s",(*it).second.c_str());
 //		}
 
 		break;
 	default:
-		WriteLog("Ошибка. Неправильный тип параметра №%d\n", type_param);
+		WriteLog("РћС€РёР±РєР°. РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ С‚РёРї РїР°СЂР°РјРµС‚СЂР° в„–%d\n", type_param);
 		return;
 	}
 
@@ -2308,7 +2308,7 @@ void CFEngine::Net_OnChosenParam()
 
 void CFEngine::Net_OnChosenAddObject()
 {
-	WriteLog("Добавляеться предмет...");
+	WriteLog("Р”РѕР±Р°РІР»СЏРµС‚СЊСЃСЏ РїСЂРµРґРјРµС‚...");
 
 	DWORD id_d;
 	WORD id_s;
@@ -2338,7 +2338,7 @@ void CFEngine::Net_OnChosenAddObject()
 
 void CFEngine::Net_OnAddObjOnMap()
 {
-	WriteLog("Добавляеться предмет на земле...");
+	WriteLog("Р”РѕР±Р°РІР»СЏРµС‚СЊСЃСЏ РїСЂРµРґРјРµС‚ РЅР° Р·РµРјР»Рµ...");
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
@@ -2359,31 +2359,31 @@ void CFEngine::Net_OnAddObjOnMap()
 
 	if(obj_x>=MAXTILEX || obj_y>=MAXTILEY)
 	{
-		WriteLog("ошибка границ\n");
+		WriteLog("РѕС€РёР±РєР° РіСЂР°РЅРёС†\n");
 		return;
 	}
 
 	stat_map::iterator so=all_s_obj.find(obj_id);
 	if(so==all_s_obj.end())
 	{
-		WriteLog("не найден предмет в списке прототипов\n");
+		WriteLog("РЅРµ РЅР°Р№РґРµРЅ РїСЂРµРґРјРµС‚ РІ СЃРїРёСЃРєРµ РїСЂРѕС‚РѕС‚РёРїРѕРІ\n");
 		return;
 	}
 
 	if(!hf.AddObj((*so).second,obj_x,obj_y,tile_flags))
 	{
-		WriteLog("ошибка добавления\n");
+		WriteLog("РѕС€РёР±РєР° РґРѕР±Р°РІР»РµРЅРёСЏ\n");
 		return;
 	}
 
-	//AddMess(0xFF00FFFF,"Прилетел предметик %d",(*so).second->id);
+	//AddMess(0xFF00FFFF,"РџСЂРёР»РµС‚РµР» РїСЂРµРґРјРµС‚РёРє %d",(*so).second->id);
 
 	WriteLog("OK\n");
 }
 
 void CFEngine::Net_OnChangeObjOnMap()
 {
-	WriteLog("Изменяется предмет на земле...");
+	WriteLog("РР·РјРµРЅСЏРµС‚СЃСЏ РїСЂРµРґРјРµС‚ РЅР° Р·РµРјР»Рµ...");
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
@@ -2404,27 +2404,27 @@ void CFEngine::Net_OnChangeObjOnMap()
 
 	if(obj_x>=MAXTILEX || obj_y>=MAXTILEY)
 	{
-		WriteLog("ошибка границ\n");
+		WriteLog("РѕС€РёР±РєР° РіСЂР°РЅРёС†\n");
 		return;
 	}
 
 	stat_map::iterator so=all_s_obj.find(obj_id);
 	if(so==all_s_obj.end())
 	{
-		WriteLog("не найден предмет в списке прототипов\n");
+		WriteLog("РЅРµ РЅР°Р№РґРµРЅ РїСЂРµРґРјРµС‚ РІ СЃРїРёСЃРєРµ РїСЂРѕС‚РѕС‚РёРїРѕРІ\n");
 		return;
 	}
 
 	hf.ChangeObj((*so).second,obj_x,obj_y,tile_flags);
 
-	//AddMess(0xFFAAAAFF,"Предметик изменился %d",(*so).second->id);
+	//AddMess(0xFFAAAAFF,"РџСЂРµРґРјРµС‚РёРє РёР·РјРµРЅРёР»СЃСЏ %d",(*so).second->id);
 
 	WriteLog("OK\n");
 }
 
 void CFEngine::Net_OnRemObjFromMap()
 {
-	WriteLog("Удаляеться предмет с земли...");
+	WriteLog("РЈРґР°Р»СЏРµС‚СЊСЃСЏ РїСЂРµРґРјРµС‚ СЃ Р·РµРјР»Рё...");
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
@@ -2443,27 +2443,27 @@ void CFEngine::Net_OnRemObjFromMap()
 
 	if(obj_x>=MAXTILEX || obj_y>=MAXTILEY)
 	{
-		WriteLog("ошибка границ\n");
+		WriteLog("РѕС€РёР±РєР° РіСЂР°РЅРёС†\n");
 		return;
 	}
 
 	stat_map::iterator so=all_s_obj.find(obj_id);
 	if(so==all_s_obj.end())
 	{
-		WriteLog("не найден предмет в списке прототипов\n");
+		WriteLog("РЅРµ РЅР°Р№РґРµРЅ РїСЂРµРґРјРµС‚ РІ СЃРїРёСЃРєРµ РїСЂРѕС‚РѕС‚РёРїРѕРІ\n");
 		return;
 	}
 
 	hf.DelObj((*so).second,obj_x,obj_y);
 
-	//AddMess(0xFFFFAAAA,"Улетел предметик %d",(*so).second->id);
+	//AddMess(0xFFFFAAAA,"РЈР»РµС‚РµР» РїСЂРµРґРјРµС‚РёРє %d",(*so).second->id);
 
 	WriteLog("OK\n");
 }
 
 void CFEngine::Net_OnChosenTalk()
 {
-	WriteLog("Новая диалоговая ветка...");
+	WriteLog("РќРѕРІР°СЏ РґРёР°Р»РѕРіРѕРІР°СЏ РІРµС‚РєР°...");
 
 	DWORD main_text;
 	DWORD answer[MAX_ANSWERS];
@@ -2474,18 +2474,18 @@ void CFEngine::Net_OnChosenTalk()
 	{
 		SetScreen(SCREEN_MAIN);
 		lpChosen->Tick_Null();
-		WriteLog("диалог закончен...OK\n");
+		WriteLog("РґРёР°Р»РѕРі Р·Р°РєРѕРЅС‡РµРЅ...OK\n");
 		return;
 	}
 
 	bin >> main_text;
-	if(!LoadDialogFromFile(tosendTargetCrit->id,main_text,text_dialog)) WriteLog("Ошибка загрузки диалога №%d...", main_text);
+	if(!LoadDialogFromFile(tosendTargetCrit->id,main_text,text_dialog)) WriteLog("РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РґРёР°Р»РѕРіР° в„–%d...", main_text);
 
 	for(int ct=0; ct<all_answers; ct++)
 	{
 		bin >> answer[ct];
 		if(!LoadDialogFromFile(tosendTargetCrit->id,answer[ct],text_answer[ct]))
-			WriteLog("Ошибка загрузки ответа №%d...", answer[ct]);
+			WriteLog("РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РѕС‚РІРµС‚Р° в„–%d...", answer[ct]);
 	}
 
 	lpChosen->Tick_Start(TALK_MAX_TIME);
@@ -2497,7 +2497,7 @@ void CFEngine::Net_OnChosenTalk()
 
 void CFEngine::Net_OnGameTime()
 {
-	WriteLog("Сведения о игровом времени...");
+	WriteLog("РЎРІРµРґРµРЅРёСЏ Рѕ РёРіСЂРѕРІРѕРј РІСЂРµРјРµРЅРё...");
 
 	bin >> Game_Time;
 	bin >> Game_Day;
@@ -2514,7 +2514,7 @@ void CFEngine::Net_OnGameTime()
 
 void CFEngine::Net_OnLoadMap()
 {
-	WriteLog("Приказ смены карты...\n");
+	WriteLog("РџСЂРёРєР°Р· СЃРјРµРЅС‹ РєР°СЂС‚С‹...\n");
 
 	WORD num_map;
 	char name_map[30];
@@ -2555,7 +2555,7 @@ void CFEngine::Net_OnMap()
 
 void CFEngine::Net_OnGlobalInfo()
 {
-	WriteLog("Сведения о глобале...");
+	WriteLog("РЎРІРµРґРµРЅРёСЏ Рѕ РіР»РѕР±Р°Р»Рµ...");
 
 	BYTE info_flags=0;
 
@@ -2565,7 +2565,7 @@ void CFEngine::Net_OnGlobalInfo()
 
 	if(FLAG(info_flags,GM_INFO_CITIES))
 	{
-		WriteLog("локации(");
+		WriteLog("Р»РѕРєР°С†РёРё(");
 
 		for(vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 			delete (*it_c);
@@ -2596,7 +2596,7 @@ void CFEngine::Net_OnGlobalInfo()
 
 	if(FLAG(info_flags,GM_INFO_CRITS))
 	{
-		WriteLog("криты(");
+		WriteLog("РєСЂРёС‚С‹(");
 
 		for(vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
 			delete (*it_cr);
@@ -2615,7 +2615,7 @@ void CFEngine::Net_OnGlobalInfo()
 		{
 		//	GmapNullParams();
 			Net_SendGiveGlobalInfo(info_flags);
-			//!!! надо еще reset буферу сделать
+			//!!! РЅР°РґРѕ РµС‰Рµ reset Р±СѓС„РµСЂСѓ СЃРґРµР»Р°С‚СЊ
 			return;
 		}
 
@@ -2623,7 +2623,7 @@ void CFEngine::Net_OnGlobalInfo()
 		{
 			bin >> id_crit;
 
-			//проверка id_crit
+			//РїСЂРѕРІРµСЂРєР° id_crit
 
 			bin.pop(cur_name,MAX_NAME);
 			cur_name[MAX_NAME]=0;
@@ -2635,11 +2635,11 @@ void CFEngine::Net_OnGlobalInfo()
 				return;
 			}
 
-			//проверка cur_name
+			//РїСЂРѕРІРµСЂРєР° cur_name
 
 			bin >> flags_crit;
 
-			//проверка flags_crit
+			//РїСЂРѕРІРµСЂРєР° flags_crit
 			
 			GM_crit* add_crit=new GM_crit;
 
@@ -2661,7 +2661,7 @@ void CFEngine::Net_OnGlobalInfo()
 
 	if(FLAG(info_flags,GM_INFO_PARAM))
 	{
-		WriteLog("параметры...");
+		WriteLog("РїР°СЂР°РјРµС‚СЂС‹...");
 
 		WORD group_x;
 		WORD group_y;
@@ -2683,7 +2683,7 @@ void CFEngine::Net_OnGlobalInfo()
 		{
 		//	GmapNullParams();
 			Net_SendGiveGlobalInfo(info_flags);
-			//!!! надо еще reset буферу сделать
+			//!!! РЅР°РґРѕ РµС‰Рµ reset Р±СѓС„РµСЂСѓ СЃРґРµР»Р°С‚СЊ
 			return;
 		}
 
@@ -2719,7 +2719,7 @@ void CFEngine::Net_OnGlobalInfo()
 	{
 	//	GmapNullParams();
 		Net_SendGiveGlobalInfo(info_flags);
-		//!!! надо еще reset буферу сделать
+		//!!! РЅР°РґРѕ РµС‰Рµ reset Р±СѓС„РµСЂСѓ СЃРґРµР»Р°С‚СЊ
 		return;
 	}
 
@@ -2745,7 +2745,7 @@ int CFEngine::NetOutput()
 	}
 
 	bout.reset();
-    // отладка сетевых сообщений
+    // РѕС‚Р»Р°РґРєР° СЃРµС‚РµРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
     WriteLog("NetOutput\n");
 
 	Ping=GetTickCount();
@@ -2823,7 +2823,7 @@ int CFEngine::NetInput()
 }
 
 /*
-// Менеджер загрузки любых анимаций
+// РњРµРЅРµРґР¶РµСЂ Р·Р°РіСЂСѓР·РєРё Р»СЋР±С‹С… Р°РЅРёРјР°С†РёР№
 int CFEngine::LoadAnyAnims(int atype,AnyAnimData* pany)
 {
 	if(!pany) return 0;
@@ -2845,11 +2845,11 @@ int CFEngine::LoadAnyAnims(int atype,AnyAnimData* pany)
 	return 1;
 }
 
-// анимация интерфейса
+// Р°РЅРёРјР°С†РёСЏ РёРЅС‚РµСЂС„РµР№СЃР°
 void CFEngine::IntAnim()
 {   
     endanim=lpAnyData->eng;
-	endanim->cnt_frames=5; // счетчик
+	endanim->cnt_frames=5; // СЃС‡РµС‚С‡РёРє
 	end_id=endanim->ind[1];
 	//anm_tkr=GetTickCount();
 	//chng_tkr=GetTickCount();
@@ -2968,31 +2968,31 @@ ItemObj* CFEngine::GetMouseItem(int cursor_x, int cursor_y)
 
 int CFEngine::CheckRegData(crit_info* newcr)
 {
-//ПРОВЕРКА ДАННЫХ
-	WriteLog("Проверка данных регистрации... ");
+//РџР РћР’Р•Р РљРђ Р”РђРќРќР«РҐ
+	WriteLog("РџСЂРѕРІРµСЂРєР° РґР°РЅРЅС‹С… СЂРµРіРёСЃС‚СЂР°С†РёРё... ");
 	int bi;
-	//проверка на длинну логина
+	//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ Р»РѕРіРёРЅР°
 	if(strlen(newcr->login)<MIN_LOGIN || strlen(newcr->login)>MAX_LOGIN)
 	{
 		WriteLog("Err - LOGIN\n");
 		LogMsg=1;
 		return 0;
 	}
-	//проверка на длинну пасса
+	//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ РїР°СЃСЃР°
 	if(strlen(newcr->pass)<MIN_LOGIN || strlen(newcr->pass)>MAX_LOGIN)
 	{
 		WriteLog("Err - PASS\n");
 		LogMsg=2;
 		return 0;
 	}
-	//проверка на длинну имени
+	//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ РёРјРµРЅРё
 	if(strlen(newcr->name)<MIN_NAME || strlen(newcr->name)>MAX_NAME)
 	{
 		WriteLog("Err - NAME\n");
 		LogMsg=13;
 		return 0;
 	}
-	//проверка на длинну cases
+	//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ cases
 	for(bi=0; bi<5; bi++)
 		if(strlen(newcr->cases[bi])<MIN_NAME || strlen(newcr->cases[bi])>MAX_NAME)
 		{
@@ -3000,28 +3000,28 @@ int CFEngine::CheckRegData(crit_info* newcr)
 			LogMsg=14;
 			return 0;
 		}
-	//проверка базового типа
+	//РїСЂРѕРІРµСЂРєР° Р±Р°Р·РѕРІРѕРіРѕ С‚РёРїР°
 	if(newcr->base_type<0 || newcr->base_type>2)
 	{ 
-		WriteLog("Err - БАЗОВЫЙ ТИП\n");
+		WriteLog("Err - Р‘РђР—РћР’Р«Р™ РўРРџ\n");
 		LogMsg=5;
 		return 0;
 	}
-	//проверка пола
+	//РїСЂРѕРІРµСЂРєР° РїРѕР»Р°
 	if(newcr->st[ST_GENDER]<0 || newcr->st[ST_GENDER]>1) 
 	{ 
-		WriteLog("Err - ПОЛ\n");
+		WriteLog("Err - РџРћР›\n");
 		LogMsg=15;
 		return 0;
 	}
-	//проверка возраста
+	//РїСЂРѕРІРµСЂРєР° РІРѕР·СЂР°СЃС‚Р°
 	if(newcr->st[ST_AGE]<14 || newcr->st[ST_AGE]>80) 
 	{ 
-		WriteLog("Err - ВОЗРАСТ\n");
+		WriteLog("Err - Р’РћР—Р РђРЎРў\n");
 		LogMsg=16;
 		return 0;
 	}
-	//проверка SPECIAL
+	//РїСЂРѕРІРµСЂРєР° SPECIAL
 	if((newcr->st[ST_STRENGHT	]<1)||(newcr->st[ST_STRENGHT	]>10)||
 		(newcr->st[ST_PERCEPTION]<1)||(newcr->st[ST_PERCEPTION	]>10)||
 		(newcr->st[ST_ENDURANCE	]<1)||(newcr->st[ST_ENDURANCE	]>10)||
@@ -3030,7 +3030,7 @@ int CFEngine::CheckRegData(crit_info* newcr)
 		(newcr->st[ST_AGILITY	]<1)||(newcr->st[ST_AGILITY		]>10)||
 		(newcr->st[ST_LUCK		]<1)||(newcr->st[ST_LUCK		]>10))
 		{
-			WriteLog("Err - SPECIAL №%d\n", bi);
+			WriteLog("Err - SPECIAL в„–%d\n", bi);
 			LogMsg=5;
 			return 0;
 		}
@@ -3070,27 +3070,27 @@ void CFEngine::SetDayTime(DWORD time_ms)
 	Game_Hours=time_day/60;
 	Game_Mins=time_day%60;
 
-	if(time_day<(DAY_MIN/4)) //ночь
+	if(time_day<(DAY_MIN/4)) //РЅРѕС‡СЊ
 	{
 		dayR=countR[0]+(float)(countR[1]-countR[0])/(DAY_MIN/4)*time_day;
 		dayG=countG[0]+(float)(countG[1]-countG[0])/(DAY_MIN/4)*time_day;
 		dayB=countB[0]+(float)(countB[1]-countB[0])/(DAY_MIN/4)*time_day;
 	}
-	else if(time_day<(DAY_MIN/2)) //утро
+	else if(time_day<(DAY_MIN/2)) //СѓС‚СЂРѕ
 	{
 		time_day-=(DAY_MIN/4);
 		dayR=countR[1]-(float)(countR[1]-countR[2])/(DAY_MIN/4)*time_day;
 		dayG=countG[1]-(float)(countG[1]-countG[2])/(DAY_MIN/4)*time_day;
 		dayB=countB[1]-(float)(countB[1]-countB[2])/(DAY_MIN/4)*time_day;
 	}
-	else if(time_day<(DAY_MIN/4*3)) //день
+	else if(time_day<(DAY_MIN/4*3)) //РґРµРЅСЊ
 	{
 		time_day-=(DAY_MIN/2);
 		dayR=countR[2]-(float)(countR[2]-countR[3])/(DAY_MIN/4)*time_day;
 		dayG=countG[2]-(float)(countG[2]-countG[3])/(DAY_MIN/4)*time_day;
 		dayB=countB[2]-(float)(countB[2]-countB[3])/(DAY_MIN/4)*time_day;
 	}
-	else if(time_day<DAY_MIN) //вечер
+	else if(time_day<DAY_MIN) //РІРµС‡РµСЂ
 	{
 		time_day-=(DAY_MIN/4*3);
 		dayR=countR[3]-(float)(countR[3]-countR[0])/(DAY_MIN/4)*time_day;
@@ -3142,7 +3142,7 @@ void CFEngine::ChosenProcess()
 
 		if(lpChosen->hex_x!=PathMoveX || lpChosen->hex_y!=PathMoveY)
 		{ 
-		//ищем направление
+		//РёС‰РµРј РЅР°РїСЂР°РІР»РµРЅРёРµ
 //WriteLog("hx=%d,px=%d,hy=%d,py=%d\n",lpChosen->hex_x,PathMoveX,lpChosen->hex_y,PathMoveY);
 
 			BYTE steps[FINDPATH_MAX_PATH];
@@ -3152,11 +3152,11 @@ void CFEngine::ChosenProcess()
 				Net_SendMove(&steps[0]);
 				return;
 			}
-		//обработка других ситуаций
-			if(res==FP_DEADLOCK		) lpChosen->SetText("Я туда не пройду",COLOR_TEXT_DEFAULT);
-			if(res==FP_ERROR		) WriteLog("!!!WORNING!!! Ошибка поиска пути\n",COLOR_TEXT_DEFAULT);
-			if(res==FP_TOOFAR		) lpChosen->SetText("Далековато",COLOR_TEXT_DEFAULT);
-			if(res==FP_ALREADY_HERE	) lpChosen->SetText("Уже тут",COLOR_TEXT_DEFAULT);
+		//РѕР±СЂР°Р±РѕС‚РєР° РґСЂСѓРіРёС… СЃРёС‚СѓР°С†РёР№
+			if(res==FP_DEADLOCK		) lpChosen->SetText("РЇ С‚СѓРґР° РЅРµ РїСЂРѕР№РґСѓ",COLOR_TEXT_DEFAULT);
+			if(res==FP_ERROR		) WriteLog("!!!WORNING!!! РћС€РёР±РєР° РїРѕРёСЃРєР° РїСѓС‚Рё\n",COLOR_TEXT_DEFAULT);
+			if(res==FP_TOOFAR		) lpChosen->SetText("Р”Р°Р»РµРєРѕРІР°С‚Рѕ",COLOR_TEXT_DEFAULT);
+			if(res==FP_ALREADY_HERE	) lpChosen->SetText("РЈР¶Рµ С‚СѓС‚",COLOR_TEXT_DEFAULT);
 		}
 
 		break;
@@ -3198,10 +3198,10 @@ void CFEngine::ChosenProcess()
 
 		if(AttDir>5) 
 		{
-			if(AttDir==FINDTARGET_BARRIER		) lpChosen->SetText("Я туда не попаду",COLOR_TEXT_DEFAULT);
-			if(AttDir==FINDTARGET_ERROR			) WriteLog("!!!WORNING!!! Ошибка поиска пути\n",COLOR_TEXT_DEFAULT);
-			if(AttDir==FINDTARGET_TOOFAR		) lpChosen->SetText("Далековато",COLOR_TEXT_DEFAULT);
-			if(AttDir==FINDTARGET_INVALID_TARG	) lpChosen->SetText("Неправильная цель",COLOR_TEXT_DEFAULT);
+			if(AttDir==FINDTARGET_BARRIER		) lpChosen->SetText("РЇ С‚СѓРґР° РЅРµ РїРѕРїР°РґСѓ",COLOR_TEXT_DEFAULT);
+			if(AttDir==FINDTARGET_ERROR			) WriteLog("!!!WORNING!!! РћС€РёР±РєР° РїРѕРёСЃРєР° РїСѓС‚Рё\n",COLOR_TEXT_DEFAULT);
+			if(AttDir==FINDTARGET_TOOFAR		) lpChosen->SetText("Р”Р°Р»РµРєРѕРІР°С‚Рѕ",COLOR_TEXT_DEFAULT);
+			if(AttDir==FINDTARGET_INVALID_TARG	) lpChosen->SetText("РќРµРїСЂР°РІРёР»СЊРЅР°СЏ С†РµР»СЊ",COLOR_TEXT_DEFAULT);
 
 			break;
 		}
