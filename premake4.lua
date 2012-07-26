@@ -45,19 +45,11 @@ solution "fonline-open-source"
     targetdir "bin/release"
     
   configuration "vs2010 or vs2008"
-    defines "_CRT_SECURE_NO_WARNINGS"
+    defines { "_CRT_SECURE_NO_WARNINGS",
+              "_CRT_NONSTDC_NO_DEPRECATE" }
     
   configuration "windows"
     defines "HAVE_VSNPRINTF"
-  
-  project "zlib"
-    kind "StaticLib"
-    language "C"
-    
-    files { 
-      "src/zlib/**.h", 
-      "src/zlib/**.c"
-    }
   
   project "fonline-client"
     kind "ConsoleApp"
@@ -82,3 +74,12 @@ solution "fonline-open-source"
       libdirs { "libs", "dx8sdk/lib", "lib" }
       links { "d3dx8", "d3d8", "dinput8", "dxguid", "dxerr8", "wsock32", "dsound" }
       links { "ogg_static", "vorbisfile_static", "vorbisenc_static", "vorbis_static" }
+  
+  project "zlib"
+    kind "StaticLib"
+    language "C"
+    
+    files { 
+      "src/zlib/**.h", 
+      "src/zlib/**.c"
+    }
