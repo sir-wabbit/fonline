@@ -92,7 +92,9 @@ int GetChar(BYTE DIK,char* str,int* position,WORD max,int lang,int shift) //!Cve
 	int posit=0;
 	if(!position)
 	{
-		for(int i=0;str[i];i++);
+	  // XXX[27.7.2012 alex]: some fucking dumbass doesn't know what strlen is.
+	  int i = 0;
+		for(i=0;str[i];i++);
 		posit=i;
 	}
 	else
@@ -125,8 +127,9 @@ int GetChar(BYTE DIK,char* str,int* position,WORD max,int lang,int shift) //!Cve
 		if(!posit) return 1; //!Cvet
 
 		posit--; //!Cvet
-
-		for(int i=posit;str[i];i++)
+    
+    int i;
+		for(i=posit;str[i];i++)
 			if(str[i+1]) str[i]=str[i+1]; //!Cvet
 		str[i-1]=0; //!Cvet
 
@@ -138,7 +141,8 @@ int GetChar(BYTE DIK,char* str,int* position,WORD max,int lang,int shift) //!Cve
 		if(!str[0]) return 1;
 		if(!str[posit]) return 1; //!Cvet
 
-		for(int i=posit;str[i];i++)
+    int i;
+		for(i=posit;str[i];i++)
 			if(str[i+1]) str[i]=str[i+1]; //!Cvet
 		str[i-1]=0; //!Cvet
 

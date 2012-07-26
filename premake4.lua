@@ -52,13 +52,14 @@ solution "fonline-open-source"
     defines "HAVE_VSNPRINTF"
   
   project "fonline-client"
-    kind "ConsoleApp"
+    kind "WindowedApp"
     language "C++"
+    
+    flags { "WinMain" }
         
     includedirs { 
       "src/client",
-      "inc",
-      "dx8sdk/include"
+      "inc"
     }
     
     files { 
@@ -70,10 +71,20 @@ solution "fonline-open-source"
     links { "zlib" }
     includedirs { "src/zlib" }
     
+    -- DirectX
+    includedirs { "dx8sdk/include" }
     configuration "x32"
-      libdirs { "libs", "dx8sdk/lib", "lib" }
+      libdirs { "dx8sdk/lib" }
       links { "d3dx8", "d3d8", "dinput8", "dxguid", "dxerr8", "wsock32", "dsound" }
-      links { "ogg_static", "vorbisfile_static", "vorbisenc_static", "vorbis_static" }
+      linkoptions { "/nodefaultlib:libci.lib" }
+      
+    -- Ogg + Vorbis
+    configuration { "x32", "debug" }
+      libdirs { "lib/x32/debug/libogg", "lib/x32/debug/libvorbis" }
+    configuration { "x32", "release" }
+      libdirs { "lib/x32/release/libogg", "lib/x32/release/libvorbis" }
+    configuration "*"
+      links { "libogg", "libvorbis", "libvorbisfile" }
   
   project "zlib"
     kind "StaticLib"

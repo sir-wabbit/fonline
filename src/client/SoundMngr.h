@@ -15,10 +15,6 @@
 
 #include "ogg/codec.h"
 #include "ogg/vorbisfile.h"
-#pragma comment (lib, "ogg/ogg_static.lib")
-#pragma comment (lib, "ogg/vorbisfile_static.lib")
-#pragma comment (lib, "ogg/vorbisenc_static.lib")
-#pragma comment (lib, "ogg/vorbis_static.lib")
 
 struct Sound
 {

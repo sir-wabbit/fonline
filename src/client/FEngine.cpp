@@ -552,7 +552,7 @@ int CFEngine::Render()
 	hf.DrawMap2();
 
 	sm.Flush();
-	for(it=critters.begin();it!=critters.end();it++)
+	for(crit_map::iterator it=critters.begin();it!=critters.end();it++)
 		(*it).second->DrawText(&fnt);
 
 //!Cvet++++++++
@@ -721,7 +721,8 @@ void CFEngine::ParseInput()
 		if(edit_mode)
 		{
 			int fnd=0;
-			for(WORD tst=0;tst<256;tst++) //!Cvet было DI_BUF_SIZE
+			WORD tst;
+			for(tst=0;tst<256;tst++) //!Cvet было DI_BUF_SIZE
 			{
 				DI_ONDOWN(tst, last_key=NULL; if(GetChar(tst,ed_str,&cur_edit,EDIT_LEN,lang,ShiftDwn)) {fnd=1;break;});
 				DI_ONUP(tst, last_key=NULL;);
@@ -2703,8 +2704,10 @@ void CFEngine::Net_OnGlobalInfo()
 		GmapSpeed=speed;
 		GmapSpeedX=(float)(speed_x)/1000000;
 		GmapSpeedY=(float)(speed_y)/1000000;
-
-		int dist=sqrt(pow(GmapMoveX-GmapGroupX,2)+pow(GmapMoveY-GmapGroupY,2));
+    
+    // XXX[27.7.2012 alex]: this code needs Vector class with a length() method
+    // XXX[27.7.2012 alex]: unused variable
+		int dist=sqrt(pow(GmapMoveX-GmapGroupX,2.0)+pow(GmapMoveY-GmapGroupY,2.0));
 
 		gm_process=true;
 	}
@@ -3274,7 +3277,8 @@ void CFEngine::ChosenProcess()
 	case ACTION_TALK_NPC:
 		if(!tosendTargetCrit) break;
 
-		if(sqrt(pow(lpChosen->hex_x-tosendTargetCrit->hex_x,2)+pow(lpChosen->hex_y-tosendTargetCrit->hex_y,2))>TALK_NPC_DISTANCE)
+    // XXX[27.7.2012 alex]: this code needs Vector class with a length() method
+		if(sqrt(pow(lpChosen->hex_x-tosendTargetCrit->hex_x,2.0)+pow(lpChosen->hex_y-tosendTargetCrit->hex_y,2.0))>TALK_NPC_DISTANCE)
 		{
 			PathMoveX=tosendTargetCrit->hex_x;
 			PathMoveY=tosendTargetCrit->hex_y;

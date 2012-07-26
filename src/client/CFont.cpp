@@ -178,7 +178,9 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 		{
 			if(!FLAG(flags,FT_NOBREAK))
 			{
-				for(int j=i;j>=0;j--)
+			  // XXX[27.7.2012 alex]: unreadable. there should be a standard function that does the same
+			  int j;
+				for(j=i;j>=0;j--)
 				{
 					if(str[j]==' ')
 					{
@@ -235,7 +237,8 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 	//выбираем нужные строки исходя из дополнительных флагов
 	if((flags & FT_UPPER) && strcnt>strcnt_r)
 	{
-		for(int line_cur=0,i=0;str[i],line_cur<(strcnt-strcnt_r);i++)
+	  int i = 0;
+		for(int line_cur = 0;str[i],line_cur<(strcnt-strcnt_r);i++)
 			if(str[i]=='\n') line_cur++;
 		
 		str=&str[i];
@@ -256,9 +259,9 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 	}
 
 	//memset(maxx,curx,sizeof(int)*strcnt);
-	for(i=0;i<strcnt;i++) font->maxx[i]=curx;
+	for(int i=0;i<strcnt;i++) font->maxx[i]=curx;
 	int curstr=0;
-	for(i=0;str[i];i++)
+	for(int i=0;str[i];i++)
 	{
 		switch(str[i]) 
 		{
@@ -294,7 +297,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 	lpDevice->SetTexture(0,font->font_surf);
 
 	DWORD colorize=col;
-	for(i=0;str[i];i++)
+	for(int i=0;str[i];i++)
 	{
 		if(FLAG(flags,FT_COLORIZE))
 		{
