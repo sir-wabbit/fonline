@@ -1,0 +1,42 @@
+Автор Fallout Online Олег Марескин. Основатель проекта FoDev.
+Лицензиат FoDev. Команда разработчиков Fallout Online.
+Лицензиат TeamX. Использование ресурсов коммьюнити (Abel, Dims).
+
+Copyright (C) Олег Марескин, 2005-2007
+Данная программа является свободным программным обеспечением. Вы вправе распространять ее и/или модифицировать в 
+соответствии с условиями версии 2 либо по вашему выбору с условиями более поздней версии Стандартной Общественной 
+Лицензии GNU, опубликованной Free Software Foundation. 
+
+Мы распространяем эту программу в надежде на то, что она будет вам полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ 
+ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. 
+Для получения более подробной информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+Вместе с данной программой вы должны были получить экземпляр Стандартной Общественной Лицензии GNU. Если вы его не 
+получили, сообщите об этом в Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+Ящик для контактов: baster@inbox.ru тема для письма "FOS"
+
+Author Fallout Online Oleg Mareskin. Project founder FoDev.
+Licensor FoDev. Fallout Online Developers team.
+Licensor TeamX. Crazy russians modders team =)(Abel, Dims).
+
+Copyright (C) Oleg Mareskin, 2005-2007
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+Mailbox for spam: baster@inbox.ru subject "FOS"
+
+Русская версия GNU находится по адресу http://rus-linux.net/MyLDP/histori/gpl/gplrus.html
+Нерусская версия или оригинал GNU http://www.gnu.org/copyleft/gpl.html
+
+FALLOUT. All Rights Reserved. © 2007 Bethesda Softworks. 
