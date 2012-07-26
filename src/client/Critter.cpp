@@ -16,8 +16,8 @@
 void CCritter::Initialization()
 {
 	for(int ts=0; ts<ALL_STATS ; ts++) st[ts]=0;
-	for(	ts=0; ts<ALL_SKILLS; ts++) sk[ts]=0;
-	for(	ts=0; ts<ALL_PERKS ; ts++) pe[ts]=0;
+	for(int ts=0; ts<ALL_SKILLS; ts++) sk[ts]=0;
+	for(int ts=0; ts<ALL_PERKS ; ts++) pe[ts]=0;
 
 	cur_afrm=0;
 	move_type=MOVE_WALK; 

@@ -1455,7 +1455,7 @@ void CFEngine::LogInput()
 		return;
 	}
 		
-	for(i=0;i<dwElements;i++) 
+	for(DWORD i=0;i<dwElements;i++) 
 	{
 		DI_ONMOUSE(DIMOFS_X, cur_x+=didod[i].dwData*opt_mouse_speed );
 		DI_ONMOUSE(DIMOFS_Y, cur_y+=didod[i].dwData*opt_mouse_speed );
@@ -1631,7 +1631,7 @@ void CFEngine::RegInput()
 		return;
 	}
 		
-	for(i=0;i<dwElements;i++) 
+	for(DWORD i=0;i<dwElements;i++) 
 	{
 		DI_ONMOUSE(DIMOFS_X, cur_x+=didod[i].dwData*opt_mouse_speed );
 		DI_ONMOUSE(DIMOFS_Y, cur_y+=didod[i].dwData*opt_mouse_speed );
@@ -2606,7 +2606,8 @@ void CFEngine::LmapPrepareMap()
 
 			if(i1<0 || i2<0 || i1>=MAXTILEX || i2>=MAXTILEY) continue;
 
-			if(sqrt(pow(lpChosen->hex_x-i1,2)+pow(lpChosen->hex_y-i2,2))==20+lpChosen->st[ST_PERCEPTION]*2)
+      // XXX[27.7.2012 alex]: this code needs Vector class with a length() method
+			if(sqrt(pow(lpChosen->hex_x-i1,2.0)+pow(lpChosen->hex_y-i2,2.0))==20+lpChosen->st[ST_PERCEPTION]*2)
 			{
 				lmap_prep_pix.push_back(new PrepPix(LmapWMap[0]+pix_x,
 					LmapWMap[1]+pix_y,0xAA00FFFF,&LmapX,&LmapY));
@@ -2933,7 +2934,7 @@ void CFEngine::GmapDraw()
 		int cur_taby=GmapWTabs[1]-gm_tab_scr_y;
 		int cur_city=0;
 
-		for(it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
+		for(vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 		{
 			GM_city* city=(*it_c);
 
@@ -3086,7 +3087,7 @@ void CFEngine::GmapDraw()
 		cur_crit=0;
 		int posx,posy;
 		WORD cur_pic;
-		for(it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
+		for(vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
 		{
 			GM_crit* crit=(*it_cr);
 
@@ -3183,7 +3184,7 @@ void CFEngine::GmapInput()
 		return;
 	}
 		
-	for(i=0;i<dwElements;i++) 
+	for(DWORD i=0;i<dwElements;i++) 
 	{
 		DI_ONMOUSE(DIMOFS_X, cur_x+=didod[i].dwData*opt_mouse_speed );
 		DI_ONMOUSE(DIMOFS_Y, cur_y+=didod[i].dwData*opt_mouse_speed );
@@ -3264,7 +3265,8 @@ void CFEngine::GmapMouseUp()
 		{
 			WORD city_num=0;
 			for(vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
-				if(sqrt(pow((*it_c)->x-GmapGroupX,2)+pow((*it_c)->y-GmapGroupY,2))<=(*it_c)->radius)
+			  // XXX[27.7.2012 alex]: this code needs Vector class with a length() method
+				if(sqrt(pow((*it_c)->x-GmapGroupX,2.0)+pow((*it_c)->y-GmapGroupY,2.0))<=(*it_c)->radius)
 				{
 					city_num=(*it_c)->num;
 					break;

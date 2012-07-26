@@ -107,24 +107,24 @@ void CHexField::Clear()
 		delete[] (*it).second;
 	item_proto.clear();
 
-	for(it=scen_proto.begin();it!=scen_proto.end();it++)
+	for(char_map::iterator it=scen_proto.begin();it!=scen_proto.end();it++)
 		delete[] (*it).second;
 	scen_proto.clear();
 
 
-	for(it=item_fnames.begin();it!=item_fnames.end();it++)
+	for(char_map::iterator it=item_fnames.begin();it!=item_fnames.end();it++)
 		delete[] (*it).second;
 	item_fnames.clear();
 
-	for(it=scen_fnames.begin();it!=scen_fnames.end();it++)
+	for(char_map::iterator it=scen_fnames.begin();it!=scen_fnames.end();it++)
 		delete[] (*it).second;
 	scen_fnames.clear();
 
-	for(it=wall_fnames.begin();it!=wall_fnames.end();it++)
+	for(char_map::iterator it=wall_fnames.begin();it!=wall_fnames.end();it++)
 		delete[] (*it).second;
 	wall_fnames.clear();
 
-	for(it=tile_fnames.begin();it!=tile_fnames.end();it++)
+	for(char_map::iterator it=tile_fnames.begin();it!=tile_fnames.end();it++)
 		delete[] (*it).second;
 	tile_fnames.clear();
 
@@ -137,7 +137,7 @@ void CHexField::Clear()
 		SAFEDEL((*jt).second);
 	dtree.clear();
 
-	for(jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++) //!Cvet
+	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++) //!Cvet
 		SAFEDEL((*jt).second);
 	dtree_roof_rain.clear();
 
@@ -164,7 +164,7 @@ void CHexField::Clear()
 		delete (*oi);
 	prep_vec_tile.clear();
 
-	for(oi=prep_vec_roof.begin();oi!=prep_vec_roof.end();oi++)
+	for(onesurf_vec::iterator oi=prep_vec_roof.begin();oi!=prep_vec_roof.end();oi++)
 		delete (*oi);
 	prep_vec_roof.clear();
 
@@ -775,7 +775,8 @@ void CHexField::DelObj(stat_obj* del_sobj, HexTYPE x, HexTYPE y)
 	for(item_vect::iterator it_i=hex_field[y][x].itm_obj.begin();it_i!=hex_field[y][x].itm_obj.end();it_i++)
 		if((*it_i)->sobj->id==del_sobj->id)
 		{
-			for(dtree_map::iterator it_dt=dtree.find(hex_field[y][x].pos+DRAW_ORDER_ITEM);it_dt!=dtree.end();it_dt++)
+		  dtree_map::iterator it_dt;
+			for(it_dt=dtree.find(hex_field[y][x].pos+DRAW_ORDER_ITEM);it_dt!=dtree.end();it_dt++)
 				if((*it_dt).second->lp_sprid==&(*it_i)->spr_id) break;
 
 			if(it_dt!=dtree.end())
@@ -783,8 +784,9 @@ void CHexField::DelObj(stat_obj* del_sobj, HexTYPE x, HexTYPE y)
 				delete (*it_dt).second;
 				dtree.erase(it_dt);
 			}
-
-			for(item_vect::iterator it_i2=all_obj.begin();it_i2!=all_obj.end();it_i2++)
+      
+      item_vect::iterator it_i2;
+			for(it_i2=all_obj.begin();it_i2!=all_obj.end();it_i2++)
 				if((*it_i)==(*it_i2)) break;
 			all_obj.erase(it_i2);
 
@@ -1003,7 +1005,7 @@ void CHexField::SetCenter2(int x, int y)
 		SAFEDEL((*jt).second);
 	dtree.clear();
 
-	for(jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++)
+	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++)
 		SAFEDEL((*jt).second);
 	dtree_roof_rain.clear();
 
@@ -1200,7 +1202,7 @@ void CHexField::RebuildTiles() //!Cvet переделал. добавил подготовку крыши
 	for(dtree_map::iterator jt=ttree_t.begin();jt!=ttree_t.end();jt++)
 		delete (*jt).second;
 	ttree_t.clear();
-	for(jt=ttree_r.begin();jt!=ttree_r.end();jt++) //!Cvet
+	for(dtree_map::iterator jt=ttree_r.begin();jt!=ttree_r.end();jt++) //!Cvet
 		delete (*jt).second;
 	ttree_r.clear();
 }
@@ -1761,7 +1763,7 @@ int CHexField::UnLoadMap()
 		SAFEDEL((*jt).second);
 	dtree.clear();
 
-	for(jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++)
+	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++)
 		SAFEDEL((*jt).second);
 	dtree_roof_rain.clear();
 
@@ -2391,14 +2393,14 @@ void CHexField::FindSetCenter(int x, int y)
 			break;
 		}
 	
-	for(	i=0;i<25;++i) //right
+	for(int i=0;i<25;++i) //right
 		if(hex_field[ny][nx-i].scroll_block==TRUE)
 		{
 			nx+=25-i;
 			break;
 		}
 
-	for(	i=0;i<45;++i) //up-right
+	for(int i=0;i<45;++i) //up-right
 		if(hex_field[ny-i/2][nx-i].scroll_block==TRUE)
 		{
 			nx+=45-i;
@@ -2406,21 +2408,21 @@ void CHexField::FindSetCenter(int x, int y)
 			break;
 		}
 
-	for(	i=0;i<40;++i) //down
+	for(int i=0;i<40;++i) //down
 		if(hex_field[ny+i][nx].scroll_block==TRUE)
 		{
 			ny-=40-i;
 			break;
 		}
 
-	for(	i=0;i<30;++i) //left
+	for(int i=0;i<30;++i) //left
 		if(hex_field[ny][nx+i].scroll_block==TRUE)
 		{
 			ny-=30-i;
 			break;
 		}
 
-	for(	i=0;i<45;++i) //down-left
+	for(int i=0;i<45;++i) //down-left
 		if(hex_field[ny+i/2][nx+i].scroll_block==TRUE)
 		{
 			nx-=45-i;

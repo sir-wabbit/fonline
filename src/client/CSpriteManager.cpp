@@ -524,7 +524,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 	for(int i=0;i<6;i++)
 		offs_x[i]=fm.GetWord();
 	fm.SetCurPos(0x16);
-	for(i=0;i<6;i++)
+	for(int i=0;i<6;i++)
 		offs_y[i]=fm.GetWord();
 
 	pframes->ticks=1000/frm_fps*frm_num; //!Cvet
@@ -532,7 +532,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 	pframes->ind=new WORD[frm_num*6];
 	pframes->next_x=new short[frm_num*6];
 	pframes->next_y=new short[frm_num*6];
-	for(i=0;i<6;i++)
+	for(int i=0;i<6;i++)
 		pframes->dir_offs[i]=i*frm_num;
 
 	DWORD cur_ptr=0x3E;

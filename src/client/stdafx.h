@@ -35,15 +35,6 @@ using namespace std;
 #define chSTR(x) chSTR2(x)
 #define chMSG(desc) message(__FILE__ "(" chSTR(__LINE__) "):" #desc)
 
-#pragma comment (lib, "d3dx8.lib")
-#pragma comment (lib, "d3d8.lib")
-#pragma comment (lib, "dinput8.lib")
-#pragma comment (lib, "dxguid.lib")
-#pragma comment (lib, "dxerr8.lib")
-#pragma comment (lib, "wsock32.lib")
-#pragma comment (lib, "dsound.lib") //!Cvet
-#pragma comment (lib, "dxguid.lib") //!Cvet
-
 #define SAFEREL(x) {if(x) (x)->Release();(x)=NULL;}
 #define SAFEDEL(x) {if(x) delete (x);(x)=NULL;}
 #define SAFEDELA(x) {if(x) delete[] (x);(x)=NULL;}

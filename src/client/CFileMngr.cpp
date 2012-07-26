@@ -34,7 +34,7 @@ char pathlst[][50]=
 };
 
 
-CFileMngr::Init()
+int CFileMngr::Init()
 {
 	WriteLog("CFileMngr Initialization...\n");
 	master_dat[0]=0;

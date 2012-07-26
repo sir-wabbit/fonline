@@ -5,6 +5,8 @@
 #include <memory.h>
 #include <stdio.h>
 
+// XXX[27.7.2012 alex]: this code reeks of x64-incompatibility
+
 
 #include "acmstrm.h"
 // SomeBuff [PackAttr2, SomeSize]
@@ -135,7 +137,9 @@ CACMUnpacker::CACMUnpacker (BYTE* fileHandle, DWORD fileLenght, int &channels, i
 		someBuff = new int[someSize2];
 		if (!someBuff) throw;
 		valCnt = 0;
-	} catch (void) {
+  // XXX[27.7.2012 alex]: catch void??
+	//} catch (void) {
+	} catch(...) {
 		CACMUnpacker::~CACMUnpacker();
 	}
 }
@@ -200,7 +204,7 @@ int CACMUnpacker::createAmplitudeDictionary() {
 		v += val;
 	}
 	v = -val;
-	for (i=0; i<count; i++) {
+	for (int i=0; i<count; i++) {
 		Buffer_Middle[-i-1] = v;
 		v -= val;
 	}
