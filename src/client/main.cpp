@@ -13,8 +13,8 @@
 *********************************************************************/
 
 LRESULT APIENTRY WndProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam);
-HINSTANCE hInstance=NULL;//äåñêðèïòîð
-HWND hWnd=NULL;//Îêíî
+HINSTANCE hInstance=NULL;//Ð´ÐµÑÐºÑ€Ð¸Ð¿Ñ‚Ð¾Ñ€
+HWND hWnd=NULL;//ÐžÐºÐ½Ð¾
 
 CFEngine* engine;
 
@@ -22,19 +22,19 @@ CFEngine* engine;
 int APIENTRY WinMain(HINSTANCE hCurrentInst,
 	HINSTANCE hPreviousInst,LPSTR lpCmdLine,int nCmdShow)
 {
-	WNDCLASS wndClass;//Èñïîëüçóåòñÿ äëÿ ðåãèñòðàöèè êëàññà îêíà
-	MSG msg;//ñîîáùåíèÿ
-	wndClass.style=CS_HREDRAW|CS_VREDRAW;//îïðåäåëÿåò ñâîéñòâà îêíà
-	wndClass.lpfnWndProc=WndProc;//îïðåäåëÿåò àäðåñ ôóíêöèè îêíà
-	wndClass.cbClsExtra=0;//÷èñëî áàéò, êîòîðîå íåîáõîäèìî çàïðîñèòü ó Windows. Îáû÷íî ðàâíà 0
-	wndClass.cbWndExtra=0;//÷èñëî áàéò, êîòîðîå íåîáõîäèìî çàïðîñèòü ó Windows. Îáû÷íî ðàâíà 0
-	wndClass.hInstance =hCurrentInst;//ñîîáùàåò Windows î òîì, êòî ñîçäàåò îïðåäåëåíèå êëàññà
-	wndClass.hIcon =LoadIcon(hCurrentInst,MAKEINTRESOURCE(IDI_ICON));//çàãðóæàåò èêîíêó, â äàííîì ñëó÷àå åå íåò
-	wndClass.hCursor =LoadCursor(NULL,IDC_ARROW);//ñòàíäàðòíûé êóðñîð
-	wndClass.hbrBackground=(HBRUSH)GetStockObject(LTGRAY_BRUSH);//ôîí ïðèëîæåíèÿ
-	wndClass.lpszMenuName=NULL;//îïðåäåëÿåò ìåíþ. Â äàííîé ñèòóàöèè ìåíþ îòñóòñòâóåò
-	wndClass.lpszClassName="FOnline";//óêàçàòåëü íà ñòðîêó, ñîäåðæàùóþ èìÿ êëàññà
-	RegisterClass(&wndClass);//ðåãèñòðàöèÿ îêíà
+	WNDCLASS wndClass;//Ð˜ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÑ‚ÑÑ Ð´Ð»Ñ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ð¸ ÐºÐ»Ð°ÑÑÐ° Ð¾ÐºÐ½Ð°
+	MSG msg;//ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ñ
+	wndClass.style=CS_HREDRAW|CS_VREDRAW;//Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÑÐµÑ‚ ÑÐ²Ð¾Ð¹ÑÑ‚Ð²Ð° Ð¾ÐºÐ½Ð°
+	wndClass.lpfnWndProc=WndProc;//Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÑÐµÑ‚ Ð°Ð´Ñ€ÐµÑ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð¾ÐºÐ½Ð°
+	wndClass.cbClsExtra=0;//Ñ‡Ð¸ÑÐ»Ð¾ Ð±Ð°Ð¹Ñ‚, ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ðµ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ Ð·Ð°Ð¿Ñ€Ð¾ÑÐ¸Ñ‚ÑŒ Ñƒ Windows. ÐžÐ±Ñ‹Ñ‡Ð½Ð¾ Ñ€Ð°Ð²Ð½Ð° 0
+	wndClass.cbWndExtra=0;//Ñ‡Ð¸ÑÐ»Ð¾ Ð±Ð°Ð¹Ñ‚, ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ðµ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ Ð·Ð°Ð¿Ñ€Ð¾ÑÐ¸Ñ‚ÑŒ Ñƒ Windows. ÐžÐ±Ñ‹Ñ‡Ð½Ð¾ Ñ€Ð°Ð²Ð½Ð° 0
+	wndClass.hInstance =hCurrentInst;//ÑÐ¾Ð¾Ð±Ñ‰Ð°ÐµÑ‚ Windows Ð¾ Ñ‚Ð¾Ð¼, ÐºÑ‚Ð¾ ÑÐ¾Ð·Ð´Ð°ÐµÑ‚ Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÐµÐ½Ð¸Ðµ ÐºÐ»Ð°ÑÑÐ°
+	wndClass.hIcon =LoadIcon(hCurrentInst,MAKEINTRESOURCE(IDI_ICON));//Ð·Ð°Ð³Ñ€ÑƒÐ¶Ð°ÐµÑ‚ Ð¸ÐºÐ¾Ð½ÐºÑƒ, Ð² Ð´Ð°Ð½Ð½Ð¾Ð¼ ÑÐ»ÑƒÑ‡Ð°Ðµ ÐµÐµ Ð½ÐµÑ‚
+	wndClass.hCursor =LoadCursor(NULL,IDC_ARROW);//ÑÑ‚Ð°Ð½Ð´Ð°Ñ€Ñ‚Ð½Ñ‹Ð¹ ÐºÑƒÑ€ÑÐ¾Ñ€
+	wndClass.hbrBackground=(HBRUSH)GetStockObject(LTGRAY_BRUSH);//Ñ„Ð¾Ð½ Ð¿Ñ€Ð¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ
+	wndClass.lpszMenuName=NULL;//Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÑÐµÑ‚ Ð¼ÐµÐ½ÑŽ. Ð’ Ð´Ð°Ð½Ð½Ð¾Ð¹ ÑÐ¸Ñ‚ÑƒÐ°Ñ†Ð¸Ð¸ Ð¼ÐµÐ½ÑŽ Ð¾Ñ‚ÑÑƒÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚
+	wndClass.lpszClassName="FOnline";//ÑƒÐºÐ°Ð·Ð°Ñ‚ÐµÐ»ÑŒ Ð½Ð° ÑÑ‚Ñ€Ð¾ÐºÑƒ, ÑÐ¾Ð´ÐµÑ€Ð¶Ð°Ñ‰ÑƒÑŽ Ð¸Ð¼Ñ ÐºÐ»Ð°ÑÑÐ°
+	RegisterClass(&wndClass);//Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð°Ñ†Ð¸Ñ Ð¾ÐºÐ½Ð°
 	hInstance=hCurrentInst;
 
 	if(!StartLogFile())
@@ -45,7 +45,7 @@ int APIENTRY WinMain(HINSTANCE hCurrentInst,
 
 	GetOptions();
 
-	hWnd= CreateWindow( //ñîçäàíèå îêíà
+	hWnd= CreateWindow( //ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¾ÐºÐ½Ð°
 		"FOnline",
 		"Fallout Online",
 		WS_OVERLAPPEDWINDOW & (~WS_MAXIMIZEBOX) & (~WS_SIZEBOX) & (~WS_SYSMENU), //!Cvet (~WS_SYSMENU)
@@ -71,7 +71,7 @@ int APIENTRY WinMain(HINSTANCE hCurrentInst,
 		return 0;
 	}
 	
-    //îðãàíèçàöèÿ öèêëà îáðàáîòêè ñîîáùåíèé
+    //Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ†Ð¸Ñ Ñ†Ð¸ÐºÐ»Ð° Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ¸ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ð¹
 	while(!cmn_Quit)
 	{
 		if(!cmn_lost)
@@ -109,23 +109,23 @@ UINT message,WPARAM wParam,LPARAM lParam)
 {
 	switch(message)
 	{
-	case WM_DESTROY://Âûçûâàåòñÿ ïðè ðàçðóøåíèè îêíà
+	case WM_DESTROY://Ð’Ñ‹Ð·Ñ‹Ð²Ð°ÐµÑ‚ÑÑ Ð¿Ñ€Ð¸ Ñ€Ð°Ð·Ñ€ÑƒÑˆÐµÐ½Ð¸Ð¸ Ð¾ÐºÐ½Ð°
 		if(engine) engine->Clear();
 		cmn_Quit=1;
 		return 0;
 	case WM_KEYDOWN:
 		switch(wParam)
 		{
-		case VK_ESCAPE: //!Cvet ïåðåäåëàë
+		case VK_ESCAPE: //!Cvet Ð¿ÐµÑ€ÐµÐ´ÐµÐ»Ð°Ð»
 			engine->TryExit();
 			break;
-		case VK_F12: //!Cvet ñâîðà÷èâàíèå
+		case VK_F12: //!Cvet ÑÐ²Ð¾Ñ€Ð°Ñ‡Ð¸Ð²Ð°Ð½Ð¸Ðµ
 			ShowWindow(hWnd,SW_MINIMIZE);
 			engine->DoLost();
 			break;
 		}
 		return 0;
-	case WM_ACTIVATE: //!Cvet ïåðåäåëàë +++
+	case WM_ACTIVATE: //!Cvet Ð¿ÐµÑ€ÐµÐ´ÐµÐ»Ð°Ð» +++
 		if(LOWORD(wParam)==WA_INACTIVE)// && HIWORD(wParam))
 		{
 			//engine->DoLost();

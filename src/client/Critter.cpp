@@ -12,7 +12,7 @@
 	purpose:	
 *********************************************************************/
 
-//!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ переделано и добавлено практически всё
+//!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ РїРµСЂРµРґРµР»Р°РЅРѕ Рё РґРѕР±Р°РІР»РµРЅРѕ РїСЂР°РєС‚РёС‡РµСЃРєРё РІСЃС‘
 void CCritter::Initialization()
 {
 	for(int ts=0; ts<ALL_STATS ; ts++) st[ts]=0;
@@ -95,10 +95,10 @@ int CCritter::GetMaxDistance()
 
 int CCritter::Move(BYTE dir)
 {
-	//проверяем направление
+	//РїСЂРѕРІРµСЂСЏРµРј РЅР°РїСЂР°РІР»РµРЅРёРµ
 	if(dir>5 && dir<0) return MOVE_ERROR;
 
-	//если не находим анимацию на бег, то криттер идет пешком
+	//РµСЃР»Рё РЅРµ РЅР°С…РѕРґРёРј Р°РЅРёРјР°С†РёСЋ РЅР° Р±РµРі, С‚Рѕ РєСЂРёС‚С‚РµСЂ РёРґРµС‚ РїРµС€РєРѕРј
 	if(move_type==MOVE_RUN)
 		if(!lpSM->CrAnim[type][1][20]) 
 			if(!lpSM->LoadAnimCr(type,1,20)) move_type=MOVE_WALK;
@@ -154,8 +154,8 @@ void CCritter::Action(Byte action, DWORD action_tick)
 	SetCur_offs(cur_anim->next_x[cur_anim->dir_offs[cur_dir]],
 		cur_anim->next_y[cur_anim->dir_offs[cur_dir]]);
 
-	anim_tkr=GetTickCount(); //начало анимации
-	change_tkr=GetTickCount();//смена кадра
+	anim_tkr=GetTickCount(); //РЅР°С‡Р°Р»Рѕ Р°РЅРёРјР°С†РёРё
+	change_tkr=GetTickCount();//СЃРјРµРЅР° РєР°РґСЂР°
 	cur_afrm=0;
 }
 
@@ -292,7 +292,7 @@ void CCritter::RotCCW()
 
 void CCritter::Process()
 {
-	//stay анимация
+	//stay Р°РЅРёРјР°С†РёСЏ
 	if(!cur_anim)
 	{
 		if(cond==COND_LIFE)
@@ -349,7 +349,7 @@ void CCritter::Process()
 		return;
 	}
 
-	//установлена какая-то анимация
+	//СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РєР°РєР°СЏ-С‚Рѕ Р°РЅРёРјР°С†РёСЏ
 	if(GetTickCount()-anim_tkr<ticks_per_turn)
 	{
 		if(GetTickCount()-change_tkr>(ticks_per_turn/cnt_per_turn))
@@ -473,4 +473,4 @@ void CCritter::DrawText(CFOFont* lpfnt)
 		text_color=COLOR_CRITNAME;
 	}
 }
-//!Cvet ------------------------------------------------------- переделано и добавлено практически всё
+//!Cvet ------------------------------------------------------- РїРµСЂРµРґРµР»Р°РЅРѕ Рё РґРѕР±Р°РІР»РµРЅРѕ РїСЂР°РєС‚РёС‡РµСЃРєРё РІСЃС‘

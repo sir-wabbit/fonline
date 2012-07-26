@@ -27,7 +27,7 @@ CSpriteManager::CSpriteManager(): crtd(0),spr_cnt(0),cur_pos(0),
 
 int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 {
-	if(crtd) return 0; //пересоздание с новыми размерами только через пересоздание класса.
+	if(crtd) return 0; //РїРµСЂРµСЃРѕР·РґР°РЅРёРµ СЃ РЅРѕРІС‹РјРё СЂР°Р·РјРµСЂР°РјРё С‚РѕР»СЊРєРѕ С‡РµСЂРµР· РїРµСЂРµСЃРѕР·РґР°РЅРёРµ РєР»Р°СЃСЃР°.
 	WriteLog("CSpriteManager Initialization...\n");
 
 	spr_cnt=opt_flushval;
@@ -35,8 +35,8 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 
 	lpDevice=lpD3Device;
 
-	//Создаем буфер вершин
-	WriteLog("Создаю VB на %d спрайтов\n",spr_cnt);
+	//РЎРѕР·РґР°РµРј Р±СѓС„РµСЂ РІРµСЂС€РёРЅ
+	WriteLog("РЎРѕР·РґР°СЋ VB РЅР° %d СЃРїСЂР°Р№С‚РѕРІ\n",spr_cnt);
 	HRESULT hr=lpDevice->CreateVertexBuffer(spr_cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
@@ -44,7 +44,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 		return 0;
 	}
 
-	//и индексов
+	//Рё РёРЅРґРµРєСЃРѕРІ
 	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(WORD),D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 	if(hr!=D3D_OK){
@@ -195,7 +195,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	//HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 	HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ Surface РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}  
 
@@ -203,7 +203,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ Р·Р°РіСЂСѓР·РёС‚СЊ Surface РёР· РїР°РјСЏС‚Рё РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	} 
 			
@@ -212,7 +212,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 
 	lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РћС€РёР±РєР° РїСЂРё РєРѕРїРёСЂРѕРІР°РЅРёРё РїРѕРІРµСЂС…РЅРѕСЃС‚РµР№ РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}  
 
@@ -227,8 +227,8 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	lpinf->spr_rect.x2/=last_w;
 	lpinf->spr_rect.y1/=last_h;
 	lpinf->spr_rect.y2/=last_h;
-    lpinf->h/=size; // Уменьшаем пропорции предметов для инвентаря
-    lpinf->w/=size; // Статическое масштабирование
+    lpinf->h/=size; // РЈРјРµРЅСЊС€Р°РµРј РїСЂРѕРїРѕСЂС†РёРё РїСЂРµРґРјРµС‚РѕРІ РґР»СЏ РёРЅРІРµРЅС‚Р°СЂСЏ
+    lpinf->w/=size; // РЎС‚Р°С‚РёС‡РµСЃРєРѕРµ РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёРµ
     
 	WriteLog("size %d",size);
 
@@ -241,7 +241,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	return next_id-1;
 }
 
-int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!Cvet переименовал
+int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!Cvet РїРµСЂРµРёРјРµРЅРѕРІР°Р»
 {
 	if(!crtd) return 0;
 	if(!fname[0]) return 0;
@@ -254,7 +254,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	if(!ext)
 	{
 		fm.UnloadFile();
-		WriteLog("Нет расширения у файла:|%s|\n",fname);
+		WriteLog("РќРµС‚ СЂР°СЃС€РёСЂРµРЅРёСЏ Сѓ С„Р°Р№Р»Р°:|%s|\n",fname);
 		return 0;
 	}
 
@@ -333,7 +333,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	//HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 	HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ Surface РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}  
 
@@ -341,7 +341,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ Р·Р°РіСЂСѓР·РёС‚СЊ Surface РёР· РїР°РјСЏС‚Рё РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	} 
 			
@@ -350,7 +350,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 
 	lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РћС€РёР±РєР° РїСЂРё РєРѕРїРёСЂРѕРІР°РЅРёРё РїРѕРІРµСЂС…РЅРѕСЃС‚РµР№ РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}  
 
@@ -383,7 +383,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	if(!ext)
 	{
 		fm.UnloadFile();
-		WriteLog("Нет расширения у файла:|%s|\n",fname);
+		WriteLog("РќРµС‚ СЂР°СЃС€РёСЂРµРЅРёСЏ Сѓ С„Р°Р№Р»Р°:|%s|\n",fname);
 		return 0;
 	}
 
@@ -395,8 +395,8 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 	if(!stricmp(ext,".bmp"))
 	{
-		fm.SetCurPos(0x12); //смещение для размеров
-		w=fm.GetRDWord(); //была написана обратная функция
+		fm.SetCurPos(0x12); //СЃРјРµС‰РµРЅРёРµ РґР»СЏ СЂР°Р·РјРµСЂРѕРІ
+		w=fm.GetRDWord(); //Р±С‹Р»Р° РЅР°РїРёСЃР°РЅР° РѕР±СЂР°С‚РЅР°СЏ С„СѓРЅРєС†РёСЏ
 		h=fm.GetRDWord();	
 	}
 	else if(!stricmp(ext,".png"))
@@ -415,7 +415,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	{
 		SAFEDEL(lpinf);
 		fm.UnloadFile();
-		WriteLog("Неизвестный формат файла:|%s|\n",ext);
+		WriteLog("РќРµРёР·РІРµСЃС‚РЅС‹Р№ С„РѕСЂРјР°С‚ С„Р°Р№Р»Р°:|%s|\n",ext);
 		return 0;
 	}
 
@@ -459,7 +459,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	//HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 	HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ Surface РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}
 
@@ -470,7 +470,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 	hr=D3DXLoadSurfaceFromFile(lpsurf,NULL,NULL,full_path,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,255),NULL);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ Р·Р°РіСЂСѓР·РёС‚СЊ Surface РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}
 			
@@ -479,7 +479,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 	lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+		ErrMsg("CSpriteManager LoadSprite","РћС€РёР±РєР° РїСЂРё РєРѕРїРёСЂРѕРІР°РЅРёРё РїРѕРІРµСЂС…РЅРѕСЃС‚РµР№ РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}
 
@@ -518,7 +518,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 	fm.SetCurPos(0x8);
 	WORD frm_num=fm.GetWord();
 
-	//Получаем общие смещения по всем направлениям
+	//РџРѕР»СѓС‡Р°РµРј РѕР±С‰РёРµ СЃРјРµС‰РµРЅРёСЏ РїРѕ РІСЃРµРј РЅР°РїСЂР°РІР»РµРЅРёСЏРј
 	short offs_x[6], offs_y[6];
 	fm.SetCurPos(0xA);
 	for(int i=0;i<6;i++)
@@ -554,7 +554,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 	
 			if(!last_surf)
 			{
-				//спрайт будет помещен в новую поверхность
+				//СЃРїСЂР°Р№С‚ Р±СѓРґРµС‚ РїРѕРјРµС‰РµРЅ РІ РЅРѕРІСѓСЋ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ
 				lpinf->lpSurf=CreateNewSurf(w,h);
 				if(!lpinf->lpSurf) return 0;
 				lpinf->spr_rect(0,0,w,h);
@@ -562,13 +562,13 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			}
 			else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 			{
-				//спрайт будет помещен в горизонтальный ряд
+				//СЃРїСЂР°Р№С‚ Р±СѓРґРµС‚ РїРѕРјРµС‰РµРЅ РІ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Р№ СЂСЏРґ
 				lpinf->lpSurf=last_surf;
 				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else if( last_w>=w && (last_h-busy_h)>=h )
 			{
-				//начинаем новый горизонтальный ряд этим спрайтом
+				//РЅР°С‡РёРЅР°РµРј РЅРѕРІС‹Р№ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Р№ СЂСЏРґ СЌС‚РёРј СЃРїСЂР°Р№С‚РѕРј
 				free_x=0;
 				free_y=busy_h;
 				lpinf->lpSurf=last_surf;
@@ -576,7 +576,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			}
 			else
 			{
-				//спрайт вообще не поместился на эту поверхность
+				//СЃРїСЂР°Р№С‚ РІРѕРѕР±С‰Рµ РЅРµ РїРѕРјРµСЃС‚РёР»СЃСЏ РЅР° СЌС‚Сѓ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ
 				lpinf->lpSurf=CreateNewSurf(w,h);
 				if(!lpinf->lpSurf) return 0;
 				lpinf->spr_rect(0,0,w,h);
@@ -585,7 +585,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 
 			int aligned_width = (4 - w%4)%4;
 
-			// создаем файл формата bmp в памяти 
+			// СЃРѕР·РґР°РµРј С„Р°Р№Р» С„РѕСЂРјР°С‚Р° bmp РІ РїР°РјСЏС‚Рё 
 			DWORD wpos=sizeof(bmpheader);
 			BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
 			memcpy(res,bmpheader,wpos);
@@ -608,13 +608,13 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			spos[1]=h;
 
 
-			//а теперь перенесем его на временную поверхность
+			//Р° С‚РµРїРµСЂСЊ РїРµСЂРµРЅРµСЃРµРј РµРіРѕ РЅР° РІСЂРµРјРµРЅРЅСѓСЋ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ
 			LPDIRECT3DSURFACE8 lpsurf;
 			LPDIRECT3DSURFACE8 lptexsurf;
 //			HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 			HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Anim Не могу создать Surface для файла %s",fname);
+				ErrMsg("CSpriteManager LoadSprite","Anim РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ Surface РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 				return 0;
 			}  
 
@@ -622,17 +622,17 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 
 			hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+				ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ Р·Р°РіСЂСѓР·РёС‚СЊ Surface РёР· РїР°РјСЏС‚Рё РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 				return 0;
 			} 
 			
 			POINT p={free_x,free_y};
 			RECT r={0,0,w,h};
 
-			//с которой уже скопируем спрайт в нужное место
+			//СЃ РєРѕС‚РѕСЂРѕР№ СѓР¶Рµ СЃРєРѕРїРёСЂСѓРµРј СЃРїСЂР°Р№С‚ РІ РЅСѓР¶РЅРѕРµ РјРµСЃС‚Рѕ
 			lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+				ErrMsg("CSpriteManager LoadSprite","РћС€РёР±РєР° РїСЂРё РєРѕРїРёСЂРѕРІР°РЅРёРё РїРѕРІРµСЂС…РЅРѕСЃС‚РµР№ РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 				return 0;
 			}  
 
@@ -709,7 +709,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 
 	int i;
 
-	//заменим палитру
+	//Р·Р°РјРµРЅРёРј РїР°Р»РёС‚СЂСѓ
 	fm.SetCurPos(0xA);
 	BYTE* ppos=res+sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER);
 	for(i=0;i<256;i++)
@@ -744,7 +744,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	//HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 	HRESULT hr=lpDevice->CreateImageSurface(MODE_WIDTH,MODE_HEIGHT,TEX_FRMT,&lpsurf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadRix","Не могу создать Surface для файла %s",fname);
+		ErrMsg("CSpriteManager LoadRix","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ Surface РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}  
 
@@ -752,7 +752,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_LINEAR,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadRix","Не могу загрузить Surface из памяти для файла %s",fname);
+		ErrMsg("CSpriteManager LoadRix","РќРµ РјРѕРіСѓ Р·Р°РіСЂСѓР·РёС‚СЊ Surface РёР· РїР°РјСЏС‚Рё РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	} 
 			
@@ -761,7 +761,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 
 	lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadRix","Ошибка при копировании поверхностей для файла %s",fname);
+		ErrMsg("CSpriteManager LoadRix","РћС€РёР±РєР° РїСЂРё РєРѕРїРёСЂРѕРІР°РЅРёРё РїРѕРІРµСЂС…РЅРѕСЃС‚РµР№ РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 		return 0;
 	}  
 
@@ -783,7 +783,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	return next_id-1;
 }
 
-// Для 1-но направленных анимаций
+// Р”Р»СЏ 1-РЅРѕ РЅР°РїСЂР°РІР»РµРЅРЅС‹С… Р°РЅРёРјР°С†РёР№
 int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 {
     
@@ -815,13 +815,13 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 		fm.SetCurPos(0x8);
 		frm_num=fm.GetWord();
 
-		//Получаем общие смещения по всем направлениям
+		//РџРѕР»СѓС‡Р°РµРј РѕР±С‰РёРµ СЃРјРµС‰РµРЅРёСЏ РїРѕ РІСЃРµРј РЅР°РїСЂР°РІР»РµРЅРёСЏРј
 		fm.SetCurPos(0xA);
 			offs_x[or]=fm.GetWord();
 		fm.SetCurPos(0x16);
 			offs_y[or]=fm.GetWord();
 
-		// Здеся вручную пробуем в 6 направлениях
+		// Р—РґРµСЃСЏ РІСЂСѓС‡РЅСѓСЋ РїСЂРѕР±СѓРµРј РІ 6 РЅР°РїСЂР°РІР»РµРЅРёСЏС…
 		if(or==0)
 		{
 			pframes->ticks=1000/frm_fps*frm_num; //!Cvet
@@ -851,7 +851,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 	
 			if(!last_surf)
 			{
-				//спрайт будет помещен в новую поверхность
+				//СЃРїСЂР°Р№С‚ Р±СѓРґРµС‚ РїРѕРјРµС‰РµРЅ РІ РЅРѕРІСѓСЋ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ
 				lpinf->lpSurf=CreateNewSurf(w,h);
 				if(!lpinf->lpSurf) return 0;
 				lpinf->spr_rect(0,0,w,h);
@@ -859,13 +859,13 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			}
 			else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 			{
-				//спрайт будет помещен в горизонтальный ряд
+				//СЃРїСЂР°Р№С‚ Р±СѓРґРµС‚ РїРѕРјРµС‰РµРЅ РІ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Р№ СЂСЏРґ
 				lpinf->lpSurf=last_surf;
 				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else if( last_w>=w && (last_h-busy_h)>=h )
 			{
-				//начинаем новый горизонтальный ряд этим спрайтом
+				//РЅР°С‡РёРЅР°РµРј РЅРѕРІС‹Р№ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Р№ СЂСЏРґ СЌС‚РёРј СЃРїСЂР°Р№С‚РѕРј
 				free_x=0;
 				free_y=busy_h;
 				lpinf->lpSurf=last_surf;
@@ -873,7 +873,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			}
 			else
 			{
-				//спрайт вообще не поместился на эту поверхность
+				//СЃРїСЂР°Р№С‚ РІРѕРѕР±С‰Рµ РЅРµ РїРѕРјРµСЃС‚РёР»СЃСЏ РЅР° СЌС‚Сѓ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ
 				lpinf->lpSurf=CreateNewSurf(w,h);
 				if(!lpinf->lpSurf) return 0;
 				lpinf->spr_rect(0,0,w,h);
@@ -882,7 +882,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 
 			int aligned_width = (4 - w%4)%4;
 
-			// создаем файл формата bmp в памяти 
+			// СЃРѕР·РґР°РµРј С„Р°Р№Р» С„РѕСЂРјР°С‚Р° bmp РІ РїР°РјСЏС‚Рё 
 			DWORD wpos=sizeof(bmpheader);
 			BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
 			memcpy(res,bmpheader,wpos);
@@ -905,13 +905,13 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			spos[1]=h;
 
 
-			//а теперь перенесем его на временную поверхность
+			//Р° С‚РµРїРµСЂСЊ РїРµСЂРµРЅРµСЃРµРј РµРіРѕ РЅР° РІСЂРµРјРµРЅРЅСѓСЋ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ
 			LPDIRECT3DSURFACE8 lpsurf;
 			LPDIRECT3DSURFACE8 lptexsurf;
 //			HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 			HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Anim Не могу создать Surface для файла %s",fname);
+				ErrMsg("CSpriteManager LoadSprite","Anim РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ Surface РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 				return 0;
 			}  
 
@@ -919,17 +919,17 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 
 			hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+				ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ Р·Р°РіСЂСѓР·РёС‚СЊ Surface РёР· РїР°РјСЏС‚Рё РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 				return 0;
 			} 
 			
 			POINT p={free_x,free_y};
 			RECT r={0,0,w,h};
 
-			//с которой уже скопируем спрайт в нужное место
+			//СЃ РєРѕС‚РѕСЂРѕР№ СѓР¶Рµ СЃРєРѕРїРёСЂСѓРµРј СЃРїСЂР°Р№С‚ РІ РЅСѓР¶РЅРѕРµ РјРµСЃС‚Рѕ
 			lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+				ErrMsg("CSpriteManager LoadSprite","РћС€РёР±РєР° РїСЂРё РєРѕРїРёСЂРѕРІР°РЅРёРё РїРѕРІРµСЂС…РЅРѕСЃС‚РµР№ РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 				return 0;
 			}  
 
@@ -955,7 +955,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 		return 1;
 }
 
-// Для любых спрайтовых анимаций 
+// Р”Р»СЏ Р»СЋР±С‹С… СЃРїСЂР°Р№С‚РѕРІС‹С… Р°РЅРёРјР°С†РёР№ 
 int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim, SpriteInfo** ppInfo)
 {
 	if(!crtd) return 0;
@@ -994,11 +994,11 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 //!Cvet ---------
 
     DWORD cur_ptr=0x3E;
-	// Здесь включить цикл на количество ФРМ-ок
+	// Р—РґРµСЃСЊ РІРєР»СЋС‡РёС‚СЊ С†РёРєР» РЅР° РєРѕР»РёС‡РµСЃС‚РІРѕ Р¤Р Рњ-РѕРє
 	for(int frm=0;frm<frm_num;frm++)
 	{
 		SpriteInfo* lpinf=new SpriteInfo;
-//!Cvet +++++++++ был сумбур какойто. по всей функции...
+//!Cvet +++++++++ Р±С‹Р» СЃСѓРјР±СѓСЂ РєР°РєРѕР№С‚Рѕ. РїРѕ РІСЃРµР№ С„СѓРЅРєС†РёРё...
 		fm.SetCurPos(cur_ptr);
 
 		WORD w=fm.GetWord();
@@ -1048,7 +1048,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		DWORD wpos=sizeof(bmpheader);
 		BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
 		memcpy(res,bmpheader,wpos);			
-		// Сдвиг по картинке в нужных координатах
+		// РЎРґРІРёРі РїРѕ РєР°СЂС‚РёРЅРєРµ РІ РЅСѓР¶РЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚Р°С…
 		DWORD ptr = cur_ptr+12+w*(h-1);
 		cur_ptr+=w*h+12;
 		for(int i=0;i < h; i++) 
@@ -1083,7 +1083,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 		if(hr!=D3D_OK)
 		{
-			ErrMsg("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
+			ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ Surface РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 			return 0;
 		}  
 
@@ -1092,7 +1092,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 		if(hr!=D3D_OK)
 		{
-			ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+			ErrMsg("CSpriteManager LoadSprite","РќРµ РјРѕРіСѓ Р·Р°РіСЂСѓР·РёС‚СЊ Surface РёР· РїР°РјСЏС‚Рё РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 			return 0;
 		} 
 		
@@ -1102,7 +1102,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 		if(hr!=D3D_OK)
 		{
-			ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+			ErrMsg("CSpriteManager LoadSprite","РћС€РёР±РєР° РїСЂРё РєРѕРїРёСЂРѕРІР°РЅРёРё РїРѕРІРµСЂС…РЅРѕСЃС‚РµР№ РґР»СЏ С„Р°Р№Р»Р° %s",fname);
 			return 0;
 		}  
 
@@ -1122,7 +1122,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		aanim->ind[frm]=next_id-1;
 //		WriteLog("Loading animation!%d\n",frm);
 	}
-    // конец загрузки всех фрм на подготовленные поверхности	
+    // РєРѕРЅРµС† Р·Р°РіСЂСѓР·РєРё РІСЃРµС… С„СЂРј РЅР° РїРѕРґРіРѕС‚РѕРІР»РµРЅРЅС‹Рµ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё	
 	fm.UnloadFile();
 
 //	WriteLog("%d frames loaded\n",frm_num);
@@ -1150,7 +1150,7 @@ LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(WORD w, WORD h)
 	HRESULT hr=lpDevice->CreateTexture(last_w,last_h,1,0,TEX_FRMT,D3DPOOL_MANAGED,&lpSurf);
 
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager CreateNewSurf","Не могу создать новую текстуру");
+		ErrMsg("CSpriteManager CreateNewSurf","РќРµ РјРѕРіСѓ СЃРѕР·РґР°С‚СЊ РЅРѕРІСѓСЋ С‚РµРєСЃС‚СѓСЂСѓ");
 		return NULL;
 	} 
 	surf_list.push_back(lpSurf);
@@ -1168,7 +1168,7 @@ void CSpriteManager::NextSurface()
 
 int CSpriteManager::Flush()
 {
-	//который потом разом сливается в буфер вершин
+	//РєРѕС‚РѕСЂС‹Р№ РїРѕС‚РѕРј СЂР°Р·РѕРј СЃР»РёРІР°РµС‚СЃСЏ РІ Р±СѓС„РµСЂ РІРµСЂС€РёРЅ
 	if(!crtd) return 0;
 	void* pBuffer;
 	int mulpos=4*cur_pos;
@@ -1176,7 +1176,7 @@ int CSpriteManager::Flush()
 		memcpy(pBuffer,lpWaitBuf,sizeof(MYVERTEX)*mulpos);
 	lpVB->Unlock();
 
-	//рисуем спрайты
+	//СЂРёСЃСѓРµРј СЃРїСЂР°Р№С‚С‹
 	if(!call_vec.empty())
 	{
 		WORD rpos=0;
@@ -1369,11 +1369,11 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 
 	if(!cnt) return 1;
 
-	//Создаем буфер вершин
+	//РЎРѕР·РґР°РµРј Р±СѓС„РµСЂ РІРµСЂС€РёРЅ
 	HRESULT hr=lpDevice->CreateVertexBuffer(cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,lplpBuf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteMngr PrepareBuffer","Ошибка при создании буфера: %s",DXGetErrorString8(hr));
+		ErrMsg("CSpriteMngr PrepareBuffer","РћС€РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё Р±СѓС„РµСЂР°: %s",DXGetErrorString8(hr));
 		return 0;
 	}
 
@@ -1385,11 +1385,11 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 	if(ibdesc.Size<need_size)
 	{
 		SAFEREL(lpIB);
-		//и индексов
+		//Рё РёРЅРґРµРєСЃРѕРІ
 		hr=lpDevice->CreateIndexBuffer(need_size,D3DUSAGE_WRITEONLY,
 			D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 		if(hr!=D3D_OK){
-		ErrMsg("CSpriteMngr PrepareBuffer","Ошибка при создании буфера: %s",DXGetErrorString8(hr));
+		ErrMsg("CSpriteMngr PrepareBuffer","РћС€РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё Р±СѓС„РµСЂР°: %s",DXGetErrorString8(hr));
 			return 0;
 		}
 
@@ -1422,7 +1422,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 	if(color) new_color=(new_color & 0xFF000000) + (color & 0xFFFFFF); //!Cvet
 	if(alpha) new_color=(new_color & 0xFFFFFF) + ((alpha << 24) & 0xFF000000); //!Cvet
 
-//!Cvet оптимизировал. спрайты сортируються по поверхности. производительность выросла +++++++++++++++++++++
+//!Cvet РѕРїС‚РёРјРёР·РёСЂРѕРІР°Р». СЃРїСЂР°Р№С‚С‹ СЃРѕСЂС‚РёСЂСѓСЋС‚СЊСЃСЏ РїРѕ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё. РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚СЊ РІС‹СЂРѕСЃР»Р° +++++++++++++++++++++
 	spr_vec_vec spr_vectors;
 	spr_vec_vec::iterator it_vec;
 	for(dtree_map::iterator jt=lpdtree->begin();jt!=lpdtree->end();jt++)
@@ -1605,8 +1605,8 @@ void CSpriteManager::PreRestore()
 
 void CSpriteManager::PostRestore()
 {
-	//Создаем буфер вершин
-	WriteLog("Пересоздаю VB на %d спрайтов\n",spr_cnt);
+	//РЎРѕР·РґР°РµРј Р±СѓС„РµСЂ РІРµСЂС€РёРЅ
+	WriteLog("РџРµСЂРµСЃРѕР·РґР°СЋ VB РЅР° %d СЃРїСЂР°Р№С‚РѕРІ\n",spr_cnt);
 	HRESULT hr=lpDevice->CreateVertexBuffer(spr_cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
@@ -1614,7 +1614,7 @@ void CSpriteManager::PostRestore()
 		return;
 	}
 
-	//и индексов
+	//Рё РёРЅРґРµРєСЃРѕРІ
 	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(WORD),D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 	if(hr!=D3D_OK){
@@ -1650,7 +1650,7 @@ void CSpriteManager::PostRestore()
 int CSpriteManager::LoadCritTypes()
 {
 
-	//загружаем список криттеров
+	//Р·Р°РіСЂСѓР¶Р°РµРј СЃРїРёСЃРѕРє РєСЂРёС‚С‚РµСЂРѕРІ
 	char str[1024];
 	char key[64];
 	CrTYPE cur=0;
@@ -1673,7 +1673,7 @@ int CSpriteManager::LoadAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2)
 {
 	if(CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 
-	WriteLog("Загрузка анимации type=%d,ind1=%d,ind2=%d...",anim_type,anim_ind1,anim_ind2);
+	WriteLog("Р—Р°РіСЂСѓР·РєР° Р°РЅРёРјР°С†РёРё type=%d,ind1=%d,ind2=%d...",anim_type,anim_ind1,anim_ind2);
 
 	TICK loadA=GetTickCount();
 	char frm_ind1[]="_ABCDEFGHIJKLMN___R";
@@ -1681,20 +1681,20 @@ int CSpriteManager::LoadAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2)
 	char path[1024];//12345678901234567890
 
 	sprintf(path,"%s%c%c.frm",crit_types[anim_type],frm_ind1[anim_ind1],frm_ind2[anim_ind2]);
-	WriteLog("1 попытка |%s|...",path);
+	WriteLog("1 РїРѕРїС‹С‚РєР° |%s|...",path);
 	CrAnim[anim_type][anim_ind1][anim_ind2]=new CritFrames;
 	if(!LoadAnimation(path,PT_ART_CRITTERS,CrAnim[anim_type][anim_ind1][anim_ind2]))
 	{
 		sprintf(path,"%s%c%c.fr",crit_types[anim_type],frm_ind1[anim_ind1],frm_ind2[anim_ind2]);
-		WriteLog("2 попытка |%s|...",path);
+		WriteLog("2 РїРѕРїС‹С‚РєР° |%s|...",path);
 		if(!LoadAnimationD(path,PT_ART_CRITTERS,CrAnim[anim_type][anim_ind1][anim_ind2]))
 		{
 			SAFEDEL(CrAnim[anim_type][anim_ind1][anim_ind2]);
-			WriteLog("Анимация не найдена\n");
+			WriteLog("РђРЅРёРјР°С†РёСЏ РЅРµ РЅР°Р№РґРµРЅР°\n");
 			return 0;
 		}
 	}
-	WriteLog("OK - Время загрузки анимации %s =%d\n",path,GetTickCount()-loadA);
+	WriteLog("OK - Р’СЂРµРјСЏ Р·Р°РіСЂСѓР·РєРё Р°РЅРёРјР°С†РёРё %s =%d\n",path,GetTickCount()-loadA);
 	return 1;
 }
 
@@ -1715,7 +1715,7 @@ int CSpriteManager::EraseAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2
 			spr_data.erase(it);
 		}
 	SAFEDEL(CrAnim[anim_type][anim_ind1][anim_ind2]);
-	WriteLog("Время удаления анимации =%d\n",GetTickCount()-loadA);
+	WriteLog("Р’СЂРµРјСЏ СѓРґР°Р»РµРЅРёСЏ Р°РЅРёРјР°С†РёРё =%d\n",GetTickCount()-loadA);
 	return 1;
 }
 

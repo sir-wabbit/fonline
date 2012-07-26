@@ -35,7 +35,7 @@
 #define MAX_OBJECT_NAME 50
 #define MAX_OBJECT_INFO 500
 
-//!Cvet режимы экрана
+//!Cvet СЂРµР¶РёРјС‹ СЌРєСЂР°РЅР°
 const BYTE SCREEN_LOGIN			=0;
 const BYTE SCREEN_REGISTRATION	=1;
 const BYTE SCREEN_MAIN			=2;
@@ -47,7 +47,7 @@ const BYTE SCREEN_PIP_BOY		=7;
 const BYTE SCREEN_SKILLBOX		=8;
 const BYTE SCREEN_MENU_OPTION	=9;
 
-//!Cvet режимы курсора
+//!Cvet СЂРµР¶РёРјС‹ РєСѓСЂСЃРѕСЂР°
 const BYTE CUR_DEFAULT			=0;
 const BYTE CUR_MOVE				=1;
 const BYTE CUR_USE_OBJECT		=2;
@@ -56,13 +56,13 @@ const BYTE CUR_WAIT				=4;
 
 //!Cvet LMenu
 const DWORD LMENU_SHOW_TIME		=400;
-//режимы
+//СЂРµР¶РёРјС‹
 const BYTE LMENU_OFF			=0;
 const BYTE LMENU_PLAYER			=1;
 const BYTE LMENU_NPC			=2;
 const BYTE LMENU_ITEM			=4;
 const BYTE LMENU_SCENERY		=5;
-//ячейки для lmenu
+//СЏС‡РµР№РєРё РґР»СЏ lmenu
 typedef vector<BYTE> LMenu_list;
 const BYTE LMENU_NODE_LOOK		=0;
 const BYTE LMENU_NODE_TALK		=1;
@@ -71,7 +71,7 @@ const BYTE LMENU_NODE_PICK		=3;
 const BYTE LMENU_NODE_GMFOLLOW	=4;
 const BYTE LMENU_NODE_GMTAKE	=5;
 
-//!Cvet действия чезена
+//!Cvet РґРµР№СЃС‚РІРёСЏ С‡РµР·РµРЅР°
 typedef vector<BYTE> chosen_action_vec;
 const BYTE ACTION_NONE					=0;
 const BYTE ACTION_MOVE					=1;
@@ -85,10 +85,10 @@ const BYTE ACTION_USE_SKL_ON_ITEM		=8;
 const BYTE ACTION_TALK_NPC				=9;
 const BYTE ACTION_PICK_OBJ				=10;
 
-// Анимация обычная набор спрайтов
+// РђРЅРёРјР°С†РёСЏ РѕР±С‹С‡РЅР°СЏ РЅР°Р±РѕСЂ СЃРїСЂР°Р№С‚РѕРІ
 struct AnyAnimData 
 {
-		AnyFrames* eng; // Анимация берем оружие в руки
+		AnyFrames* eng; // РђРЅРёРјР°С†РёСЏ Р±РµСЂРµРј РѕСЂСѓР¶РёРµ РІ СЂСѓРєРё
 		AnyAnimData():eng(NULL){};
 		~AnyAnimData(){SAFEDEL(eng)};
 };
@@ -111,7 +111,7 @@ public:
     
 	int Render();
 
-	int Console();// консоль игрока
+	int Console();// РєРѕРЅСЃРѕР»СЊ РёРіСЂРѕРєР°
 
 	void NetDiscon();
 	WORD state;
@@ -161,7 +161,7 @@ private:
 	CFOFont fnt;
 	CSoundMngr sdm;
 
-	WORD cur_def,cur_move,cur_move_block,cur_hand,cur_use_o,cur_use_s,cur_wait; //!Cvet указатели
+	WORD cur_def,cur_move,cur_move_block,cur_hand,cur_use_o,cur_use_s,cur_wait; //!Cvet СѓРєР°Р·Р°С‚РµР»Рё
 
 	WORD splash,cur,cur_right,cur_left,cur_up,cur_down,cur_ru,cur_lu,cur_rd,cur_ld;
 	int cur_x,cur_y;
@@ -210,8 +210,8 @@ private:
 	void Net_SendLoadMapOK();
 //!Cvet -------------------------------------------------------------
 	void Net_SendText(char* str);
-	void Net_SendDir(); //Cvet переделал
-    void Net_SendMove(BYTE* dir); //!Cvet переделал
+	void Net_SendDir(); //Cvet РїРµСЂРµРґРµР»Р°Р»
+    void Net_SendMove(BYTE* dir); //!Cvet РїРµСЂРµРґРµР»Р°Р»
 
 	void Net_OnAddCritter();
 	void Net_OnRemoveCritter();
@@ -222,14 +222,14 @@ private:
 	void Net_OnRemObjFromMap();
 
 	void Net_OnCritterDir();
-    void Net_OnCritterMove(); //движение
-	void Net_OnCritterAction(); //действие
+    void Net_OnCritterMove(); //РґРІРёР¶РµРЅРёРµ
+	void Net_OnCritterAction(); //РґРµР№СЃС‚РІРёРµ
 
-	void Net_OnChosenXY(); //помещение чузена в новую клетку
-	void Net_OnChosenParams(); //передача параметров игроку
-	void Net_OnChosenParam(); //передача параметра
-	void Net_OnChosenLogin(); //сетевые сообщения
-	void Net_OnChosenAddObject(); //добавление объекта
+	void Net_OnChosenXY(); //РїРѕРјРµС‰РµРЅРёРµ С‡СѓР·РµРЅР° РІ РЅРѕРІСѓСЋ РєР»РµС‚РєСѓ
+	void Net_OnChosenParams(); //РїРµСЂРµРґР°С‡Р° РїР°СЂР°РјРµС‚СЂРѕРІ РёРіСЂРѕРєСѓ
+	void Net_OnChosenParam(); //РїРµСЂРµРґР°С‡Р° РїР°СЂР°РјРµС‚СЂР°
+	void Net_OnChosenLogin(); //СЃРµС‚РµРІС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ
+	void Net_OnChosenAddObject(); //РґРѕР±Р°РІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р°
 	void Net_OnChosenTalk();
 
 	void Net_OnGameTime();
@@ -252,7 +252,7 @@ private:
 	char opt_login[MAX_LOGIN+1];
 	char opt_pass[MAX_LOGIN+1];
 
-//Параметры
+//РџР°СЂР°РјРµС‚СЂС‹
 	void CreateParamsMaps();
 	params_map stats_map;
 	params_map skills_map;
@@ -264,19 +264,19 @@ private:
 	params_str_map perks_str_map;
 	//params_str_map object_map;
 
-//Объекты в игре
-	stat_map all_s_obj; //вся статика в игре
-	//имена объектов
+//РћР±СЉРµРєС‚С‹ РІ РёРіСЂРµ
+	stat_map all_s_obj; //РІСЃСЏ СЃС‚Р°С‚РёРєР° РІ РёРіСЂРµ
+	//РёРјРµРЅР° РѕР±СЉРµРєС‚РѕРІ
 	string_map name_obj;
-	//инфо объектов
+	//РёРЅС„Рѕ РѕР±СЉРµРєС‚РѕРІ
 	string_map info_obj;
-	//картинки в инвентаре
-	WORD inv_pic_b[367]; //большие
-	WORD inv_pic_s[367]; //малые
-	//картинки использования
+	//РєР°СЂС‚РёРЅРєРё РІ РёРЅРІРµРЅС‚Р°СЂРµ
+	WORD inv_pic_b[367]; //Р±РѕР»СЊС€РёРµ
+	WORD inv_pic_s[367]; //РјР°Р»С‹Рµ
+	//РєР°СЂС‚РёРЅРєРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
 	WORD pic_use[100];
 
-//Управление чузеном
+//РЈРїСЂР°РІР»РµРЅРёРµ С‡СѓР·РµРЅРѕРј
 	chosen_action_vec chosen_action;
 
 	HexTYPE PathMoveX;
@@ -294,28 +294,28 @@ private:
 
 	void ChosenProcess();
 
-//ИНТЕРФЕЙС=======================================================================
+//РРќРўР•Р Р¤Р•Р™РЎ=======================================================================
 	int Init_Iface();
 
-	int numIface; //номер анимации интерфейса
+	int numIface; //РЅРѕРјРµСЂ Р°РЅРёРјР°С†РёРё РёРЅС‚РµСЂС„РµР№СЃР°
 
-//Инвентарь=======================================================================
-	WORD invbox,invokon,invokoff,invscrupin,invscrupout,invscrupoff,invscrdwin,invscrdwout,invscrdwoff; //анимация
+//РРЅРІРµРЅС‚Р°СЂСЊ=======================================================================
+	WORD invbox,invokon,invokoff,invscrupin,invscrupout,invscrupoff,invscrdwin,invscrdwout,invscrdwoff; //Р°РЅРёРјР°С†РёСЏ
 
-	BYTE InvHold; //номер зажатой кнопки - нмера внизу //0 - кнопка не зажата
+	BYTE InvHold; //РЅРѕРјРµСЂ Р·Р°Р¶Р°С‚РѕР№ РєРЅРѕРїРєРё - РЅРјРµСЂР° РІРЅРёР·Сѓ //0 - РєРЅРѕРїРєР° РЅРµ Р·Р°Р¶Р°С‚Р°
 	int scroll_items;
 
-	int InvX,InvY; //х,у основного меню окна, все остальное будет отталкиваться именно от этих координат
+	int InvX,InvY; //С…,Сѓ РѕСЃРЅРѕРІРЅРѕРіРѕ РјРµРЅСЋ РѕРєРЅР°, РІСЃРµ РѕСЃС‚Р°Р»СЊРЅРѕРµ Р±СѓРґРµС‚ РѕС‚С‚Р°Р»РєРёРІР°С‚СЊСЃСЏ РёРјРµРЅРЅРѕ РѕС‚ СЌС‚РёС… РєРѕРѕСЂРґРёРЅР°С‚
 
 	INTRECT InvMain,InvObl,InvChosen;
-	int HeightItem;// = 30; //высота картинки в инвенторе, всего там 10
-	//слот1,2, армор
+	int HeightItem;// = 30; //РІС‹СЃРѕС‚Р° РєР°СЂС‚РёРЅРєРё РІ РёРЅРІРµРЅС‚РѕСЂРµ, РІСЃРµРіРѕ С‚Р°Рј 10
+	//СЃР»РѕС‚1,2, Р°СЂРјРѕСЂ
 	INTRECT InvSlot1,InvSlot2,InvArmor;
-	//кнопки
+	//РєРЅРѕРїРєРё
 	INTRECT InvBtnUp,InvBtnDown,InvBtnOk;
-	//точки вывода инфы
+	//С‚РѕС‡РєРё РІС‹РІРѕРґР° РёРЅС„С‹
 	INTRECT txtObject;
-	//это нужно для перетаскивания окна инвентари
+	//СЌС‚Рѕ РЅСѓР¶РЅРѕ РґР»СЏ РїРµСЂРµС‚Р°СЃРєРёРІР°РЅРёСЏ РѕРєРЅР° РёРЅРІРµРЅС‚Р°СЂРё
 	int invvectx,invvecty;
 
 	void InvDraw(); 
@@ -323,22 +323,22 @@ private:
 	int InvMouseDown();
 	int InvMouseUp();
 
-//Основной интерфейс==============================================================
+//РћСЃРЅРѕРІРЅРѕР№ РёРЅС‚РµСЂС„РµР№СЃ==============================================================
 	WORD ifacen,panel,intscrupon,intscrdownon,intchangesloton,
 	intinvon,intmenuon,intskillon,intmapon,intinfoon,intpipon;
 	WORD diodeG,diodeY,diodeR;
 
-	BYTE IntHold; //номер зажатой кнопки - нмера внизу //0 - кнопка не зажата
-	int IntX,IntY; //х,у основного меню окна, все остальное будет отталкиваться именно от этих координат
+	BYTE IntHold; //РЅРѕРјРµСЂ Р·Р°Р¶Р°С‚РѕР№ РєРЅРѕРїРєРё - РЅРјРµСЂР° РІРЅРёР·Сѓ //0 - РєРЅРѕРїРєР° РЅРµ Р·Р°Р¶Р°С‚Р°
+	int IntX,IntY; //С…,Сѓ РѕСЃРЅРѕРІРЅРѕРіРѕ РјРµРЅСЋ РѕРєРЅР°, РІСЃРµ РѕСЃС‚Р°Р»СЊРЅРѕРµ Р±СѓРґРµС‚ РѕС‚С‚Р°Р»РєРёРІР°С‚СЊСЃСЏ РёРјРµРЅРЅРѕ РѕС‚ СЌС‚РёС… РєРѕРѕСЂРґРёРЅР°С‚
 
 	INTRECT IntMain; 
-	//слоты
-	INTRECT IntObject; //слот объекта
-	//кнопки
+	//СЃР»РѕС‚С‹
+	INTRECT IntObject; //СЃР»РѕС‚ РѕР±СЉРµРєС‚Р°
+	//РєРЅРѕРїРєРё
 	INTRECT IntBScrUp,IntBScrDown,IntBChangeSlot,IntBInv,IntBMenu,IntBSkill,IntBMap,IntBInfo,IntBPip;
-	//точки вывода инфы
+	//С‚РѕС‡РєРё РІС‹РІРѕРґР° РёРЅС„С‹
 	INTRECT IntTXT;
-	//action points //15 зеленых(200мс) 3 желтых(1000мс) 2 красных(10000мс)
+	//action points //15 Р·РµР»РµРЅС‹С…(200РјСЃ) 3 Р¶РµР»С‚С‹С…(1000РјСЃ) 2 РєСЂР°СЃРЅС‹С…(10000РјСЃ)
 	INTRECT IntAP,IntHP,IntAC;
 
 	int IntAPstepX,IntAPstepY;
@@ -348,13 +348,13 @@ private:
 	int IntMouseUp();
 	void IntMouseMove();
 
-	//мессаги о сотоянии криттера
+	//РјРµСЃСЃР°РіРё Рѕ СЃРѕС‚РѕСЏРЅРёРё РєСЂРёС‚С‚РµСЂР°
 	WORD chosen_mess_pic;
 	int IntMessX,IntMessY;
 	int IntMessStepX,IntMessStepY;
 	INTRECT IntMess;
 
-//Меню левой кнопки (LMenu)=======================================================
+//РњРµРЅСЋ Р»РµРІРѕР№ РєРЅРѕРїРєРё (LMenu)=======================================================
 	WORD lm_talk_off,lm_talk_on,lm_look_off,lm_look_on,lm_break_off,lm_break_on,
 		lm_use_off,lm_use_on,lm_gmfollow_off,lm_gmfollow_on,lm_gmtake_off,lm_gmtake_on;
 
@@ -380,11 +380,11 @@ private:
 	void LMenuMouseMove();
 	void LMenuMouseUp();
 
-//Логин/пасс====================================================================
+//Р›РѕРіРёРЅ/РїР°СЃСЃ====================================================================
 	WORD loginpic;
 
-	BYTE LogFocus; //позиция курсора 0-нигде 1-login 2-pass
-	BYTE LogMsg; //номер сообщения
+	BYTE LogFocus; //РїРѕР·РёС†РёСЏ РєСѓСЂСЃРѕСЂР° 0-РЅРёРіРґРµ 1-login 2-pass
+	BYTE LogMsg; //РЅРѕРјРµСЂ СЃРѕРѕР±С‰РµРЅРёСЏ
 
 	int LogX,LogY;
 
@@ -393,7 +393,7 @@ private:
 	void ShowLogIn();
 	void LogInput();
 	
-//Регистрация===================================================================
+//Р РµРіРёСЃС‚СЂР°С†РёСЏ===================================================================
 	crit_info New_cr;
 
 	WORD registpic;
@@ -410,7 +410,7 @@ private:
 	void ShowRegistration();
 	void RegInput();
 
-//Диалог========================================================================
+//Р”РёР°Р»РѕРі========================================================================
 	WORD dialog_begin,dialog_answ,dialog_end;
 
 	BYTE DlgHold;
@@ -436,7 +436,7 @@ private:
 
 	int LoadDialogFromFile(CrID id_npc, DWORD id_dialog, char* dialog);
 
-//Мини-карта=====================================================================
+//РњРёРЅРё-РєР°СЂС‚Р°=====================================================================
 	WORD lmap_main,lmap_bok_on,lmap_bscan_on,lmap_blohi_on,lmap_pix;
 
 	Pix_vec lmap_prep_pix;
@@ -456,7 +456,7 @@ private:
 	void LmapMouseMove();
 	void LmapMouseUp();
 
-//Глобалмапа======================================================================
+//Р“Р»РѕР±Р°Р»РјР°РїР°======================================================================
 	WORD gm_pic[5][6];
 	WORD gm_lock_contr_pic,gm_bstop_on,gm_bspeed0_on,gm_bspeed1_on,gm_bspeed2_on,
 		gm_btolocal_on,gm_iface_pic,gm_iface_pic2,gm_gr_loc_pic,gm_gr_targ_pic;
@@ -579,7 +579,7 @@ private:
 
 //================================================================================
 
-//Игровое время
+//РРіСЂРѕРІРѕРµ РІСЂРµРјСЏ
 	WORD Game_Hours,Game_Mins,Game_Time,Game_Year;
 	BYTE Game_Day,Game_Month;
 
@@ -602,7 +602,7 @@ private:
 
 	CCritter* lpChosen;
 
-	// для отладки
+	// РґР»СЏ РѕС‚Р»Р°РґРєРё
 	CrID LstMoveId;
     CrID LstAddCritId;
 	CrID LstDelCritId;
@@ -610,7 +610,7 @@ private:
 	char newbie[31];
 
 //!Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	char mess_str[EDIT_LEN+1]; // строка для окна сообщений расширяемая
+	char mess_str[EDIT_LEN+1]; // СЃС‚СЂРѕРєР° РґР»СЏ РѕРєРЅР° СЃРѕРѕР±С‰РµРЅРёР№ СЂР°СЃС€РёСЂСЏРµРјР°СЏ
 	char all_mess[300][MAX_TEXT+128];
 	BYTE max_mess,scr_mess;
 
@@ -618,9 +618,9 @@ private:
 	void MessBoxDrawText();
 	void MessBoxInput();
 
-//	char mess_str[EDIT_LEN+1]; // строка для окна сообщений расширяемая
+//	char mess_str[EDIT_LEN+1]; // СЃС‚СЂРѕРєР° РґР»СЏ РѕРєРЅР° СЃРѕРѕР±С‰РµРЅРёР№ СЂР°СЃС€РёСЂСЏРµРјР°СЏ
 
-//Работа со строками
+//Р Р°Р±РѕС‚Р° СЃРѕ СЃС‚СЂРѕРєР°РјРё
 	void StrChangeValue(char* str, int value){for(int i=0;str[i];++i)str[i]+=value;};
 //!Cvet ------------------------------------------------------
 };

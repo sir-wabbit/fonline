@@ -38,7 +38,7 @@ public:
 	void UnloadFile();
 	int LoadFile(char* fname, int PathType);
 
-	int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet полный путь к файлу
+	int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ
 
 	void SetCurPos(DWORD pos);
 	void GoForward(DWORD offs);

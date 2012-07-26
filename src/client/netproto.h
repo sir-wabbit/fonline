@@ -31,7 +31,7 @@ const BYTE TALK_NPC_DISTANCE	=4;
 //Global map
 const WORD GM_MAXX				=2100;
 const WORD GM_MAXY				=2850;
-const WORD GM_ZONE_LEN			=50; //должна быть кратна GM_MAXX и GM_MAXY
+const WORD GM_ZONE_LEN			=50; //РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РєСЂР°С‚РЅР° GM_MAXX Рё GM_MAXY
 const WORD GM_MAXZONEX			=GM_MAXX/GM_ZONE_LEN;
 const WORD GM_MAXZONEY			=GM_MAXY/GM_ZONE_LEN;
 const BYTE GM_MAX_GROUP			=21;
@@ -45,34 +45,34 @@ const BYTE GM_SPEED_FAST		=2;
 #define GM_ZONE(x) ((x)/GM_ZONE_LEN)
 
 //Flags Tile (Hex)
-#define FT_BLOCK		BIN16(00000000,00000001) //проходимость
-#define FT_NOTRAKE		BIN16(00000000,00000010) //простреливаемость
-#define FT_TRANSIT		BIN16(00000000,00000100) //хекс-переход
-#define FT_PLAYER		BIN16(00000000,00001000) //игрок, нпц, моб
+#define FT_BLOCK		BIN16(00000000,00000001) //РїСЂРѕС…РѕРґРёРјРѕСЃС‚СЊ
+#define FT_NOTRAKE		BIN16(00000000,00000010) //РїСЂРѕСЃС‚СЂРµР»РёРІР°РµРјРѕСЃС‚СЊ
+#define FT_TRANSIT		BIN16(00000000,00000100) //С…РµРєСЃ-РїРµСЂРµС…РѕРґ
+#define FT_PLAYER		BIN16(00000000,00001000) //РёРіСЂРѕРє, РЅРїС†, РјРѕР±
 
-#define FT_TILECONT		BIN16(00000000,00010000) //хекс-контейнер
-#define FT_CONT			BIN16(00000000,00100000) //ящик
+#define FT_TILECONT		BIN16(00000000,00010000) //С…РµРєСЃ-РєРѕРЅС‚РµР№РЅРµСЂ
+#define FT_CONT			BIN16(00000000,00100000) //СЏС‰РёРє
 
-#define FT_ACONT_CLOSE	BIN16(00000000,01000000) //анимированный ящик закрыт
-#define FT_ACONT_OPEN	BIN16(00000000,10000000) //анимированный ящик открыт
+#define FT_ACONT_CLOSE	BIN16(00000000,01000000) //Р°РЅРёРјРёСЂРѕРІР°РЅРЅС‹Р№ СЏС‰РёРє Р·Р°РєСЂС‹С‚
+#define FT_ACONT_OPEN	BIN16(00000000,10000000) //Р°РЅРёРјРёСЂРѕРІР°РЅРЅС‹Р№ СЏС‰РёРє РѕС‚РєСЂС‹С‚
 
-#define FT_DOOR_CLOSE	BIN16(00000001,00000000) //дверь закрыта
-#define FT_DOOR_OPEN	BIN16(00000010,00000000) //дверь открыта
+#define FT_DOOR_CLOSE	BIN16(00000001,00000000) //РґРІРµСЂСЊ Р·Р°РєСЂС‹С‚Р°
+#define FT_DOOR_OPEN	BIN16(00000010,00000000) //РґРІРµСЂСЊ РѕС‚РєСЂС‹С‚Р°
 
-#define FT_NOWAY		BIN16(00000001,11101001) //комбо для проходимости
-#define FT_NOSHOOT		BIN16(00000001,00000010) //комбо для простреливаемости
+#define FT_NOWAY		BIN16(00000001,11101001) //РєРѕРјР±Рѕ РґР»СЏ РїСЂРѕС…РѕРґРёРјРѕСЃС‚Рё
+#define FT_NOSHOOT		BIN16(00000001,00000010) //РєРѕРјР±Рѕ РґР»СЏ РїСЂРѕСЃС‚СЂРµР»РёРІР°РµРјРѕСЃС‚Рё
 
-//на чем используется итем
+//РЅР° С‡РµРј РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РёС‚РµРј
 const BYTE USE_OBJ_ON_CRITTER	=1;
 const BYTE USE_OBJ_ON_OBJ		=2;
 
-//дефолтное время для действий
+//РґРµС„РѕР»С‚РЅРѕРµ РІСЂРµРјСЏ РґР»СЏ РґРµР№СЃС‚РІРёР№
 const DWORD ACTTIME_DROP_OBJ	=2000;
 const DWORD ACTTIME_USE_DOOR	=3000;
 const DWORD ACTTIME_USE_CONT	=3000;
 const DWORD ACTTIME_PICK_OBJ	=6000;
 
-//движение
+//РґРІРёР¶РµРЅРёРµ
 const BYTE MOVE_ERROR		=0;
 const BYTE MOVE_WALK		=1;
 const BYTE MOVE_RUN			=2;
@@ -86,10 +86,10 @@ const WORD PMOVE_4			=BIN16(00000000,00000100);
 const WORD PMOVE_5			=BIN16(00000000,00000101);
 const WORD PMOVE_RUN		=BIN16(10000000,00000000);
 
-//время в игре
+//РІСЂРµРјСЏ РІ РёРіСЂРµ
 const BYTE TIME_MULTIPLER	=8;
 
-//общие ответы над головой
+//РѕР±С‰РёРµ РѕС‚РІРµС‚С‹ РЅР°Рґ РіРѕР»РѕРІРѕР№
 const BYTE NPC_SAY_NONE		=0;
 const BYTE NPC_SAY_ERROR	=1;
 const BYTE NPC_SAY_IMBYSY	=2;
@@ -100,37 +100,37 @@ const BYTE NPC_SAY_LEAVEME	=6;
 const BYTE NPC_SAY_FUCKOFF	=7;
 const BYTE NPC_SAY_IHATEYOU	=8;
 
-//тип ответа
+//С‚РёРї РѕС‚РІРµС‚Р°
 #define SAY_NORM	0
 #define SAY_SHOUT	1
 #define SAY_EMOTE	2
 #define SAY_WHISP	3 
 #define SAY_SOCIAL	4
 
-//состояния криттеров
-const BYTE COND_LIFE				=1;//состояние жизни
-	const BYTE COND_LIFE_NONE			=1;//состояние
-	const BYTE COND_LIFE_ACTWEAP		=2;//состояние
-	const BYTE COND_LIFE_USEOBJ			=3;//состояние
-	const BYTE COND_LIFE_OFFLINE		=4;//состояние
-const BYTE COND_KNOCK_OUT			=2;//состояние накаута
-	const BYTE COND_KO_UP				=1;//состояние накаута вверх лицом
-	const BYTE COND_KO_DOWN				=2;//состояние накаута вниз лицом
-const BYTE COND_DEAD				=3;//состояние смерти
-	const BYTE COND_DEAD_NORMAL_UP		=1;//состояние смерти
-	const BYTE COND_DEAD_NORMAL_DOWN	=2;//состояние смерти
-	const BYTE COND_DEAD_CR_NORMAL_UP	=3;//состояние смерти
-	const BYTE COND_DEAD_BRUST			=4;//состояние смерти
-	const BYTE COND_DEAD_CR_BRUST		=5;//состояние смерти
-	const BYTE COND_DEAD_LASER			=6;//состояние смерти
-	const BYTE COND_DEAD_FIRE			=7;//состояние смерти
-	const BYTE COND_DEAD_PLASMA			=8;//состояние смерти
-	const BYTE COND_DEAD_ELECTR			=9;//состояние смерти
-	const BYTE COND_DEAD_EMP			=10;//состояние смерти
-	const BYTE COND_DEAD_EXPLODE		=11;//состояние смерти
-const BYTE COND_NOT_IN_GAME			=4;//состояние вне игры
+//СЃРѕСЃС‚РѕСЏРЅРёСЏ РєСЂРёС‚С‚РµСЂРѕРІ
+const BYTE COND_LIFE				=1;//СЃРѕСЃС‚РѕСЏРЅРёРµ Р¶РёР·РЅРё
+	const BYTE COND_LIFE_NONE			=1;//СЃРѕСЃС‚РѕСЏРЅРёРµ
+	const BYTE COND_LIFE_ACTWEAP		=2;//СЃРѕСЃС‚РѕСЏРЅРёРµ
+	const BYTE COND_LIFE_USEOBJ			=3;//СЃРѕСЃС‚РѕСЏРЅРёРµ
+	const BYTE COND_LIFE_OFFLINE		=4;//СЃРѕСЃС‚РѕСЏРЅРёРµ
+const BYTE COND_KNOCK_OUT			=2;//СЃРѕСЃС‚РѕСЏРЅРёРµ РЅР°РєР°СѓС‚Р°
+	const BYTE COND_KO_UP				=1;//СЃРѕСЃС‚РѕСЏРЅРёРµ РЅР°РєР°СѓС‚Р° РІРІРµСЂС… Р»РёС†РѕРј
+	const BYTE COND_KO_DOWN				=2;//СЃРѕСЃС‚РѕСЏРЅРёРµ РЅР°РєР°СѓС‚Р° РІРЅРёР· Р»РёС†РѕРј
+const BYTE COND_DEAD				=3;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_NORMAL_UP		=1;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_NORMAL_DOWN	=2;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_CR_NORMAL_UP	=3;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_BRUST			=4;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_CR_BRUST		=5;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_LASER			=6;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_FIRE			=7;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_PLASMA			=8;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_ELECTR			=9;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_EMP			=10;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+	const BYTE COND_DEAD_EXPLODE		=11;//СЃРѕСЃС‚РѕСЏРЅРёРµ СЃРјРµСЂС‚Рё
+const BYTE COND_NOT_IN_GAME			=4;//СЃРѕСЃС‚РѕСЏРЅРёРµ РІРЅРµ РёРіСЂС‹
 
-//флаги криттеров
+//С„Р»Р°РіРё РєСЂРёС‚С‚РµСЂРѕРІ
 #define FCRIT_PLAYER			BIN8(00000001)
 #define FCRIT_NPC				BIN8(00000010)
 #define FCRIT_MOB				BIN8(00000100)
@@ -138,236 +138,236 @@ const BYTE COND_NOT_IN_GAME			=4;//состояние вне игры
 #define FCRIT_CHOSEN			BIN8(00010000)
 #define FCRIT_RULEGROUP			BIN8(00100000)
 
-//режимы голоса
-const BYTE SAY_SHORT		=1;//говорить шепетом на...
-const BYTE SAY_SHORT_RANGE	=2;//...клетку(и)
-const BYTE SAY_NORMAL		=2;//говорить нормально, слышат все кто тебя видит
-const BYTE SAY_ALL			=3;//говорить громко, слышно на всю карту
+//СЂРµР¶РёРјС‹ РіРѕР»РѕСЃР°
+const BYTE SAY_SHORT		=1;//РіРѕРІРѕСЂРёС‚СЊ С€РµРїРµС‚РѕРј РЅР°...
+const BYTE SAY_SHORT_RANGE	=2;//...РєР»РµС‚РєСѓ(Рё)
+const BYTE SAY_NORMAL		=2;//РіРѕРІРѕСЂРёС‚СЊ РЅРѕСЂРјР°Р»СЊРЅРѕ, СЃР»С‹С€Р°С‚ РІСЃРµ РєС‚Рѕ С‚РµР±СЏ РІРёРґРёС‚
+const BYTE SAY_ALL			=3;//РіРѕРІРѕСЂРёС‚СЊ РіСЂРѕРјРєРѕ, СЃР»С‹С€РЅРѕ РЅР° РІСЃСЋ РєР°СЂС‚Сѓ
 
-//номера групп
+//РЅРѕРјРµСЂР° РіСЂСѓРїРї
 const BYTE TYPE_STAT		=1;
 const BYTE TYPE_SKILL		=2;
 const BYTE TYPE_PERK		=3;
 
-//общее кол-во параметров
+//РѕР±С‰РµРµ РєРѕР»-РІРѕ РїР°СЂР°РјРµС‚СЂРѕРІ
 const BYTE ALL_STATS		=39;
 const BYTE ALL_SKILLS		=18;
 const BYTE ALL_PERKS		=140;
 
-//карта параметров
+//РєР°СЂС‚Р° РїР°СЂР°РјРµС‚СЂРѕРІ
 typedef map<string, BYTE, less<string> > params_map;
 typedef map<BYTE, string, less<BYTE> > params_str_map;
 
-//Статы. Stats
-const BYTE ST_STRENGHT				=0;//{Сила}
-const BYTE ST_PERCEPTION			=1;//{Восприятие}
-const BYTE ST_ENDURANCE				=2;//{Выносливость}
-const BYTE ST_CHARISMA				=3;//{Обаяние}
-const BYTE ST_INTELLECT				=4;//{Ум}
-const BYTE ST_AGILITY				=5;//{Координация}
-const BYTE ST_LUCK					=6;//{Удача}
+//РЎС‚Р°С‚С‹. Stats
+const BYTE ST_STRENGHT				=0;//{РЎРёР»Р°}
+const BYTE ST_PERCEPTION			=1;//{Р’РѕСЃРїСЂРёСЏС‚РёРµ}
+const BYTE ST_ENDURANCE				=2;//{Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ}
+const BYTE ST_CHARISMA				=3;//{РћР±Р°СЏРЅРёРµ}
+const BYTE ST_INTELLECT				=4;//{РЈРј}
+const BYTE ST_AGILITY				=5;//{РљРѕРѕСЂРґРёРЅР°С†РёСЏ}
+const BYTE ST_LUCK					=6;//{РЈРґР°С‡Р°}
 //===========================
-const BYTE ST_MAX_LIFE				=7;//{Макс. Баллы Жизни}
-const BYTE ST_MAX_COND				=8;//{Максимальная кондиция}
-const BYTE ST_ARMOR_CLASS			=9;//{Класс Брони}
-const BYTE ST_MELEE_DAMAGE			=10;//{Вред невооруженный}
-const BYTE ST_WEAPON_DAMAGE			=11;//{Вред оружием}
-const BYTE ST_CARRY_WEIGHT			=12;//{Макс. груз}
-const BYTE ST_SEQUENCE				=13;//{Реакция}
-const BYTE ST_HEALING_RATE			=14;//{Лечения}
-const BYTE ST_CRITICAL_CHANCE		=15;//{Шанс критический.}
-const BYTE ST_MAX_CRITICAL			=16;//{Максимальный критический}
-const BYTE ST_INGURE_ABSORB			=17;//{Порог Ранения}
-const BYTE ST_LASER_ABSORB			=18;//{Порог Повреждения лазером}
-const BYTE ST_FIRE_ABSORB			=19;//{Порог Повреждения Огнем}
-const BYTE ST_PLASMA_ABSORB			=20;//{Порог Повреждения Плазмой}
-const BYTE ST_ELECTRO_ABSORB		=21;//{Порог Повреждения Электричеством}
-const BYTE ST_EMP_ABSORB			=22;//{Порог повреждения EMP}
-const BYTE ST_BLAST_ABSORB			=23;//{Порог Повреждения при Взрыве}
-const BYTE ST_INGURE_RESIST			=24;//{Сопротивляемость Ранению}
-const BYTE ST_LASER_RESIST			=25;//{Сопротивляемость Ранению Лазером}
-const BYTE ST_FIRE_RESIST			=26;//{Сопротивляемость Ранению Огнем}
-const BYTE ST_PLASMA_RESIST			=27;//{Сопротивляемость Ранению Плазмой}
-const BYTE ST_ELECTRO_RESIST		=28;//{Сопротивляемость Ранению Электричеством}
-const BYTE ST_EMP_RESIST			=29;//{Сопротивляемость Ранению EMP}
-const BYTE ST_BLAST_RESIST			=30;//{Сопротивляемость Ранению при Взрыве}
-const BYTE ST_RADIATION_RESISTANCE	=31;//{Сопротивляемость Радиации}
-const BYTE ST_POISON_RESISTANCE		=32;//{Сопротивляемость Ядам}
-const BYTE ST_AGE					=33;//{Возраст}
-const BYTE ST_GENDER				=34;//{Род}
-const BYTE ST_CURRENT_HP			=35;//{Текущие Баллы жизни}
-const BYTE ST_POISONING_LEVEL		=36;//{Текущий Уровень Ядов}
-const BYTE ST_RADIATION_LEVEL		=37;//{Текущий Уровень Радиации}
-const BYTE ST_CURRENT_STANDART		=38;//{Текущая кондиция}
+const BYTE ST_MAX_LIFE				=7;//{РњР°РєСЃ. Р‘Р°Р»Р»С‹ Р–РёР·РЅРё}
+const BYTE ST_MAX_COND				=8;//{РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РєРѕРЅРґРёС†РёСЏ}
+const BYTE ST_ARMOR_CLASS			=9;//{РљР»Р°СЃСЃ Р‘СЂРѕРЅРё}
+const BYTE ST_MELEE_DAMAGE			=10;//{Р’СЂРµРґ РЅРµРІРѕРѕСЂСѓР¶РµРЅРЅС‹Р№}
+const BYTE ST_WEAPON_DAMAGE			=11;//{Р’СЂРµРґ РѕСЂСѓР¶РёРµРј}
+const BYTE ST_CARRY_WEIGHT			=12;//{РњР°РєСЃ. РіСЂСѓР·}
+const BYTE ST_SEQUENCE				=13;//{Р РµР°РєС†РёСЏ}
+const BYTE ST_HEALING_RATE			=14;//{Р›РµС‡РµРЅРёСЏ}
+const BYTE ST_CRITICAL_CHANCE		=15;//{РЁР°РЅСЃ РєСЂРёС‚РёС‡РµСЃРєРёР№.}
+const BYTE ST_MAX_CRITICAL			=16;//{РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РєСЂРёС‚РёС‡РµСЃРєРёР№}
+const BYTE ST_INGURE_ABSORB			=17;//{РџРѕСЂРѕРі Р Р°РЅРµРЅРёСЏ}
+const BYTE ST_LASER_ABSORB			=18;//{РџРѕСЂРѕРі РџРѕРІСЂРµР¶РґРµРЅРёСЏ Р»Р°Р·РµСЂРѕРј}
+const BYTE ST_FIRE_ABSORB			=19;//{РџРѕСЂРѕРі РџРѕРІСЂРµР¶РґРµРЅРёСЏ РћРіРЅРµРј}
+const BYTE ST_PLASMA_ABSORB			=20;//{РџРѕСЂРѕРі РџРѕРІСЂРµР¶РґРµРЅРёСЏ РџР»Р°Р·РјРѕР№}
+const BYTE ST_ELECTRO_ABSORB		=21;//{РџРѕСЂРѕРі РџРѕРІСЂРµР¶РґРµРЅРёСЏ Р­Р»РµРєС‚СЂРёС‡РµСЃС‚РІРѕРј}
+const BYTE ST_EMP_ABSORB			=22;//{РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ EMP}
+const BYTE ST_BLAST_ABSORB			=23;//{РџРѕСЂРѕРі РџРѕРІСЂРµР¶РґРµРЅРёСЏ РїСЂРё Р’Р·СЂС‹РІРµ}
+const BYTE ST_INGURE_RESIST			=24;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ Р Р°РЅРµРЅРёСЋ}
+const BYTE ST_LASER_RESIST			=25;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ Р Р°РЅРµРЅРёСЋ Р›Р°Р·РµСЂРѕРј}
+const BYTE ST_FIRE_RESIST			=26;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ Р Р°РЅРµРЅРёСЋ РћРіРЅРµРј}
+const BYTE ST_PLASMA_RESIST			=27;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ Р Р°РЅРµРЅРёСЋ РџР»Р°Р·РјРѕР№}
+const BYTE ST_ELECTRO_RESIST		=28;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ Р Р°РЅРµРЅРёСЋ Р­Р»РµРєС‚СЂРёС‡РµСЃС‚РІРѕРј}
+const BYTE ST_EMP_RESIST			=29;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ Р Р°РЅРµРЅРёСЋ EMP}
+const BYTE ST_BLAST_RESIST			=30;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ Р Р°РЅРµРЅРёСЋ РїСЂРё Р’Р·СЂС‹РІРµ}
+const BYTE ST_RADIATION_RESISTANCE	=31;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ Р Р°РґРёР°С†РёРё}
+const BYTE ST_POISON_RESISTANCE		=32;//{РЎРѕРїСЂРѕС‚РёРІР»СЏРµРјРѕСЃС‚СЊ РЇРґР°Рј}
+const BYTE ST_AGE					=33;//{Р’РѕР·СЂР°СЃС‚}
+const BYTE ST_GENDER				=34;//{Р РѕРґ}
+const BYTE ST_CURRENT_HP			=35;//{РўРµРєСѓС‰РёРµ Р‘Р°Р»Р»С‹ Р¶РёР·РЅРё}
+const BYTE ST_POISONING_LEVEL		=36;//{РўРµРєСѓС‰РёР№ РЈСЂРѕРІРµРЅСЊ РЇРґРѕРІ}
+const BYTE ST_RADIATION_LEVEL		=37;//{РўРµРєСѓС‰РёР№ РЈСЂРѕРІРµРЅСЊ Р Р°РґРёР°С†РёРё}
+const BYTE ST_CURRENT_STANDART		=38;//{РўРµРєСѓС‰Р°СЏ РєРѕРЅРґРёС†РёСЏ}
 
-//Навыки. Skills
-const BYTE SK_SMALL_GUNS			=0;//{Мелкое Оружие}
-const BYTE SK_BIG_GUNS				=1;//{Крупное Оружие}
-const BYTE SK_ENERGY_WEAPONS		=2;//{Энергетическое Оружие}
-const BYTE SK_UNARMED				=3;//{Не вооружен}
-const BYTE SK_MELEE_WEAPONS			=4;//{Холодное Оружие}
-const BYTE SK_THROWING				=5;//{Бросок}
-const BYTE SK_FIRST_AID				=6;//{Помощь}
-const BYTE SK_DOCTOR				=7;//{Врач}
-const BYTE SK_SNEAK					=8;//{Крадучесть}
-const BYTE SK_LOCKPICK				=9;//{Взломщик}
-const BYTE SK_STEAL					=10;//{Красть}
-const BYTE SK_TRAPS					=11;//{Ловушки}
-const BYTE SK_SCIENCE				=12;//{Наука}
-const BYTE SK_REPAIR				=13;//{Ремонт}
-const BYTE SK_SPEECH				=14;//{Речь}
-const BYTE SK_BARTER				=15;//{Обмен} Действует на НПС
-const BYTE SK_GAMBLING				=16;//{Играть} Действует на НПС
-const BYTE SK_OUTDOORSMAN			=17;//{Знаток Внешнего Мира}
+//РќР°РІС‹РєРё. Skills
+const BYTE SK_SMALL_GUNS			=0;//{РњРµР»РєРѕРµ РћСЂСѓР¶РёРµ}
+const BYTE SK_BIG_GUNS				=1;//{РљСЂСѓРїРЅРѕРµ РћСЂСѓР¶РёРµ}
+const BYTE SK_ENERGY_WEAPONS		=2;//{Р­РЅРµСЂРіРµС‚РёС‡РµСЃРєРѕРµ РћСЂСѓР¶РёРµ}
+const BYTE SK_UNARMED				=3;//{РќРµ РІРѕРѕСЂСѓР¶РµРЅ}
+const BYTE SK_MELEE_WEAPONS			=4;//{РҐРѕР»РѕРґРЅРѕРµ РћСЂСѓР¶РёРµ}
+const BYTE SK_THROWING				=5;//{Р‘СЂРѕСЃРѕРє}
+const BYTE SK_FIRST_AID				=6;//{РџРѕРјРѕС‰СЊ}
+const BYTE SK_DOCTOR				=7;//{Р’СЂР°С‡}
+const BYTE SK_SNEAK					=8;//{РљСЂР°РґСѓС‡РµСЃС‚СЊ}
+const BYTE SK_LOCKPICK				=9;//{Р’Р·Р»РѕРјС‰РёРє}
+const BYTE SK_STEAL					=10;//{РљСЂР°СЃС‚СЊ}
+const BYTE SK_TRAPS					=11;//{Р›РѕРІСѓС€РєРё}
+const BYTE SK_SCIENCE				=12;//{РќР°СѓРєР°}
+const BYTE SK_REPAIR				=13;//{Р РµРјРѕРЅС‚}
+const BYTE SK_SPEECH				=14;//{Р РµС‡СЊ}
+const BYTE SK_BARTER				=15;//{РћР±РјРµРЅ} Р”РµР№СЃС‚РІСѓРµС‚ РЅР° РќРџРЎ
+const BYTE SK_GAMBLING				=16;//{РРіСЂР°С‚СЊ} Р”РµР№СЃС‚РІСѓРµС‚ РЅР° РќРџРЎ
+const BYTE SK_OUTDOORSMAN			=17;//{Р—РЅР°С‚РѕРє Р’РЅРµС€РЅРµРіРѕ РњРёСЂР°}
 
-//Перки. Perks
-const BYTE PE_FAST_METABOLISM		=0;//{Обмен Веществ}
-const BYTE PE_BRUISER				=1;//{Бугай}
-const BYTE PE_SMALL_FRAME			=2;//{"Коротышка"}
-const BYTE PE_ONE_HANDER			=3;//{Однорукий}
-const BYTE PE_FINESSE				=4;//{Искусный}
-const BYTE PE_KAMIKAZE				=5;//{Камикадзе}
-const BYTE PE_HEAVY_HANDED			=6;//{Тяжелая Рука}
-const BYTE PE_FAST_SHOT				=7;//{Быстрый Выстрел}
-const BYTE PE_BLOODY_MESS			=8;//{Кровавое Месиво}
-const BYTE PE_JINXED				=9;//{Несчастливый}
-const BYTE PE_GOOD_NATURED			=10;//{Добродушный}
-const BYTE PE_CHEM_RELIANT			=11;//{Привыкание}
-const BYTE PE_CHEM_RESISTANT		=12;//{Устойчивый}
-const BYTE PE_NIGHT_PERSON			=13;//{Сексапильность}  # was: Night Person
-const BYTE PE_SKILLED				=14;//{Умелый}
-const BYTE PE_GIFTED				=15;//{Одаренный}
-const BYTE PE_AWARENESS				=16;//{Осведомленность}
-const BYTE PE_A_MELEE_ATT			=17;//{Доп. рукопашная атака}
-const BYTE PE_A_MELEE_DAM			=18;//{Доп. урон в рукопашную}
-const BYTE PE_A_MOVE				=19;//{Доп. движение}
-const BYTE PE_A_DAM					=20;//{Доп. повреждение}
-const BYTE PE_A_SPEED				=21;//{Доп. скорость выстрелов}
+//РџРµСЂРєРё. Perks
+const BYTE PE_FAST_METABOLISM		=0;//{РћР±РјРµРЅ Р’РµС‰РµСЃС‚РІ}
+const BYTE PE_BRUISER				=1;//{Р‘СѓРіР°Р№}
+const BYTE PE_SMALL_FRAME			=2;//{"РљРѕСЂРѕС‚С‹С€РєР°"}
+const BYTE PE_ONE_HANDER			=3;//{РћРґРЅРѕСЂСѓРєРёР№}
+const BYTE PE_FINESSE				=4;//{РСЃРєСѓСЃРЅС‹Р№}
+const BYTE PE_KAMIKAZE				=5;//{РљР°РјРёРєР°РґР·Рµ}
+const BYTE PE_HEAVY_HANDED			=6;//{РўСЏР¶РµР»Р°СЏ Р СѓРєР°}
+const BYTE PE_FAST_SHOT				=7;//{Р‘С‹СЃС‚СЂС‹Р№ Р’С‹СЃС‚СЂРµР»}
+const BYTE PE_BLOODY_MESS			=8;//{РљСЂРѕРІР°РІРѕРµ РњРµСЃРёРІРѕ}
+const BYTE PE_JINXED				=9;//{РќРµСЃС‡Р°СЃС‚Р»РёРІС‹Р№}
+const BYTE PE_GOOD_NATURED			=10;//{Р”РѕР±СЂРѕРґСѓС€РЅС‹Р№}
+const BYTE PE_CHEM_RELIANT			=11;//{РџСЂРёРІС‹РєР°РЅРёРµ}
+const BYTE PE_CHEM_RESISTANT		=12;//{РЈСЃС‚РѕР№С‡РёРІС‹Р№}
+const BYTE PE_NIGHT_PERSON			=13;//{РЎРµРєСЃР°РїРёР»СЊРЅРѕСЃС‚СЊ}  # was: Night Person
+const BYTE PE_SKILLED				=14;//{РЈРјРµР»С‹Р№}
+const BYTE PE_GIFTED				=15;//{РћРґР°СЂРµРЅРЅС‹Р№}
+const BYTE PE_AWARENESS				=16;//{РћСЃРІРµРґРѕРјР»РµРЅРЅРѕСЃС‚СЊ}
+const BYTE PE_A_MELEE_ATT			=17;//{Р”РѕРї. СЂСѓРєРѕРїР°С€РЅР°СЏ Р°С‚Р°РєР°}
+const BYTE PE_A_MELEE_DAM			=18;//{Р”РѕРї. СѓСЂРѕРЅ РІ СЂСѓРєРѕРїР°С€РЅСѓСЋ}
+const BYTE PE_A_MOVE				=19;//{Р”РѕРї. РґРІРёР¶РµРЅРёРµ}
+const BYTE PE_A_DAM					=20;//{Р”РѕРї. РїРѕРІСЂРµР¶РґРµРЅРёРµ}
+const BYTE PE_A_SPEED				=21;//{Р”РѕРї. СЃРєРѕСЂРѕСЃС‚СЊ РІС‹СЃС‚СЂРµР»РѕРІ}
 //-----------------------------------
-const BYTE PE_PASS_FRONT			=22;//{Пропустить вперед}
-const BYTE PE_RAPID_HEAL			=23;//{Быстрое лечение}
-const BYTE PE_MORE_CRIT_DAM			=24;//{Больше критических выстрелов}
-const BYTE PE_NIGHT_SIGHT			=25;//{Ночное видение}
-const BYTE PE_PRESENCE				=26;//{Присутствие}
-const BYTE PE_RES_NUKLEAR			=27;//{Сопротивление радиации}
-const BYTE PE_ENDURENCE				=28;//{Выносливость}
-const BYTE PE_STR_BACK				=29;//{Сильная спина}
-const BYTE PE_MARKSMAN				=30;//{Меткий стрелок}
-const BYTE PE_STEALHING				=31;//{Бесшумный бег}
-const BYTE PE_LIFEFULL				=32;//{Живучий}
-const BYTE PE_MERCHANT				=33;//{Умелыйпродавец}
-const BYTE PE_FORMED				=34;//{Образованный}
-const BYTE PE_HEALER				=35;//{Лекарь}
-const BYTE PE_TR_DIGGER				=36;//{Кладоискатель}
-const BYTE PE_BEST_HITS				=37;//{Лучшие удары}
-const BYTE PE_COMPASION				=38;//{Сочувствие}
-const BYTE PE_KILLER				=39;//{Убийца}
-const BYTE PE_SNIPER				=40;//{Снайпер}
-const BYTE PE_SILENT_DEATH			=41;//{Безмолвная Смерть}
-const BYTE PE_C_FIGHTER				=42;//{Цикличный Боец}
-const BYTE PE_MIND_BLOCK			=43;//{Блокировка сознания}
-const BYTE PE_PROLONGATION_LIFE		=44;//{Продление жизни}
-const BYTE PE_RECOURCEFULNESS		=45;//{Изворотливость}
-const BYTE PE_SNAKE_EATER			=46;//{Пожиратель змей}
-const BYTE PE_REPEARER				=47;//{Ремонтник}
-const BYTE PE_MEDIC					=48;//{Медик}
-const BYTE PE_SKILLED_THIEF			=49;//{Умелый Вор}
-const BYTE PE_SPEAKER				=50;//{Спикер}
-const BYTE PE_GUTCHER				=51;//{Взяли!}
+const BYTE PE_PASS_FRONT			=22;//{РџСЂРѕРїСѓСЃС‚РёС‚СЊ РІРїРµСЂРµРґ}
+const BYTE PE_RAPID_HEAL			=23;//{Р‘С‹СЃС‚СЂРѕРµ Р»РµС‡РµРЅРёРµ}
+const BYTE PE_MORE_CRIT_DAM			=24;//{Р‘РѕР»СЊС€Рµ РєСЂРёС‚РёС‡РµСЃРєРёС… РІС‹СЃС‚СЂРµР»РѕРІ}
+const BYTE PE_NIGHT_SIGHT			=25;//{РќРѕС‡РЅРѕРµ РІРёРґРµРЅРёРµ}
+const BYTE PE_PRESENCE				=26;//{РџСЂРёСЃСѓС‚СЃС‚РІРёРµ}
+const BYTE PE_RES_NUKLEAR			=27;//{РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ СЂР°РґРёР°С†РёРё}
+const BYTE PE_ENDURENCE				=28;//{Р’С‹РЅРѕСЃР»РёРІРѕСЃС‚СЊ}
+const BYTE PE_STR_BACK				=29;//{РЎРёР»СЊРЅР°СЏ СЃРїРёРЅР°}
+const BYTE PE_MARKSMAN				=30;//{РњРµС‚РєРёР№ СЃС‚СЂРµР»РѕРє}
+const BYTE PE_STEALHING				=31;//{Р‘РµСЃС€СѓРјРЅС‹Р№ Р±РµРі}
+const BYTE PE_LIFEFULL				=32;//{Р–РёРІСѓС‡РёР№}
+const BYTE PE_MERCHANT				=33;//{РЈРјРµР»С‹Р№РїСЂРѕРґР°РІРµС†}
+const BYTE PE_FORMED				=34;//{РћР±СЂР°Р·РѕРІР°РЅРЅС‹Р№}
+const BYTE PE_HEALER				=35;//{Р›РµРєР°СЂСЊ}
+const BYTE PE_TR_DIGGER				=36;//{РљР»Р°РґРѕРёСЃРєР°С‚РµР»СЊ}
+const BYTE PE_BEST_HITS				=37;//{Р›СѓС‡С€РёРµ СѓРґР°СЂС‹}
+const BYTE PE_COMPASION				=38;//{РЎРѕС‡СѓРІСЃС‚РІРёРµ}
+const BYTE PE_KILLER				=39;//{РЈР±РёР№С†Р°}
+const BYTE PE_SNIPER				=40;//{РЎРЅР°Р№РїРµСЂ}
+const BYTE PE_SILENT_DEATH			=41;//{Р‘РµР·РјРѕР»РІРЅР°СЏ РЎРјРµСЂС‚СЊ}
+const BYTE PE_C_FIGHTER				=42;//{Р¦РёРєР»РёС‡РЅС‹Р№ Р‘РѕРµС†}
+const BYTE PE_MIND_BLOCK			=43;//{Р‘Р»РѕРєРёСЂРѕРІРєР° СЃРѕР·РЅР°РЅРёСЏ}
+const BYTE PE_PROLONGATION_LIFE		=44;//{РџСЂРѕРґР»РµРЅРёРµ Р¶РёР·РЅРё}
+const BYTE PE_RECOURCEFULNESS		=45;//{РР·РІРѕСЂРѕС‚Р»РёРІРѕСЃС‚СЊ}
+const BYTE PE_SNAKE_EATER			=46;//{РџРѕР¶РёСЂР°С‚РµР»СЊ Р·РјРµР№}
+const BYTE PE_REPEARER				=47;//{Р РµРјРѕРЅС‚РЅРёРє}
+const BYTE PE_MEDIC					=48;//{РњРµРґРёРє}
+const BYTE PE_SKILLED_THIEF			=49;//{РЈРјРµР»С‹Р№ Р’РѕСЂ}
+const BYTE PE_SPEAKER				=50;//{РЎРїРёРєРµСЂ}
+const BYTE PE_GUTCHER				=51;//{Р’Р·СЏР»Рё!}
 const BYTE PE_UNKNOWN_1				=52;//{}  # was -- Friendly Foe
-const BYTE PE_PICK_POCKER			=53;//{Карманник}
-const BYTE PE_GHOST					=54;//{Призрак}
-const BYTE PE_CHAR_CULT				=55;//{Культ личности}
-const BYTE PE_THIFER				=56;//{Воришка}
-const BYTE PE_DISCOVER				=57;//{Исследователь}
-const BYTE PE_THE_PURETY			=58;//{Сама Чистота}
-const BYTE PE_OVERROAD				=59;//{Проходчик}
-const BYTE PE_ANIMAL_FRIENDSHIP		=60;//{Друг Животных}
-const BYTE PE_SCOUT					=61;//{Скаут}
-const BYTE PE_MIST_CHAR				=62;//{Таинственный Незнакомец}
-const BYTE PE_RANGER				=63;//{Рейнджер}
-const BYTE PE_PICK_POCKET_2			=64;//{Карманник}
-const BYTE PE_INTERLOCUTER			=65;//{Собеседник}
-const BYTE PE_NOVICE				=66;//{Способный Ученик}
-const BYTE PE_PRIME_SKILL			=67;//{Основное умение!}
-const BYTE PE_MUTATION				=68;//{Мутация!}
-const BYTE PE_NARC_NUKACOLA			=69;//{Пристрастие к NukaCola}
-const BYTE PE_NARC_BUFFOUT			=70;//{Пристрастие к Буфауту}
-const BYTE PE_NARC_MENTAT			=71;//{Пристрастие к Ментату}
-const BYTE PE_NARC_PSYHO			=72;//{Пристрастие к Психо}
-const BYTE PE_NARC_RADAWAY			=73;//{Пристрастие РэдЭвей}
-const BYTE PE_DISTANT_WEAP			=74;//{Дальнобойное оружие}
-const BYTE PE_ACCURARY_WEAP			=75;//{Точное оружие}
-const BYTE PE_PENETRATION_WEAP		=76;//{Проникающее оружие}
-const BYTE PE_KILLER_WEAP			=77;//{Убойное Оружие}
-const BYTE PE_ENERGY_ARMOR			=78;//{Энергетическая Броня}
-const BYTE PE_BATTLE_ARMOR			=79;//{Боевая Броня}
-const BYTE PE_WEAP_RANGE			=80;//{Дальнобойность}
-const BYTE PE_RAPID_RELOAD			=81;//{Быстрая перезарядка}
-const BYTE PE_NIGHT_SPYGLASS		=82;//{Оружие с ночным видением}
-const BYTE PE_FLAMER				=83;//{Огнемет}
-const BYTE PE_APA_I					=84;//{Улучшенная Броня I}
-const BYTE PE_APA_II				=85;//{Улучшенная Броня II}
-const BYTE PE_FORCEAGE				=86;//{Больше скорости}
-const BYTE PE_DEADLY_NARC			=87;//{Трагическое Пристрастие}
-const BYTE PE_CHARMOLEANCE			=88;//{Харизма }
-const BYTE PE_GEKK_SKINER			=89;//{Выделка Геков}
-const BYTE PE_SKIN_ARMOR			=90;//{Кожа-броня}
-const BYTE PE_A_SKIN_ARMOR			=91;//{Усиленная кожа- броня.}
-const BYTE PE_SUPER_ARMOR			=92;//{Супер броня}
-const BYTE PE_A_SUPER_ARMOR			=93;//{Усиленная Супер броня}
-const BYTE PE_VAULT_INOCUL			=94;//{Прививка Волта}
-const BYTE PE_ADRENALIN_RUSH		=95;//{Прилив адреналина}
-const BYTE PE_CAREFULL				=96;//{Осторожность}
-const BYTE PE_INTELEGENCE			=97;//{Понимание}
-const BYTE PE_PYROKASY				=98;//{Подрывник}
-const BYTE PE_DUDE					=99;//{Игрок}
+const BYTE PE_PICK_POCKER			=53;//{РљР°СЂРјР°РЅРЅРёРє}
+const BYTE PE_GHOST					=54;//{РџСЂРёР·СЂР°Рє}
+const BYTE PE_CHAR_CULT				=55;//{РљСѓР»СЊС‚ Р»РёС‡РЅРѕСЃС‚Рё}
+const BYTE PE_THIFER				=56;//{Р’РѕСЂРёС€РєР°}
+const BYTE PE_DISCOVER				=57;//{РСЃСЃР»РµРґРѕРІР°С‚РµР»СЊ}
+const BYTE PE_THE_PURETY			=58;//{РЎР°РјР° Р§РёСЃС‚РѕС‚Р°}
+const BYTE PE_OVERROAD				=59;//{РџСЂРѕС…РѕРґС‡РёРє}
+const BYTE PE_ANIMAL_FRIENDSHIP		=60;//{Р”СЂСѓРі Р–РёРІРѕС‚РЅС‹С…}
+const BYTE PE_SCOUT					=61;//{РЎРєР°СѓС‚}
+const BYTE PE_MIST_CHAR				=62;//{РўР°РёРЅСЃС‚РІРµРЅРЅС‹Р№ РќРµР·РЅР°РєРѕРјРµС†}
+const BYTE PE_RANGER				=63;//{Р РµР№РЅРґР¶РµСЂ}
+const BYTE PE_PICK_POCKET_2			=64;//{РљР°СЂРјР°РЅРЅРёРє}
+const BYTE PE_INTERLOCUTER			=65;//{РЎРѕР±РµСЃРµРґРЅРёРє}
+const BYTE PE_NOVICE				=66;//{РЎРїРѕСЃРѕР±РЅС‹Р№ РЈС‡РµРЅРёРє}
+const BYTE PE_PRIME_SKILL			=67;//{РћСЃРЅРѕРІРЅРѕРµ СѓРјРµРЅРёРµ!}
+const BYTE PE_MUTATION				=68;//{РњСѓС‚Р°С†РёСЏ!}
+const BYTE PE_NARC_NUKACOLA			=69;//{РџСЂРёСЃС‚СЂР°СЃС‚РёРµ Рє NukaCola}
+const BYTE PE_NARC_BUFFOUT			=70;//{РџСЂРёСЃС‚СЂР°СЃС‚РёРµ Рє Р‘СѓС„Р°СѓС‚Сѓ}
+const BYTE PE_NARC_MENTAT			=71;//{РџСЂРёСЃС‚СЂР°СЃС‚РёРµ Рє РњРµРЅС‚Р°С‚Сѓ}
+const BYTE PE_NARC_PSYHO			=72;//{РџСЂРёСЃС‚СЂР°СЃС‚РёРµ Рє РџСЃРёС…Рѕ}
+const BYTE PE_NARC_RADAWAY			=73;//{РџСЂРёСЃС‚СЂР°СЃС‚РёРµ Р СЌРґР­РІРµР№}
+const BYTE PE_DISTANT_WEAP			=74;//{Р”Р°Р»СЊРЅРѕР±РѕР№РЅРѕРµ РѕСЂСѓР¶РёРµ}
+const BYTE PE_ACCURARY_WEAP			=75;//{РўРѕС‡РЅРѕРµ РѕСЂСѓР¶РёРµ}
+const BYTE PE_PENETRATION_WEAP		=76;//{РџСЂРѕРЅРёРєР°СЋС‰РµРµ РѕСЂСѓР¶РёРµ}
+const BYTE PE_KILLER_WEAP			=77;//{РЈР±РѕР№РЅРѕРµ РћСЂСѓР¶РёРµ}
+const BYTE PE_ENERGY_ARMOR			=78;//{Р­РЅРµСЂРіРµС‚РёС‡РµСЃРєР°СЏ Р‘СЂРѕРЅСЏ}
+const BYTE PE_BATTLE_ARMOR			=79;//{Р‘РѕРµРІР°СЏ Р‘СЂРѕРЅСЏ}
+const BYTE PE_WEAP_RANGE			=80;//{Р”Р°Р»СЊРЅРѕР±РѕР№РЅРѕСЃС‚СЊ}
+const BYTE PE_RAPID_RELOAD			=81;//{Р‘С‹СЃС‚СЂР°СЏ РїРµСЂРµР·Р°СЂСЏРґРєР°}
+const BYTE PE_NIGHT_SPYGLASS		=82;//{РћСЂСѓР¶РёРµ СЃ РЅРѕС‡РЅС‹Рј РІРёРґРµРЅРёРµРј}
+const BYTE PE_FLAMER				=83;//{РћРіРЅРµРјРµС‚}
+const BYTE PE_APA_I					=84;//{РЈР»СѓС‡С€РµРЅРЅР°СЏ Р‘СЂРѕРЅСЏ I}
+const BYTE PE_APA_II				=85;//{РЈР»СѓС‡С€РµРЅРЅР°СЏ Р‘СЂРѕРЅСЏ II}
+const BYTE PE_FORCEAGE				=86;//{Р‘РѕР»СЊС€Рµ СЃРєРѕСЂРѕСЃС‚Рё}
+const BYTE PE_DEADLY_NARC			=87;//{РўСЂР°РіРёС‡РµСЃРєРѕРµ РџСЂРёСЃС‚СЂР°СЃС‚РёРµ}
+const BYTE PE_CHARMOLEANCE			=88;//{РҐР°СЂРёР·РјР° }
+const BYTE PE_GEKK_SKINER			=89;//{Р’С‹РґРµР»РєР° Р“РµРєРѕРІ}
+const BYTE PE_SKIN_ARMOR			=90;//{РљРѕР¶Р°-Р±СЂРѕРЅСЏ}
+const BYTE PE_A_SKIN_ARMOR			=91;//{РЈСЃРёР»РµРЅРЅР°СЏ РєРѕР¶Р°- Р±СЂРѕРЅСЏ.}
+const BYTE PE_SUPER_ARMOR			=92;//{РЎСѓРїРµСЂ Р±СЂРѕРЅСЏ}
+const BYTE PE_A_SUPER_ARMOR			=93;//{РЈСЃРёР»РµРЅРЅР°СЏ РЎСѓРїРµСЂ Р±СЂРѕРЅСЏ}
+const BYTE PE_VAULT_INOCUL			=94;//{РџСЂРёРІРёРІРєР° Р’РѕР»С‚Р°}
+const BYTE PE_ADRENALIN_RUSH		=95;//{РџСЂРёР»РёРІ Р°РґСЂРµРЅР°Р»РёРЅР°}
+const BYTE PE_CAREFULL				=96;//{РћСЃС‚РѕСЂРѕР¶РЅРѕСЃС‚СЊ}
+const BYTE PE_INTELEGENCE			=97;//{РџРѕРЅРёРјР°РЅРёРµ}
+const BYTE PE_PYROKASY				=98;//{РџРѕРґСЂС‹РІРЅРёРє}
+const BYTE PE_DUDE					=99;//{РРіСЂРѕРє}
 //==========================
-const BYTE PE_A_STR					=100;//{Больше силы}
-const BYTE PE_A_PER					=101;//{Больше восприятия}
-const BYTE PE_A_END					=102;//{Больше выносливости}
-const BYTE PE_A_CHA					=103;//{Больше обаяния}
-const BYTE PE_A_INT					=104;//{Больше ума}
-const BYTE PE_A_AGL					=105;//{Больше ловкости}
-const BYTE PE_A_LUC					=106;//{Больше удачи}
+const BYTE PE_A_STR					=100;//{Р‘РѕР»СЊС€Рµ СЃРёР»С‹}
+const BYTE PE_A_PER					=101;//{Р‘РѕР»СЊС€Рµ РІРѕСЃРїСЂРёСЏС‚РёСЏ}
+const BYTE PE_A_END					=102;//{Р‘РѕР»СЊС€Рµ РІС‹РЅРѕСЃР»РёРІРѕСЃС‚Рё}
+const BYTE PE_A_CHA					=103;//{Р‘РѕР»СЊС€Рµ РѕР±Р°СЏРЅРёСЏ}
+const BYTE PE_A_INT					=104;//{Р‘РѕР»СЊС€Рµ СѓРјР°}
+const BYTE PE_A_AGL					=105;//{Р‘РѕР»СЊС€Рµ Р»РѕРІРєРѕСЃС‚Рё}
+const BYTE PE_A_LUC					=106;//{Р‘РѕР»СЊС€Рµ СѓРґР°С‡Рё}
 //==========================
-const BYTE PE_PURERER				=107;//{Сама невинность}
-const BYTE PE_IMAG					=108;//{Немедленно}
-const BYTE PE_EVASION				=109;//{Уклонение}
-const BYTE PE_DROSHKADRAT			=110;//{Специалист по Кама- Сутре}
-const BYTE PE_KARMA_GLOW			=111;//{Свечение Кармы}
-const BYTE PE_SILENT_STEPS			=112;//{Легкие Шаги}
-const BYTE PE_ANATOMY				=113;//{Анатомия}
-const BYTE PE_CHAMER				=114;//{Притягательная личность}
-const BYTE PE_ORATOR				=115;//{Оратор}
-const BYTE PE_PACKER				=116;//{Кладовщик}
-const BYTE PE_EDD_GAYAN_MANIAC		=117;//{Маньяк- убийца}
-const BYTE PE_FAST_REGENERATION		=118;//{Быстрое выздоровление}
-const BYTE PE_VENDOR				=119;//{Продавец}
-const BYTE PE_STONE_WALL			=120;//{Каменная стена}
-const BYTE PE_THIEF_AGAIN			=121;//{Вор}
-const BYTE PE_WEAPON_SKILL			=122;//{Владение оружием}
-const BYTE PE_MAKE_VAULT			=123;//{Подготовка Волта}
-const BYTE PE_ALC_BUFF_1			=124;//{Алкоголь увеличил баллы жизни}
-const BYTE PE_ALC_BUFF_2			=125;//{Алкоголь увеличил баллы жизни}
+const BYTE PE_PURERER				=107;//{РЎР°РјР° РЅРµРІРёРЅРЅРѕСЃС‚СЊ}
+const BYTE PE_IMAG					=108;//{РќРµРјРµРґР»РµРЅРЅРѕ}
+const BYTE PE_EVASION				=109;//{РЈРєР»РѕРЅРµРЅРёРµ}
+const BYTE PE_DROSHKADRAT			=110;//{РЎРїРµС†РёР°Р»РёСЃС‚ РїРѕ РљР°РјР°- РЎСѓС‚СЂРµ}
+const BYTE PE_KARMA_GLOW			=111;//{РЎРІРµС‡РµРЅРёРµ РљР°СЂРјС‹}
+const BYTE PE_SILENT_STEPS			=112;//{Р›РµРіРєРёРµ РЁР°РіРё}
+const BYTE PE_ANATOMY				=113;//{РђРЅР°С‚РѕРјРёСЏ}
+const BYTE PE_CHAMER				=114;//{РџСЂРёС‚СЏРіР°С‚РµР»СЊРЅР°СЏ Р»РёС‡РЅРѕСЃС‚СЊ}
+const BYTE PE_ORATOR				=115;//{РћСЂР°С‚РѕСЂ}
+const BYTE PE_PACKER				=116;//{РљР»Р°РґРѕРІС‰РёРє}
+const BYTE PE_EDD_GAYAN_MANIAC		=117;//{РњР°РЅСЊСЏРє- СѓР±РёР№С†Р°}
+const BYTE PE_FAST_REGENERATION		=118;//{Р‘С‹СЃС‚СЂРѕРµ РІС‹Р·РґРѕСЂРѕРІР»РµРЅРёРµ}
+const BYTE PE_VENDOR				=119;//{РџСЂРѕРґР°РІРµС†}
+const BYTE PE_STONE_WALL			=120;//{РљР°РјРµРЅРЅР°СЏ СЃС‚РµРЅР°}
+const BYTE PE_THIEF_AGAIN			=121;//{Р’РѕСЂ}
+const BYTE PE_WEAPON_SKILL			=122;//{Р’Р»Р°РґРµРЅРёРµ РѕСЂСѓР¶РёРµРј}
+const BYTE PE_MAKE_VAULT			=123;//{РџРѕРґРіРѕС‚РѕРІРєР° Р’РѕР»С‚Р°}
+const BYTE PE_ALC_BUFF_1			=124;//{РђР»РєРѕРіРѕР»СЊ СѓРІРµР»РёС‡РёР» Р±Р°Р»Р»С‹ Р¶РёР·РЅРё}
+const BYTE PE_ALC_BUFF_2			=125;//{РђР»РєРѕРіРѕР»СЊ СѓРІРµР»РёС‡РёР» Р±Р°Р»Р»С‹ Р¶РёР·РЅРё}
 
-const BYTE PE_1				=126;//{Алкоголь уменьшил баллы жизни}
-const BYTE PE_2				=127;//{Алкоголь уменьшил баллы жизни II}
-const BYTE PE_3				=128;//{Автодок повысил баллы жизни}
-const BYTE PE_4				=129;//{Автодок повысил баллы жизни II}
-const BYTE PE_5				=130;//{Автодок понизил баллы жизни}
-const BYTE PE_6				=131;//{Автодок понизил баллы жизни II}
-const BYTE PE_7				=132;//{Добротный Дермогон}
-const BYTE PE_8				=133;//{Оружие усиленной убойной силы}
-const BYTE PE_9				=134;//{Несчастливый}
-const BYTE PE_10			=135;//{Книголюб (Книжный червь)}
-const BYTE PE_11			=136;//{Ментор (Тьютор)}
-const BYTE PE_12			=137;//{Выбит правый глаз}
-const BYTE PE_13			=138;//{Выбит левый глаз}
+const BYTE PE_1				=126;//{РђР»РєРѕРіРѕР»СЊ СѓРјРµРЅСЊС€РёР» Р±Р°Р»Р»С‹ Р¶РёР·РЅРё}
+const BYTE PE_2				=127;//{РђР»РєРѕРіРѕР»СЊ СѓРјРµРЅСЊС€РёР» Р±Р°Р»Р»С‹ Р¶РёР·РЅРё II}
+const BYTE PE_3				=128;//{РђРІС‚РѕРґРѕРє РїРѕРІС‹СЃРёР» Р±Р°Р»Р»С‹ Р¶РёР·РЅРё}
+const BYTE PE_4				=129;//{РђРІС‚РѕРґРѕРє РїРѕРІС‹СЃРёР» Р±Р°Р»Р»С‹ Р¶РёР·РЅРё II}
+const BYTE PE_5				=130;//{РђРІС‚РѕРґРѕРє РїРѕРЅРёР·РёР» Р±Р°Р»Р»С‹ Р¶РёР·РЅРё}
+const BYTE PE_6				=131;//{РђРІС‚РѕРґРѕРє РїРѕРЅРёР·РёР» Р±Р°Р»Р»С‹ Р¶РёР·РЅРё II}
+const BYTE PE_7				=132;//{Р”РѕР±СЂРѕС‚РЅС‹Р№ Р”РµСЂРјРѕРіРѕРЅ}
+const BYTE PE_8				=133;//{РћСЂСѓР¶РёРµ СѓСЃРёР»РµРЅРЅРѕР№ СѓР±РѕР№РЅРѕР№ СЃРёР»С‹}
+const BYTE PE_9				=134;//{РќРµСЃС‡Р°СЃС‚Р»РёРІС‹Р№}
+const BYTE PE_10			=135;//{РљРЅРёРіРѕР»СЋР± (РљРЅРёР¶РЅС‹Р№ С‡РµСЂРІСЊ)}
+const BYTE PE_11			=136;//{РњРµРЅС‚РѕСЂ (РўСЊСЋС‚РѕСЂ)}
+const BYTE PE_12			=137;//{Р’С‹Р±РёС‚ РїСЂР°РІС‹Р№ РіР»Р°Р·}
+const BYTE PE_13			=138;//{Р’С‹Р±РёС‚ Р»РµРІС‹Р№ РіР»Р°Р·}
 
-const BYTE PE_HIDE_MODE		=139;//{Состояние скрытности (выкл/вкл)}
+const BYTE PE_HIDE_MODE		=139;//{РЎРѕСЃС‚РѕСЏРЅРёРµ СЃРєСЂС‹С‚РЅРѕСЃС‚Рё (РІС‹РєР»/РІРєР»)}
 
-//Типы повреждений
+//РўРёРїС‹ РїРѕРІСЂРµР¶РґРµРЅРёР№
 const BYTE DAMAGE_TYPE_NORMAL	=0;
 const BYTE DAMAGE_TYPE_LASER	=1;
 const BYTE DAMAGE_TYPE_FIRE		=2;
@@ -375,8 +375,8 @@ const BYTE DAMAGE_TYPE_ELECTR	=3;
 const BYTE DAMAGE_TYPE_EMP		=4;
 const BYTE DAMAGE_TYPE_EXPLODE	=5;
 
-//Предметы
-//типы
+//РџСЂРµРґРјРµС‚С‹
+//С‚РёРїС‹
 const BYTE OBJ_TYPE_ARMOR		=0;
 const BYTE OBJ_TYPE_CONTAINER	=1;
 const BYTE OBJ_TYPE_DRUG		=2;
@@ -390,64 +390,64 @@ const BYTE OBJ_TYPE_GRID		=9;
 
 const BYTE SOBJ_MAX_PARAMS		=80;
 //=============================================== GENERAL
-const BYTE OBJ_NAME				=0;//{Имя итема}
-const BYTE OBJ_INFO				=1;//{Инфо итема}
+const BYTE OBJ_NAME				=0;//{РРјСЏ РёС‚РµРјР°}
+const BYTE OBJ_INFO				=1;//{РРЅС„Рѕ РёС‚РµРјР°}
 
-const BYTE OBJ_TIME_SHOW		=2;//{Время доставания объекта}
-const BYTE OBJ_TIME_HIDE		=3;//{Время скрывания объекта}
+const BYTE OBJ_TIME_SHOW		=2;//{Р’СЂРµРјСЏ РґРѕСЃС‚Р°РІР°РЅРёСЏ РѕР±СЉРµРєС‚Р°}
+const BYTE OBJ_TIME_HIDE		=3;//{Р’СЂРµРјСЏ СЃРєСЂС‹РІР°РЅРёСЏ РѕР±СЉРµРєС‚Р°}
 
-const BYTE OBJ_DISTANCE_LIGHT	=4;//{Дистанция света}
-const BYTE OBJ_INTENSITY_LIGHT	=5;//{Интенсивность света}
+const BYTE OBJ_DISTANCE_LIGHT	=4;//{Р”РёСЃС‚Р°РЅС†РёСЏ СЃРІРµС‚Р°}
+const BYTE OBJ_INTENSITY_LIGHT	=5;//{РРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊ СЃРІРµС‚Р°}
 
-const BYTE OBJ_PASSED			=6;//{Проходимость объекта}
-const BYTE OBJ_RAKED			=7;//{Простреливаемость объекта}
-const BYTE OBJ_TRANSPARENT		=8;//{Прозрачность объекта} wall, glass, steam, energy
-const BYTE OBJ_CAN_USE			=9;//{Объект можно использовать}
-const BYTE OBJ_CAN_PICK_UP		=10;//{Объект можно поднять}
-const BYTE OBJ_CAN_USE_ON_SMTH	=11;//{Объект можно применять на чем либо}
+const BYTE OBJ_PASSED			=6;//{РџСЂРѕС…РѕРґРёРјРѕСЃС‚СЊ РѕР±СЉРµРєС‚Р°}
+const BYTE OBJ_RAKED			=7;//{РџСЂРѕСЃС‚СЂРµР»РёРІР°РµРјРѕСЃС‚СЊ РѕР±СЉРµРєС‚Р°}
+const BYTE OBJ_TRANSPARENT		=8;//{РџСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ РѕР±СЉРµРєС‚Р°} wall, glass, steam, energy
+const BYTE OBJ_CAN_USE			=9;//{РћР±СЉРµРєС‚ РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ}
+const BYTE OBJ_CAN_PICK_UP		=10;//{РћР±СЉРµРєС‚ РјРѕР¶РЅРѕ РїРѕРґРЅСЏС‚СЊ}
+const BYTE OBJ_CAN_USE_ON_SMTH	=11;//{РћР±СЉРµРєС‚ РјРѕР¶РЅРѕ РїСЂРёРјРµРЅСЏС‚СЊ РЅР° С‡РµРј Р»РёР±Рѕ}
 
-const BYTE OBJ_HIDDEN			=12;//{Скрытый}
+const BYTE OBJ_HIDDEN			=12;//{РЎРєСЂС‹С‚С‹Р№}
 
-const BYTE OBJ_WEIGHT			=13;//{Вес}
-const BYTE OBJ_SIZE				=14;//{Объем в инвентаре}
-const BYTE OBJ_TWOHANDS			=15;//{Двуручный объект}
+const BYTE OBJ_WEIGHT			=13;//{Р’РµСЃ}
+const BYTE OBJ_SIZE				=14;//{РћР±СЉРµРј РІ РёРЅРІРµРЅС‚Р°СЂРµ}
+const BYTE OBJ_TWOHANDS			=15;//{Р”РІСѓСЂСѓС‡РЅС‹Р№ РѕР±СЉРµРєС‚}
 
-const BYTE OBJ_PIC_MAP			=16;//{Индекс картинки на карте}
-const BYTE OBJ_ANIM_ON_MAP		=17;//{Номер анимации на карте если есть}
-const BYTE OBJ_PIC_INV			=18;//{Индекс картинки в инвентаре}
-const BYTE OBJ_SOUND			=19;//{Индекс звука}
+const BYTE OBJ_PIC_MAP			=16;//{РРЅРґРµРєСЃ РєР°СЂС‚РёРЅРєРё РЅР° РєР°СЂС‚Рµ}
+const BYTE OBJ_ANIM_ON_MAP		=17;//{РќРѕРјРµСЂ Р°РЅРёРјР°С†РёРё РЅР° РєР°СЂС‚Рµ РµСЃР»Рё РµСЃС‚СЊ}
+const BYTE OBJ_PIC_INV			=18;//{РРЅРґРµРєСЃ РєР°СЂС‚РёРЅРєРё РІ РёРЅРІРµРЅС‚Р°СЂРµ}
+const BYTE OBJ_SOUND			=19;//{РРЅРґРµРєСЃ Р·РІСѓРєР°}
 
-const BYTE OBJ_LIVETIME			=20;//{Начальное время жизни}
+const BYTE OBJ_LIVETIME			=20;//{РќР°С‡Р°Р»СЊРЅРѕРµ РІСЂРµРјСЏ Р¶РёР·РЅРё}
 
-const BYTE OBJ_COST				=21;//{Базовая цена}
-const BYTE OBJ_MATERIAL			=22;//{Материал предмета}
+const BYTE OBJ_COST				=21;//{Р‘Р°Р·РѕРІР°СЏ С†РµРЅР°}
+const BYTE OBJ_MATERIAL			=22;//{РњР°С‚РµСЂРёР°Р» РїСЂРµРґРјРµС‚Р°}
 //----------------------------------------------- type==OBJ_TYPE_ARMOR
-const BYTE OBJ_ARM_ANIM0_MALE	=30;//{Индекс анимации дюда male}
-const BYTE OBJ_ARM_ANIM0_MALE2	=31;//{Индекс анимации дюда male дублер}
-const BYTE OBJ_ARM_ANIM0_FEMALE	=32;//{Индекс анимации дюда female}
-const BYTE OBJ_ARM_ANIM0_FEMALE2=33;//{Индекс анимации дюда female дублер}
+const BYTE OBJ_ARM_ANIM0_MALE	=30;//{РРЅРґРµРєСЃ Р°РЅРёРјР°С†РёРё РґСЋРґР° male}
+const BYTE OBJ_ARM_ANIM0_MALE2	=31;//{РРЅРґРµРєСЃ Р°РЅРёРјР°С†РёРё РґСЋРґР° male РґСѓР±Р»РµСЂ}
+const BYTE OBJ_ARM_ANIM0_FEMALE	=32;//{РРЅРґРµРєСЃ Р°РЅРёРјР°С†РёРё РґСЋРґР° female}
+const BYTE OBJ_ARM_ANIM0_FEMALE2=33;//{РРЅРґРµРєСЃ Р°РЅРёРјР°С†РёРё РґСЋРґР° female РґСѓР±Р»РµСЂ}
 
-const BYTE OBJ_ARM_AC			=40;//{Армор класс}
-const BYTE OBJ_ARM_PERK			=41;//{Перк на броне}
+const BYTE OBJ_ARM_AC			=40;//{РђСЂРјРѕСЂ РєР»Р°СЃСЃ}
+const BYTE OBJ_ARM_PERK			=41;//{РџРµСЂРє РЅР° Р±СЂРѕРЅРµ}
 
-const BYTE OBJ_ARM_DR_NORMAL	=50;//{Сопротивление нормальное}
-const BYTE OBJ_ARM_DR_LASER		=51;//{Сопротивление лазеру}
-const BYTE OBJ_ARM_DR_FIRE		=52;//{Сопротивление огню}
-const BYTE OBJ_ARM_DR_PLASMA	=53;//{Сопротивление плазме}
-const BYTE OBJ_ARM_DR_ELECTR	=54;//{Сопротивление электричеству}
-const BYTE OBJ_ARM_DR_EMP		=55;//{Сопротивление емп}
-const BYTE OBJ_ARM_DR_EXPLODE	=56;//{Сопротивление взрыву}
+const BYTE OBJ_ARM_DR_NORMAL	=50;//{РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ РЅРѕСЂРјР°Р»СЊРЅРѕРµ}
+const BYTE OBJ_ARM_DR_LASER		=51;//{РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ Р»Р°Р·РµСЂСѓ}
+const BYTE OBJ_ARM_DR_FIRE		=52;//{РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ РѕРіРЅСЋ}
+const BYTE OBJ_ARM_DR_PLASMA	=53;//{РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ РїР»Р°Р·РјРµ}
+const BYTE OBJ_ARM_DR_ELECTR	=54;//{РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ СЌР»РµРєС‚СЂРёС‡РµСЃС‚РІСѓ}
+const BYTE OBJ_ARM_DR_EMP		=55;//{РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ РµРјРї}
+const BYTE OBJ_ARM_DR_EXPLODE	=56;//{РЎРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ РІР·СЂС‹РІСѓ}
 
-const BYTE OBJ_ARM_DT_NORMAL	=60;//{Порог повреждения нормальное}
-const BYTE OBJ_ARM_DT_LASER		=61;//{Порог повреждения лазеру}
-const BYTE OBJ_ARM_DT_FIRE		=62;//{Порог повреждения огню}
-const BYTE OBJ_ARM_DT_PLASMA	=63;//{Порог повреждения плазме}
-const BYTE OBJ_ARM_DT_ELECTR	=64;//{Порог повреждения электричеству}
-const BYTE OBJ_ARM_DT_EMP		=65;//{Порог повреждения емп}
-const BYTE OBJ_ARM_DT_EXPLODE	=66;//{Порог повреждения взрыву}
+const BYTE OBJ_ARM_DT_NORMAL	=60;//{РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ РЅРѕСЂРјР°Р»СЊРЅРѕРµ}
+const BYTE OBJ_ARM_DT_LASER		=61;//{РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ Р»Р°Р·РµСЂСѓ}
+const BYTE OBJ_ARM_DT_FIRE		=62;//{РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕРіРЅСЋ}
+const BYTE OBJ_ARM_DT_PLASMA	=63;//{РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ РїР»Р°Р·РјРµ}
+const BYTE OBJ_ARM_DT_ELECTR	=64;//{РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ СЌР»РµРєС‚СЂРёС‡РµСЃС‚РІСѓ}
+const BYTE OBJ_ARM_DT_EMP		=65;//{РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ РµРјРї}
+const BYTE OBJ_ARM_DT_EXPLODE	=66;//{РџРѕСЂРѕРі РїРѕРІСЂРµР¶РґРµРЅРёСЏ РІР·СЂС‹РІСѓ}
 //----------------------------------------------- type==OBJ_TYPE_CONTAINER
-const BYTE OBJ_CONT_SIZE		=30;//{Объем контейнера}
-const BYTE OBJ_CONT_FLAG		=31;//{Флаг контейнера}
+const BYTE OBJ_CONT_SIZE		=30;//{РћР±СЉРµРј РєРѕРЅС‚РµР№РЅРµСЂР°}
+const BYTE OBJ_CONT_FLAG		=31;//{Р¤Р»Р°Рі РєРѕРЅС‚РµР№РЅРµСЂР°}
 //----------------------------------------------- type==OBJ_TYPE_DRUG
 const BYTE OBJ_DRUG_STAT0		=30;//{}
 const BYTE OBJ_DRUG_STAT1		=31;//{}
@@ -471,74 +471,74 @@ const BYTE OBJ_DRUG_ADDICTION	=70;//{}
 const BYTE OBJ_DRUG_W_EFFECT	=71;//{}
 const BYTE OBJ_DRUG_W_ONSET		=72;//{}
 //----------------------------------------------- type==OBJ_TYPE_WEAPON
-const BYTE OBJ_WEAP_ANIM1		=30;//{Индекс анимации объекта}
+const BYTE OBJ_WEAP_ANIM1		=30;//{РРЅРґРµРєСЃ Р°РЅРёРјР°С†РёРё РѕР±СЉРµРєС‚Р°}
 
-const BYTE OBJ_WEAP_TIME_ACTIV	=31;//{Время подготовки к использованию}
-const BYTE OBJ_WEAP_TIME_UNACTIV=32;//{Время отмены использования}
+const BYTE OBJ_WEAP_TIME_ACTIV	=31;//{Р’СЂРµРјСЏ РїРѕРґРіРѕС‚РѕРІРєРё Рє РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЋ}
+const BYTE OBJ_WEAP_TIME_UNACTIV=32;//{Р’СЂРµРјСЏ РѕС‚РјРµРЅС‹ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ}
 
-const BYTE OBJ_WEAP_VOL_HOLDER	=33;//{Емкость основной обоймы}
-const BYTE OBJ_WEAP_CALIBER		=34;//{Калибр у основной обоймы}
-const BYTE OBJ_WEAP_VOL_HOLDER_E=35;//{Емкость дополнительной обоймы}
-const BYTE OBJ_WEAP_CALIBER_E	=36;//{Калибр у дополнительной обоймы}
+const BYTE OBJ_WEAP_VOL_HOLDER	=33;//{Р•РјРєРѕСЃС‚СЊ РѕСЃРЅРѕРІРЅРѕР№ РѕР±РѕР№РјС‹}
+const BYTE OBJ_WEAP_CALIBER		=34;//{РљР°Р»РёР±СЂ Сѓ РѕСЃРЅРѕРІРЅРѕР№ РѕР±РѕР№РјС‹}
+const BYTE OBJ_WEAP_VOL_HOLDER_E=35;//{Р•РјРєРѕСЃС‚СЊ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕР№ РѕР±РѕР№РјС‹}
+const BYTE OBJ_WEAP_CALIBER_E	=36;//{РљР°Р»РёР±СЂ Сѓ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕР№ РѕР±РѕР№РјС‹}
 
-const BYTE OBJ_WEAP_CR_FAILTURE	=37;//{Критическая неудача при использовании}
+const BYTE OBJ_WEAP_CR_FAILTURE	=37;//{РљСЂРёС‚РёС‡РµСЃРєР°СЏ РЅРµСѓРґР°С‡Р° РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё}
 
-const BYTE OBJ_WEAP_TYPE_ATTACK	=38;//{Тип атаки оружия}
+const BYTE OBJ_WEAP_TYPE_ATTACK	=38;//{РўРёРї Р°С‚Р°РєРё РѕСЂСѓР¶РёСЏ}
 
-const BYTE OBJ_WEAP_COUNT_ATTACK=39;//{Количество атак} | 0 - нет | 1 - PA | 2 - PA && SA | 3 - PA && SA && TA |
+const BYTE OBJ_WEAP_COUNT_ATTACK=39;//{РљРѕР»РёС‡РµСЃС‚РІРѕ Р°С‚Р°Рє} | 0 - РЅРµС‚ | 1 - PA | 2 - PA && SA | 3 - PA && SA && TA |
 
-const BYTE OBJ_WEAP_PA_SKILL	=40;//{Скилл отвечающий за использование}
-const BYTE OBJ_WEAP_PA_HOLDER	=41;//{Используемая обойма}
-const BYTE OBJ_WEAP_PA_PIC		=42;//{Рисунок использования}
-const BYTE OBJ_WEAP_PA_DMG_MIN	=43;//{Минимальное повреждения}
-const BYTE OBJ_WEAP_PA_DMG_MAX	=44;//{Максимальное повреждение}
-const BYTE OBJ_WEAP_PA_MAX_DIST	=45;//{Максимальная дистанция}
-const BYTE OBJ_WEAP_PA_EFF_DIST	=46;//{Эффективная дистанция}
-const BYTE OBJ_WEAP_PA_ANIM2	=47;//{Анимация атаки}
-const BYTE OBJ_WEAP_PA_TIME		=48;//{Базовое время атаки}
-const BYTE OBJ_WEAP_PA_AIM		=49;//{Наличие у атаки прицельного выстрела}
-const BYTE OBJ_WEAP_PA_ROUND	=50;//{Расход патронов за атаку}
-const BYTE OBJ_WEAP_PA_REMOVE	=51;//{Удаление предмета после атаки}
+const BYTE OBJ_WEAP_PA_SKILL	=40;//{РЎРєРёР»Р» РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ}
+const BYTE OBJ_WEAP_PA_HOLDER	=41;//{РСЃРїРѕР»СЊР·СѓРµРјР°СЏ РѕР±РѕР№РјР°}
+const BYTE OBJ_WEAP_PA_PIC		=42;//{Р РёСЃСѓРЅРѕРє РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ}
+const BYTE OBJ_WEAP_PA_DMG_MIN	=43;//{РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРІСЂРµР¶РґРµРЅРёСЏ}
+const BYTE OBJ_WEAP_PA_DMG_MAX	=44;//{РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РїРѕРІСЂРµР¶РґРµРЅРёРµ}
+const BYTE OBJ_WEAP_PA_MAX_DIST	=45;//{РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ}
+const BYTE OBJ_WEAP_PA_EFF_DIST	=46;//{Р­С„С„РµРєС‚РёРІРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ}
+const BYTE OBJ_WEAP_PA_ANIM2	=47;//{РђРЅРёРјР°С†РёСЏ Р°С‚Р°РєРё}
+const BYTE OBJ_WEAP_PA_TIME		=48;//{Р‘Р°Р·РѕРІРѕРµ РІСЂРµРјСЏ Р°С‚Р°РєРё}
+const BYTE OBJ_WEAP_PA_AIM		=49;//{РќР°Р»РёС‡РёРµ Сѓ Р°С‚Р°РєРё РїСЂРёС†РµР»СЊРЅРѕРіРѕ РІС‹СЃС‚СЂРµР»Р°}
+const BYTE OBJ_WEAP_PA_ROUND	=50;//{Р Р°СЃС…РѕРґ РїР°С‚СЂРѕРЅРѕРІ Р·Р° Р°С‚Р°РєСѓ}
+const BYTE OBJ_WEAP_PA_REMOVE	=51;//{РЈРґР°Р»РµРЅРёРµ РїСЂРµРґРјРµС‚Р° РїРѕСЃР»Рµ Р°С‚Р°РєРё}
 
-const BYTE OBJ_WEAP_SA_SKILL	=53;//{Скилл отвечающий за использование}
-const BYTE OBJ_WEAP_SA_HOLDER	=54;//{Используемая обойма}
-const BYTE OBJ_WEAP_SA_PIC		=55;//{Рисунок использования}
-const BYTE OBJ_WEAP_SA_DMG_MIN	=56;//{Минимальное повреждения}
-const BYTE OBJ_WEAP_SA_DMG_MAX	=57;//{Максимальное повреждение}
-const BYTE OBJ_WEAP_SA_MAX_DIST	=58;//{Максимальная дистанция}
-const BYTE OBJ_WEAP_SA_EFF_DIST	=59;//{Эффективная дистанция}
-const BYTE OBJ_WEAP_SA_ANIM2	=60;//{Анимация атаки}
-const BYTE OBJ_WEAP_SA_TIME		=61;//{Базовое время атаки}
-const BYTE OBJ_WEAP_SA_AIM		=62;//{Наличие у атаки прицельного выстрела}
-const BYTE OBJ_WEAP_SA_ROUND	=63;//{Расход патронов за атаку}
-const BYTE OBJ_WEAP_SA_REMOVE	=64;//{Удаление предмета после атаки}
+const BYTE OBJ_WEAP_SA_SKILL	=53;//{РЎРєРёР»Р» РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ}
+const BYTE OBJ_WEAP_SA_HOLDER	=54;//{РСЃРїРѕР»СЊР·СѓРµРјР°СЏ РѕР±РѕР№РјР°}
+const BYTE OBJ_WEAP_SA_PIC		=55;//{Р РёСЃСѓРЅРѕРє РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ}
+const BYTE OBJ_WEAP_SA_DMG_MIN	=56;//{РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРІСЂРµР¶РґРµРЅРёСЏ}
+const BYTE OBJ_WEAP_SA_DMG_MAX	=57;//{РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РїРѕРІСЂРµР¶РґРµРЅРёРµ}
+const BYTE OBJ_WEAP_SA_MAX_DIST	=58;//{РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ}
+const BYTE OBJ_WEAP_SA_EFF_DIST	=59;//{Р­С„С„РµРєС‚РёРІРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ}
+const BYTE OBJ_WEAP_SA_ANIM2	=60;//{РђРЅРёРјР°С†РёСЏ Р°С‚Р°РєРё}
+const BYTE OBJ_WEAP_SA_TIME		=61;//{Р‘Р°Р·РѕРІРѕРµ РІСЂРµРјСЏ Р°С‚Р°РєРё}
+const BYTE OBJ_WEAP_SA_AIM		=62;//{РќР°Р»РёС‡РёРµ Сѓ Р°С‚Р°РєРё РїСЂРёС†РµР»СЊРЅРѕРіРѕ РІС‹СЃС‚СЂРµР»Р°}
+const BYTE OBJ_WEAP_SA_ROUND	=63;//{Р Р°СЃС…РѕРґ РїР°С‚СЂРѕРЅРѕРІ Р·Р° Р°С‚Р°РєСѓ}
+const BYTE OBJ_WEAP_SA_REMOVE	=64;//{РЈРґР°Р»РµРЅРёРµ РїСЂРµРґРјРµС‚Р° РїРѕСЃР»Рµ Р°С‚Р°РєРё}
 
-const BYTE OBJ_WEAP_TA_SKILL	=66;//{Скилл отвечающий за использование}
-const BYTE OBJ_WEAP_TA_HOLDER	=67;//{Используемая обойма}
-const BYTE OBJ_WEAP_TA_PIC		=68;//{Рисунок использования}
-const BYTE OBJ_WEAP_TA_DMG_MIN	=69;//{Минимальное повреждения}
-const BYTE OBJ_WEAP_TA_DMG_MAX	=70;//{Максимальное повреждение}
-const BYTE OBJ_WEAP_TA_MAX_DIST	=71;//{Максимальная дистанция}
-const BYTE OBJ_WEAP_TA_EFF_DIST	=72;//{Эффективная дистанция}
-const BYTE OBJ_WEAP_TA_ANIM2	=73;//{Анимация атаки}
-const BYTE OBJ_WEAP_TA_TIME		=74;//{Базовое время атаки}
-const BYTE OBJ_WEAP_TA_AIM		=75;//{Наличие у атаки прицельного выстрела}
-const BYTE OBJ_WEAP_TA_ROUND	=76;//{Расход патронов за атаку}
-const BYTE OBJ_WEAP_TA_REMOVE	=77;//{Удаление предмета после атаки}
+const BYTE OBJ_WEAP_TA_SKILL	=66;//{РЎРєРёР»Р» РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ}
+const BYTE OBJ_WEAP_TA_HOLDER	=67;//{РСЃРїРѕР»СЊР·СѓРµРјР°СЏ РѕР±РѕР№РјР°}
+const BYTE OBJ_WEAP_TA_PIC		=68;//{Р РёСЃСѓРЅРѕРє РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ}
+const BYTE OBJ_WEAP_TA_DMG_MIN	=69;//{РњРёРЅРёРјР°Р»СЊРЅРѕРµ РїРѕРІСЂРµР¶РґРµРЅРёСЏ}
+const BYTE OBJ_WEAP_TA_DMG_MAX	=70;//{РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РїРѕРІСЂРµР¶РґРµРЅРёРµ}
+const BYTE OBJ_WEAP_TA_MAX_DIST	=71;//{РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ}
+const BYTE OBJ_WEAP_TA_EFF_DIST	=72;//{Р­С„С„РµРєС‚РёРІРЅР°СЏ РґРёСЃС‚Р°РЅС†РёСЏ}
+const BYTE OBJ_WEAP_TA_ANIM2	=73;//{РђРЅРёРјР°С†РёСЏ Р°С‚Р°РєРё}
+const BYTE OBJ_WEAP_TA_TIME		=74;//{Р‘Р°Р·РѕРІРѕРµ РІСЂРµРјСЏ Р°С‚Р°РєРё}
+const BYTE OBJ_WEAP_TA_AIM		=75;//{РќР°Р»РёС‡РёРµ Сѓ Р°С‚Р°РєРё РїСЂРёС†РµР»СЊРЅРѕРіРѕ РІС‹СЃС‚СЂРµР»Р°}
+const BYTE OBJ_WEAP_TA_ROUND	=76;//{Р Р°СЃС…РѕРґ РїР°С‚СЂРѕРЅРѕРІ Р·Р° Р°С‚Р°РєСѓ}
+const BYTE OBJ_WEAP_TA_REMOVE	=77;//{РЈРґР°Р»РµРЅРёРµ РїСЂРµРґРјРµС‚Р° РїРѕСЃР»Рµ Р°С‚Р°РєРё}
 //----------------------------------------------- type==OBJ_TYPE_AMMO
-const BYTE OBJ_AMMO_CALIBER		=30;//{Калибр}
-const BYTE OBJ_AMMO_TYPE_DAMAGE	=31;//{Тип повреждения}
-const BYTE OBJ_AMMO_QUANTITY	=32;//{Количество}
+const BYTE OBJ_AMMO_CALIBER		=30;//{РљР°Р»РёР±СЂ}
+const BYTE OBJ_AMMO_TYPE_DAMAGE	=31;//{РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ}
+const BYTE OBJ_AMMO_QUANTITY	=32;//{РљРѕР»РёС‡РµСЃС‚РІРѕ}
 const BYTE OBJ_AMMO_AC			=33;//{AC}
 const BYTE OBJ_AMMO_DR			=34;//{DR}
-const BYTE OBJ_AMMO_DM			=35;//{Множитель для DR}
-const BYTE OBJ_AMMO_DD			=36;//{Делитель для DR}
+const BYTE OBJ_AMMO_DM			=35;//{РњРЅРѕР¶РёС‚РµР»СЊ РґР»СЏ DR}
+const BYTE OBJ_AMMO_DD			=36;//{Р”РµР»РёС‚РµР»СЊ РґР»СЏ DR}
 //----------------------------------------------- type==OBJ_TYPE_MISC
 
 //----------------------------------------------- type==OBJ_TYPE_KEY
-//const BYTE OBJ_KEY_DOOR			=30;//{От какой двери ключ}
+//const BYTE OBJ_KEY_DOOR			=30;//{РћС‚ РєР°РєРѕР№ РґРІРµСЂРё РєР»СЋС‡}
 //----------------------------------------------- OBJ_TYPE_DOOR
-const BYTE OBJ_DOOR_ANIMATION		=30;//{Анимация двери}
+const BYTE OBJ_DOOR_ANIMATION		=30;//{РђРЅРёРјР°С†РёСЏ РґРІРµСЂРё}
 //----------------------------------------------- OBJ_TYPE_CRAFTING
 
 //----------------------------------------------- type==OBJ_TYPE_CRAFTING
@@ -592,7 +592,7 @@ perk4no
 */
 //===============================================
 
-//область применения итемов
+//РѕР±Р»Р°СЃС‚СЊ РїСЂРёРјРµРЅРµРЅРёСЏ РёС‚РµРјРѕРІ
 const BYTE OBJ_USE_ON_CRITTER	=0;
 const BYTE OBJ_USE_ON_ITEM		=0;
 const BYTE OBJ_USE_ON_SCENERY	=0;
@@ -723,43 +723,43 @@ struct dyn_obj
 
 		struct
 		{
-			WORD AmmoPID;      // Прототип заряженных патронов.
-			WORD AmmoCount;    // Количество заряженных патронов
-			WORD AmmoPID_ext;      // Прототип заряженных патронов.
-			WORD AmmoCount_ext;    // Количество заряженных патронов
+			WORD AmmoPID;      // РџСЂРѕС‚РѕС‚РёРї Р·Р°СЂСЏР¶РµРЅРЅС‹С… РїР°С‚СЂРѕРЅРѕРІ.
+			WORD AmmoCount;    // РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°СЂСЏР¶РµРЅРЅС‹С… РїР°С‚СЂРѕРЅРѕРІ
+			WORD AmmoPID_ext;      // РџСЂРѕС‚РѕС‚РёРї Р·Р°СЂСЏР¶РµРЅРЅС‹С… РїР°С‚СЂРѕРЅРѕРІ.
+			WORD AmmoCount_ext;    // РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°СЂСЏР¶РµРЅРЅС‹С… РїР°С‚СЂРѕРЅРѕРІ
 		} ITEM_WEAPON;
 
 		struct
 		{
-			WORD  Count;        // кол-во патронов в обойме
+			WORD  Count;        // РєРѕР»-РІРѕ РїР°С‚СЂРѕРЅРѕРІ РІ РѕР±РѕР№РјРµ
 		} ITEM_AMMO;
 
 		struct
 		{
-			WORD  Count;        // Текущее количество зарядов (т.е., насколько заряжен).
+			WORD  Count;        // РўРµРєСѓС‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°СЂСЏРґРѕРІ (С‚.Рµ., РЅР°СЃРєРѕР»СЊРєРѕ Р·Р°СЂСЏР¶РµРЅ).
 		} ITEM_MISC;
 
 		struct
 		{
-			DWORD   doorID;     // Код двери, которую открывает ключ
+			DWORD   doorID;     // РљРѕРґ РґРІРµСЂРё, РєРѕС‚РѕСЂСѓСЋ РѕС‚РєСЂС‹РІР°РµС‚ РєР»СЋС‡
 		} ITEM_KEY;
 
 		struct
 		{
-			DWORD   doorID;     // Код двери
+			DWORD   doorID;     // РљРѕРґ РґРІРµСЂРё
 		} ITEM_DOOR;
 
 		struct
 		{
-			DWORD   doorID;     // Код двери
+			DWORD   doorID;     // РљРѕРґ РґРІРµСЂРё
 		} ITEM_CRAFTING;
 
 		struct
 		{
-			DWORD   MapID;      // Номер карты, на которую попадает игрок.
-			WORD    PosX;       // Позиция игрока на новой карте
+			DWORD   MapID;      // РќРѕРјРµСЂ РєР°СЂС‚С‹, РЅР° РєРѕС‚РѕСЂСѓСЋ РїРѕРїР°РґР°РµС‚ РёРіСЂРѕРє.
+			WORD    PosX;       // РџРѕР·РёС†РёСЏ РёРіСЂРѕРєР° РЅР° РЅРѕРІРѕР№ РєР°СЂС‚Рµ
 			WORD    PosY;
-			BYTE    dir;        // Ориентация игрока
+			BYTE    dir;        // РћСЂРёРµРЅС‚Р°С†РёСЏ РёРіСЂРѕРєР°
 		} ITEM_GRID;
 	};
 };
@@ -777,44 +777,44 @@ struct crit_info
 		start_bt(0),break_time(0),id(0),idchannel(0),cond(COND_NOT_IN_GAME),cond_ext(0),flags(0),
 		access(0),world_x(100),world_y(100){};
 
-	CrTYPE base_type; //базовый тип криттера
+	CrTYPE base_type; //Р±Р°Р·РѕРІС‹Р№ С‚РёРї РєСЂРёС‚С‚РµСЂР°
 
-	MapTYPE map; //номер карты
-	HexTYPE x; //позиция в хексах
+	MapTYPE map; //РЅРѕРјРµСЂ РєР°СЂС‚С‹
+	HexTYPE x; //РїРѕР·РёС†РёСЏ РІ С…РµРєСЃР°С…
 	HexTYPE y;
 
 	WORD world_x;
 	WORD world_y;
 
-	BYTE ori; //ориентация
-	BYTE look; //!Cvet дистанция видимости
-	char name[MAX_NAME+1]; //имя
-	char cases[5][MAX_NAME+1]; //имя склоняемые варианты
+	BYTE ori; //РѕСЂРёРµРЅС‚Р°С†РёСЏ
+	BYTE look; //!Cvet РґРёСЃС‚Р°РЅС†РёСЏ РІРёРґРёРјРѕСЃС‚Рё
+	char name[MAX_NAME+1]; //РёРјСЏ
+	char cases[5][MAX_NAME+1]; //РёРјСЏ СЃРєР»РѕРЅСЏРµРјС‹Рµ РІР°СЂРёР°РЅС‚С‹
 
-	BYTE access; //!Cvet уровень доступа к игре
+	BYTE access; //!Cvet СѓСЂРѕРІРµРЅСЊ РґРѕСЃС‚СѓРїР° Рє РёРіСЂРµ
 
 	DWORD start_bt; //!Cvet
 	int break_time; //!Cvet
 
-	CrID id; //!Cvet Идентификатор
-	CrID idchannel; //!Cvet Идентификатор канала к которому подключен игрок
-	char login[MAX_LOGIN+1]; //!Cvet логин
-	char pass[MAX_LOGIN+1]; //!Cvet пароль
-	WORD st[ALL_STATS ]; //!Cvet статы 4-х значный XXXX
-	WORD sk[ALL_SKILLS]; //!Cvet скилы 3-х значный XXX
-	BYTE pe[ALL_PERKS ]; //!Cvet перки 1-а значный X
+	CrID id; //!Cvet РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ
+	CrID idchannel; //!Cvet РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°РЅР°Р»Р° Рє РєРѕС‚РѕСЂРѕРјСѓ РїРѕРґРєР»СЋС‡РµРЅ РёРіСЂРѕРє
+	char login[MAX_LOGIN+1]; //!Cvet Р»РѕРіРёРЅ
+	char pass[MAX_LOGIN+1]; //!Cvet РїР°СЂРѕР»СЊ
+	WORD st[ALL_STATS ]; //!Cvet СЃС‚Р°С‚С‹ 4-С… Р·РЅР°С‡РЅС‹Р№ XXXX
+	WORD sk[ALL_SKILLS]; //!Cvet СЃРєРёР»С‹ 3-С… Р·РЅР°С‡РЅС‹Р№ XXX
+	BYTE pe[ALL_PERKS ]; //!Cvet РїРµСЂРєРё 1-Р° Р·РЅР°С‡РЅС‹Р№ X
 
-	BYTE cond; //!Cvet состояние криттера
-	BYTE cond_ext; //!Cvet дополнительное состояние криттера
-	WORD flags; //!Cvet флаги криттера
+	BYTE cond; //!Cvet СЃРѕСЃС‚РѕСЏРЅРёРµ РєСЂРёС‚С‚РµСЂР°
+	BYTE cond_ext; //!Cvet РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РєСЂРёС‚С‚РµСЂР°
+	WORD flags; //!Cvet С„Р»Р°РіРё РєСЂРёС‚С‚РµСЂР°
 
 	list_ind obj_id;
 
-	//инфа по объектам
-	dyn_map obj; //!Cvet карта динамических объектов
+	//РёРЅС„Р° РїРѕ РѕР±СЉРµРєС‚Р°Рј
+	dyn_map obj; //!Cvet РєР°СЂС‚Р° РґРёРЅР°РјРёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ
 	//int Slot1, Slot2, ArmorSlot; 
-	dyn_obj* a_obj; //активный объект в руках
-	dyn_obj* a_obj_arm; //активный объект в слоте армор
+	dyn_obj* a_obj; //Р°РєС‚РёРІРЅС‹Р№ РѕР±СЉРµРєС‚ РІ СЂСѓРєР°С…
+	dyn_obj* a_obj_arm; //Р°РєС‚РёРІРЅС‹Р№ РѕР±СЉРµРєС‚ РІ СЃР»РѕС‚Рµ Р°СЂРјРѕСЂ
 
 	dyn_obj def_obj1;
 	dyn_obj def_obj2;
@@ -822,7 +822,7 @@ struct crit_info
 
 #define NETMSG_LOGIN 1
 //////////////////////////////////////////////////////////////////////////
-// клиент при подключении шлет это сообщение, называя логин и пароль
+// РєР»РёРµРЅС‚ РїСЂРё РїРѕРґРєР»СЋС‡РµРЅРёРё С€Р»РµС‚ СЌС‚Рѕ СЃРѕРѕР±С‰РµРЅРёРµ, РЅР°Р·С‹РІР°СЏ Р»РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ
 // params:
 // char login[MAX_LOGIN]
 // char pass[MAX_LOGIN]
@@ -830,37 +830,37 @@ struct crit_info
 
 #define NETMSG_LOGINOK 2
 //////////////////////////////////////////////////////////////////////////
-// ответ сервера на NETMSG_NAME - логин и пароль принят
+// РѕС‚РІРµС‚ СЃРµСЂРІРµСЂР° РЅР° NETMSG_NAME - Р»РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ РїСЂРёРЅСЏС‚
 // params:
 //////////////////////////////////////////////////////////////////////////
 
 #define NETMSG_CREATE_CLIENT 3 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// запрос серверу на создание аккаунта
+// Р·Р°РїСЂРѕСЃ СЃРµСЂРІРµСЂСѓ РЅР° СЃРѕР·РґР°РЅРёРµ Р°РєРєР°СѓРЅС‚Р°
 // params:
-// char login[MAX_LOGIN]; //!Cvet логин
-// char pass[MAX_LOGIN]; //!Cvet пароль
-// char name[MAX_NAME]; // имя
-// char cases[5][MAX_NAME]; // имя склоняемые варианты
+// char login[MAX_LOGIN]; //!Cvet Р»РѕРіРёРЅ
+// char pass[MAX_LOGIN]; //!Cvet РїР°СЂРѕР»СЊ
+// char name[MAX_NAME]; // РёРјСЏ
+// char cases[5][MAX_NAME]; // РёРјСЏ СЃРєР»РѕРЅСЏРµРјС‹Рµ РІР°СЂРёР°РЅС‚С‹
 // CrTYPE base_type
-// WORD s[MAX_STATS] //статы
+// WORD s[MAX_STATS] //СЃС‚Р°С‚С‹
 //////////////////////////////////////////////////////////////////////////
 #define NETMSG_LOGMSG 4
 //////////////////////////////////////////////////////////////////////////
-// ответ сервера на NETMSG_NAME - имя не принято
+// РѕС‚РІРµС‚ СЃРµСЂРІРµСЂР° РЅР° NETMSG_NAME - РёРјСЏ РЅРµ РїСЂРёРЅСЏС‚Рѕ
 // params:
 // BYTE LogMsg
 //////////////////////////////////////////////////////////////////////////
 
 #define NETMSG_NAMEERR 5
 //////////////////////////////////////////////////////////////////////////
-// ответ сервера на NETMSG_NAME - имя не принято
+// РѕС‚РІРµС‚ СЃРµСЂРІРµСЂР° РЅР° NETMSG_NAME - РёРјСЏ РЅРµ РїСЂРёРЅСЏС‚Рѕ
 // params:
 //////////////////////////////////////////////////////////////////////////
 
 #define NETMSG_ADDCRITTER 6 //!Cvet edit
 //////////////////////////////////////////////////////////////////////////
-// добавить криттер
+// РґРѕР±Р°РІРёС‚СЊ РєСЂРёС‚С‚РµСЂ
 // params:
 // CrID id
 // CrTYPE base_type
@@ -869,7 +869,7 @@ struct crit_info
 // HexTYPE x
 // HexTYPE y
 // BYTE ori
-// BYTE st[ST_GENDER] пол
+// BYTE st[ST_GENDER] РїРѕР»
 // BYTE cond
 // BYTE cond_ext
 // WORD flags
@@ -880,17 +880,17 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 #define MSG_ADDCRITTER_LEN (sizeof(CrID)+sizeof(CrTYPE)+5+MAX_NAME)
 //////////////////////////////////////////////////////////////////////////
-// Сообщение длины добавленного криттера
+// РЎРѕРѕР±С‰РµРЅРёРµ РґР»РёРЅС‹ РґРѕР±Р°РІР»РµРЅРЅРѕРіРѕ РєСЂРёС‚С‚РµСЂР°
 
 #define NETMSG_REMOVECRITTER 7
 //////////////////////////////////////////////////////////////////////////
-// убрать криттер
+// СѓР±СЂР°С‚СЊ РєСЂРёС‚С‚РµСЂ
 // params:
 // CrID id
 
 #define NETMSG_TEXT 8
 //////////////////////////////////////////////////////////////////////////
-// текстовое сообщение
+// С‚РµРєСЃС‚РѕРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ
 // params:
 // CrID crid
 // BYTE how_say
@@ -899,7 +899,7 @@ struct crit_info
 
 #define NETMSG_CRITTERTEXT 9
 //////////////////////////////////////////////////////////////////////////
-// текст который надо нарисовать над криттером
+// С‚РµРєСЃС‚ РєРѕС‚РѕСЂС‹Р№ РЅР°РґРѕ РЅР°СЂРёСЃРѕРІР°С‚СЊ РЅР°Рґ РєСЂРёС‚С‚РµСЂРѕРј
 // params:
 // CrID id
 // WORD len
@@ -907,26 +907,26 @@ struct crit_info
 
 #define NETMSG_DIR 10 //!Cvet edit
 //////////////////////////////////////////////////////////////////////////
-// сообщение направления
+// СЃРѕРѕР±С‰РµРЅРёРµ РЅР°РїСЂР°РІР»РµРЅРёСЏ
 // params:
 // BYTE dir
 
 #define NETMSG_CRITTER_DIR 11 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// направление криттера
+// РЅР°РїСЂР°РІР»РµРЅРёРµ РєСЂРёС‚С‚РµСЂР°
 // params:
 // CrID id
 // BYTE dir
 
 #define NETMSG_SEND_MOVE 12
 //////////////////////////////////////////////////////////////////////////
-// передача на сервер направления для шага чезена
+// РїРµСЂРµРґР°С‡Р° РЅР° СЃРµСЂРІРµСЂ РЅР°РїСЂР°РІР»РµРЅРёСЏ РґР»СЏ С€Р°РіР° С‡РµР·РµРЅР°
 // params:
 // BYTE dir
 // BYTE move_params - dir,how_move,stop&go
 #define NETMSG_CRITTER_MOVE 13
 //////////////////////////////////////////////////////////////////////////
-// передача направления для других криттеров
+// РїРµСЂРµРґР°С‡Р° РЅР°РїСЂР°РІР»РµРЅРёСЏ РґР»СЏ РґСЂСѓРіРёС… РєСЂРёС‚С‚РµСЂРѕРІ
 // params:
 // CrID id
 // BYTE move_params - dir,how_move,stop&go
@@ -934,13 +934,13 @@ struct crit_info
 // HexTYPE y
 #define NETMSG_QUIT 14
 //////////////////////////////////////////////////////////////////////////
-// сигнал о санкционированном выходе клиента
+// СЃРёРіРЅР°Р» Рѕ СЃР°РЅРєС†РёРѕРЅРёСЂРѕРІР°РЅРЅРѕРј РІС‹С…РѕРґРµ РєР»РёРµРЅС‚Р°
 // params:
 // CrID id
 
 #define NETMSG_XY 15 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал о неверном положении чезена
+// СЃРёРіРЅР°Р» Рѕ РЅРµРІРµСЂРЅРѕРј РїРѕР»РѕР¶РµРЅРёРё С‡РµР·РµРЅР°
 // params:
 // HexTYPE Chex_x
 // HexTYPE Chex_y
@@ -948,23 +948,23 @@ struct crit_info
 
 #define NETMSG_ALL_PARAMS 16 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// передача параметров
+// РїРµСЂРµРґР°С‡Р° РїР°СЂР°РјРµС‚СЂРѕРІ
 // params:
-// BYTE type_param - тип параметра
-// BYTE all_send - всего статов отправлено
-// BYTE num_param - номер параметра
-// WORD or BYTE count_param - его кол-во
+// BYTE type_param - С‚РёРї РїР°СЂР°РјРµС‚СЂР°
+// BYTE all_send - РІСЃРµРіРѕ СЃС‚Р°С‚РѕРІ РѕС‚РїСЂР°РІР»РµРЅРѕ
+// BYTE num_param - РЅРѕРјРµСЂ РїР°СЂР°РјРµС‚СЂР°
+// WORD or BYTE count_param - РµРіРѕ РєРѕР»-РІРѕ
 #define NETMSG_PARAM 17 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// передача отдельного параметра
+// РїРµСЂРµРґР°С‡Р° РѕС‚РґРµР»СЊРЅРѕРіРѕ РїР°СЂР°РјРµС‚СЂР°
 // params:
-// BYTE type_param - тип параметра
-// WORD num_param - номер параметра
-// WORD or BYTE count_param - его кол-во
+// BYTE type_param - С‚РёРї РїР°СЂР°РјРµС‚СЂР°
+// WORD num_param - РЅРѕРјРµСЂ РїР°СЂР°РјРµС‚СЂР°
+// WORD or BYTE count_param - РµРіРѕ РєРѕР»-РІРѕ
 
 #define NETMSG_ADD_OBJECT 18 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал о том что ктото спрятал оружие
+// СЃРёРіРЅР°Р» Рѕ С‚РѕРј С‡С‚Рѕ РєС‚РѕС‚Рѕ СЃРїСЂСЏС‚Р°Р» РѕСЂСѓР¶РёРµ
 // params:
 // DWORD id; -dyn
 // WORD id; -stat
@@ -977,12 +977,12 @@ struct crit_info
 // BYTE broken;
 #define NETMSG_REMOVE_OBJECT 19 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал о том что ктото спрятал оружие
+// СЃРёРіРЅР°Р» Рѕ С‚РѕРј С‡С‚Рѕ РєС‚РѕС‚Рѕ СЃРїСЂСЏС‚Р°Р» РѕСЂСѓР¶РёРµ
 // params:
 // DWORD id; -dyn
 #define NETMSG_WEAR_OBJECT 20 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал о износе предмета
+// СЃРёРіРЅР°Р» Рѕ РёР·РЅРѕСЃРµ РїСЂРµРґРјРµС‚Р°
 // params:
 // DWORD id; -dyn;
 // TICK tick;
@@ -1014,80 +1014,80 @@ struct crit_info
 
 #define NETMSG_SEND_CHANGE_OBJECT 24 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал чузена о приминении активного предмета
+// СЃРёРіРЅР°Р» С‡СѓР·РµРЅР° Рѕ РїСЂРёРјРёРЅРµРЅРёРё Р°РєС‚РёРІРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°
 // params:
 
 #define NETMSG_SEND_PICK_OBJECT 25 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал чузена о приминении активного предмета
+// СЃРёРіРЅР°Р» С‡СѓР·РµРЅР° Рѕ РїСЂРёРјРёРЅРµРЅРёРё Р°РєС‚РёРІРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°
 // params:
 
 #define NETMSG_SEND_USE_OBJECT 26 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал чузена о приминении активного предмета
+// СЃРёРіРЅР°Р» С‡СѓР·РµРЅР° Рѕ РїСЂРёРјРёРЅРµРЅРёРё Р°РєС‚РёРІРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°
 // params:
 
 #define NETMSG_SEND_USE_SKILL 27 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал о приминении скилла
+// СЃРёРіРЅР°Р» Рѕ РїСЂРёРјРёРЅРµРЅРёРё СЃРєРёР»Р»Р°
 // params:
-// BYTE skill; -номер скилла
-// DWORD target_id; -игрок или предмет
-// BYTE ori; -напровление применения
+// BYTE skill; -РЅРѕРјРµСЂ СЃРєРёР»Р»Р°
+// DWORD target_id; -РёРіСЂРѕРє РёР»Рё РїСЂРµРґРјРµС‚
+// BYTE ori; -РЅР°РїСЂРѕРІР»РµРЅРёРµ РїСЂРёРјРµРЅРµРЅРёСЏ
 
 #define NETMSG_CRITTER_ACTION 28 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал о том что криттер производит какоето действие
+// СЃРёРіРЅР°Р» Рѕ С‚РѕРј С‡С‚Рѕ РєСЂРёС‚С‚РµСЂ РїСЂРѕРёР·РІРѕРґРёС‚ РєР°РєРѕРµС‚Рѕ РґРµР№СЃС‚РІРёРµ
 // params:
-// CrID crid; -ид криттера
-// BYTE ori; -направление действия
-// BYTE type_action; -номер действия -последняя буква
-// BYTE type; -тип криттера -название криттера
-// BYTE weap; -номер аним оружия в руках -предпоследняя буква
-// WORD number_of_action; -что за действие передано
+// CrID crid; -РёРґ РєСЂРёС‚С‚РµСЂР°
+// BYTE ori; -РЅР°РїСЂР°РІР»РµРЅРёРµ РґРµР№СЃС‚РІРёСЏ
+// BYTE type_action; -РЅРѕРјРµСЂ РґРµР№СЃС‚РІРёСЏ -РїРѕСЃР»РµРґРЅСЏСЏ Р±СѓРєРІР°
+// BYTE type; -С‚РёРї РєСЂРёС‚С‚РµСЂР° -РЅР°Р·РІР°РЅРёРµ РєСЂРёС‚С‚РµСЂР°
+// BYTE weap; -РЅРѕРјРµСЂ Р°РЅРёРј РѕСЂСѓР¶РёСЏ РІ СЂСѓРєР°С… -РїСЂРµРґРїРѕСЃР»РµРґРЅСЏСЏ Р±СѓРєРІР°
+// WORD number_of_action; -С‡С‚Рѕ Р·Р° РґРµР№СЃС‚РІРёРµ РїРµСЂРµРґР°РЅРѕ
 
 #define NETMSG_SEND_TALK_NPC 29 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сигнал игрока о беседе
-// CrID id_talk - ид нпц с которым разговариваешь
-// BYTE variant - вариант ответа
+// СЃРёРіРЅР°Р» РёРіСЂРѕРєР° Рѕ Р±РµСЃРµРґРµ
+// CrID id_talk - РёРґ РЅРїС† СЃ РєРѕС‚РѕСЂС‹Рј СЂР°Р·РіРѕРІР°СЂРёРІР°РµС€СЊ
+// BYTE variant - РІР°СЂРёР°РЅС‚ РѕС‚РІРµС‚Р°
 #define NETMSG_TALK_NPC 30 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// ответ нпц -> игроку
-// BYTE all_answers - всего вариантов ответа, если 0 - диалог закончен
-// DWORD main_text - текст НПЦ
-// DWORD answ_text в кол-ве all_answers - варианты ответа
+// РѕС‚РІРµС‚ РЅРїС† -> РёРіСЂРѕРєСѓ
+// BYTE all_answers - РІСЃРµРіРѕ РІР°СЂРёР°РЅС‚РѕРІ РѕС‚РІРµС‚Р°, РµСЃР»Рё 0 - РґРёР°Р»РѕРі Р·Р°РєРѕРЅС‡РµРЅ
+// DWORD main_text - С‚РµРєСЃС‚ РќРџР¦
+// DWORD answ_text РІ РєРѕР»-РІРµ all_answers - РІР°СЂРёР°РЅС‚С‹ РѕС‚РІРµС‚Р°
 
 #define NETMSG_SEND_GET_TIME 31 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// запрос на игровое время
+// Р·Р°РїСЂРѕСЃ РЅР° РёРіСЂРѕРІРѕРµ РІСЂРµРјСЏ
 #define NETMSG_GAME_TIME 32 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// высылается игроку пройденное игровое время с начала игровых суток
-// WORD minutes - пройденное игровое время
-// BYTE day - игровой день
-// BYTE month - игровой месяц
-// WORD year - игровой год
+// РІС‹СЃС‹Р»Р°РµС‚СЃСЏ РёРіСЂРѕРєСѓ РїСЂРѕР№РґРµРЅРЅРѕРµ РёРіСЂРѕРІРѕРµ РІСЂРµРјСЏ СЃ РЅР°С‡Р°Р»Р° РёРіСЂРѕРІС‹С… СЃСѓС‚РѕРє
+// WORD minutes - РїСЂРѕР№РґРµРЅРЅРѕРµ РёРіСЂРѕРІРѕРµ РІСЂРµРјСЏ
+// BYTE day - РёРіСЂРѕРІРѕР№ РґРµРЅСЊ
+// BYTE month - РёРіСЂРѕРІРѕР№ РјРµСЃСЏС†
+// WORD year - РёРіСЂРѕРІРѕР№ РіРѕРґ
 
 #define NETMSG_LOADMAP 33 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// высылается игроку команда загрузки карты
-// WORD num_map - номер карты
-// WORD num_version - номер версии карты
-// на будущее !!!!!!!!
-// HexTYPE width - ширина по Х
-// HexTYPE height - ширина по У
+// РІС‹СЃС‹Р»Р°РµС‚СЃСЏ РёРіСЂРѕРєСѓ РєРѕРјР°РЅРґР° Р·Р°РіСЂСѓР·РєРё РєР°СЂС‚С‹
+// WORD num_map - РЅРѕРјРµСЂ РєР°СЂС‚С‹
+// WORD num_version - РЅРѕРјРµСЂ РІРµСЂСЃРёРё РєР°СЂС‚С‹
+// РЅР° Р±СѓРґСѓС‰РµРµ !!!!!!!!
+// HexTYPE width - С€РёСЂРёРЅР° РїРѕ РҐ
+// HexTYPE height - С€РёСЂРёРЅР° РїРѕ РЈ
 #define NETMSG_MAP 34 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// карта
-// WORD num_map - номер карты
+// РєР°СЂС‚Р°
+// WORD num_map - РЅРѕРјРµСЂ РєР°СЂС‚С‹
 #define NETMSG_SEND_GIVE_ME_MAP 35 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// запрос на высылку карты
-// WORD num_map - номер карты
+// Р·Р°РїСЂРѕСЃ РЅР° РІС‹СЃС‹Р»РєСѓ РєР°СЂС‚С‹
+// WORD num_map - РЅРѕРјРµСЂ РєР°СЂС‚С‹
 #define NETMSG_SEND_LOAD_MAP_OK 36 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// сообщение о удачной загрузке карты
+// СЃРѕРѕР±С‰РµРЅРёРµ Рѕ СѓРґР°С‡РЅРѕР№ Р·Р°РіСЂСѓР·РєРµ РєР°СЂС‚С‹
 
 //GLOBAL MAP
 const BYTE GM_INFO_CITIES	=BIN8(00000001);
@@ -1098,11 +1098,11 @@ const BYTE GM_INFO_ALL		=BIN8(00000111);
 //const BYTE GM_DELINFO_CITY	=BIN8(00010000);
 #define NETMSG_SEND_GIVE_GLOBAL_INFO 37 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// запрос инфы по глобалу
+// Р·Р°РїСЂРѕСЃ РёРЅС„С‹ РїРѕ РіР»РѕР±Р°Р»Сѓ
 // BYTE info_flag;
 #define NETMSG_GLOBAL_INFO 38 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// инфа по глобалу
+// РёРЅС„Р° РїРѕ РіР»РѕР±Р°Р»Сѓ
 // BYTE info_flag;
 // info_flag & GM_INFO_CITIES || info_flag & GM_INFO_ALL
 //		WORD count_cities;
@@ -1133,22 +1133,22 @@ const BYTE GM_INFO_ALL		=BIN8(00000111);
 //		int speed_x;
 //		int speed_y;
 // BYTE 0xAA - end_info
-const BYTE GM_RULE_COMMAND_SETMOVE		=1; //+r-a*x,y//двигаться
-const BYTE GM_RULE_COMMAND_STOP			=2; //+r-a//остановиться
-const BYTE GM_RULE_COMMAND_TOLOCAL		=3; //+r-a*num_city,num_map//перейти на локльную карту
-const BYTE GM_RULE_COMMAND_KICKCRIT		=4; //+r-a*cr_id//выкинуть крита из группы
-const BYTE GM_RULE_COMMAND_LOCKCRIT		=5; //+r-a*cr_id//блокировать крита
-const BYTE GM_RULE_COMMAND_UNLOCKCRIT	=6; //+r-a*cr_id//разблокировать крита
-const BYTE GM_RULE_COMMAND_IGNORECRIT	=7; //+r+a*cr_id//игнорировать крита
-const BYTE GM_RULE_COMMAND_LISTENCRIT	=8; //+r+a*cr_id//слушать крита
-const BYTE GM_RULE_COMMAND_READY		=9; //+r+a//готовность к высадке на локальную карту
-const BYTE GM_RULE_COMMAND_TOGEMMATE	=10;//-r+a//отсоединиться от группы
-const BYTE GM_RULE_COMMAND_SETSPEED		=11;//+r-a*speed//задать скорость группы
-const BYTE GM_RULE_COMMAND_ADDPREPCRIT	=12;//+r-a*cr_id//добавит в список крита
-const BYTE GM_RULE_COMMAND_DELPREPCRIT	=13;//+r-a*cr_id//удалить со списка крита
+const BYTE GM_RULE_COMMAND_SETMOVE		=1; //+r-a*x,y//РґРІРёРіР°С‚СЊСЃСЏ
+const BYTE GM_RULE_COMMAND_STOP			=2; //+r-a//РѕСЃС‚Р°РЅРѕРІРёС‚СЊСЃСЏ
+const BYTE GM_RULE_COMMAND_TOLOCAL		=3; //+r-a*num_city,num_map//РїРµСЂРµР№С‚Рё РЅР° Р»РѕРєР»СЊРЅСѓСЋ РєР°СЂС‚Сѓ
+const BYTE GM_RULE_COMMAND_KICKCRIT		=4; //+r-a*cr_id//РІС‹РєРёРЅСѓС‚СЊ РєСЂРёС‚Р° РёР· РіСЂСѓРїРїС‹
+const BYTE GM_RULE_COMMAND_LOCKCRIT		=5; //+r-a*cr_id//Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РєСЂРёС‚Р°
+const BYTE GM_RULE_COMMAND_UNLOCKCRIT	=6; //+r-a*cr_id//СЂР°Р·Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РєСЂРёС‚Р°
+const BYTE GM_RULE_COMMAND_IGNORECRIT	=7; //+r+a*cr_id//РёРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ РєСЂРёС‚Р°
+const BYTE GM_RULE_COMMAND_LISTENCRIT	=8; //+r+a*cr_id//СЃР»СѓС€Р°С‚СЊ РєСЂРёС‚Р°
+const BYTE GM_RULE_COMMAND_READY		=9; //+r+a//РіРѕС‚РѕРІРЅРѕСЃС‚СЊ Рє РІС‹СЃР°РґРєРµ РЅР° Р»РѕРєР°Р»СЊРЅСѓСЋ РєР°СЂС‚Сѓ
+const BYTE GM_RULE_COMMAND_TOGEMMATE	=10;//-r+a//РѕС‚СЃРѕРµРґРёРЅРёС‚СЊСЃСЏ РѕС‚ РіСЂСѓРїРїС‹
+const BYTE GM_RULE_COMMAND_SETSPEED		=11;//+r-a*speed//Р·Р°РґР°С‚СЊ СЃРєРѕСЂРѕСЃС‚СЊ РіСЂСѓРїРїС‹
+const BYTE GM_RULE_COMMAND_ADDPREPCRIT	=12;//+r-a*cr_id//РґРѕР±Р°РІРёС‚ РІ СЃРїРёСЃРѕРє РєСЂРёС‚Р°
+const BYTE GM_RULE_COMMAND_DELPREPCRIT	=13;//+r-a*cr_id//СѓРґР°Р»РёС‚СЊ СЃРѕ СЃРїРёСЃРєР° РєСЂРёС‚Р°
 #define NETMSG_SEND_RULE_GLOBAL 39 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// управление группой
+// СѓРїСЂР°РІР»РµРЅРёРµ РіСЂСѓРїРїРѕР№
 // BYTE command;
 // DWORD param1;
 // DWORD param2;
@@ -1160,7 +1160,7 @@ const BYTE GM_RULE_COMMAND_DELPREPCRIT	=13;//+r-a*cr_id//удалить со списка крита
 #define STATE_DISCONNECT	2
 #define STATE_GAME			3
 
-//послан логин и пароль чузена
+//РїРѕСЃР»Р°РЅ Р»РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ С‡СѓР·РµРЅР°
 #define STATE_LOGINOK		5 //!Cvet
 
 #define STATE_INIT_NET		6

@@ -27,7 +27,7 @@
 //#define COLOR_TEXT_AST	D3DCOLOR_ARGB(255,255,0,0)
 //!Cvet ----
 
-typedef map<CrTYPE, char*, less<CrTYPE> > ctypes_map; //!Cvet перенес сюда
+typedef map<CrTYPE, char*, less<CrTYPE> > ctypes_map; //!Cvet РїРµСЂРµРЅРµСЃ СЃСЋРґР°
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 struct MYVERTEX
@@ -53,7 +53,7 @@ struct FLTRECT
 
 typedef vector<LPDIRECT3DTEXTURE8> surf_vect;
 
-// структура спрайта для DX8
+// СЃС‚СЂСѓРєС‚СѓСЂР° СЃРїСЂР°Р№С‚Р° РґР»СЏ DX8
 struct SpriteInfo
 {
 	LPDIRECT3DTEXTURE8 lpSurf;
@@ -95,11 +95,11 @@ typedef vector<spr_vec> spr_vec_vec; //!Cvet
 
 struct CritFrames 
 {
-	WORD* ind; //индексы кадров анимации
-	WORD dir_offs[6]; //смещения в индексах для всех 6-ти направлений.
-	short *next_x;//смещение кадров относительно предыдущих
-	short *next_y;//смещение кадров относительно предыдущих
-	BYTE cnt_frames; //кол-во кадров в анимации на каждое направление
+	WORD* ind; //РёРЅРґРµРєСЃС‹ РєР°РґСЂРѕРІ Р°РЅРёРјР°С†РёРё
+	WORD dir_offs[6]; //СЃРјРµС‰РµРЅРёСЏ РІ РёРЅРґРµРєСЃР°С… РґР»СЏ РІСЃРµС… 6-С‚Рё РЅР°РїСЂР°РІР»РµРЅРёР№.
+	short *next_x;//СЃРјРµС‰РµРЅРёРµ РєР°РґСЂРѕРІ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РїСЂРµРґС‹РґСѓС‰РёС…
+	short *next_y;//СЃРјРµС‰РµРЅРёРµ РєР°РґСЂРѕРІ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РїСЂРµРґС‹РґСѓС‰РёС…
+	BYTE cnt_frames; //РєРѕР»-РІРѕ РєР°РґСЂРѕРІ РІ Р°РЅРёРјР°С†РёРё РЅР° РєР°Р¶РґРѕРµ РЅР°РїСЂР°РІР»РµРЅРёРµ
 	WORD ticks;
 
 	CritFrames(): ind(NULL),next_x(NULL),next_y(NULL){};
@@ -107,17 +107,17 @@ struct CritFrames
 };
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-// Фреймы любые
+// Р¤СЂРµР№РјС‹ Р»СЋР±С‹Рµ
 struct AnyFrames 
 {
 	short offs_x; //!Cvet
 	short offs_y; //!Cvet
 
-	WORD* ind; //индексы кадров анимации
-	short *next_x;//смещение кадров относительно предыдущих
-	short *next_y;//смещение кадров относительно предыдущих
-	BYTE cnt_frames; //кол-во кадров в анимации
-	WORD ticks;// периоды анимаций
+	WORD* ind; //РёРЅРґРµРєСЃС‹ РєР°РґСЂРѕРІ Р°РЅРёРјР°С†РёРё
+	short *next_x;//СЃРјРµС‰РµРЅРёРµ РєР°РґСЂРѕРІ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РїСЂРµРґС‹РґСѓС‰РёС…
+	short *next_y;//СЃРјРµС‰РµРЅРёРµ РєР°РґСЂРѕРІ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РїСЂРµРґС‹РґСѓС‰РёС…
+	BYTE cnt_frames; //РєРѕР»-РІРѕ РєР°РґСЂРѕРІ РІ Р°РЅРёРјР°С†РёРё
+	WORD ticks;// РїРµСЂРёРѕРґС‹ Р°РЅРёРјР°С†РёР№
 
 	AnyFrames(): ind(NULL),next_x(NULL),next_y(NULL),offs_x(0),offs_y(0){};
 	~AnyFrames(){SAFEDELA(ind);SAFEDELA(next_x);SAFEDELA(next_y);};
@@ -156,7 +156,7 @@ public:
 	void PostRestore();
 
 	int LoadRix(char *fname, int PathType);
-	int LoadMiniSprite(char *fname,double size,int PathType,SpriteInfo** ppInfo=NULL); // Для инвентаря уменьшенные спрайты
+	int LoadMiniSprite(char *fname,double size,int PathType,SpriteInfo** ppInfo=NULL); // Р”Р»СЏ РёРЅРІРµРЅС‚Р°СЂСЏ СѓРјРµРЅСЊС€РµРЅРЅС‹Рµ СЃРїСЂР°Р№С‚С‹
 	int LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo=NULL);
 	int LoadAnimation(char *fname,int PathType,CritFrames* pframes);
 	int LoadAnimationD(char *fname,int PathType,CritFrames* pframes); //!Cvet edit
@@ -170,7 +170,7 @@ public:
 	int Flush();
 
 	int DrawSprite(WORD id, int x, int y, DWORD color, DWORD alpha=NULL); //!Cvet DWORD color DWORD alpha
-    int DrawSpriteSize(WORD id, int x, int y,double size, DWORD color); // Динамически масштабирует //!Cvet DWORD color
+    int DrawSpriteSize(WORD id, int x, int y,double size, DWORD color); // Р”РёРЅР°РјРёС‡РµСЃРєРё РјР°СЃС€С‚Р°Р±РёСЂСѓРµС‚ //!Cvet DWORD color
 	void DrawTreeCntr(dtree_map* lpdtree);
 	void DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lpsvec, WORD cnt);
 
@@ -204,7 +204,7 @@ public:
 private:
 	bool crtd;
 
-	int LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo=NULL); //!Cvet загрузка альтернативной графики
+	int LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo=NULL); //!Cvet Р·Р°РіСЂСѓР·РєР° Р°Р»СЊС‚РµСЂРЅР°С‚РёРІРЅРѕР№ РіСЂР°С„РёРєРё
 
 	surf_vect surf_list;
 	sprinfo_map spr_data;
@@ -216,19 +216,19 @@ private:
 
 	LPDIRECT3DTEXTURE8 last_surf;
 	LPDIRECT3DTEXTURE8 cur_surf;
-	WORD last_w,last_h;//размеры загружаемой тестуры
-	WORD busy_w,busy_h;//размеры занятой области
-	WORD free_x,free_y;//размеры занятой области
+	WORD last_w,last_h;//СЂР°Р·РјРµСЂС‹ Р·Р°РіСЂСѓР¶Р°РµРјРѕР№ С‚РµСЃС‚СѓСЂС‹
+	WORD busy_w,busy_h;//СЂР°Р·РјРµСЂС‹ Р·Р°РЅСЏС‚РѕР№ РѕР±Р»Р°СЃС‚Рё
+	WORD free_x,free_y;//СЂР°Р·РјРµСЂС‹ Р·Р°РЅСЏС‚РѕР№ РѕР±Р»Р°СЃС‚Рё
   
-	int spr_cnt;//на сколько спрайтов рассчитан. при достижении рисуется сам.
-	int cur_pos;//текущая позиция записи.
+	int spr_cnt;//РЅР° СЃРєРѕР»СЊРєРѕ СЃРїСЂР°Р№С‚РѕРІ СЂР°СЃСЃС‡РёС‚Р°РЅ. РїСЂРё РґРѕСЃС‚РёР¶РµРЅРёРё СЂРёСЃСѓРµС‚СЃСЏ СЃР°Рј.
+	int cur_pos;//С‚РµРєСѓС‰Р°СЏ РїРѕР·РёС†РёСЏ Р·Р°РїРёСЃРё.
 
 	LPDIRECT3DDEVICE8 lpDevice;
 
-	LPDIRECT3DVERTEXBUFFER8 lpVB;//буфер с вершинами для спрайтов
-	LPDIRECT3DINDEXBUFFER8 lpIB;//буфер с индексами
+	LPDIRECT3DVERTEXBUFFER8 lpVB;//Р±СѓС„РµСЂ СЃ РІРµСЂС€РёРЅР°РјРё РґР»СЏ СЃРїСЂР°Р№С‚РѕРІ
+	LPDIRECT3DINDEXBUFFER8 lpIB;//Р±СѓС„РµСЂ СЃ РёРЅРґРµРєСЃР°РјРё
 
-	//Буфер вершин в системной памяти для постоянно меняющихся спрайтов
+	//Р‘СѓС„РµСЂ РІРµСЂС€РёРЅ РІ СЃРёСЃС‚РµРјРЅРѕР№ РїР°РјСЏС‚Рё РґР»СЏ РїРѕСЃС‚РѕСЏРЅРЅРѕ РјРµРЅСЏСЋС‰РёС…СЃСЏ СЃРїСЂР°Р№С‚РѕРІ
 	MYVERTEX* lpWaitBuf;
 
 	LPDIRECT3DTEXTURE8 CreateNewSurf(WORD w, WORD h);

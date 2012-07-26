@@ -13,8 +13,8 @@
 
 #include "decomp_acm\acmstrm.h"
 
-#include "ogg/codec.h"
-#include "ogg/vorbisfile.h"
+#include <vorbis/codec.h>
+#include <vorbis/vorbisfile.h>
 
 struct Sound
 {

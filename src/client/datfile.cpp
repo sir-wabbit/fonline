@@ -31,7 +31,7 @@ TDatFile::TDatFile(char* filename)
 
    strcpy(Datname,filename);
 
-   h_in = CreateFile(filename,  //В h_in находится HANDLE на DAT файл
+   h_in = CreateFile(filename,  //Р’ h_in РЅР°С…РѕРґРёС‚СЃСЏ HANDLE РЅР° DAT С„Р°Р№Р»
 		GENERIC_READ,
 		FILE_SHARE_READ,
 		NULL,
@@ -92,12 +92,12 @@ int TDatFile::ReadTree()
 	bool Fallout1=false;
 
 	
-   //Проверка на то, что файл не менее 8 байт
+   //РџСЂРѕРІРµСЂРєР° РЅР° С‚Рѕ, С‡С‚Рѕ С„Р°Р№Р» РЅРµ РјРµРЅРµРµ 8 Р±Р°Р№С‚
    i = SetFilePointer(h_in, -8, NULL, FILE_END);
    if(i == 0xFFFFFFFF)
        return ERR_FILE_TRUNCATED;
 	
-   //Чтение информации из DAT файла
+   //Р§С‚РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё РёР· DAT С„Р°Р№Р»Р°
    ReadFile(h_in, &TreeSize, 4, &i, NULL);
    ReadFile(h_in, &FileSizeFromDat, 4, &i, NULL);
 

@@ -27,7 +27,7 @@ void InitKeyb()
 {
 	data[DIK_1]=		keyb_data('1','!','1','!');
 	data[DIK_2]=		keyb_data('2','"','2','@');
-	data[DIK_3]=		keyb_data('3','¹','3','#');
+	data[DIK_3]=		keyb_data('3','â„–','3','#');
 	data[DIK_4]=		keyb_data('4',';','4','$');
 	data[DIK_5]=		keyb_data('5','%','5','%');
 	data[DIK_6]=		keyb_data('6',':','6','^');
@@ -38,46 +38,46 @@ void InitKeyb()
 	data[DIK_MINUS]=	keyb_data('-','_','-','_');
 	data[DIK_EQUALS]=	keyb_data('=','+','=','+');
 	
-	data[DIK_Q]=		keyb_data('é','É','q','Q');
-	data[DIK_W]=		keyb_data('ö','Ö','w','W');
-	data[DIK_E]=		keyb_data('ó','Ó','e','E');
-	data[DIK_R]=		keyb_data('ê','Ê','r','R');
-	data[DIK_T]=		keyb_data('å','Å','t','T');
-	data[DIK_Y]=		keyb_data('í','Í','y','Y');
-	data[DIK_U]=		keyb_data('ã','Ã','u','U');
-	data[DIK_I]=		keyb_data('ø','Ø','i','I');
-	data[DIK_O]=		keyb_data('ù','Ù','o','O');
-	data[DIK_P]=		keyb_data('ç','Ç','p','P');
-	data[DIK_LBRACKET]=	keyb_data('õ','Õ','[','{');
-	data[DIK_RBRACKET]=	keyb_data('ú','Ú',']','}');
+	data[DIK_Q]=		keyb_data('Ğ¹','Ğ™','q','Q');
+	data[DIK_W]=		keyb_data('Ñ†','Ğ¦','w','W');
+	data[DIK_E]=		keyb_data('Ñƒ','Ğ£','e','E');
+	data[DIK_R]=		keyb_data('Ğº','Ğš','r','R');
+	data[DIK_T]=		keyb_data('Ğµ','Ğ•','t','T');
+	data[DIK_Y]=		keyb_data('Ğ½','Ğ','y','Y');
+	data[DIK_U]=		keyb_data('Ğ³','Ğ“','u','U');
+	data[DIK_I]=		keyb_data('Ñˆ','Ğ¨','i','I');
+	data[DIK_O]=		keyb_data('Ñ‰','Ğ©','o','O');
+	data[DIK_P]=		keyb_data('Ğ·','Ğ—','p','P');
+	data[DIK_LBRACKET]=	keyb_data('Ñ…','Ğ¥','[','{');
+	data[DIK_RBRACKET]=	keyb_data('ÑŠ','Ğª',']','}');
 	
-	data[DIK_A]=		keyb_data('ô','Ô','a','A');
-	data[DIK_S]=		keyb_data('û','Û','s','S');
-	data[DIK_D]=		keyb_data('â','Â','d','D');
-	data[DIK_F]=		keyb_data('à','À','f','F');
-	data[DIK_G]=		keyb_data('ï','Ï','g','G');
-	data[DIK_H]=		keyb_data('ğ','Ğ','h','H');
-	data[DIK_J]=		keyb_data('î','Î','j','J');
-	data[DIK_K]=		keyb_data('ë','Ë','k','K');
-	data[DIK_L]=		keyb_data('ä','Ä','l','L');
-	data[DIK_SEMICOLON]=keyb_data('æ','Æ',';',':');
-	data[DIK_APOSTROPHE]=keyb_data('ı','İ', '\'' ,'\"');
+	data[DIK_A]=		keyb_data('Ñ„','Ğ¤','a','A');
+	data[DIK_S]=		keyb_data('Ñ‹','Ğ«','s','S');
+	data[DIK_D]=		keyb_data('Ğ²','Ğ’','d','D');
+	data[DIK_F]=		keyb_data('Ğ°','Ğ','f','F');
+	data[DIK_G]=		keyb_data('Ğ¿','ĞŸ','g','G');
+	data[DIK_H]=		keyb_data('Ñ€','Ğ ','h','H');
+	data[DIK_J]=		keyb_data('Ğ¾','Ğ','j','J');
+	data[DIK_K]=		keyb_data('Ğ»','Ğ›','k','K');
+	data[DIK_L]=		keyb_data('Ğ´','Ğ”','l','L');
+	data[DIK_SEMICOLON]=keyb_data('Ğ¶','Ğ–',';',':');
+	data[DIK_APOSTROPHE]=keyb_data('Ñ','Ğ­', '\'' ,'\"');
 
-	data[DIK_Z]=		keyb_data('ÿ','ß','z','Z');
-	data[DIK_X]=		keyb_data('÷','×','x','X');
-	data[DIK_C]=		keyb_data('ñ','Ñ','c','C');
-	data[DIK_V]=		keyb_data('ì','Ì','v','V');
-	data[DIK_B]=		keyb_data('è','È','b','B');
-	data[DIK_N]=		keyb_data('ò','Ò','n','N');
-	data[DIK_M]=		keyb_data('ü','Ü','m','M');
+	data[DIK_Z]=		keyb_data('Ñ','Ğ¯','z','Z');
+	data[DIK_X]=		keyb_data('Ñ‡','Ğ§','x','X');
+	data[DIK_C]=		keyb_data('Ñ','Ğ¡','c','C');
+	data[DIK_V]=		keyb_data('Ğ¼','Ğœ','v','V');
+	data[DIK_B]=		keyb_data('Ğ¸','Ğ˜','b','B');
+	data[DIK_N]=		keyb_data('Ñ‚','Ğ¢','n','N');
+	data[DIK_M]=		keyb_data('ÑŒ','Ğ¬','m','M');
 	
-	data[DIK_COMMA]=	keyb_data('á','Á',',','<');
-	data[DIK_PERIOD]=	keyb_data('ş','Ş','.','>');
+	data[DIK_COMMA]=	keyb_data('Ğ±','Ğ‘',',','<');
+	data[DIK_PERIOD]=	keyb_data('Ñ','Ğ®','.','>');
 	data[DIK_SLASH]=	keyb_data('.',',','/','?');
 
 	data[DIK_SPACE]=	keyb_data(' ',' ',' ',' ');
 
-	data[DIK_GRAVE]=	keyb_data('¸','¨','`','~'); //!Cvet
+	data[DIK_GRAVE]=	keyb_data('Ñ‘','Ğ','`','~'); //!Cvet
 }
 
 void ClearKeyb()

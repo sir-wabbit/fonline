@@ -21,13 +21,13 @@ int CSoundMngr::Init()
 
 	if(DirectSoundCreate8(0,&lpDS,0)!=DS_OK)
 	{
-		WriteLog("Неудалось создать устройство!\n");
+		WriteLog("РќРµСѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ!\n");
 		return 0;
 	}
 
 	if(lpDS->SetCooperativeLevel(GetForegroundWindow(),DSSCL_NORMAL)!=DS_OK)
 	{
-		WriteLog("Неудалось установить уровень кооперации!\n");
+		WriteLog("РќРµСѓРґР°Р»РѕСЃСЊ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СѓСЂРѕРІРµРЅСЊ РєРѕРѕРїРµСЂР°С†РёРё!\n");
 		return 0;
 	}
 
@@ -76,7 +76,7 @@ int CSoundMngr::LoadSound(char* fname, int TypePath)
 {
 	if (!fm.LoadFile(fname,TypePath))
 	{
-		WriteLog("Ошибка - Загрузка звука - Звук |%s| не найден\n",fname);	
+		WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - Р—РІСѓРє |%s| РЅРµ РЅР°Р№РґРµРЅ\n",fname);	
 		return 0;
 	}
 
@@ -85,7 +85,7 @@ int CSoundMngr::LoadSound(char* fname, int TypePath)
 	if(!ext)
 	{
 		fm.UnloadFile();
-		WriteLog("Ошибка - Загрузка звука - Нет расширения у файла:|%s|\n",fname);
+		WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - РќРµС‚ СЂР°СЃС€РёСЂРµРЅРёСЏ Сѓ С„Р°Р№Р»Р°:|%s|\n",fname);
 		return 0;
 	}
 
@@ -112,7 +112,7 @@ int CSoundMngr::LoadSound(char* fname, int TypePath)
 	else
 	{
 		fm.UnloadFile();
-		WriteLog("Ошибка - Загрузка звука - Неизвестный формат файла звука |%s|\n",fname);
+		WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - РќРµРёР·РІРµСЃС‚РЅС‹Р№ С„РѕСЂРјР°С‚ С„Р°Р№Р»Р° Р·РІСѓРєР° |%s|\n",fname);
 		return 0;
 	}
 
@@ -132,7 +132,7 @@ int CSoundMngr::LoadSound(char* fname, int TypePath)
 	if(lpDS->CreateSoundBuffer(&dsbd,&nsnd->buf,0)!=DS_OK)
 	{
 		SAFEDELA(smplData);
-		WriteLog("Ошибка - Загрузка звука - Неудалось создать буфер для звука\n");
+		WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - РќРµСѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ Р±СѓС„РµСЂ РґР»СЏ Р·РІСѓРєР°\n");
 		return 0;
 	}
 
@@ -142,7 +142,7 @@ int CSoundMngr::LoadSound(char* fname, int TypePath)
 	if(nsnd->buf->Lock(0,0,&pDst,&wSize,0,0,DSBLOCK_ENTIREBUFFER)!=DS_OK)
 	{
 		SAFEDELA(smplData); 
-		WriteLog("Ошибка - Загрузка звука - Невозможно заблокировать память\n");
+		WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РїР°РјСЏС‚СЊ\n");
 		return 0;
 	}
 
@@ -177,13 +177,13 @@ int CSoundMngr::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, DWOR
 	
 	dw_buf=fm.GetRDWord();
 
-	if(!dw_buf) { WriteLog("Ошибка - Загрузка звука - .Неизвестный формат аудио файла\n"); return 0; }
+	if(!dw_buf) { WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - .РќРµРёР·РІРµСЃС‚РЅС‹Р№ С„РѕСЂРјР°С‚ Р°СѓРґРёРѕ С„Р°Р№Р»Р°\n"); return 0; }
 
 	fm.CopyMem(fformat,16);
 
 	fformat->cbSize=0;
 
-	if(fformat->wFormatTag!=1) { WriteLog("Ошибка - Загрузка звука - Сжатые файлы не поддерживаются\n"); return 0; }
+	if(fformat->wFormatTag!=1) { WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - РЎР¶Р°С‚С‹Рµ С„Р°Р№Р»С‹ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°СЋС‚СЃСЏ\n"); return 0; }
 
 	fm.GoForward(dw_buf-16);
 
@@ -196,7 +196,7 @@ int CSoundMngr::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, DWOR
 		dw_buf=fm.GetRDWord();
 	}
 
-	if(dw_buf!=MAKEFOURCC('d','a','t','a')) { WriteLog("Ошибка - Загрузка звука - ..Неизвестный формат аудио файла\n"); return 0; }
+	if(dw_buf!=MAKEFOURCC('d','a','t','a')) { WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - ..РќРµРёР·РІРµСЃС‚РЅС‹Р№ С„РѕСЂРјР°С‚ Р°СѓРґРёРѕ С„Р°Р№Р»Р°\n"); return 0; }
 
 	dw_buf=fm.GetRDWord();
 
@@ -204,7 +204,7 @@ int CSoundMngr::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, DWOR
 
 	*sample_data=new unsigned char[dw_buf];
 
-	if(!fm.CopyMem(*sample_data,dw_buf)) { WriteLog("Ошибка - Загрузка звука - Звуковой файл битый\n"); return 0; }
+	if(!fm.CopyMem(*sample_data,dw_buf)) { WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - Р—РІСѓРєРѕРІРѕР№ С„Р°Р№Р» Р±РёС‚С‹Р№\n"); return 0; }
 
 	return 1;
 }
@@ -219,7 +219,7 @@ int CSoundMngr::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, DWOR
 	CACMUnpacker* acm=new CACMUnpacker(fm.GetBuf(),fm.GetFsize(),channel,freq,data_size);
 	data_size*=2;
 
-	if(!acm) { WriteLog("Ошибка - Загрузка звука - Неинициализировался распаковщик ACM\n"); return 0; }
+	if(!acm) { WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - РќРµРёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°Р»СЃСЏ СЂР°СЃРїР°РєРѕРІС‰РёРє ACM\n"); return 0; }
 
 	freq/=2; //???
 
@@ -249,7 +249,7 @@ int CSoundMngr::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, DWOR
 
 	delete (acm);
 
-	if(dec_data!=data_size) { WriteLog("Ошибка - Загрузка звука - Ошибка в декодировании ACM\n"); SAFEDEL(*sample_data); return 0; }
+	if(dec_data!=data_size) { WriteLog("РћС€РёР±РєР° - Р—Р°РіСЂСѓР·РєР° Р·РІСѓРєР° - РћС€РёР±РєР° РІ РґРµРєРѕРґРёСЂРѕРІР°РЅРёРё ACM\n"); SAFEDEL(*sample_data); return 0; }
 
 //	SAFEDEL(step_buff);
 
@@ -296,7 +296,7 @@ void CSoundMngr::PlaySound(WORD id)
 {
 	if(!id)
 	{
-		WriteLog("Ошибка - Проигрывание звука - Звук не загружен!\n");
+		WriteLog("РћС€РёР±РєР° - РџСЂРѕРёРіСЂС‹РІР°РЅРёРµ Р·РІСѓРєР° - Р—РІСѓРє РЅРµ Р·Р°РіСЂСѓР¶РµРЅ!\n");
 		return;
 	}
 
@@ -304,7 +304,7 @@ void CSoundMngr::PlaySound(WORD id)
 
 	if(it==sounds.end())
 	{
-		WriteLog("Ошибка - Прогигрывание звука - Звук №%d не найден!",id);
+		WriteLog("РћС€РёР±РєР° - РџСЂРѕРіРёРіСЂС‹РІР°РЅРёРµ Р·РІСѓРєР° - Р—РІСѓРє в„–%d РЅРµ РЅР°Р№РґРµРЅ!",id);
 		return;
 	}
 
@@ -315,7 +315,7 @@ void CSoundMngr::StopSound(WORD id)
 {
 	if(!id)
 	{
-		WriteLog("Ошибка - Приостоновление звука - Звук не загружен!\n");
+		WriteLog("РћС€РёР±РєР° - РџСЂРёРѕСЃС‚РѕРЅРѕРІР»РµРЅРёРµ Р·РІСѓРєР° - Р—РІСѓРє РЅРµ Р·Р°РіСЂСѓР¶РµРЅ!\n");
 		return;
 	}
 
@@ -323,7 +323,7 @@ void CSoundMngr::StopSound(WORD id)
 
 	if(it==sounds.end())
 	{
-		WriteLog("Ошибка - Приостоновление звука - Звук №%d не найден!",id);
+		WriteLog("РћС€РёР±РєР° - РџСЂРёРѕСЃС‚РѕРЅРѕРІР»РµРЅРёРµ Р·РІСѓРєР° - Р—РІСѓРє в„–%d РЅРµ РЅР°Р№РґРµРЅ!",id);
 		return;
 	}
 
@@ -335,7 +335,7 @@ void CSoundMngr::PauseSound(WORD id)
 {
 	if(!id)
 	{
-		WriteLog("Ошибка - Приостоновление звука - Звук не загружен!\n");
+		WriteLog("РћС€РёР±РєР° - РџСЂРёРѕСЃС‚РѕРЅРѕРІР»РµРЅРёРµ Р·РІСѓРєР° - Р—РІСѓРє РЅРµ Р·Р°РіСЂСѓР¶РµРЅ!\n");
 		return;
 	}
 
@@ -343,7 +343,7 @@ void CSoundMngr::PauseSound(WORD id)
 
 	if(it==sounds.end())
 	{
-		WriteLog("Ошибка - Приостоновление звука - Звук №%d не найден!",id);
+		WriteLog("РћС€РёР±РєР° - РџСЂРёРѕСЃС‚РѕРЅРѕРІР»РµРЅРёРµ Р·РІСѓРєР° - Р—РІСѓРє в„–%d РЅРµ РЅР°Р№РґРµРЅ!",id);
 		return;
 	}
 
@@ -354,7 +354,7 @@ void CSoundMngr::EraseSound(WORD id)
 {
 	if(!id)
 	{
-		WriteLog("Ошибка - Удаление звука - Звук не загружен!\n");
+		WriteLog("РћС€РёР±РєР° - РЈРґР°Р»РµРЅРёРµ Р·РІСѓРєР° - Р—РІСѓРє РЅРµ Р·Р°РіСЂСѓР¶РµРЅ!\n");
 		return;
 	}
 
@@ -362,7 +362,7 @@ void CSoundMngr::EraseSound(WORD id)
 
 	if(it==sounds.end())
 	{
-		WriteLog("Ошибка - Удаление звука - Звук №%d не найден!",id);
+		WriteLog("РћС€РёР±РєР° - РЈРґР°Р»РµРЅРёРµ Р·РІСѓРєР° - Р—РІСѓРє в„–%d РЅРµ РЅР°Р№РґРµРЅ!",id);
 		return;
 	}
 
