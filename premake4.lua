@@ -69,7 +69,7 @@ solution "fonline-open-source"
       "src/client/**.rc"
     }
     
-    resincludedirs { "src/server" }
+    resincludedirs { "src/client" }
     
     links { "zlib" }
     includedirs { "src/zlib" }
