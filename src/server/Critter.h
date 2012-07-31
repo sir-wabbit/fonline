@@ -201,8 +201,8 @@ public:
 	SOCKET s; // Socket id
 	SOCKADDR_IN from;
 
-	CBufMngr bin; // буфер входящий
-	CBufMngr bout; // буфер исходящий
+	Buffer bin; // буфер входящий
+	Buffer bout; // буфер исходящий
 
 	WORD state; // состояние
 	z_stream zstrm; // поток

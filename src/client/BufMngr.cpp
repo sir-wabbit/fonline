@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "BufMngr.h"
 
-CBufMngr::CBufMngr()
+Buffer::Buffer()
 {
 	len=2048;
 	pos=0;
@@ -12,7 +12,7 @@ CBufMngr::CBufMngr()
 	error=0;
 }
 
-CBufMngr::CBufMngr(DWORD alen)
+Buffer::Buffer(size_t alen)
 {
 	len=alen;
 	pos=0;
@@ -22,19 +22,19 @@ CBufMngr::CBufMngr(DWORD alen)
 	error=0;
 }
 
-CBufMngr::~CBufMngr()
+Buffer::~Buffer()
 {
 	SAFEDELA(data);
 }
 
-void CBufMngr::reset()
+void Buffer::reset()
 {
 	pos=0;
 	read_pos=0;
 	memset(data,0,len);
 }
 
-void CBufMngr::grow_buf(DWORD alen)
+void Buffer::grow_buf(size_t alen)
 {
 		while(pos+alen>=len) len<<=1;
 		char* newBuf=new char[len];
@@ -44,7 +44,7 @@ void CBufMngr::grow_buf(DWORD alen)
 
 }
 
-void CBufMngr::push(char *buf,DWORD alen)
+void Buffer::push(char *buf, size_t alen)
 {
 	if(error) return;
 
@@ -53,7 +53,7 @@ void CBufMngr::push(char *buf,DWORD alen)
 	pos+=alen;
 }
 
-void CBufMngr::pop(char *buf,DWORD alen)
+void Buffer::pop(char *buf, size_t alen)
 {
 	if(error) return;
 
@@ -64,7 +64,7 @@ void CBufMngr::pop(char *buf,DWORD alen)
 }
 
 
-CBufMngr &CBufMngr::operator<<(int i)
+Buffer &Buffer::operator<<(int i)
 {
 	if(error) return *this;
 
@@ -74,7 +74,7 @@ CBufMngr &CBufMngr::operator<<(int i)
 	return *this;
 }
 
-CBufMngr &CBufMngr::operator>>(int &i)
+Buffer &Buffer::operator>>(int &i)
 {
 	if(error) return *this;
 
@@ -86,7 +86,7 @@ CBufMngr &CBufMngr::operator>>(int &i)
 	return *this;
 }
 
-CBufMngr &CBufMngr::operator<<(DWORD i)
+Buffer &Buffer::operator<<(DWORD i)
 {
 	if(error) return *this;
 
@@ -96,7 +96,7 @@ CBufMngr &CBufMngr::operator<<(DWORD i)
 	return *this;
 }
 
-CBufMngr &CBufMngr::operator>>(DWORD &i)
+Buffer &Buffer::operator>>(DWORD &i)
 {
 	if(error) return *this;
 
@@ -107,7 +107,7 @@ CBufMngr &CBufMngr::operator>>(DWORD &i)
 	return *this;
 }
 
-CBufMngr &CBufMngr::operator<<(WORD i)
+Buffer &Buffer::operator<<(WORD i)
 {
 	if(error) return *this;
 
@@ -117,7 +117,7 @@ CBufMngr &CBufMngr::operator<<(WORD i)
 	return *this;
 }
 
-CBufMngr &CBufMngr::operator>>(WORD &i)
+Buffer &Buffer::operator>>(WORD &i)
 {
 	if(error) return *this;
 
@@ -128,7 +128,7 @@ CBufMngr &CBufMngr::operator>>(WORD &i)
 	return *this;
 }
 
-CBufMngr &CBufMngr::operator<<(BYTE i)
+Buffer &Buffer::operator<<(BYTE i)
 {
 	if(error) return *this;
 
@@ -138,7 +138,7 @@ CBufMngr &CBufMngr::operator<<(BYTE i)
 	return *this;
 }
 
-CBufMngr &CBufMngr::operator>>(BYTE &i)
+Buffer &Buffer::operator>>(BYTE &i)
 {
 	if(error) return *this;
 
