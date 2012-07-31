@@ -94,3 +94,23 @@ solution "fonline-open-source"
       "src/zlib/**.h", 
       "src/zlib/**.c"
     }
+  
+  project "fonline-server"
+    kind "WindowedApp"
+    language "C++"
+    
+    flags { "WinMain" }
+        
+    includedirs { 
+      "src/server",
+      "inc"
+    }
+    
+    files { 
+      "src/server/**.hpp", 
+      "src/server/**.h", 
+      "src/server/**.cpp"
+    }
+    
+    links { "zlib" }
+    includedirs { "src/zlib" }
