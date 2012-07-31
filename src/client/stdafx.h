@@ -85,9 +85,6 @@ struct INTRECT
 #define UNSET_BITS(x,y) (x)=((x)|(y))^(y)
 #define UNSETFLAG UNSET_BITS
 
-//убирание минуса
-#define ABS(x) ((x)>=0?(x):-(x))
-
 #define BREAK_BEGIN do{
 #define BREAK_END }while(0)
 //!Cvet ----

@@ -95,6 +95,8 @@ solution "fonline-open-source"
       resource(nil, "lib/x32/release/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
     configuration "*"
       links { "libogg", "libvorbis", "libvorbisfile" }
+      
+    links { "ws2_32" }
   
   project "fo-base"
     kind "SharedLib"
@@ -149,3 +151,5 @@ solution "fonline-open-source"
       resource(nil, "lib/x32/release/libmysql/libmysql.dll", "libmysql.dll")
     configuration "*"
       links { "libmysql" }
+      
+    links { "ws2_32" }
