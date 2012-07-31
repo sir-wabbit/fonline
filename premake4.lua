@@ -53,12 +53,8 @@ solution "fonline-open-source"
     
     flags { "WinMain" }
         
-    includedirs { 
-      "src/client",
-      "inc"
-    }
+    includedirs { "inc", "src" }
     
-    includedirs { "src/base" }
     links { "fo-base" }
     
     files { 
@@ -104,6 +100,8 @@ solution "fonline-open-source"
     
     defines { "FO_BASE_DLL" }
     
+    includedirs { "inc", "src" }
+    
     files {
       "src/base/**.hpp",
       "src/base/**.cpp",
@@ -124,11 +122,10 @@ solution "fonline-open-source"
     language "C++"
     
     flags { "WinMain" }
-        
-    includedirs { 
-      "src/server",
-      "inc"
-    }
+    
+    includedirs { "inc", "src" }
+    
+    links { "fo-base" }
     
     files { 
       "src/server/**.hpp", 

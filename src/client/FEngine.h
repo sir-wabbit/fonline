@@ -8,7 +8,7 @@
 #include "CFont.h"
 #include "netproto.h"
 
-#include "BufMngr.h"
+#include <base/buffer.hpp>
 /********************************************************************
 	created:	2005   22:04
 	edit:		2007   15:15
@@ -178,8 +178,8 @@ private:
 	DWORD comlen;
 	DWORD compos;
 
-	Buffer bin;
-	Buffer bout;
+	fonline::Buffer bin;
+	fonline::Buffer bout;
 	z_stream zstrm;
 	bool zstrmok;
 

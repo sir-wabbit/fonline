@@ -11,7 +11,7 @@
 
 #include "netproto.h"
 #include <zlib.h>
-#include "BufMngr.h"
+#include <base/buffer.hpp>
 //#include "sql.h"
 
 
@@ -201,8 +201,8 @@ public:
 	SOCKET s; // Socket id
 	SOCKADDR_IN from;
 
-	Buffer bin; // буфер входящий
-	Buffer bout; // буфер исходящий
+  fonline::Buffer bin; // буфер входящий
+	fonline::Buffer bout; // буфер исходящий
 
 	WORD state; // состояние
 	z_stream zstrm; // поток
