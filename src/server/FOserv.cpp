@@ -347,7 +347,7 @@ void CServer::RunGameLoop()
 		lt_conn+=lt_ticks-lt_ticks2;
 
 	//!Cvet Прием данных от клиентов
-		for(it=cl.begin();it!=cl.end();)
+		for(cl_map::iterator it=cl.begin();it!=cl.end();)
 		{
 			c=(*it).second;
 			if((FD_ISSET(c->s,&read_set))&&(c->state!=STATE_DISCONNECT))
@@ -360,7 +360,7 @@ void CServer::RunGameLoop()
 		lt_input+=lt_ticks-lt_ticks2;
 
 	//Обработка данных клиентов
-		for(it=cl.begin();it!=cl.end();it++)
+		for(cl_map::iterator it=cl.begin();it!=cl.end();it++)
 		{
 			c=(*it).second;
 			if(c->state==STATE_DISCONNECT) continue;
@@ -373,7 +373,7 @@ void CServer::RunGameLoop()
 		lt_proc_cl+=lt_ticks-lt_ticks2;
 
 	//Обработка НПЦ
-		for(it=pc.begin();it!=pc.end();it++)
+		for(cl_map::iterator it=pc.begin();it!=pc.end();it++)
 		{
 			c=(*it).second;
 			NPC_Process(c);
@@ -391,7 +391,7 @@ void CServer::RunGameLoop()
 	//	lt_proc_pc+=lt_ticks-lt_ticks2;
 
 	//Посылка данных клиентов
-		for(it=cl.begin();it!=cl.end();it++)
+		for(cl_map::iterator it=cl.begin();it!=cl.end();it++)
 		{
 			c=(*it).second;
 			if(FD_ISSET(c->s,&write_set)) Output(c);
@@ -402,7 +402,7 @@ void CServer::RunGameLoop()
 		lt_output+=lt_ticks-lt_ticks2;
 
 	//Убирание отключенных клиентов 
-		for(it=cl.begin();it!=cl.end();)
+		for(cl_map::iterator it=cl.begin();it!=cl.end();)
 		{
 			c=(*it).second;
 			it++;
@@ -975,11 +975,11 @@ int CServer::Init()
 	LogExecStr("ci=%d\n",sizeof(crit_info));
 	LogExecStr("mi=%d\n",sizeof(mob_info));
 
-	if(!InitScriptSystem())
-	{
-		LogExecStr("Script System Init FALSE\n");
-		goto SockEND;
-	}
+	//if(!InitScriptSystem())
+	//{
+	//	LogExecStr("Script System Init FALSE\n");
+	//	goto SockEND;
+	//}
 
 	CreateParamsMaps();
 
@@ -1067,7 +1067,7 @@ void CServer::Finish()
 
 	closesocket(s);
 
-	FinishScriptSystem();
+	//FinishScriptSystem();
 	ClearClients();
 	UnloadSocials();
 	sql.Finish_mySQL();
@@ -1112,7 +1112,8 @@ char* CServer::GetParam(char* cmdstr,char** next)
 	
 	char* ret=NULL;
 	int stop=0;
-	for(int i=0;cmdstr[i];i++)
+	int i;
+	for(i=0;cmdstr[i];i++)
 		if(cmdstr[i]!=' ') break;
 	if(!cmdstr[i]) //нет первого параметра
 	{
@@ -1193,7 +1194,7 @@ int CServer::DistFast(int dx, int dy)
 
 int CServer::DistSqrt(int dx, int dy)
 {
-	return sqrt(dx*dx+dy*dy);
+	return (int) sqrt((double) dx*dx + (double) dy*dy);
 }
 
 void CServer::SetCheat(CCritter* acl, char* cheat_message)

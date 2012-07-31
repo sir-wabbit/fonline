@@ -206,23 +206,23 @@ class CServer
 //*****  SCRIPTING  by Cvet (using AngelScript)  *******************************************************************************
 //==============================================================================================================================
 
-	asIScriptEngine* ss;
+	//asIScriptEngine* ss;
 //	asCModule ss_mod;
 
-	static HANDLE hSSLogFile;
+	//static HANDLE hSSLogFile;
 
-	int InitScriptSystem();
-	void FinishScriptSystem();
+	//int InitScriptSystem();
+	//void FinishScriptSystem();
 
-	int SS_LoadScript(char* sname);
+	//int SS_LoadScript(char* sname);
 
 	//int Test(lua_State* pLua);
 
-	int SS_StartLog();
-	void SS_EndLog();
-	static void SS_WriteLog(string& str);
+	//int SS_StartLog();
+	//void SS_EndLog();
+	//static void SS_WriteLog(string& str);
 
-	static void SS_Callback(const asSMessageInfo *msg, void *param);
+	//static void SS_Callback(const asSMessageInfo *msg, void *param);
 
 
 //==============================================================================================================================

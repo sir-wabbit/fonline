@@ -779,7 +779,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 		return;
 	}
 
-	int dist=sqrt(pow(acl->info.x-npc->info.x,2)+pow(acl->info.y-npc->info.y,2));
+	int dist=(int) sqrt(pow(acl->info.x-npc->info.x,2.0)+pow(acl->info.y-npc->info.y,2.0));
 
 	if(dist>TALK_NPC_DISTANCE)
 	{

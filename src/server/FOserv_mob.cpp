@@ -268,7 +268,8 @@ void CServer::MOBs_Proccess()
 	
 		//действия моба
 			//Crit_MoveRandom(mob);
-			asIScriptContext *ctx=NULL;
+			// XXX[31.7.2012 alex]: should probably do it with Lua
+			/*asIScriptContext *ctx=NULL;
 
 			if(!(ctx=ss->CreateContext()))
 			{
@@ -277,16 +278,16 @@ void CServer::MOBs_Proccess()
 				continue;
 			}
 
-			int funcId=ss->GetFunctionIDByDecl(NULL,"void main2(int mob)");
+			asIScriptFunction* mainFunc = ss->GetGlobalFunctionByDecl("void main2(int mob)");
 			
-			if(!funcId)
+			if(!mainFunc)
 			{
 				LogExecStr("e2\n");
 				ctx->Release();
 				continue;
 			}
 
-			if(ctx->Prepare(funcId)<0)
+			if(ctx->Prepare(mainFunc)<0)
 			{
 				LogExecStr("e3\n");
 				ctx->Release();
@@ -302,7 +303,7 @@ void CServer::MOBs_Proccess()
 				continue;
 			}
 
-			ctx->Release();
+			ctx->Release();*/
 		}
 	}
 }
@@ -317,7 +318,8 @@ LogExecStr("Высаживаем мобов==========================================\n");
 	if(cur_encaunter->count_groups>=cur_encaunter->max_groups) return 0;
 
 	mobs_group* cur_mobs=NULL;
-	for(word_set::iterator it_mgr=mobs_group_free.begin();it_mgr!=mobs_group_free.end();++it_mgr)
+	word_set::iterator it_mgr;
+	for(it_mgr=mobs_group_free.begin();it_mgr!=mobs_group_free.end();++it_mgr)
 		if(mobs_gr[(*it_mgr)].mobs_level==mobs_level)
 		{
 			cur_mobs=&mobs_gr[(*it_mgr)];

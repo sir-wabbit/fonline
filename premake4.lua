@@ -114,3 +114,11 @@ solution "fonline-open-source"
     
     links { "zlib" }
     includedirs { "src/zlib" }
+    
+    -- MySQL
+    configuration { "x32", "debug" }
+      libdirs { "lib/x32/debug/libmysql" }
+    configuration { "x32", "release" }
+      libdirs { "lib/x32/release/libmysql" }
+    configuration "*"
+      links { "libmysql" }

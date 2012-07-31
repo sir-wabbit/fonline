@@ -144,8 +144,8 @@ void CCritter::CopyParamsTo(CCritter* acl)
 	strcpy(acl->info.pass,info.pass);
 
 	for(int bi=0; bi<ALL_STATS;  bi++) acl->info.st[bi]=info.st[bi];
-	for(	bi=0; bi<ALL_SKILLS; bi++) acl->info.sk[bi]=info.sk[bi];
-	for(	bi=0; bi<ALL_PERKS;  bi++) acl->info.pe[bi]=info.pe[bi];
+	for(int bi=0; bi<ALL_SKILLS; bi++) acl->info.sk[bi]=info.sk[bi];
+	for(int bi=0; bi<ALL_PERKS;  bi++) acl->info.pe[bi]=info.pe[bi];
 
 	acl->info.cond=info.cond;
 	acl->info.cond_ext=info.cond_ext;

@@ -10,7 +10,7 @@
 #define __CCRITTER_H__
 
 #include "netproto.h"
-#include "zlib\\zlib.h"
+#include <zlib.h>
 #include "BufMngr.h"
 //#include "sql.h"
 
@@ -26,14 +26,14 @@ const char CHOOSE_ALL			=1;
 const char CHOOSE_ALL_NOT_PLAYER=2;
 
 //Условие
-const DEMAND_NONE		=0;
-const DEMAND_STAT		=1;
-const DEMAND_SKILL		=2;
-const DEMAND_PERK		=3;
-const DEMAND_QUEST		=4;
-const DEMAND_ITEM		=5;
-const DEMAND_VAR		=6;
-const DEMAND_PVAR		=7;
+const BYTE DEMAND_NONE		=0;
+const BYTE DEMAND_STAT		=1;
+const BYTE DEMAND_SKILL		=2;
+const BYTE DEMAND_PERK		=3;
+const BYTE DEMAND_QUEST		=4;
+const BYTE DEMAND_ITEM		=5;
+const BYTE DEMAND_VAR		=6;
+const BYTE DEMAND_PVAR		=7;
 
 struct demand
 {
@@ -51,15 +51,15 @@ struct demand
 typedef vector<demand*> demand_list;
 
 //Результат
-const RESULT_NONE		=0;
-const RESULT_STAT		=1;
-const RESULT_SKILL		=2;
-const RESULT_PERK		=3;
-const RESULT_QUEST		=4;
-const RESULT_ITEM		=5;
-const RESULT_VAR		=6;
-const RESULT_PVAR		=7;
-const RESULT_LOCK		=8;
+const BYTE RESULT_NONE		=0;
+const BYTE RESULT_STAT		=1;
+const BYTE RESULT_SKILL		=2;
+const BYTE RESULT_PERK		=3;
+const BYTE RESULT_QUEST		=4;
+const BYTE RESULT_ITEM		=5;
+const BYTE RESULT_VAR		=6;
+const BYTE RESULT_PVAR		=7;
+const BYTE RESULT_LOCK		=8;
 
 struct result
 {
