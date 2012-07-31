@@ -24,9 +24,6 @@
 	#include <crtdbg.h>
 #endif
 
-#pragma comment(lib,"wsock32.lib")
-#pragma comment(lib,"libmySQL.lib")
-
 #pragma warning (disable : 4786)
 
 #include <map>
@@ -64,9 +61,6 @@ using namespace std;
 //#define UNSET_BITS(x,y) {if((x)&(y)) (x)=(x)^(y);}
 #define UNSET_BITS(x,y) (x)=((x)|(y))^(y)
 #define UNSETFLAG UNSET_BITS
-
-//убирание минуса
-#define ABS(x) ((x)>=0?(x):-(x))
 
 //
 #define BREAK_BEGIN do{

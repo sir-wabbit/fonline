@@ -2186,8 +2186,8 @@ int CHexField::FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTY
 		return cur_step;
 	}
 
-	float dx=ABS(end_x-start_x);
-	float dy=ABS(end_y-start_y);
+  float dx = ::abs(end_x - start_x);
+	float dy = ::abs(end_y - start_y);
 
 	float sx1f=1.0f;
 	float sy1f=1.0f;
