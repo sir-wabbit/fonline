@@ -1654,13 +1654,13 @@ int CSpriteManager::LoadCritTypes()
 	char str[1024];
 	char key[64];
 	CrTYPE cur=0;
-	CrTYPE cnt=GetPrivateProfileInt("critters","id_cnt",0,opt_crfol);
+	CrTYPE cnt=GetPrivateProfileInt("critters","id_cnt",0,opt_crfol.c_str());
 	if(!cnt) return 0;
 
 	for(cur=0;cur<cnt;cur++)
 	{
 		wsprintf(key,"%d",cur);
-		GetPrivateProfileString("critters",key,"",str,1023,opt_crfol);
+		GetPrivateProfileString("critters",key,"",str,1023,opt_crfol.c_str());
 		if(!str[0]) continue;
 		char* str2=new char[strlen(str)+1];
 		strcpy(str2,str);

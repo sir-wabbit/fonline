@@ -71,16 +71,16 @@ extern int opt_scroll_step;
 
 extern int opt_mouse_speed;
 
-extern char opt_masterpath[1024];
-extern char opt_critterpath[1024];
-extern char opt_fopath[1024];
-extern char opt_crfol[1024];
+extern std::string opt_masterpath;
+extern std::string opt_critterpath;
+extern std::string opt_fopath;
+extern std::string opt_crfol;
 
 extern DWORD opt_rport;
-extern char opt_rhost[1024];
-extern char opt_name[MAX_NAME+1];
-extern char opt_cases[5][MAX_NAME+1];
-extern char opt_gender[10];
+extern std::string opt_rhost;
+extern std::string opt_name;
+extern std::string opt_cases[5];
+extern std::string opt_gender;
 
 extern DWORD opt_text_delay;
 
@@ -93,7 +93,7 @@ extern int view_cx[]; //!Cvet
 extern int view_cy[]; //!Cvet
 
 extern int opt_sleep; //!Cvet sleep
-extern BOOL opt_msgbox_invert; //!Cvet message box invert
+extern bool opt_msgbox_invert; //!Cvet message box invert
 
 extern int opt_change_lang; //!Cvet change language
 #define CHANGE_LANG_CTRL_SHIFT	0 //!Cvet change language

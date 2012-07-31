@@ -30,6 +30,7 @@ solution "fonline-open-source"
   configurations { "debug", "release" }
   platforms { "x32" }
   location "build"
+  targetdir "bin"
 
   configuration "debug"
     defines { "DEBUG" }
@@ -38,11 +39,6 @@ solution "fonline-open-source"
   configuration "release"
     defines { "NDEBUG" }
     flags { "Optimize" }
-  
-  configuration {"debug", "x32"}
-    targetdir "bin/debug"
-  configuration {"release", "x32"}
-    targetdir "bin/release"
     
   configuration "vs2010 or vs2008"
     defines { "_CRT_SECURE_NO_WARNINGS",
@@ -62,12 +58,17 @@ solution "fonline-open-source"
       "inc"
     }
     
+    includedirs { "src/base" }
+    links { "fo-base" }
+    
     files { 
       "src/client/**.hpp", 
       "src/client/**.h", 
       "src/client/**.cpp",
       "src/client/**.rc"
     }
+    
+    resource(proj, "data", "data")
     
     resincludedirs { "src/client" }
     
@@ -84,10 +85,28 @@ solution "fonline-open-source"
     -- Ogg + Vorbis
     configuration { "x32", "debug" }
       libdirs { "lib/x32/debug/libogg", "lib/x32/debug/libvorbis" }
+      resource(nil, "lib/x32/debug/libogg/libogg.dll", "libogg.dll")
+      resource(nil, "lib/x32/debug/libvorbis/libvorbis.dll", "libvorbis.dll")
+      resource(nil, "lib/x32/debug/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
     configuration { "x32", "release" }
       libdirs { "lib/x32/release/libogg", "lib/x32/release/libvorbis" }
+      resource(nil, "lib/x32/release/libogg/libogg.dll", "libogg.dll")
+      resource(nil, "lib/x32/release/libvorbis/libvorbis.dll", "libvorbis.dll")
+      resource(nil, "lib/x32/release/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
     configuration "*"
       links { "libogg", "libvorbis", "libvorbisfile" }
+  
+  project "fo-base"
+    kind "SharedLib"
+    language "C++"
+    
+    defines { "FO_BASE_DLL" }
+    
+    files {
+      "src/base/**.hpp",
+      "src/base/**.cpp",
+      "src/base/**.rc"
+    }
   
   project "zlib"
     kind "StaticLib"
@@ -124,7 +143,9 @@ solution "fonline-open-source"
     -- MySQL
     configuration { "x32", "debug" }
       libdirs { "lib/x32/debug/libmysql" }
+      resource(nil, "lib/x32/debug/libmysql/libmysql.dll", "libmysql.dll")
     configuration { "x32", "release" }
       libdirs { "lib/x32/release/libmysql" }
+      resource(nil, "lib/x32/release/libmysql/libmysql.dll", "libmysql.dll")
     configuration "*"
       links { "libmysql" }
