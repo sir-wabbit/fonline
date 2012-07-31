@@ -65,8 +65,11 @@ solution "fonline-open-source"
     files { 
       "src/client/**.hpp", 
       "src/client/**.h", 
-      "src/client/**.cpp"
+      "src/client/**.cpp",
+      "src/client/**.rc"
     }
+    
+    resincludedirs { "src/server" }
     
     links { "zlib" }
     includedirs { "src/zlib" }
@@ -109,11 +112,14 @@ solution "fonline-open-source"
     files { 
       "src/server/**.hpp", 
       "src/server/**.h", 
-      "src/server/**.cpp"
+      "src/server/**.cpp",
+      "src/server/**.rc"
     }
     
     links { "zlib" }
     includedirs { "src/zlib" }
+    
+    resincludedirs { "src/server" }
     
     -- MySQL
     configuration { "x32", "debug" }

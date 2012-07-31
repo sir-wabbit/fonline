@@ -48,10 +48,12 @@ DWORD WINAPI GameLoopThread(void *);
 		MSG msg;//сообщения
 	
 		LoadLibrary("RICHED32.dll");
+		
+		hInstance = hCurrentInst;
 
-		hDlg=CreateDialog(hInstance,MAKEINTRESOURCE(IDD_DLG),hWnd,DlgProc);
+		hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DLG), NULL, DlgProc);
 		hUpdateEvent=CreateEvent(NULL,1,0,NULL);
-		hGameThread=CreateThread(NULL,0,GameLoopThread,NULL,0,&dwGameThreadID);
+		//hGameThread=CreateThread(NULL,0,GameLoopThread,NULL,0,&dwGameThreadID);
 
 		serv=new CServer;
 
@@ -86,6 +88,7 @@ DWORD WINAPI GameLoopThread(void *);
 		switch(msg)
 		{
 		case WM_INITDIALOG:
+		  //hDlg = hwndDlg;
 			PostMessage(hWnd,WM_SIZE,0,0);
 			return 1;
 		case WM_COMMAND:
@@ -139,7 +142,7 @@ DWORD WINAPI GameLoopThread(void *);
 		
 		char str[2060];
 		SendDlgItemMessage(hDlg,IDC_EXECLOG,EM_GETSELTEXT,0,(LPARAM) str);
-		strcat(str,logstr);
+		strncat(str,logstr, sizeof(str) - 1);
 		SendDlgItemMessage(hDlg,IDC_EXECLOG,EM_REPLACESEL,0,(LPARAM) str); 
 	}
 
