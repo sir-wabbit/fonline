@@ -1,3 +1,6 @@
 ﻿syntax: glob
 bin/*
 build/*
+data/master.dat
+data/critter.dat
+data/worldmap.dat

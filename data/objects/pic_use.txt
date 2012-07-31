@@ -1,0 +1,11 @@
+i_null.png
+i_punch.png
+i_punch2.png
+i_kick.png
+i_thrust.png
+i_sharp.png
+i_throw.png
+i_single.png
+i_brust.png
+i_reload.png
+i_use.png

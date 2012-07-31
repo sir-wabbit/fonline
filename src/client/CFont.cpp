@@ -45,7 +45,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 		WriteLog("Init Font %s...",list_fnt[cur_f]);
 
 		char path[1024];
-		strcpy(path,opt_fopath);
+		strcpy(path,opt_fopath.c_str());
 		if(path[strlen(path)-1]!='\\') strcat(path,"\\");
 		strcat(path,"art\\misc\\");
 		strcat(path,list_fnt[cur_f]);
@@ -62,7 +62,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 		HANDLE hFile;
 		DWORD ByteWritten;
 
-		strcpy(path,opt_fopath);
+		strcpy(path,opt_fopath.c_str());
 		if(path[strlen(path)-1]!='\\') strcat(path,"\\");
 		strcat(path,"art\\misc\\");
 		strcat(path,list_fnt[cur_f]);

@@ -1139,9 +1139,9 @@ int CFEngine::InitNet()
 
 	remote.sin_family=AF_INET;
 	remote.sin_port=htons(opt_rport);
-	if((remote.sin_addr.s_addr=inet_addr(opt_rhost))==-1)
+	if((remote.sin_addr.s_addr=inet_addr(opt_rhost.c_str()))==-1)
 	{
-		hostent *h=gethostbyname(opt_rhost);
+		hostent *h=gethostbyname(opt_rhost.c_str());
 
 		if(!h)
 		{

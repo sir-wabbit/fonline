@@ -45,7 +45,7 @@ int CFileMngr::Init()
 	}
 	if(opt_masterpath[0]=='.') strcat(master_dat,".");
 		else if(opt_masterpath[1]!=':') strcat(master_dat,"..\\");
-	strcat(master_dat,opt_masterpath);
+	strcat(master_dat,opt_masterpath.c_str());
 	if(strstr(master_dat,".dat"))
 	{
 		lpDAT=new TDatFile(master_dat);	
@@ -68,7 +68,7 @@ int CFileMngr::Init()
 	}
 	if(opt_critterpath[0]=='.') strcat(crit_dat,".");
 		else if(opt_critterpath[1]!=':') strcat(crit_dat,"..\\");
-	strcat(crit_dat,opt_critterpath);
+	strcat(crit_dat,opt_critterpath.c_str());
 	if(strstr(crit_dat,".dat"))
 	{
 		lpDATcr=new TDatFile(crit_dat);		
@@ -88,7 +88,7 @@ int CFileMngr::Init()
 		ErrMsg("CFileMngr Init","Не найден файл %s или в нем нет раздела fonline_dat",CFG_FILE);
 		return 0;
 	}
-	strcpy(fo_dat,opt_fopath);
+	strcpy(fo_dat,opt_fopath.c_str());
 	if(fo_dat[strlen(fo_dat)-1]!='\\') strcat(fo_dat,"\\");
 
 	WriteLog("CFileMngr Initialization complete\n");

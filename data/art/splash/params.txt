@@ -1,0 +1,16 @@
+;должны быть обязательно в rix формате!
+[splash]
+
+;всего заставок
+count=8
+
+;номера должны идти попорядку начиная с нуля
+;т.е. от 0 до (count-1)
+0=splash0.rix
+1=splash1.rix
+2=splash2.rix
+3=splash3.rix
+4=splash4.rix
+5=splash5.rix
+6=splash6.rix
+7=dweller13.rix
