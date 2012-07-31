@@ -16,7 +16,7 @@ char pathlst[][50]=
 };
 
 
-CFileMngr::Init()
+int CFileMngr::Init()
 {
 	if(crtd) return 1;
 

@@ -12,7 +12,7 @@
 #define FD_SETSIZE 1024
 
 #include <windows.h>
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 #include "math.h" //!Cvet
 
@@ -36,12 +36,6 @@
 #include <vector>
 using namespace std;
 
-//!Cvet скриптинг ++++
-//#define ANGELSCRIPT_EXPORT 1
-#include "AngelScript/angelscript.h"
-#include "AngelScript/scriptstring.h"
-//#pragma comment(lib,"angelscript.lib")
-//!Cvet ----
 
 #define SAFEREL(x) {if(x) (x)->Release();(x)=NULL;}
 #define SAFEDEL(x) {if(x) delete (x);(x)=NULL;}

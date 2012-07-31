@@ -586,7 +586,8 @@ void CServer::LMapGarbager(WORD num_map)
 {
 	if(map[num_map].encaunter)
 	{
-		for(cl_map::iterator it_cr=map_cr[num_map].begin();it_cr!=map_cr[num_map].end();++it_cr)
+	  cl_map::iterator it_cr;
+		for(it_cr=map_cr[num_map].begin();it_cr!=map_cr[num_map].end();++it_cr)
 			if(FLAG((*it_cr).second->info.flags,FCRIT_PLAYER) || FLAG((*it_cr).second->info.flags,FCRIT_NPC)) break;
 
 		if(it_cr==map_cr[num_map].end())
@@ -1319,7 +1320,8 @@ int CServer::GM_GroupToEncaunter(CCritter* rule_acl, WORD num_encaunter)
 		if(encaunters_free.empty()) return 0;
 
 		WORD district=gm_zone[GM_ZONE(rule_acl->group_move->xi)][GM_ZONE(rule_acl->group_move->yi)].district;
-		for(word_set::iterator it_en=encaunters_free.begin();it_en!=encaunters_free.end();++it_en)
+		word_set::iterator it_en;
+		for(it_en=encaunters_free.begin();it_en!=encaunters_free.end();++it_en)
 			if(encaunter[(*it_en)].district & district)
 			{
 				num_encaunter=(*it_en);
@@ -1422,7 +1424,7 @@ void CServer::GM_GroupSetSpeed(CCritter* rule_acl, BYTE speed)
 	default: rule_acl->group_move->speed=1; k_speed=1.0f; break;
 	}
 
-	int dist=sqrt(pow(rule_acl->group_move->move_x-rule_acl->group_move->xi,2)+pow(rule_acl->group_move->move_y-rule_acl->group_move->yi,2));
+	int dist=(int) sqrt(pow(rule_acl->group_move->move_x-rule_acl->group_move->xi,2.0)+pow(rule_acl->group_move->move_y-rule_acl->group_move->yi,2.0));
 	float time=(((GM_MOVE_1KM_TIME/k_speed)/TIME_MULTIPLER)*dist)/GM_ZONE_TIME_PROC;
 
 	rule_acl->group_move->speedx=(float)(rule_acl->group_move->move_x-rule_acl->group_move->xi)/time;
@@ -1450,7 +1452,7 @@ void CServer::GM_GroupSetMove(CCritter* rule_acl, int gx, int gy)
 	default: rule_acl->group_move->speed=1; k_speed=1.0f; break;
 	}
 
-	int dist=sqrt(pow(rule_acl->group_move->move_x-rule_acl->group_move->xi,2)+pow(rule_acl->group_move->move_y-rule_acl->group_move->yi,2));
+	int dist= (int) sqrt(pow(rule_acl->group_move->move_x-rule_acl->group_move->xi,2.0)+pow(rule_acl->group_move->move_y-rule_acl->group_move->yi,2.0));
 	float time=(((GM_MOVE_1KM_TIME/k_speed)/TIME_MULTIPLER)*dist)/GM_ZONE_TIME_PROC;
 
 	rule_acl->group_move->speedx=(float)(rule_acl->group_move->move_x-rule_acl->group_move->xi)/time;

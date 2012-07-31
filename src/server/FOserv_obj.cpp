@@ -42,7 +42,7 @@ void CServer::SetVisibleObj(CCritter* acl)
 //		if(hx>(min_x+3) && hy>(min_y+3) && hx<(max_x-3) && hy<(max_y-3)) continue;
 		if(hx>max_x && hy>max_y) break;
 
-		dist=sqrt(pow(acl->info.x-hx,2)+pow(acl->info.y-hy,2));
+		dist=(int) sqrt(pow(acl->info.x-hx,2.0)+pow(acl->info.y-hy,2.0));
 
 		if(acl->info.look>=dist)
 		{

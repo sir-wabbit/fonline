@@ -523,7 +523,7 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 	//проверяем не мертв ли атакуемый
 	if(t_acl->info.cond==COND_DEAD) return 0;
 	//находим дистанцию
-	WORD dist=sqrt(pow(acl->info.x-t_acl->info.x,2)+pow(acl->info.y-t_acl->info.y,2));
+	WORD dist=(WORD) sqrt(pow(acl->info.x-t_acl->info.x,2.0)+pow(acl->info.y-t_acl->info.y,2.0));
 //LogExecStr("дистанция до цели =%d...",dist);
 	//проверяем дистанцию
 	int wpn_max_dist=0;
