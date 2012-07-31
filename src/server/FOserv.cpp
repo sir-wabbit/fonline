@@ -365,7 +365,7 @@ void CServer::RunGameLoop()
 			c=(*it).second;
 			if(c->state==STATE_DISCONNECT) continue;
 
-			if(c->bin.pos) Process(c);
+			if(c->bin.writePosition) Process(c);
 		}
 
 		lt_ticks2=lt_ticks;
@@ -445,13 +445,13 @@ int CServer::Input(CCritter* acl)
 		return 0;
 	}
 
-	if(len==2048 || (acl->bin.pos+len>=acl->bin.len))
+	if(len==2048 || (acl->bin.writePosition+len>=acl->bin.capacity))
 	{
 		LogExecStr("FLOOD_CONTROL forSockID=%d\n",acl->s);
 		return 0; // если флудит игрок
 	}
 
-	acl->bin.push(inBUF,len);
+	acl->bin.Write(inBUF,len);
 
 	return 1;
 }
@@ -478,11 +478,11 @@ void CServer::Process(CCritter* acl) // Лист Событий
 				LogExecStr("Неправильное MSG: %d от SockID %d при приеме LOGIN или CREATE_CCritter!\n",msg,acl->s);
 				acl->state=STATE_DISCONNECT;
 				Send_LoginMsg(acl,8);
-				acl->bin.reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
+				acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
 				return;
 			}
 		}
-		acl->bin.reset();
+		acl->bin.Reset();
 		return;
 	} //!Cvet ----
 
@@ -504,18 +504,18 @@ void CServer::Process(CCritter* acl) // Лист Событий
 				LogExecStr("Неправильное MSG: %d от SockID %d при STATE_LOGINOK!\n",msg,acl->s);
 		//		acl->state=STATE_DISCONNECT;
 		//		Send_LoginMsg(acl,8);
-		//		acl->bin.reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
+		//		acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
 				continue;
 			}
 		}
-		acl->bin.reset();
+		acl->bin.Reset();
 		return;
 	} //!Cvet ----
 
 	//!Cvet если игрок мертв
 	if(acl->info.cond!=COND_LIFE)
 	{
-		acl->bin.reset();
+		acl->bin.Reset();
 		return;
 	}
 
@@ -567,11 +567,11 @@ void CServer::Process(CCritter* acl) // Лист Событий
 		default:
 			LogExecStr("Wrong MSG: %d from SockID %d при приеме игровых сообщений!\n",msg,acl->s);
 			//acl->state=STATE_DISCONNECT;
-			acl->bin.reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
+			acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
 			return;
 		}
 	}
-	acl->bin.reset();
+	acl->bin.Reset();
 }
 
 void CServer::Process_GetText(CCritter* acl)
@@ -589,7 +589,7 @@ void CServer::Process_GetText(CCritter* acl)
 		return;
 	}
 
-	acl->bin.pop(str,len);
+	acl->bin.Read(str,len);
 	str[len]=0;
 
 	if(acl->bin.IsError())
@@ -619,7 +619,7 @@ void CServer::Process_GetText(CCritter* acl)
 		param=GetParam(&str[1],&next);
 		if(!param)
 		{
-			strcpy(self_str,"write command");
+			strcpy(self_str,"Write command");
 			cmd=0xFFFF;
 		}
 		else if(!(cmd=GetCmdNum(param,acl->info.access)))
@@ -838,7 +838,7 @@ void CServer::ProcessSocial(CCritter* sender,WORD socid,char* aparam)
 			c->bout << sender->info.id;
 			c->bout << (BYTE)(SAY_SOCIAL);
 			c->bout << self_len;
-			c->bout.push(SelfStr,self_len);
+			c->bout.Write(SelfStr,self_len);
 		}
 		else if(c==victim && vic_len)
 		{
@@ -846,7 +846,7 @@ void CServer::ProcessSocial(CCritter* sender,WORD socid,char* aparam)
 			c->bout << sender->info.id;
 			c->bout << (BYTE)(SAY_SOCIAL);
 			c->bout << vic_len;
-			c->bout.push(VicStr,vic_len);
+			c->bout.Write(VicStr,vic_len);
 		}
 		else if(all_len)
 		{
@@ -854,7 +854,7 @@ void CServer::ProcessSocial(CCritter* sender,WORD socid,char* aparam)
 			c->bout << sender->info.id;
 			c->bout << (BYTE)(SAY_SOCIAL);
 			c->bout << all_len;
-			c->bout.push(AllStr,all_len);
+			c->bout.Write(AllStr,all_len);
 		}
 	}
 }
@@ -880,22 +880,22 @@ CCritter* CServer::LocateByPartName(char* name)
 int CServer::Output(CCritter* acl)
 {
 
-	if(!acl->bout.pos) return 1;
+	if(!acl->bout.writePosition) return 1;
 
-	if(acl->bout.len>=outLEN)
+	if(acl->bout.capacity>=outLEN)
 	{
-		while(acl->bout.len>=outLEN) outLEN<<=1;
+		while(acl->bout.capacity>=outLEN) outLEN<<=1;
 		SAFEDELA(outBUF);
 		outBUF=new char[outLEN];
 	}
 
 	acl->zstrm.next_in=(UCHAR*)acl->bout.data;
-	acl->zstrm.avail_in=acl->bout.pos;
+	acl->zstrm.avail_in=acl->bout.writePosition;
 	acl->zstrm.next_out=(UCHAR*)outBUF;
 	acl->zstrm.avail_out=outLEN;
 
 	DWORD br;
-	WriteFile(hDump,acl->bout.data,acl->bout.pos,&br,NULL);
+	WriteFile(hDump,acl->bout.data,acl->bout.writePosition,&br,NULL);
 
 	if(deflate(&acl->zstrm,Z_SYNC_FLUSH)!=Z_OK)
 	{
@@ -905,7 +905,7 @@ int CServer::Output(CCritter* acl)
 	}
 
 	int tosend=acl->zstrm.next_out-(UCHAR*)outBUF;
-	LogExecStr("idchannel=%d, send %d->%d bytes\n",acl->info.idchannel,acl->bout.pos,tosend);
+	LogExecStr("idchannel=%d, send %d->%d bytes\n",acl->info.idchannel,acl->bout.writePosition,tosend);
 	int sendpos=0;
 	while(sendpos<tosend)
 	{
@@ -919,7 +919,7 @@ int CServer::Output(CCritter* acl)
 		}
 	}
 
-	acl->bout.reset();
+	acl->bout.Reset();
 
 	return 1;
 }

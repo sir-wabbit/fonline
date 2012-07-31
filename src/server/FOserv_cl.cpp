@@ -669,13 +669,13 @@ void CServer::Process_CreateClient(CCritter* acl)
 
 //ПРИЕМ ДАННЫХ
 	//логин
-	acl->bin.pop(acl->info.login,MAX_LOGIN);
+	acl->bin.Read(acl->info.login,MAX_LOGIN);
 	acl->info.login[MAX_LOGIN]=0;
 	//пасс
-	acl->bin.pop(acl->info.pass,MAX_LOGIN);
+	acl->bin.Read(acl->info.pass,MAX_LOGIN);
 	acl->info.pass[MAX_LOGIN]=0;
 	//имя
-	acl->bin.pop(acl->info.name,MAX_NAME);
+	acl->bin.Read(acl->info.name,MAX_NAME);
 
 	acl->info.name[MAX_NAME]=0;
 
@@ -685,7 +685,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 	//cases
 	for(bi=0; bi<5; bi++)
 	{
-		acl->bin.pop(acl->info.cases[bi],MAX_NAME);
+		acl->bin.Read(acl->info.cases[bi],MAX_NAME);
 
 		acl->info.cases[bi][MAX_NAME]=0;
 //		my_strlwr(acl->info.cases[bi]);
@@ -867,8 +867,8 @@ void CServer::Process_GetLogIn(CCritter* acl)
 {
 	LogExecStr("Клиент логиниться...");
 
-	acl->bin.pop(acl->info.login,MAX_LOGIN);
-	acl->bin.pop(acl->info.pass,MAX_LOGIN);
+	acl->bin.Read(acl->info.login,MAX_LOGIN);
+	acl->bin.Read(acl->info.pass,MAX_LOGIN);
 	if(acl->bin.IsError())
 	{
 		LogExecStr("Wrong MSG data for Process_GetLogIn from SockID %d!\n",acl->s);

@@ -1240,7 +1240,7 @@ void CFEngine::ParseSocket(WORD wait)
 
 void CFEngine::NetProcess()
 {
-	if(!bin.pos) return;
+	if(!bin.writePosition) return;
 
 	MSGTYPE msg;
 
@@ -1327,11 +1327,11 @@ void CFEngine::NetProcess()
 		default:
 			WriteLog("Wrong MSG: %d!\n",msg);
 			//state=STATE_DISCONNECT;
-			bin.reset();
+			bin.Reset();
 			return;
 		}
 	}
-	bin.reset();
+	bin.Reset();
 }
 
 /*void CFEngine::Net_SendName(char* name)
@@ -1341,9 +1341,9 @@ void CFEngine::NetProcess()
 	MSGTYPE msg=NETMSG_NAME;
 
 	bout << msg;
-	bout.push(name,MAX_NAME);
+	bout.Write(name,MAX_NAME);
 	for(int i=0;i<5;i++)
-		bout.push(opt_cases[i],MAX_NAME);
+		bout.Write(opt_cases[i],MAX_NAME);
 	BYTE gen=opt_gender[0];
 	bout << gen;
 
@@ -1359,8 +1359,8 @@ void CFEngine::Net_SendLogIn(char* login, char* pass)
 	MSGTYPE msg=NETMSG_LOGIN;
 
 	bout << msg;
-	bout.push(login,MAX_LOGIN);
-	bout.push(pass,MAX_LOGIN);
+	bout.Write(login,MAX_LOGIN);
+	bout.Write(pass,MAX_LOGIN);
 
 	LogMsg=10;
     // отладка сетевых сообщений
@@ -1375,11 +1375,11 @@ void CFEngine::Net_SendCreatePlayer(crit_info* newcr)
 //ФОРМИРОВАНИЕ ЗАПРОСА
 	MSGTYPE msg=NETMSG_CREATE_CLIENT;
 	bout << msg;
-	bout.push(newcr->login,MAX_LOGIN);
-	bout.push(newcr->pass,MAX_LOGIN);
-	bout.push(newcr->name,MAX_NAME);
+	bout.Write(newcr->login,MAX_LOGIN);
+	bout.Write(newcr->pass,MAX_LOGIN);
+	bout.Write(newcr->name,MAX_NAME);
 	for(bi=0; bi<5; bi++)
-		bout.push(newcr->cases[bi],MAX_NAME);
+		bout.Write(newcr->cases[bi],MAX_NAME);
 	//SPECIAL
 	bout << newcr->st[ST_STRENGHT	];
 	bout << newcr->st[ST_PERCEPTION	];
@@ -1408,7 +1408,7 @@ void CFEngine::Net_SendText(char* str)
 
 	bout << msg;
 	bout << len;
-	bout.push(str,len);
+	bout.Write(str,len);
 
 	WriteLog("OK\n");
 }
@@ -1628,14 +1628,14 @@ void CFEngine::Net_OnAddCritter()
 	bin >> info.cond;
 	bin >> info.cond_ext;
 	bin >> info.flags;
-	bin.pop(info.name,MAX_NAME);
+	bin.Read(info.name,MAX_NAME);
 WriteLog("Имя:%s\n",info.name);
 //WriteLog("Имя: %s, cond=%d,cond_ext=%d\n",info.name,info.cond,info.cond_ext);
 	info.name[MAX_NAME]=0;
 
 	for(int i=0;i<5;i++)
 	{
-		bin.pop(info.cases[i],MAX_NAME);
+		bin.Read(info.cases[i],MAX_NAME);
 		info.cases[i][MAX_NAME]=0;
 	}
 
@@ -1717,7 +1717,7 @@ void CFEngine::Net_OnCritterText()
 		return;
 	}
 
-	bin.pop(str,len);
+	bin.Read(str,len);
 	str[len]=0;
 
 	if(bin.IsError())
@@ -2615,7 +2615,7 @@ void CFEngine::Net_OnGlobalInfo()
 		{
 		//	GmapNullParams();
 			Net_SendGiveGlobalInfo(info_flags);
-			//!!! надо еще reset буферу сделать
+			//!!! надо еще Reset буферу сделать
 			return;
 		}
 
@@ -2625,7 +2625,7 @@ void CFEngine::Net_OnGlobalInfo()
 
 			//проверка id_crit
 
-			bin.pop(cur_name,MAX_NAME);
+			bin.Read(cur_name,MAX_NAME);
 			cur_name[MAX_NAME]=0;
 
 			if(bin.IsError())
@@ -2683,7 +2683,7 @@ void CFEngine::Net_OnGlobalInfo()
 		{
 		//	GmapNullParams();
 			Net_SendGiveGlobalInfo(info_flags);
-			//!!! надо еще reset буферу сделать
+			//!!! надо еще Reset буферу сделать
 			return;
 		}
 
@@ -2719,7 +2719,7 @@ void CFEngine::Net_OnGlobalInfo()
 	{
 	//	GmapNullParams();
 		Net_SendGiveGlobalInfo(info_flags);
-		//!!! надо еще reset буферу сделать
+		//!!! надо еще Reset буферу сделать
 		return;
 	}
 
@@ -2729,8 +2729,8 @@ void CFEngine::Net_OnGlobalInfo()
 
 int CFEngine::NetOutput()
 {
-	if(!bout.pos) return 1;
-	int tosend=bout.pos;
+	if(!bout.writePosition) return 1;
+	int tosend=bout.writePosition;
 	int sendpos=0;
 	while(sendpos<tosend)
 	{
@@ -2744,7 +2744,7 @@ int CFEngine::NetOutput()
 		}
 	}
 
-	bout.reset();
+	bout.Reset();
     // отладка сетевых сообщений
     WriteLog("NetOutput\n");
 
@@ -2782,13 +2782,13 @@ int CFEngine::NetInput()
 	}
 
 	if(rebuf)
-		bin.grow_buf(comlen<<1);
-	bin.reset();
+		bin.EnsureWriteCapacity(comlen<<1);
+	bin.Reset();
 
 	zstrm.next_in=(UCHAR*)ComBuf;
 	zstrm.avail_in=compos;
 	zstrm.next_out=(UCHAR*)bin.data;
-	zstrm.avail_out=bin.len;
+	zstrm.avail_out=bin.capacity;
 			
 
 	if(inflate(&zstrm,Z_SYNC_FLUSH)!=Z_OK)
@@ -2797,14 +2797,14 @@ int CFEngine::NetInput()
 		return 0;
 	}
 
-	bin.pos=zstrm.next_out-(UCHAR*)bin.data;
+	bin.writePosition=zstrm.next_out-(UCHAR*)bin.data;
 
 	while(zstrm.avail_in)
 	{
-		bin.grow_buf(bin.len<<2);
+		bin.EnsureWriteCapacity(bin.capacity<<2);
 		
-		zstrm.next_out=(UCHAR*)bin.data+bin.pos;
-		zstrm.avail_out=bin.len-bin.pos;
+		zstrm.next_out=(UCHAR*)bin.data+bin.writePosition;
+		zstrm.avail_out=bin.capacity-bin.writePosition;
 			
 
 		if(inflate(&zstrm,Z_SYNC_FLUSH)!=Z_OK)
@@ -2812,11 +2812,11 @@ int CFEngine::NetInput()
 			ErrMsg("CFEngine::NetInput","Inflate continue error!\r\n");
 			return 0;
 		}
-		bin.pos+=zstrm.next_out-(UCHAR*)bin.data;
+		bin.writePosition+=zstrm.next_out-(UCHAR*)bin.data;
 	}
-	WriteLog("\nrecv %d->%d bytes\n",compos,bin.pos);
+	WriteLog("\nrecv %d->%d bytes\n",compos,bin.writePosition);
 	stat_com+=compos;
-	stat_decom+=bin.pos;
+	stat_decom+=bin.writePosition;
 	
 
 	return 1;
