@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 
-#include "..\\common.h"
+#include "../common.h"
 
 #include <memory.h>
 #include <stdio.h>

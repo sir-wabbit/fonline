@@ -4,21 +4,21 @@ namespace fonline {
 
 Buffer::Buffer()
 {
-	len=2048;
-	pos=0;
-	read_pos=0;
-	data=new char[len];
-	memset(data,0,len);
+	capacity=2048;
+	writePosition=0;
+	readPosition=0;
+	data=new char[capacity];
+	::memset(data,0,capacity);
 	error=0;
 }
 
 Buffer::Buffer(size_t alen)
 {
-	len=alen;
-	pos=0;
-	read_pos=0;
-	data = reinterpret_cast<char*>(::malloc(len));
-	memset(data,0,len);
+	capacity=alen;
+	writePosition=0;
+	readPosition=0;
+	data = reinterpret_cast<char*>(::malloc(capacity));
+	::memset(data,0,capacity);
 	error=0;
 }
 
@@ -29,51 +29,36 @@ Buffer::~Buffer()
 	}
 }
 
-void Buffer::reset()
+void Buffer::Reset()
 {
-	pos=0;
-	read_pos=0;
-	memset(data,0,len);
+	writePosition=0;
+	readPosition=0;
+	::memset(data,0,capacity);
 }
 
-void Buffer::grow_buf(size_t alen)
-{
-		while(pos+alen>=len) len *= 2;
-    char* newBuf = reinterpret_cast<char*>(::malloc(len));
-		if (data != NULL) {
-		  ::memcpy(newBuf,data,pos);
-		  ::free(data);
-		}
-		data=newBuf;
-}
-
-void Buffer::push(char *buf, size_t alen)
+void Buffer::Write(const void* buf, size_t alen)
 {
 	if(error) return;
 
-	if(pos+alen>=len) grow_buf(alen);
-	memcpy(data+pos,buf,alen);
-	pos+=alen;
+	EnsureCapacity(writePosition + alen);
+	::memcpy(data+writePosition,buf,alen);
+	writePosition+=alen;
 }
 
-void Buffer::pop(char *buf, size_t alen)
+void Buffer::Read(void *buf, size_t alen)
 {
 	if(error) return;
 
-	if(read_pos+alen>pos) {error=1;return;}
+	if(readPosition+alen>writePosition) {error=1;return;}
 
-	memcpy(buf,data+read_pos,alen);
-	read_pos+=alen;
+	::memcpy(buf,data+readPosition,alen);
+	readPosition+=alen;
 }
 
 
-Buffer &Buffer::operator<<(int i)
-{
+Buffer &Buffer::operator<<(int value) {
 	if(error) return *this;
-
-	if(pos+4>=len) grow_buf(4);
-	*(int*)(data+pos)=i;
-	pos+=4;
+	Write(&value, sizeof(value));
 	return *this;
 }
 
@@ -83,74 +68,83 @@ Buffer &Buffer::operator>>(int &i)
 
   // XXX[1.8.2012 alex]: old xxx
 	//#pragma chMSG("Необходимо позже сделать чтобы при недостатке данных он попытался их прочитать несколько раз с некоторым интервалом и только потом выдавать ошибку")
-	if(read_pos+4>pos) {error=1;return *this;}
-	i=*(int*)(data+read_pos);
-	read_pos+=4;
+	if(readPosition+4>writePosition) {error=1;return *this;}
+	i=*(int*)(data+readPosition);
+	readPosition+=4;
 
 	return *this;
 }
 
-Buffer &Buffer::operator<<(DWORD i)
+Buffer &Buffer::operator<<(DWORD value)
 {
-	if(error) return *this;
-
-	if(pos+4>=len) grow_buf(4);
-	*(DWORD*)(data+pos)=i;
-	pos+=4;
-	return *this;
+  if(error) return *this;
+  Write(&value, sizeof(value));
+  return *this;
 }
 
 Buffer &Buffer::operator>>(DWORD &i)
 {
 	if(error) return *this;
 
-	if(read_pos+4>pos) {error=1;return *this;}
-	i=*(DWORD*)(data+read_pos);
-	read_pos+=4;
+	if(readPosition+4>writePosition) {error=1;return *this;}
+	i=*(DWORD*)(data+readPosition);
+	readPosition+=4;
 
 	return *this;
 }
 
-Buffer &Buffer::operator<<(WORD i)
+Buffer &Buffer::operator<<(WORD value)
 {
-	if(error) return *this;
-
-	if(pos+2>=len) grow_buf(2);
-	*(WORD*)(data+pos)=i;
-	pos+=2;
-	return *this;
+  if(error) return *this;
+  Write(&value, sizeof(value));
+  return *this;
 }
 
 Buffer &Buffer::operator>>(WORD &i)
 {
 	if(error) return *this;
 
-	if(read_pos+2>pos) {error=1;return *this;}
-	i=*(WORD*)(data+read_pos);
-	read_pos+=2;
+	if(readPosition+2>writePosition) {error=1;return *this;}
+	i=*(WORD*)(data+readPosition);
+	readPosition+=2;
 
 	return *this;
 }
 
-Buffer &Buffer::operator<<(BYTE i)
+Buffer &Buffer::operator<<(BYTE value)
 {
-	if(error) return *this;
-
-	if(pos+1>=len) grow_buf(1);
-	*(BYTE*)(data+pos)=i;
-	pos+=1;
-	return *this;
+  if(error) return *this;
+  Write(&value, sizeof(value));
+  return *this;
 }
 
 Buffer &Buffer::operator>>(BYTE &i)
 {
 	if(error) return *this;
 
-	if(read_pos+1>pos) {error=1;return *this;}
-	i=*(BYTE*)(data+read_pos);
-	read_pos+=1;
+	if(readPosition+1>writePosition) {error=1;return *this;}
+	i=*(BYTE*)(data+readPosition);
+	readPosition+=1;
 
 	return *this;
+}
+
+void Buffer::EnsureCapacity(size_t capacity) {
+  if (capacity > this->capacity) {
+    size_t newCapacity = 3 * capacity / 2;
+    char* newData = reinterpret_cast<char*>(::malloc(newCapacity));
+    
+    if (this->data != NULL) {
+      ::memcpy(newData, this->data, this->capacity);
+      ::free(this->data);
+    }
+    
+    this->data = newData;
+    this->capacity = newCapacity;
+  }
+}
+void Buffer::EnsureWriteCapacity(size_t dataSize) {
+  EnsureCapacity(this->writePosition + dataSize);
 }
 
 }; // namespace fonline

@@ -21,10 +21,10 @@ void CServer::Send_AddCritter(CCritter* acl, crit_info* pinfo) //Oleg + Cvet edi
 	acl->bout << pinfo->cond;
 	acl->bout << pinfo->cond_ext;
 	acl->bout << pinfo->flags;
-//	bout.push(MakeName(pinfo->name,mname),MAX_NAME);
-	acl->bout.push(pinfo->name,MAX_NAME);
+//	bout.Write(MakeName(pinfo->name,mname),MAX_NAME);
+	acl->bout.Write(pinfo->name,MAX_NAME);
 	for(int i=0;i<5;i++)
-		acl->bout.push(pinfo->cases[i],MAX_NAME);
+		acl->bout.Write(pinfo->cases[i],MAX_NAME);
 
 //	LogExecStr("Посылаю данные id=%d о обноружении id=%d\n", acl->info.id, pinfo->id);
 }
@@ -279,7 +279,7 @@ void CServer::Send_Map(CCritter* acl, WORD map_num)
 	LogExecStr("Отправка карты №%d игроку ID №%d...",map_num,acl->info.id);
 
 	//acl->bout << map_size;
-	//acl->bout.push(
+	//acl->bout.Write(
 
 	LogExecStr("OK\n");
 }
@@ -441,7 +441,7 @@ void CServer::Send_GlobalInfo(CCritter* acl, BYTE info_flags)
 
 			acl->bout << c->info.id;
 
-			acl->bout.push(c->info.name,MAX_NAME);
+			acl->bout.Write(c->info.name,MAX_NAME);
 
 			if(acl==c) SETFLAG(c->info.flags,FCRIT_CHOSEN);
 
@@ -513,7 +513,7 @@ void CServer::Send_Text(CCritter* to_acl, char* s_str, BYTE say_param)
 	to_acl->bout << to_acl->info.id;
 	to_acl->bout << say_param;
 	to_acl->bout << s_len;
-	to_acl->bout.push(s_str,s_len);
+	to_acl->bout.Write(s_str,s_len);
 }
 
 void CServer::SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o_str, BYTE say_param)
@@ -540,7 +540,7 @@ void CServer::SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o
 			c->bout << from_acl->info.id;
 			c->bout << say_param;
 			c->bout << o_len;
-			c->bout.push(o_str,o_len);
+			c->bout.Write(o_str,o_len);
 		}
 	}
 
