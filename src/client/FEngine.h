@@ -178,8 +178,8 @@ private:
 	DWORD comlen;
 	DWORD compos;
 
-	CBufMngr bin;
-	CBufMngr bout;
+	Buffer bin;
+	Buffer bout;
 	z_stream zstrm;
 	bool zstrmok;
 

@@ -1,52 +1,46 @@
 #ifndef __BUFMNGR_H__
 #define __BUFMNGR_H__
 
-/********************************************************************
-	created:	06:01:2005   11:17
+#include <platform.hpp>
 
-	author:		Oleg Mareskin
-	
-	purpose:	
-*********************************************************************/
-
-class CBufMngr
+class Buffer
 {
 private:
 	bool error;
 public:
-	CBufMngr();
-	CBufMngr(DWORD alen);
-	~CBufMngr();
+	Buffer();
+	Buffer(size_t alen);
+	~Buffer();
 
 	void reset();
-	void push(char *buf,DWORD alen);
-	void pop(char *buf,DWORD alen);
+	void push(char *buf, size_t alen);
+	void pop(char *buf, size_t alen);
 	
 	bool IsError() {return error;}
 	bool NeedProcess() {return (read_pos<pos);}
 	
-	void grow_buf(DWORD alen);
+	void grow_buf(size_t alen);
 
-	CBufMngr &operator<<(int i);
-	CBufMngr &operator>>(int &i);
+	Buffer &operator<<(int i);
+	Buffer &operator>>(int &i);
 
-	CBufMngr &operator<<(DWORD i);
-	CBufMngr &operator>>(DWORD &i);
+	Buffer &operator<<(DWORD i);
+	Buffer &operator>>(DWORD &i);
 
-	CBufMngr &operator<<(WORD i);
-	CBufMngr &operator>>(WORD &i);
+	Buffer &operator<<(WORD i);
+	Buffer &operator>>(WORD &i);
 
-	CBufMngr &operator<<(BYTE i);
-	CBufMngr &operator>>(BYTE &i);
+	Buffer &operator<<(BYTE i);
+	Buffer &operator>>(BYTE &i);
 
-	CBufMngr &operator<<(char *i);
-	CBufMngr &operator>>(char *i);
+	Buffer &operator<<(char *i);
+	Buffer &operator>>(char *i);
 
 
 	char* data;
-	DWORD len;
-	DWORD pos;
-	DWORD read_pos;
+	size_t len;
+	size_t pos;
+	size_t read_pos;
 };
 
 
