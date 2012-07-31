@@ -26,21 +26,14 @@ public:
 	FO_BASE_DECL void EnsureCapacity(size_t capacity);
 	FO_BASE_DECL void EnsureWriteCapacity(size_t dataSize);
 
-	FO_BASE_DECL Buffer &operator<<(int i);
-	FO_BASE_DECL Buffer &operator>>(int &i);
-
-	FO_BASE_DECL Buffer &operator<<(DWORD i);
-	FO_BASE_DECL Buffer &operator>>(DWORD &i);
-
-	FO_BASE_DECL Buffer &operator<<(WORD i);
-	FO_BASE_DECL Buffer &operator>>(WORD &i);
-
-	FO_BASE_DECL Buffer &operator<<(BYTE i);
-	FO_BASE_DECL Buffer &operator>>(BYTE &i);
-
-	FO_BASE_DECL Buffer &operator<<(char *i);
-	FO_BASE_DECL Buffer &operator>>(char *i);
-
+  template<class T> Buffer& operator<<(const T& value) {
+    Write(&value, sizeof(value));
+    return *this;
+  }
+  template<class T> Buffer& operator>>(T& value) {
+    Read(&value, sizeof(value));
+    return *this;
+  }
 
 	char* data;
 	size_t capacity;
