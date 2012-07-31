@@ -90,7 +90,7 @@ int view_cx[]={14,16,20};
 int view_cy[]={26,34,46};
 //!Cvet --------------
 
-#include <ini_file.hpp>
+#include <base/ini_file.hpp>
 
 void GetOptions()
 {

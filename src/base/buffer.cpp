@@ -1,6 +1,6 @@
+#include "buffer.hpp"
 
-#include "stdafx.h"
-#include "BufMngr.h"
+namespace fonline {
 
 Buffer::Buffer()
 {
@@ -17,14 +17,16 @@ Buffer::Buffer(size_t alen)
 	len=alen;
 	pos=0;
 	read_pos=0;
-	data=new char[len];
+	data = reinterpret_cast<char*>(::malloc(len));
 	memset(data,0,len);
 	error=0;
 }
 
 Buffer::~Buffer()
 {
-	SAFEDELA(data);
+	if (data != NULL) {
+	  ::free(data);
+	}
 }
 
 void Buffer::reset()
@@ -36,15 +38,16 @@ void Buffer::reset()
 
 void Buffer::grow_buf(size_t alen)
 {
-	while(pos+alen>=len) len<<=1;
-	char* newBuf=new char[len];
-	memcpy(newBuf,data,pos);
-	SAFEDELA(data);
-	data=newBuf;
-
+		while(pos+alen>=len) len *= 2;
+    char* newBuf = reinterpret_cast<char*>(::malloc(len));
+		if (data != NULL) {
+		  ::memcpy(newBuf,data,pos);
+		  ::free(data);
+		}
+		data=newBuf;
 }
 
-void Buffer::push(char *buf,size_t alen)
+void Buffer::push(char *buf, size_t alen)
 {
 	if(error) return;
 
@@ -53,7 +56,7 @@ void Buffer::push(char *buf,size_t alen)
 	pos+=alen;
 }
 
-void Buffer::pop(char *buf,size_t alen)
+void Buffer::pop(char *buf, size_t alen)
 {
 	if(error) return;
 
@@ -78,7 +81,8 @@ Buffer &Buffer::operator>>(int &i)
 {
 	if(error) return *this;
 
-	#pragma chMSG("Íåîáõîäèìî ïîçæå ñäåëàòü ÷òîáû ïðè íåäîñòàòêå äàííûõ îí ïîïûòàëñÿ èõ ïðî÷èòàòü íåñêîëüêî ðàç ñ íåêîòîðûì èíòåðâàëîì è òîëüêî ïîòîì âûäàâàòü îøèáêó")
+  // XXX[1.8.2012 alex]: old xxx
+	//#pragma chMSG("ÐÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ Ð¿Ð¾Ð·Ð¶Ðµ ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¿Ñ€Ð¸ Ð½ÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚ÐºÐµ Ð´Ð°Ð½Ð½Ñ‹Ñ… Ð¾Ð½ Ð¿Ð¾Ð¿Ñ‹Ñ‚Ð°Ð»ÑÑ Ð¸Ñ… Ð¿Ñ€Ð¾Ñ‡Ð¸Ñ‚Ð°Ñ‚ÑŒ Ð½ÐµÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ñ€Ð°Ð· Ñ Ð½ÐµÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¼ Ð¸Ð½Ñ‚ÐµÑ€Ð²Ð°Ð»Ð¾Ð¼ Ð¸ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¿Ð¾Ñ‚Ð¾Ð¼ Ð²Ñ‹Ð´Ð°Ð²Ð°Ñ‚ÑŒ Ð¾ÑˆÐ¸Ð±ÐºÑƒ")
 	if(read_pos+4>pos) {error=1;return *this;}
 	i=*(int*)(data+read_pos);
 	read_pos+=4;
@@ -148,3 +152,5 @@ Buffer &Buffer::operator>>(BYTE &i)
 
 	return *this;
 }
+
+}; // namespace fonline

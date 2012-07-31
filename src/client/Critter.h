@@ -11,7 +11,7 @@
 #include "CSpriteManager.h"
 #include "CFont.h"
 #include "netproto.h"
-#include "BufMngr.h"
+#include <base/buffer.hpp>
 
 const BYTE FIRST_FRAME	=0;
 const BYTE LAST_FRAME	=200;
