@@ -15,6 +15,30 @@ function resource(proj, src, dst)
   end
 end
 
+function windows_libdir(basePath)
+  for _,arch in pairs({"x32", "x64"}) do
+    for _,conf in pairs({"debug", "release"}) do
+      for _, plat in pairs({"vs2008"}) do
+        local confpath = plat .. "/" .. arch .. "/" .. conf
+        configuration { "windows", arch, conf, plat }
+          libdirs { path.join(basePath, confpath) }
+      end
+    end
+  end
+end
+
+function windows_binary(basePath, dllName)
+  for _,arch in pairs({"x32", "x64"}) do
+    for _,conf in pairs({"debug", "release"}) do
+      for _, plat in pairs({"vs2008"}) do
+        local confpath = plat .. "/" .. arch .. "/" .. conf
+        configuration { "windows", arch, conf, plat }
+          resource(path.join(path.join(basePath, confpath), dllName), dllName, true)
+      end
+    end
+  end
+end
+
 newaction {
   trigger = 'clean',
   description = 'Cleans up the project.',
@@ -30,7 +54,15 @@ solution "fonline-open-source"
   configurations { "debug", "release" }
   platforms { "x32" }
   location "build"
-  targetdir "bin"
+  
+  for _,arch in pairs({"x32", "x64"}) do
+    for _,conf in pairs({"debug", "release"}) do
+      for _,plat in pairs({"vs2008"}) do
+        configuration { arch, conf, plat }
+          targetdir(path.join("bin", path.join(plat, path.join(arch, conf))))
+      end
+    end
+  end
 
   configuration "debug"
     defines { "DEBUG" }
@@ -79,16 +111,16 @@ solution "fonline-open-source"
       linkoptions { "/nodefaultlib:libci.lib" }
       
     -- Ogg + Vorbis
-    configuration { "x32", "debug" }
-      libdirs { "lib/x32/debug/libogg", "lib/x32/debug/libvorbis" }
-      resource(nil, "lib/x32/debug/libogg/libogg.dll", "libogg.dll")
-      resource(nil, "lib/x32/debug/libvorbis/libvorbis.dll", "libvorbis.dll")
-      resource(nil, "lib/x32/debug/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
-    configuration { "x32", "release" }
-      libdirs { "lib/x32/release/libogg", "lib/x32/release/libvorbis" }
-      resource(nil, "lib/x32/release/libogg/libogg.dll", "libogg.dll")
-      resource(nil, "lib/x32/release/libvorbis/libvorbis.dll", "libvorbis.dll")
-      resource(nil, "lib/x32/release/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
+    configuration { "vs2008", "x32", "debug" }
+      libdirs { "lib/vs2008/x32/debug/libogg", "lib/vs2008/x32/debug/libvorbis" }
+      resource(nil, "lib/vs2008/x32/debug/libogg/libogg.dll", "libogg.dll")
+      resource(nil, "lib/vs2008/x32/debug/libvorbis/libvorbis.dll", "libvorbis.dll")
+      resource(nil, "lib/vs2008/x32/debug/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
+    configuration { "vs2008", "x32", "release" }
+      libdirs { "lib/vs2008/x32/release/libogg", "lib/vs2008/x32/release/libvorbis" }
+      resource(nil, "lib/vs2008/x32/release/libogg/libogg.dll", "libogg.dll")
+      resource(nil, "lib/vs2008/x32/release/libvorbis/libvorbis.dll", "libvorbis.dll")
+      resource(nil, "lib/vs2008/x32/release/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
     configuration "*"
       links { "libogg", "libvorbis", "libvorbisfile" }
       
@@ -141,11 +173,11 @@ solution "fonline-open-source"
     
     -- MySQL
     configuration { "x32", "debug" }
-      libdirs { "lib/x32/debug/libmysql" }
-      resource(nil, "lib/x32/debug/libmysql/libmysql.dll", "libmysql.dll")
+      libdirs { "lib/vs2008/x32/debug/libmysql" }
+      resource(nil, "lib/vs2008/x32/debug/libmysql/libmysql.dll", "libmysql.dll")
     configuration { "x32", "release" }
-      libdirs { "lib/x32/release/libmysql" }
-      resource(nil, "lib/x32/release/libmysql/libmysql.dll", "libmysql.dll")
+      libdirs { "lib/vs2008/x32/release/libmysql" }
+      resource(nil, "lib/vs2008/x32/release/libmysql/libmysql.dll", "libmysql.dll")
     configuration "*"
       links { "libmysql" }
       
