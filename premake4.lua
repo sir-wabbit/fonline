@@ -1,42 +1,56 @@
-function copy(src, dst)
-  local action = "\"" ..  path.join(os.getcwd(), "copy-data.py")  .. "\""
+function copy(src, dst, always)
+  local action
+  if os.is("windows") then
+    action = ""
+  else
+    action = "python "
+  end
+  
+  local script = "\"" ..  path.join(os.getcwd(), "copy-data.py")  .. "\""
   src = "\"" .. src .. "\""
   dst = "\"" .. dst .. "\""
   cwd = "\"" .. os.getcwd() .. "\""
-  postbuildcommands { action .. " " .. cwd .. " " .. src .. " " .. dst }
+  postbuildcommands { action  .. script .. " " .. cwd .. " " .. src .. " " .. dst .. " " .. tostring(always) }
 end
 
-function resource(proj, src, dst)
-  copy(src, path.join("build", dst))
-  if proj == nil then
-    copy(src, path.join("bin", dst))
+function resource(src, dst, always)
+  if always == nil then
+    always = false
   else
-    copy(src, path.join(path.join("bin", proj), dst))
+    always = true
   end
+
+  copy(src, path.join("build", dst), always)
+  copy(src, path.join("bin", dst), always)
 end
 
-function windows_libdir(basePath)
+function windows_libdir(name)
   for _,arch in pairs({"x32", "x64"}) do
     for _,conf in pairs({"debug", "release"}) do
       for _, plat in pairs({"vs2008"}) do
-        local confpath = plat .. "/" .. arch .. "/" .. conf
+        local confpath = path.join(plat, path.join(arch, conf))
+        
         configuration { "windows", arch, conf, plat }
-          libdirs { path.join(basePath, confpath) }
+          libdirs { path.join("lib", path.join(name, confpath)) }
       end
     end
   end
+  configuration "*"
 end
 
 function windows_binary(basePath, dllName)
   for _,arch in pairs({"x32", "x64"}) do
     for _,conf in pairs({"debug", "release"}) do
       for _, plat in pairs({"vs2008"}) do
-        local confpath = plat .. "/" .. arch .. "/" .. conf
+        local confpath = path.join(plat, path.join(arch, conf))
+        local libBase = path.join("lib", path.join(basePath, confpath))
+        
         configuration { "windows", arch, conf, plat }
-          resource(path.join(path.join(basePath, confpath), dllName), dllName, true)
+          resource(path.join(libBase, dllName), dllName, true)
       end
     end
   end
+  configuration "*"
 end
 
 newaction {
@@ -55,14 +69,15 @@ solution "fonline-open-source"
   platforms { "x32" }
   location "build"
   
-  for _,arch in pairs({"x32", "x64"}) do
+  targetdir "bin"
+  --[[for _,arch in pairs({"x32", "x64"}) do
     for _,conf in pairs({"debug", "release"}) do
       for _,plat in pairs({"vs2008"}) do
         configuration { arch, conf, plat }
           targetdir(path.join("bin", path.join(plat, path.join(arch, conf))))
       end
     end
-  end
+  end]]--
 
   configuration "debug"
     defines { "DEBUG" }
@@ -96,7 +111,7 @@ solution "fonline-open-source"
       "src/client/**.rc"
     }
     
-    resource(proj, "data", "data")
+    resource("data", "data")
     
     resincludedirs { "src/client" }
     
@@ -111,43 +126,16 @@ solution "fonline-open-source"
       linkoptions { "/nodefaultlib:libci.lib" }
       
     -- Ogg + Vorbis
-    configuration { "vs2008", "x32", "debug" }
-      libdirs { "lib/vs2008/x32/debug/libogg", "lib/vs2008/x32/debug/libvorbis" }
-      resource(nil, "lib/vs2008/x32/debug/libogg/libogg.dll", "libogg.dll")
-      resource(nil, "lib/vs2008/x32/debug/libvorbis/libvorbis.dll", "libvorbis.dll")
-      resource(nil, "lib/vs2008/x32/debug/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
-    configuration { "vs2008", "x32", "release" }
-      libdirs { "lib/vs2008/x32/release/libogg", "lib/vs2008/x32/release/libvorbis" }
-      resource(nil, "lib/vs2008/x32/release/libogg/libogg.dll", "libogg.dll")
-      resource(nil, "lib/vs2008/x32/release/libvorbis/libvorbis.dll", "libvorbis.dll")
-      resource(nil, "lib/vs2008/x32/release/libvorbis/libvorbisfile.dll", "libvorbisfile.dll")
-    configuration "*"
-      links { "libogg", "libvorbis", "libvorbisfile" }
-      
-    links { "ws2_32" }
-  
-  project "fo-base"
-    kind "SharedLib"
-    language "C++"
+    windows_libdir("libogg")
+    windows_libdir("libvorbis")
+    windows_binary("libogg", "libogg.dll")
+    windows_binary("libvorbis", "libvorbis.dll")
+    windows_binary("libvorbis", "libvorbisfile.dll")
+    links { "libogg", "libvorbis", "libvorbisfile" }
     
-    defines { "FO_BASE_DLL" }
-    
-    includedirs { "inc", "src" }
-    
-    files {
-      "src/base/**.hpp",
-      "src/base/**.cpp",
-      "src/base/**.rc"
-    }
-  
-  project "zlib"
-    kind "StaticLib"
-    language "C"
-    
-    files { 
-      "src/zlib/**.h", 
-      "src/zlib/**.c"
-    }
+    -- Winsock
+    configuration "windows"
+      links { "ws2_32" }
   
   project "fonline-server"
     kind "WindowedApp"
@@ -172,13 +160,33 @@ solution "fonline-open-source"
     resincludedirs { "src/server" }
     
     -- MySQL
-    configuration { "x32", "debug" }
-      libdirs { "lib/vs2008/x32/debug/libmysql" }
-      resource(nil, "lib/vs2008/x32/debug/libmysql/libmysql.dll", "libmysql.dll")
-    configuration { "x32", "release" }
-      libdirs { "lib/vs2008/x32/release/libmysql" }
-      resource(nil, "lib/vs2008/x32/release/libmysql/libmysql.dll", "libmysql.dll")
-    configuration "*"
-      links { "libmysql" }
+    windows_libdir("libmysql")
+    windows_binary("libmysql", "libmysql.dll")
+    links { "libmysql" }
       
-    links { "ws2_32" }
+    -- Winsock
+    configuration "windows"
+      links { "ws2_32" }
+      
+  project "fo-base"
+    kind "SharedLib"
+    language "C++"
+    
+    defines { "FO_BASE_DLL" }
+    
+    includedirs { "inc", "src" }
+    
+    files {
+      "src/base/**.hpp",
+      "src/base/**.cpp",
+      "src/base/**.rc"
+    }
+  
+  project "zlib"
+    kind "StaticLib"
+    language "C"
+    
+    files { 
+      "src/zlib/**.h", 
+      "src/zlib/**.c"
+    }

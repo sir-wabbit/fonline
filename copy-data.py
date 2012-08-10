@@ -1,8 +1,34 @@
+#!/usr/bin/python
+
 import sys, os, os.path
 from distutils.dir_util import mkpath
-from shutil import copyfile
+import shutil
 
-def copytree (src, dst):
+def needs_update(src, dst):
+  if os.path.exists(dst):
+    sizesEqual = os.path.getsize(dst) == os.path.getsize(src)
+    sourceIsNewer = os.path.getmtime(src) > os.path.getmtime(dst)
+    
+    if sizesEqual and not sourceIsNewer:
+      return False
+    
+    return True
+  return True
+
+def copy_file(src, dst, always):
+  if not always and not needs_update(src, dst):
+    return
+    
+  print "Copying %s to %s" % (src, dst)
+  shutil.copyfile(src, dst)
+  
+def copy_path (src, dst, always):
+  if os.path.isdir(src):
+    copy_dir(src, dst, always)
+  else:
+    copy_file(src, dst, always)
+  
+def copy_dir (src, dst, always):
     assert os.path.isdir(src)
     
     names = os.listdir(src)
@@ -12,32 +38,18 @@ def copytree (src, dst):
     for n in names:        
         src_name = os.path.join(src, n)
         dst_name = os.path.join(dst, n)
-        
-        if os.path.exists(dst_name):
-          sizesEqual = os.path.getsize(dst_name) == os.path.getsize(src_name)
-          sourceIsNewer = os.path.getmtime(src_name) > os.path.getmtime(dst_name)
-          
-          if sizesEqual and not sourceIsNewer:
-            continue
-        
-        if os.path.isdir(src_name):
-            copytree(src_name, dst_name)
-        else:
-            print "Copying %s to %s" % (src_name, dst_name)
-            copyfile(src_name, dst_name)
+        copy_path(src_name, dst_name, always)
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 5:
   print "invalid action args"
   os.exit(-1)
 
 cwd = sys.argv[1]
 src = sys.argv[2]
 dst = sys.argv[3]
+always = sys.argv[4] == "true"
 
 src = os.path.join(cwd, src)
 dst = os.path.join(cwd, dst)
 
-if (os.path.isdir(src)):
-  copytree(src, dst)
-else:
-  copyfile(src, dst)
+copy_path(src, dst, always)
