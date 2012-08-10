@@ -10,7 +10,7 @@
 #define __CCRITTER_H__
 
 #include "netproto.h"
-#include <zlib.h>
+#include <zlib/zlib.h>
 #include <base/buffer.hpp>
 //#include "sql.h"
 
