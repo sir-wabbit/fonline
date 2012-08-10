@@ -23,7 +23,7 @@ struct Sound
 	IDirectSoundBuffer* buf;
 };
 
-typedef map<WORD, Sound*, less<WORD> > sound_map;
+typedef std::map<WORD, Sound*> sound_map;
 
 class CSoundMngr
 {
@@ -58,7 +58,7 @@ private:
 	int LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, DWORD* size_data);
 	int LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, DWORD* size_data, char* ogg_path);
 
-	CFileMngr fm;
+	FileManager fm;
 
 	bool active;
 };

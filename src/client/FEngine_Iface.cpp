@@ -2765,11 +2765,11 @@ void CFEngine::GmapNullParams()
 	GmapCurHoldBLoc=0;
 	lock_group_contr=true;
 
-	for(vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
+	for(std::vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 		delete (*it_c);
 	gm_cities.clear();
 
-	for(vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
+	for(std::vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
 		delete (*it_cr);
 	gm_crits.clear();
 
@@ -2896,7 +2896,7 @@ void CFEngine::GmapDraw()
 
 		SpriteInfo* sprinf=NULL;
 
-		for(vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
+		for(std::vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 		{
 			GM_city* city=(*it_c);
 
@@ -2934,7 +2934,7 @@ void CFEngine::GmapDraw()
 		int cur_taby=GmapWTabs[1]-gm_tab_scr_y;
 		int cur_city=0;
 
-		for(vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
+		for(std::vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 		{
 			GM_city* city=(*it_c);
 
@@ -3029,7 +3029,7 @@ void CFEngine::GmapDraw()
 		//crits
 		RECT r1={0,0,0,0};
 		int cur_crit=0;
-		for(vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
+		for(std::vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
 		{
 			GM_crit* crit=(*it_cr);
 
@@ -3087,7 +3087,7 @@ void CFEngine::GmapDraw()
 		cur_crit=0;
 		int posx,posy;
 		WORD cur_pic;
-		for(vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
+		for(std::vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
 		{
 			GM_crit* crit=(*it_cr);
 
@@ -3264,7 +3264,7 @@ void CFEngine::GmapMouseUp()
 		if(GmapHold==2 && cur_x>=GmapBToLocal[0] && cur_y>=GmapBToLocal[1] && cur_x<=GmapBToLocal[2] && cur_y<=GmapBToLocal[3])
 		{
 			WORD city_num=0;
-			for(vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
+			for(std::vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 			  // XXX[27.7.2012 alex]: this code needs Vector class with a length() method
 				if(sqrt(pow((*it_c)->x-GmapGroupX,2.0)+pow((*it_c)->y-GmapGroupY,2.0))<=(*it_c)->radius)
 				{

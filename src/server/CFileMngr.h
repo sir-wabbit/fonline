@@ -12,7 +12,7 @@
 
 extern char pathlst[][50];
 
-class CFileMngr
+class FileManager
 {
 public:
 	int Init();
@@ -37,7 +37,7 @@ public:
 	DWORD GetFsize(){ return fsize; }; //!Cvet
 
 
-	CFileMngr(): crtd(0),hFile(NULL),fsize(0),cur_pos(0),buf(NULL){};
+	FileManager(): crtd(0),hFile(NULL),fsize(0),cur_pos(0),buf(NULL){};
 private:
 	bool crtd;
 

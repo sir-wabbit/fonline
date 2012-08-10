@@ -77,7 +77,7 @@ struct ScenObj
 	ScenObj(WORD _spr_id): spr_id(_spr_id){};
 };
 
-typedef vector<ScenObj*> scen_vect;
+typedef std::vector<ScenObj*> scen_vect;
 
 struct ItemObj
 {
@@ -116,7 +116,7 @@ struct ItemObj
 //!Cvet -----------------------
 };
 
-typedef vector<ItemObj*> item_vect;
+typedef std::vector<ItemObj*> item_vect;
 /*
 struct MiscObj //!Cvet
 {
@@ -156,8 +156,8 @@ struct Field
 };
 
 
-typedef map<WORD, char*, less<WORD> > char_map;
-typedef map<WORD, WORD, less<WORD> > word_map;
+typedef std::map<WORD, char*> char_map;
+typedef std::map<WORD, WORD> word_map;
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 //!Cvet ++++++++
@@ -178,7 +178,7 @@ struct Drop
 		ground_y(_ground_y){};
 };
 
-typedef vector<Drop*> Rain;
+typedef std::vector<Drop*> Rain;
 //!Cvet --------
 
 class CHexField
@@ -300,9 +300,9 @@ private:
 	dtree_map dtree; //дерево порядка отрисовки объектов.
 	dtree_map dtree_roof_rain; //дождь на крыше
 
-	CFileMngr fm;
+	FileManager fm;
 	//когда fm загружает файл, он стирает кэш старого, а при загрузке карты он должен оставаться.
-	CFileMngr fm_map; 
+	FileManager fm_map; 
 
 	CSpriteManager* lpSM;
 

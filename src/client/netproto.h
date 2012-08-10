@@ -1,16 +1,8 @@
 #ifndef __NETPROTO_H__
 #define __NETPROTO_H__
 
-
-/********************************************************************
-	created:	21:12:2004   00:14
-
-	author:		Oleg Mareskin
-	
-	edit:		Denis Balikhin, Anton Tsvetinsky
-	
-	purpose:	
-*********************************************************************/
+#include <set>
+#include <map>
 
 //!Cvet +++++++++++++++++++++++++++++++
 #define MAX_NPC			5000
@@ -154,9 +146,18 @@ const BYTE ALL_STATS		=39;
 const BYTE ALL_SKILLS		=18;
 const BYTE ALL_PERKS		=140;
 
+class CompareCharPtr
+{
+public:
+  bool operator() (const char *s, const char *t)const
+  {
+    return strcmp(s,t)<0;
+  }
+};
+
 //карта параметров
-typedef map<string, BYTE, less<string> > params_map;
-typedef map<BYTE, string, less<BYTE> > params_str_map;
+typedef std::map<char*, BYTE, CompareCharPtr> params_map;
+typedef std::map<BYTE, std::string> params_str_map;
 
 //Статы. Stats
 const BYTE ST_STRENGHT				=0;//{Сила}
@@ -764,10 +765,10 @@ struct dyn_obj
 	};
 };
 
-typedef map<DWORD, dyn_obj*, less<DWORD> > dyn_map;
-typedef map<WORD, stat_obj*, less<WORD> > stat_map;
+typedef std::map<DWORD, dyn_obj*> dyn_map;
+typedef std::map<WORD, stat_obj*> stat_map;
 
-typedef set<WORD> list_ind;
+typedef std::set<WORD> list_ind;
 
 //!Cvet -------------------------------
 

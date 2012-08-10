@@ -148,6 +148,6 @@ private:
 };
 
 //список critters, которые присутствуют
-typedef map<CrID, CCritter*, less<CrID> > crit_map;
+typedef std::map<CrID, CCritter*> crit_map;
 
 #endif//__CRITTER_H__

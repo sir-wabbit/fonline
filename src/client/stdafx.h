@@ -23,17 +23,7 @@
 
 #pragma warning (disable : 4786)
 
-#include <map>
-#include <string> //!Cvet
-#include <set> //!Cvet
-#include <vector>
-using namespace std;
-
 #include <crtdbg.h>
-
-#define chSTR2(x) #x
-#define chSTR(x) chSTR2(x)
-#define chMSG(desc) message(__FILE__ "(" chSTR(__LINE__) "):" #desc)
 
 #define SAFEREL(x) {if(x) (x)->Release();(x)=NULL;}
 #define SAFEDEL(x) {if(x) delete (x);(x)=NULL;}

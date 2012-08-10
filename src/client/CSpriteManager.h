@@ -3,15 +3,10 @@
 
 #include "CFileMngr.h"
 #include "netproto.h"
-/********************************************************************
-	created:	2005   22:04
-	edit:		2007   15:15
 
-	author:		Oleg Mareskin
-	edit:		Denis Balikhin, Anton Tsvetinsky
-	
-	purpose:	
-*********************************************************************/
+#include <vector>
+#include <map>
+
 //!Cvet ++++
 #define COLOR_DEFAULT		D3DCOLOR_ARGB(255,((opt_gcolor_default >> 16) & 0xFF)+opt_light,\
 							((opt_gcolor_default >> 8) & 0xFF)+opt_light,(opt_gcolor_default & 0xFF)+opt_light)
@@ -27,7 +22,7 @@
 //#define COLOR_TEXT_AST	D3DCOLOR_ARGB(255,255,0,0)
 //!Cvet ----
 
-typedef map<CrTYPE, char*, less<CrTYPE> > ctypes_map; //!Cvet перенес сюда
+typedef std::map<CrTYPE, char*> ctypes_map; //!Cvet перенес сюда
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 struct MYVERTEX
@@ -51,7 +46,7 @@ struct FLTRECT
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
-typedef vector<LPDIRECT3DTEXTURE8> surf_vect;
+typedef std::vector<LPDIRECT3DTEXTURE8> surf_vect;
 
 // структура спрайта для DX8
 struct SpriteInfo
@@ -63,7 +58,7 @@ struct SpriteInfo
 	SpriteInfo(): lpSurf(NULL),w(0),h(0),offs_x(0),offs_y(0){};
 };
 
-typedef map<WORD, SpriteInfo*, less<WORD> > sprinfo_map;
+typedef std::map<WORD, SpriteInfo*> sprinfo_map;
 
 struct OneSurface
 {
@@ -71,7 +66,7 @@ struct OneSurface
 	WORD cnt;
 	OneSurface(LPDIRECT3DTEXTURE8 lps):lpSurf(lps),cnt(1){};
 };
-typedef vector<OneSurface*> onesurf_vec;
+typedef std::vector<OneSurface*> onesurf_vec;
 
 struct PrepSprite
 {
@@ -86,10 +81,10 @@ struct PrepSprite
 	PrepSprite(int x, int y, WORD id,WORD* lpid=NULL,short* alp_ox=NULL,short* alp_oy=NULL, BYTE* _alpha=NULL): 
 	scr_x(x), scr_y(y), spr_id(id),lp_sprid(lpid),lp_ox(alp_ox),lp_oy(alp_oy),alpha(_alpha) {};
 };
-typedef multimap<DWORD, PrepSprite*, less<DWORD> > dtree_map;
+typedef std::multimap<DWORD, PrepSprite*> dtree_map;
 
-typedef vector<PrepSprite*> spr_vec; //!Cvet
-typedef vector<spr_vec> spr_vec_vec; //!Cvet
+typedef std::vector<PrepSprite*> spr_vec; //!Cvet
+typedef std::vector<spr_vec> spr_vec_vec; //!Cvet
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
@@ -142,7 +137,7 @@ struct PrepPix
 	x(_x),y(_y),color(_color),lp_ox(_lp_ox),lp_oy(_lp_oy),lp_ox2(_lp_ox2),lp_oy2(_lp_oy2){};
 };
 
-typedef vector<PrepPix*> Pix_vec;
+typedef std::vector<PrepPix*> Pix_vec;
 //!Cvet -------
 
 class CSpriteManager
@@ -233,7 +228,7 @@ private:
 
 	LPDIRECT3DTEXTURE8 CreateNewSurf(WORD w, WORD h);
 
-	CFileMngr fm;
+	FileManager fm;
 
 	DWORD col;
 };

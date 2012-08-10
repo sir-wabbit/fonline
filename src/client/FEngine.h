@@ -63,7 +63,7 @@ const BYTE LMENU_NPC			=2;
 const BYTE LMENU_ITEM			=4;
 const BYTE LMENU_SCENERY		=5;
 //ячейки для lmenu
-typedef vector<BYTE> LMenu_list;
+typedef std::vector<BYTE> LMenu_list;
 const BYTE LMENU_NODE_LOOK		=0;
 const BYTE LMENU_NODE_TALK		=1;
 const BYTE LMENU_NODE_BREAK		=2;
@@ -72,7 +72,7 @@ const BYTE LMENU_NODE_GMFOLLOW	=4;
 const BYTE LMENU_NODE_GMTAKE	=5;
 
 //!Cvet действия чезена
-typedef vector<BYTE> chosen_action_vec;
+typedef std::vector<BYTE> chosen_action_vec;
 const BYTE ACTION_NONE					=0;
 const BYTE ACTION_MOVE					=1;
 const BYTE ACTION_SHOW_OBJECT			=2;
@@ -93,7 +93,7 @@ struct AnyAnimData
 		~AnyAnimData(){SAFEDEL(eng)};
 };
 
-typedef map<WORD, string, less<WORD> > string_map; //!Cvet
+typedef std::map<WORD, std::string> string_map; //!Cvet
 
 class CFEngine
 {
@@ -489,7 +489,7 @@ private:
 		GM_city(WORD _num,WORD _x,WORD _y,BYTE _radius):num(_num),x(_x),y(_y),radius(_radius){};
 	};
 
-	vector<GM_city*> gm_cities;
+	std::vector<GM_city*> gm_cities;
 
 	//params
 	float GmapGroupXf,GmapGroupYf;
@@ -520,7 +520,7 @@ private:
 		GM_crit():crid(0),chosen(false),player(false),npc(false),mob(false),rule(false),disconnect(false),ignore(false)
 		{name[0]=NULL;};
 	};
-	vector<GM_crit*> gm_crits;
+	std::vector<GM_crit*> gm_crits;
 
 	//tabs
 	WORD gm_wtab_pic,gm_wblanktab_pic,gm_btabloc_picdn,gm_tabs_scrup_picdn,gm_tabs_scrdn_picdn;
