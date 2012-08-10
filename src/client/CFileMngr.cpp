@@ -34,13 +34,13 @@ char pathlst[][50]=
 };
 
 
-int CFileMngr::Init()
+int FileManager::Init()
 {
-	WriteLog("CFileMngr Initialization...\n");
+	WriteLog("FileManager Initialization...\n");
 	master_dat[0]=0;
 	if(!opt_masterpath[0])
 	{
-		ErrMsg("CFileMngr Init","Не найден файл %s или в нем нет раздела master_dat",CFG_FILE);
+		ErrMsg("FileManager Init","Не найден файл %s или в нем нет раздела master_dat",CFG_FILE);
 		return 0;
 	}
 	if(opt_masterpath[0]=='.') strcat(master_dat,".");
@@ -51,7 +51,7 @@ int CFileMngr::Init()
 		lpDAT=new TDatFile(master_dat);	
 		if(lpDAT->ErrorType==ERR_CANNOT_OPEN_FILE)
 		{
-			ErrMsg("CFileMngr Init>","файл %s не найден",master_dat);
+			ErrMsg("FileManager Init>","файл %s не найден",master_dat);
 			return 0;
 		}
 	}
@@ -63,7 +63,7 @@ int CFileMngr::Init()
 	crit_dat[0]=0;
 	if(!opt_critterpath[0])
 	{
-		ErrMsg("CFileMngr Init","Не найден файл %s или в нем нет раздела critter_dat",CFG_FILE);
+		ErrMsg("FileManager Init","Не найден файл %s или в нем нет раздела critter_dat",CFG_FILE);
 		return 0;
 	}
 	if(opt_critterpath[0]=='.') strcat(crit_dat,".");
@@ -74,7 +74,7 @@ int CFileMngr::Init()
 		lpDATcr=new TDatFile(crit_dat);		
 		if(lpDATcr->ErrorType==ERR_CANNOT_OPEN_FILE)
 		{
-			ErrMsg("CFileMngr Init>","файл %s не найден",crit_dat);
+			ErrMsg("FileManager Init>","файл %s не найден",crit_dat);
 			return 0;
 		}
 	}
@@ -85,32 +85,32 @@ int CFileMngr::Init()
 
 	if(!opt_fopath[0])
 	{
-		ErrMsg("CFileMngr Init","Не найден файл %s или в нем нет раздела fonline_dat",CFG_FILE);
+		ErrMsg("FileManager Init","Не найден файл %s или в нем нет раздела fonline_dat",CFG_FILE);
 		return 0;
 	}
 	strcpy(fo_dat,opt_fopath.c_str());
 	if(fo_dat[strlen(fo_dat)-1]!='\\') strcat(fo_dat,"\\");
 
-	WriteLog("CFileMngr Initialization complete\n");
+	WriteLog("FileManager Initialization complete\n");
 	crtd=1;
 	return 1;
 }
 
-void CFileMngr::Clear()
+void FileManager::Clear()
 {
-	WriteLog("CFileMngr Clear...\n");
+	WriteLog("FileManager Clear...\n");
 	UnloadFile();
 	SAFEDEL(lpDAT);
 	SAFEDEL(lpDATcr);
-	WriteLog("CFileMngr Clear complete\n");
+	WriteLog("FileManager Clear complete\n");
 }
 
-void CFileMngr::UnloadFile()
+void FileManager::UnloadFile()
 {
 	SAFEDELA(buf);
 }
 
-void CFileMngr::LoadSimple(HANDLE hFile)
+void FileManager::LoadSimple(HANDLE hFile)
 {
   	fsize = GetFileSize(hFile,NULL);
 	buf = new BYTE[fsize+1];
@@ -123,7 +123,7 @@ void CFileMngr::LoadSimple(HANDLE hFile)
 	cur_pos=0;
 }
 
-int CFileMngr::LoadFile(char* fname, int PathType)
+int FileManager::LoadFile(char* fname, int PathType)
 {
 		if(!crtd)
 		{
@@ -225,18 +225,18 @@ int CFileMngr::LoadFile(char* fname, int PathType)
 		return 0;
 }
 
-void CFileMngr::SetCurPos(DWORD pos)
+void FileManager::SetCurPos(DWORD pos)
 {
 	if(pos<fsize) cur_pos=pos;
 }
 
-void CFileMngr::GoForward(DWORD offs)
+void FileManager::GoForward(DWORD offs)
 {
 	if((cur_pos+offs)<fsize) cur_pos+=offs;
 }
 
 
-int CFileMngr::GetStr(char* str,DWORD len)
+int FileManager::GetStr(char* str,DWORD len)
 {
 	if(cur_pos>=fsize) return 0;
 
@@ -258,7 +258,7 @@ int CFileMngr::GetStr(char* str,DWORD len)
 	return 1;
 }
 
-int CFileMngr::CopyMem(void* ptr, size_t size)
+int FileManager::CopyMem(void* ptr, size_t size)
 {
 	if(cur_pos+size>fsize) return 0;
 
@@ -269,7 +269,7 @@ int CFileMngr::CopyMem(void* ptr, size_t size)
 	return 1;
 }
 
-BYTE CFileMngr::GetByte() //!Cvet
+BYTE FileManager::GetByte() //!Cvet
 {
 	if(cur_pos>=fsize) return 0;
 	BYTE res=0;
@@ -279,7 +279,7 @@ BYTE CFileMngr::GetByte() //!Cvet
 	return res;
 }
 
-WORD CFileMngr::GetWord()
+WORD FileManager::GetWord()
 {
 	if(cur_pos>=fsize) return 0;
 	WORD res=0;
@@ -291,7 +291,7 @@ WORD CFileMngr::GetWord()
 	return res;
 }
 
-WORD CFileMngr::GetRWord() //!Cvet
+WORD FileManager::GetRWord() //!Cvet
 {
 	if(cur_pos>=fsize) return 0;
 	WORD res=0;
@@ -303,7 +303,7 @@ WORD CFileMngr::GetRWord() //!Cvet
 	return res;
 }
 
-DWORD CFileMngr::GetDWord()
+DWORD FileManager::GetDWord()
 {
 	if(cur_pos>=fsize) return 0;
 	DWORD res=0;
@@ -316,7 +316,7 @@ DWORD CFileMngr::GetDWord()
 	return res;
 }
 
-DWORD CFileMngr::GetRDWord() //!Cvet
+DWORD FileManager::GetRDWord() //!Cvet
 {
 	if(cur_pos>=fsize) return 0;
 	DWORD res=0;
@@ -329,7 +329,7 @@ DWORD CFileMngr::GetRDWord() //!Cvet
 	return res;
 }
 
-int CFileMngr::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet полный путь к файлу
+int FileManager::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet полный путь к файлу
 {
 	get_path[0]=0;
 	strcpy(get_path,fo_dat);

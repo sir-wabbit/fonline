@@ -271,8 +271,8 @@ int CFEngine::Init(HWND _hWnd)
 		sprintf(key_obj,"*%d",(*it_so).second->id);
 		GetPrivateProfileString("info",key_obj,"error",&get_info_obj[0],MAX_OBJECT_INFO,".\\data\\objects\\info_objects.txt");
 
-		name_obj.insert(string_map::value_type((*it_so).second->id,(string)(get_name_obj)));
-		info_obj.insert(string_map::value_type((*it_so).second->id,(string)(get_info_obj)));
+		name_obj.insert(string_map::value_type((*it_so).second->id,std::string(get_name_obj)));
+		info_obj.insert(string_map::value_type((*it_so).second->id,std::string(get_info_obj)));
 	}
 
 	WriteLog("OK (%d объектов)\n",cnt_obj);
@@ -2567,7 +2567,7 @@ void CFEngine::Net_OnGlobalInfo()
 	{
 		WriteLog("локации(");
 
-		for(vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
+		for(std::vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 			delete (*it_c);
 		gm_cities.clear();
 
@@ -2598,7 +2598,7 @@ void CFEngine::Net_OnGlobalInfo()
 	{
 		WriteLog("криты(");
 
-		for(vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
+		for(std::vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
 			delete (*it_cr);
 		gm_crits.clear();
 

@@ -1,6 +1,8 @@
 #ifndef _DATFILE_H_
 #define _DATFILE_H_
 
+#include <map>
+
 // Added by ABel: Seamless reading from both Fallouts' DAT
 #include "cfile/cfile.h"
 
@@ -21,17 +23,17 @@ public:
 	bool operator() (const char *s, const char *t)const
 	{
 		return strcmp(s,t)<0;
-	}
+  }
 };
 
-typedef map<char*, BYTE*, compare> index_map;
+typedef std::map<char*, BYTE*, compare> index_map;
 
 struct IndexMap 
 {
 	index_map index;
 };
 
-typedef map<char*, IndexMap*, compare> find_map;
+typedef std::map<char*, IndexMap*, compare> find_map;
 
 class TDatFile
 {

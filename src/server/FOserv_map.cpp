@@ -87,7 +87,7 @@ int CServer::RefreshZoneMasks()
 	return 1;
 }
 
-DWORD CServer::GetZoneColor(CFileMngr* fmngr, int zx, int zy)
+DWORD CServer::GetZoneColor(FileManager* fmngr, int zx, int zy)
 {
 	static const DWORD HBMP_LEN=54;
 	static const DWORD LINE_LEN=(GM_MAXZONEX*3)+((GM_MAXZONEX*3)%4);

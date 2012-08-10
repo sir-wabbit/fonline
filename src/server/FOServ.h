@@ -409,7 +409,7 @@ class CServer
 
 //Init LMAP,GMAP
 	int RefreshZoneMasks();
-	DWORD GetZoneColor(CFileMngr* fmngr, int zx, int zy);
+	DWORD GetZoneColor(FileManager* fmngr, int zx, int zy);
 	int LoadAllMaps();
 
 //Net proccess
@@ -534,7 +534,7 @@ class CServer
 	int DistFast(int dx, int dy); //Accuracy:95%  Speed:2.5x
 	int DistSqrt(int dx, int dy); //Accuracy:100% Speed:1.0x
 
-	CFileMngr fm;
+	FileManager fm;
 
 //Игровое время
 	SYSTEMTIME sys_time;

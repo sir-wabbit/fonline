@@ -19,7 +19,7 @@ struct keyb_data
 	keyb_data(char arus,char as_rus,char aeng,char as_eng) {rus=arus;s_rus=as_rus;eng=aeng;s_eng=as_eng;};
 	keyb_data() {rus='x';s_rus='x';eng='x';s_eng='x';};
 };
-typedef map<BYTE, keyb_data, less<BYTE> > keyb_data_map;
+typedef std::map<BYTE, keyb_data> keyb_data_map;
 
 keyb_data_map data;
 

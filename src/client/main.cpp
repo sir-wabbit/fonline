@@ -19,8 +19,7 @@ HWND hWnd=NULL;//Окно
 CFEngine* engine;
 
 
-int APIENTRY WinMain(HINSTANCE hCurrentInst,
-	HINSTANCE hPreviousInst,LPSTR lpCmdLine,int nCmdShow)
+int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE hPreviousInst, LPSTR lpCmdLine, int nCmdShow)
 {
 	WNDCLASS wndClass;//Используется для регистрации класса окна
 	MSG msg;//сообщения
@@ -104,9 +103,7 @@ int APIENTRY WinMain(HINSTANCE hCurrentInst,
 	return 0;
 }
 
-LRESULT APIENTRY WndProc(HWND hWnd,
-UINT message,WPARAM wParam,LPARAM lParam)
-{
+LRESULT APIENTRY WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 	switch(message)
 	{
 	case WM_DESTROY://Вызывается при разрушении окна
@@ -143,5 +140,5 @@ UINT message,WPARAM wParam,LPARAM lParam)
 	    return TRUE; // prevent Windows from setting cursor to window class cursor
 	break;*/
 	}
-	return DefWindowProc(hWnd,message,wParam,lParam);
+	return DefWindowProc(hWnd, message, wParam, lParam);
 }
