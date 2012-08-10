@@ -133,6 +133,13 @@ solution "fonline-open-source"
     windows_binary("libvorbis", "libvorbisfile.dll")
     links { "libogg", "libvorbis", "libvorbisfile" }
     
+    -- ZLib
+    -- Ogg + Vorbis
+    includedirs { "inc/zlib" }
+    windows_libdir("zlib")
+    windows_binary("zlib", "zlib.dll")
+    links "zlib"
+    
     -- Winsock
     configuration "windows"
       links { "ws2_32" }
