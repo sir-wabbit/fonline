@@ -1,16 +1,10 @@
 function copy(src, dst, always)
-  local action
-  if os.is("windows") then
-    action = ""
-  else
-    action = "python "
-  end
-  
+  local action = "python"  
   local script = "\"" ..  path.join(os.getcwd(), "copy-data.py")  .. "\""
   src = "\"" .. src .. "\""
   dst = "\"" .. dst .. "\""
   cwd = "\"" .. os.getcwd() .. "\""
-  postbuildcommands { action  .. script .. " " .. cwd .. " " .. src .. " " .. dst .. " " .. tostring(always) }
+  postbuildcommands { action  .. " " .. script .. " " .. cwd .. " " .. src .. " " .. dst .. " " .. tostring(always) }
 end
 
 function resource(src, dst, always)
@@ -115,9 +109,6 @@ solution "fonline-open-source"
     
     resincludedirs { "src/client" }
     
-    links { "zlib" }
-    includedirs { "src/zlib" }
-    
     -- DirectX
     includedirs { "dx8sdk/include" }
     configuration "x32"
@@ -134,7 +125,6 @@ solution "fonline-open-source"
     links { "libogg", "libvorbis", "libvorbisfile" }
     
     -- ZLib
-    -- Ogg + Vorbis
     includedirs { "inc/zlib" }
     windows_libdir("zlib")
     windows_binary("zlib", "zlib.dll")
@@ -161,9 +151,6 @@ solution "fonline-open-source"
       "src/server/**.rc"
     }
     
-    links { "zlib" }
-    includedirs { "src/zlib" }
-    
     resincludedirs { "src/server" }
     
     -- MySQL
@@ -174,6 +161,12 @@ solution "fonline-open-source"
     -- Winsock
     configuration "windows"
       links { "ws2_32" }
+      
+    -- ZLib
+    includedirs { "inc/zlib" }
+    windows_libdir("zlib")
+    windows_binary("zlib", "zlib.dll")
+    links "zlib"
       
   project "fo-base"
     kind "SharedLib"
@@ -187,13 +180,4 @@ solution "fonline-open-source"
       "src/base/**.hpp",
       "src/base/**.cpp",
       "src/base/**.rc"
-    }
-  
-  project "zlib"
-    kind "StaticLib"
-    language "C"
-    
-    files { 
-      "src/zlib/**.h", 
-      "src/zlib/**.c"
     }
