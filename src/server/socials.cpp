@@ -12,7 +12,7 @@ void LoadSocials(MYSQL* mysql)
 {
 	LogExecStr("Loading socials...\n");
 	
-	if(mysql_query(mysql,"select * from socials"))
+	/*if(mysql_query(mysql,"select * from socials"))
 	{
 		LogExecStr("SQL error: %s\n",mysql_error(mysql));
 		return;
@@ -43,9 +43,10 @@ void LoadSocials(MYSQL* mysql)
 		}
 	}
 
-	mysql_free_result(res);
+	mysql_free_result(res);*/
 
-	if(SocialsCount) SocLoaded=1;
+  //// HACK[22.9.2012 alex]: do not laod socials 
+	if(SocialsCount); SocLoaded=1;
 }
 
 void UnloadSocials()

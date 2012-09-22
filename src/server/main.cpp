@@ -13,6 +13,7 @@
 #include "main.h"
 #include "FOserv.h"
 
+#include <wchar.h>
 #include <iostream>
 
 int bQuit=0;
@@ -42,8 +43,7 @@ DWORD WINAPI GameLoopThread(void *);
 	
 	CServer* serv;
 	
-	int APIENTRY WinMain(HINSTANCE hCurrentInst,
-		HINSTANCE hPreviousInst,LPSTR lpCmdLine,int nCmdShow)
+	int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE hPreviousInst,LPSTR lpCmdLine,int nCmdShow)
 	{
 		MSG msg;//сообщения
 	
@@ -54,6 +54,8 @@ DWORD WINAPI GameLoopThread(void *);
 		hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DLG), NULL, DlgProc);
 		hUpdateEvent=CreateEvent(NULL,1,0,NULL);
 		//hGameThread=CreateThread(NULL,0,GameLoopThread,NULL,0,&dwGameThreadID);
+
+    LogExecStr("test");
 
 		serv=new CServer;
 
@@ -77,10 +79,10 @@ DWORD WINAPI GameLoopThread(void *);
 	
 	void UpdateInfo()
 	{
-		char Str[300];
+		wchar_t text[300];
 		ResetEvent(hUpdateEvent);
-		wsprintf(Str,"Количество клиентов: %d",NumClients);
-		SetDlgItemText(hDlg,IDC_COUNT,Str);
+		wsprintfW(text, L"Players online : %d", NumClients);
+		SetDlgItemTextW(hDlg,IDC_COUNT, text);
 	}
 
 	BOOL CALLBACK DlgProc(HWND hwndDlg,UINT msg,WPARAM wParam,LPARAM lParam)
@@ -124,26 +126,24 @@ DWORD WINAPI GameLoopThread(void *);
 		return 0;
 	}
 
-	void LogExecStr(char* frmt, ...)
-	{
+  void AppendToLogEditBox(wchar_t* text) {
+    SendDlgItemMessageW(hDlg, IDC_EXECLOG, EM_SETSEL, -1, 0);
+    SendDlgItemMessageW(hDlg, IDC_EXECLOG, EM_REPLACESEL, 0, (LPARAM) text); 
+  }
+  
+	void LogExecStr(char* fmt, ...) {
 		if(bQuit) return;
 		
-		char logstr[2048];
-	
-	    va_list list;
-	
-	    va_start(list, frmt);
-	    wvsprintf(logstr, frmt, list);
-	    va_end(list);
-
-		int len=GetWindowTextLength(GetDlgItem(hDlg,IDC_EXECLOG));
-		
-		SendDlgItemMessage(hDlg,IDC_EXECLOG,EM_SETSEL,len-1,len);
-		
-		char str[2060];
-		SendDlgItemMessage(hDlg,IDC_EXECLOG,EM_GETSELTEXT,0,(LPARAM) str);
-		strncat(str,logstr, sizeof(str) - 1);
-		SendDlgItemMessage(hDlg,IDC_EXECLOG,EM_REPLACESEL,0,(LPARAM) str); 
+		char buf[2048];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf) - 1, fmt, args);
+    va_end(args);
+    
+    wchar_t wbuf[2048];
+    mbstowcs(wbuf, buf, sizeof(wbuf) / sizeof(wchar_t) - 1);
+    
+		AppendToLogEditBox(wbuf);
 	}
 
 	DWORD WINAPI GameLoopThread(void *)

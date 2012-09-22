@@ -58,13 +58,13 @@ STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION |
 CAPTION "FOnline Server"
 FONT 8, "MS Sans Serif"
 BEGIN
-    LTEXT           "Количество клиентов: 0",IDC_COUNT,7,86,85,8
-    PUSHBUTTON      "Остановить",IDC_STOP,7,122,56,14
-    CONTROL         "",IDC_EXECLOG,"RICHEDIT",ES_MULTILINE | ES_AUTOVSCROLL | 
+    LTEXT           "Players online : 0",IDC_COUNT,7,86,85,8
+    PUSHBUTTON      "Stop server", IDC_STOP,7,122,56,14
+    CONTROL         "",IDC_EXECLOG,"RichEdit20W",ES_MULTILINE | ES_AUTOVSCROLL | 
                     ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_BORDER | 
                     WS_VSCROLL | WS_TABSTOP,109,21,198,115
-    LTEXT           "Execution log:",IDC_STATIC,109,7,46,8
-    PUSHBUTTON      "Перезагрузка",IDC_RELOAD,7,102,56,14
+    LTEXT           "Log:",IDC_STATIC,109,7,46,8
+    PUSHBUTTON      "Reload server",IDC_RELOAD,7,102,56,14
 END
 
 
@@ -115,14 +115,14 @@ BEGIN
         BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", " \0"
-            VALUE "FileDescription", "FalloutMud\0"
+            VALUE "FileDescription", "FOnline-Client\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
-            VALUE "InternalName", "FalloutMud\0"
-            VALUE "LegalCopyright", "Copyright © 2003\0"
+            VALUE "InternalName", "FOnline-Client\0"
+            VALUE "LegalCopyright", "Copyright © 2012\0"
             VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "FalloutMud.exe\0"
+            VALUE "OriginalFilename", "fonline-client.exe\0"
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "  FalloutMud\0"
+            VALUE "ProductName", "  FOnline-Client\0"
             VALUE "ProductVersion", "1, 0, 0, 1\0"
             VALUE "SpecialBuild", "\0"
         END
