@@ -103,12 +103,13 @@ private:
 	char skills[ALL_SKILLS*3+1];
 	char perks[ALL_PERKS+1];
 
-	char user[64];
-	char passwd[64];
-	char host[64];
-	char db[64];
+  std::string user;
+  std::string passwd;
+  std::string host;
+  std::string db;
 	UINT port;
-	char unix_socket[64];
+	
+	std::string unix_socket;
 	ULONG clientflag;
 };
 
