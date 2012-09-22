@@ -7,6 +7,7 @@
 *********************************************************************/
 
 #include "stdafx.h"
+#include <base/ini_file.hpp>
 #include "SQL.h"
 
 SQL::SQL()
@@ -25,19 +26,25 @@ int SQL::Init_mySQL()
 
 	LogExecStr("mySQL init begin\n");
 
-	char load_char[256];
+  std::string load_char;
 
-	GetPrivateProfileString("SQL","true_char","@",load_char,256,".\\foserv.cfg");
+  using namespace fonline::ini;
 
-	if(load_char[0]=='@')
-	{
-		LogExecStr("mySQL true_char failed. see foserv.cfg!\nmySQL init FALSE\n");
-		return 0;
+  RecordMap ini;
+  LoadINI("./data/server.ini", ini);
+  load_char = GetValue<std::string>(ini, "SQL.true_char", "@");
+
+	//if(load_char[0]=='@')
+	//{
+	//	LogExecStr("mySQL true_char failed. see foserv.cfg!\nmySQL init FALSE\n");
+	//	return 0;
+	//}
+
+	LogExecStr("Разрешенные символы:|%s|. Все остальные будут заменяться на пробел.\n",load_char.c_str());
+
+	for (size_t i = 0; i < load_char.size(); i++) {
+	  true_char.insert(true_char_set::value_type(load_char[i]));
 	}
-
-	LogExecStr("Разрешенные символы:|%s|. Все остальные будут заменяться на пробел.\n",load_char);
-
-	for(int i=0; load_char[i]; i++) true_char.insert(true_char_set::value_type(load_char[i]));
 
 	mySQL=mysql_init(NULL);
 	if(!mySQL)
@@ -46,18 +53,25 @@ int SQL::Init_mySQL()
 		return 0;
 	}
 
-	GetPrivateProfileString("SQL","user"		,"root"		,&user[0]		,64,".\\foserv.cfg");
-	GetPrivateProfileString("SQL","passwd"		,""			,&passwd[0]		,64,".\\foserv.cfg");
-	GetPrivateProfileString("SQL","host"		,"localhost",&host[0]		,64,".\\foserv.cfg");
-	GetPrivateProfileString("SQL","db"			,"fonline"	,&db[0]			,64,".\\foserv.cfg");
-	GetPrivateProfileString("SQL","unix_socket" ,""			,&unix_socket[0],64,".\\foserv.cfg");
+  this->user = GetValue<std::string>(ini, "SQL.user", "root");
+  this->passwd = GetValue<std::string>(ini, "SQL.passwd", "");
+  this->host = GetValue<std::string>(ini, "SQL.host", "localhost");
+  this->db = GetValue<std::string>(ini, "SQL.db", "");
+  this->unix_socket = GetValue<std::string>(ini, "SQL.unix_socket", "");
+  
+  this->port = GetValue<int>(ini, "SQL.port", 3306);
+  this->clientflag = GetValue<int>(ini, "SQL.clientflag", 0);
+  
+  LogExecStr("Accepted characters : %s\n", load_char.c_str());
+  LogExecStr("User : %s\n", user.c_str());
+  LogExecStr("Password : %s\n", passwd.c_str());
+  LogExecStr("Host : %s\n", host.c_str());
+  LogExecStr("DB : %s\n", db.c_str());
+  LogExecStr("Socket : %s\n", unix_socket.c_str());
 
-	port=GetPrivateProfileInt("SQL","port",3306,".\\foserv.cfg");
-	clientflag=GetPrivateProfileInt("SQL","clientflag",0,".\\foserv.cfg");
-
-	if(!mysql_real_connect(mySQL,&host[0],&user[0],&passwd[0],&db[0],port,&unix_socket[0],clientflag))
+	if(!mysql_real_connect(mySQL, host.c_str(), user.c_str(), passwd.c_str(), db.c_str(), port, unix_socket.c_str(), clientflag))
 	{
-		LogExecStr("ошибка подключения (%s)\n",mysql_error(mySQL));
+		LogExecStr("%s\n",mysql_error(mySQL));
 		return 0;
 	}
 
@@ -91,7 +105,7 @@ int SQL::Init_mySQL()
 	"`id`			int			unsigned	NOT NULL	auto_increment,"
 	"`log`			varchar(2048)						default NULL,"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 //Игроки
 	Query("CREATE TABLE IF NOT EXISTS `users` ("
@@ -115,7 +129,7 @@ int SQL::Init_mySQL()
 	"`perks`		char(%d)				NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`),"
 	"UNIQUE KEY `login` (`login`)"
-	") TYPE=MyISAM;",
+	");",
 	(ALL_STATS*4+1), (ALL_SKILLS*3+1), (ALL_PERKS+1));
 
 	if(!CountRows("users","id",USERS_START_ID))
@@ -139,7 +153,7 @@ int SQL::Init_mySQL()
 	"`skills`		char(%d)				NOT NULL	default '0',"
 	"`perks`		char(%d)				NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;",
+	");",
 	(ALL_STATS*4+1), (ALL_SKILLS*3+1), (ALL_PERKS+1));
 
 //Объекты
@@ -153,7 +167,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_container` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -165,7 +179,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_drug` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -177,7 +191,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_weapon` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -189,7 +203,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_ammo` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -201,7 +215,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_misc` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -213,7 +227,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_key` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -225,7 +239,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_door` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -237,7 +251,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_crafting` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -249,7 +263,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `obj_grid` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
@@ -261,7 +275,7 @@ int SQL::Init_mySQL()
 	"`last_tick`	int			unsigned	NOT NULL	default '0',"
 	"`broken_info`	int			unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 //Переменные НПЦ
 	Query("CREATE TABLE IF NOT EXISTS `npc_vars_templates` ("
@@ -272,7 +286,7 @@ int SQL::Init_mySQL()
 	"`min`			int					NOT NULL	default '0',"
 	"`max`			int					NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `npc_vars` ("
 	"`id`			int		unsigned	NOT NULL	auto_increment,"
@@ -285,7 +299,7 @@ int SQL::Init_mySQL()
 	"`max`			int					NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`),"
 	"UNIQUE KEY `uniq_name` (`uniq_name`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TRIGGER `var_change` BEFORE UPDATE ON `npc_vars` "
 	"FOR EACH ROW BEGIN "
@@ -307,7 +321,7 @@ int SQL::Init_mySQL()
 	"`min`			int					NOT NULL	default '0',"
 	"`max`			int					NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TABLE IF NOT EXISTS `player_vars` ("
 	"`id`			int		unsigned	NOT NULL	auto_increment,"
@@ -317,7 +331,7 @@ int SQL::Init_mySQL()
 	"`min`			int					NOT NULL	default '0',"
 	"`max`			int					NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Query("CREATE TRIGGER `var_change2` BEFORE UPDATE ON `player_vars` "
 	"FOR EACH ROW BEGIN "
@@ -332,7 +346,7 @@ int SQL::Init_mySQL()
 	"`crid`			int		unsigned	NOT NULL	default '0',"
 	"`value`		tinyint	unsigned	NOT NULL	default '0',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 //Читерство
 	Query("CREATE TABLE IF NOT EXISTS `users_cheat` ("
@@ -340,7 +354,7 @@ int SQL::Init_mySQL()
 	"`user_id`		int		unsigned	NOT NULL	default '0',"
 	"`text_cheat`	varchar(1024)		NOT NULL    default 'err',"
 	"PRIMARY KEY  (`id`)"
-	") TYPE=MyISAM;");
+	");");
 
 	Active=true;
 
