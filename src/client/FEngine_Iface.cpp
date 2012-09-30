@@ -1564,7 +1564,8 @@ void CFEngine::ShowRegistration()
 	fnt.MyDrawText(rwage,stradd,0,D3DCOLOR_XRGB(0,255,0));
 
 	RECT rlogmess={0,0,MODE_WIDTH,15};
-	fnt.MyDrawText(rlogmess,LoginMess[LogMsg],0,D3DCOLOR_XRGB(255,0,0));
+	// TODO[30.9.2012 alex]: fix it
+	//fnt.MyDrawText(rlogmess,LoginMess[LogMsg],0,D3DCOLOR_XRGB(255,0,0));
 	//курсор
 	CurDraw();
 
