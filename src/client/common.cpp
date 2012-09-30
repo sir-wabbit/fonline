@@ -211,21 +211,30 @@ void ErrMsg(char* hdr, char* frmt, ...)
 {
 	char str[2048];
 
-    va_list list;
+  va_list list;
 
-    va_start(list, frmt);
-    wvsprintf(str, frmt, list);
-    va_end(list);
+  va_start(list, frmt);
+  size_t len = vsprintf(str, frmt, list);
+  va_end(list);
 
 	DWORD br;
-	if(!opt_fullscr) MessageBox(NULL,str,hdr,MB_OK|MB_ICONERROR);
-		else 
-		{
-			char str2[1024]="\n\nErrMsg> ";
-			strcat(str2,str);
-			strcat(str2,"\n");
-			WriteFile(hLogFile,str2,strlen(str2),&br,NULL);
-		}
+	if(!opt_fullscr) {
+    wchar_t wbuf[2048];
+    size_t wlen = MultiByteToWideChar(CP_UTF8, 0, str, len, wbuf, sizeof(wbuf) / sizeof(wchar_t) - 1);
+    wbuf[wlen] = 0;
+    
+    wchar_t whdr[2048];
+    size_t whdrlen = MultiByteToWideChar(CP_UTF8, 0, hdr, strlen(hdr), whdr, sizeof(whdr) / sizeof(wchar_t) - 1);
+    whdr[whdrlen] = 0;
+    
+	  MessageBoxW(NULL, wbuf, whdr, MB_OK|MB_ICONERROR);
+	
+	} else {
+		char str2[1024]="\n\nErrMsg> ";
+		strcat(str2,str);
+		strcat(str2,"\n");
+		WriteFile(hLogFile,str2,strlen(str2),&br,NULL);
+	}
 }
 
 void InfoMsg(char* frmt, ...)
