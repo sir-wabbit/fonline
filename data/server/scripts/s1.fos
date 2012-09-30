@@ -1,0 +1,15 @@
+void main()
+{
+	Log("Ñêðèïò s1.fos|"+get_int()+"|");
+}
+
+void main2(int mob)
+{
+	if(mob==0) return;
+
+	if(IsBusy(mob)>0) return;
+
+	if(MoveRandom(mob)>0) return;
+
+	Wait(mob,5000);
+}
