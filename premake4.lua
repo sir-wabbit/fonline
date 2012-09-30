@@ -96,7 +96,8 @@ solution "fonline-open-source"
         
     includedirs { "inc", "src" }
     
-    links { "fo-base" }
+    links { "fo-base",
+            "IniFile" }
     
     files { 
       "src/client/**.hpp", 
@@ -142,7 +143,8 @@ solution "fonline-open-source"
     
     includedirs { "inc", "src" }
     
-    links { "fo-base" }
+    links { "fo-base",
+            "IniFile" }
     
     files { 
       "src/server/**.hpp", 

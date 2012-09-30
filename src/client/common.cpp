@@ -90,11 +90,11 @@ int view_cx[]={14,16,20};
 int view_cy[]={26,34,46};
 //!Cvet --------------
 
-#include <base/ini_file.hpp>
+#include <IniFile/IniFile.hpp>
 
 void GetOptions()
 {
-  using namespace fonline::ini;
+  using namespace IniFile;
 
   RecordMap ini;
   bool result = LoadINI("data/FOnline.ini", ini);
