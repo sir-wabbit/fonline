@@ -156,7 +156,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 	int curx=r.left+1;
 	int cury=r.top+4;
 	int strcnt=1;
-	char* str=new char[strlen(astr)*2];
+	char* str=new char[strlen(astr)*2 + 2];
 	char* alloc_str=str;
 	strcpy(str,astr);
 
