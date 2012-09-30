@@ -1,7 +1,7 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-#define CFG_FILE ".\\FOnline.cfg"
+#define CFG_FILE ".\\data\\FOnline.cfg"
 /********************************************************************
 	created:	2005   22:04
 	edit:		2007   15:15
@@ -13,7 +13,7 @@
 *********************************************************************/
 
 //!Cvet ++++++
-#define CFG_INT_FILE ".\\iface.cfg"
+#define CFG_INT_FILE ".\\data\\iface.cfg"
 #define PATH_MAP_FLAGS ".\\data\\maps\\"
 #define PATH_TEXT_FILES ".\\data\\text\\"
 //!Cvet ------

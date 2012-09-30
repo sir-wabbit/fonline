@@ -40,7 +40,7 @@ int SQL::Init_mySQL()
 	//	return 0;
 	//}
 
-	LogExecStr("Разрешенные символы:|%s|. Все остальные будут заменяться на пробел.\n",load_char.c_str());
+	LogExecStr("Р Р°Р·СЂРµС€РµРЅРЅС‹Рµ СЃРёРјРІРѕР»С‹:|%s|. Р’СЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ Р±СѓРґСѓС‚ Р·Р°РјРµРЅСЏС‚СЊСЃСЏ РЅР° РїСЂРѕР±РµР».\n",load_char.c_str());
 
 	for (size_t i = 0; i < load_char.size(); i++) {
 	  true_char.insert(true_char_set::value_type(load_char[i]));
@@ -49,7 +49,7 @@ int SQL::Init_mySQL()
 	mySQL=mysql_init(NULL);
 	if(!mySQL)
 	{
-		LogExecStr("ошибка инициализации\n");
+		LogExecStr("РѕС€РёР±РєР° РёРЅРёС†РёР°Р»РёР·Р°С†РёРё\n");
 		return 0;
 	}
 
@@ -100,14 +100,14 @@ int SQL::Init_mySQL()
 
 	Query("DROP TABLE IF EXISTS `users_cheat`");
 
-//Логгинг
+//Р›РѕРіРіРёРЅРі
 	Query("CREATE TABLE IF NOT EXISTS `log` ("
 	"`id`			int			unsigned	NOT NULL	auto_increment,"
 	"`log`			varchar(2048)						default NULL,"
 	"PRIMARY KEY  (`id`)"
 	");");
 
-//Игроки
+//РРіСЂРѕРєРё
 	Query("CREATE TABLE IF NOT EXISTS `users` ("
 	"`id`			int			unsigned	NOT NULL	auto_increment,"
 	"`login`		varchar(20)				NOT NULL	default '0',"
@@ -135,7 +135,7 @@ int SQL::Init_mySQL()
 	if(!CountRows("users","id",USERS_START_ID))
 		Query("INSERT INTO users (id) VALUES ('%d');",USERS_START_ID-1);
 
-//НПЦ
+//РќРџР¦
 	Query("CREATE TABLE IF NOT EXISTS `npc` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
 	"`base_type`	smallint	unsigned	NOT NULL	default '0',"
@@ -156,7 +156,7 @@ int SQL::Init_mySQL()
 	");",
 	(ALL_STATS*4+1), (ALL_SKILLS*3+1), (ALL_PERKS+1));
 
-//Объекты
+//РћР±СЉРµРєС‚С‹
 	Query("CREATE TABLE IF NOT EXISTS `obj_armor` ("
 	"`id`			int			unsigned	NOT NULL	default '0',"
 	"`proto_id`		smallint	unsigned	NOT NULL	default '0',"
@@ -277,7 +277,7 @@ int SQL::Init_mySQL()
 	"PRIMARY KEY  (`id`)"
 	");");
 
-//Переменные НПЦ
+//РџРµСЂРµРјРµРЅРЅС‹Рµ РќРџР¦
 	Query("CREATE TABLE IF NOT EXISTS `npc_vars_templates` ("
 	"`id`			int			unsigned	NOT NULL	auto_increment,"
 	"`npc_id`		int			unsigned	NOT NULL	default '0',"
@@ -313,7 +313,7 @@ int SQL::Init_mySQL()
 //	"ifNEW.count < NEW.min THEN SET NEW.count = NEW.min; END IF;"
 //	"END;");
 
-//Переменные игроков
+//РџРµСЂРµРјРµРЅРЅС‹Рµ РёРіСЂРѕРєРѕРІ
 	Query("CREATE TABLE IF NOT EXISTS `player_vars_templates` ("
 	"`id`			int		unsigned	NOT NULL	auto_increment,"
 	"`var_num`		int		unsigned	NOT NULL	default '0',"
@@ -339,7 +339,7 @@ int SQL::Init_mySQL()
 	"IF NEW.count < NEW.min THEN SET NEW.count = NEW.min; END IF;"
 	"END;");
 
-//Квесты игроков
+//РљРІРµСЃС‚С‹ РёРіСЂРѕРєРѕРІ
 	Query("CREATE TABLE IF NOT EXISTS `quests` ("
 	"`id`			int		unsigned	NOT NULL	auto_increment,"
 	"`quest_num`	int		unsigned	NOT NULL	default '0',"
@@ -348,7 +348,7 @@ int SQL::Init_mySQL()
 	"PRIMARY KEY  (`id`)"
 	");");
 
-//Читерство
+//Р§РёС‚РµСЂСЃС‚РІРѕ
 	Query("CREATE TABLE IF NOT EXISTS `users_cheat` ("
 	"`id`			int		unsigned	NOT NULL	auto_increment,"
 	"`user_id`		int		unsigned	NOT NULL	default '0',"
@@ -577,7 +577,7 @@ int SQL::SaveDataPlayer(crit_info* info)
 {
 	if(!CodeParams(stats,skills,perks,info))
 	{
-		LogExecStr("!!!WORNING!!! SQL. Ошибка кодировки данных криттера\n");
+		LogExecStr("!!!WORNING!!! SQL. РћС€РёР±РєР° РєРѕРґРёСЂРѕРІРєРё РґР°РЅРЅС‹С… РєСЂРёС‚С‚РµСЂР°\n");
 		return 0;
 	}
 
@@ -654,7 +654,7 @@ int SQL::SaveDataNPC(crit_info* info)
 {
 	if(!CodeParams(stats,skills,perks,info))
 	{
-		LogExecStr("!!!WORNING!!! SQL. Ошибка кодировки данных криттера\n");
+		LogExecStr("!!!WORNING!!! SQL. РћС€РёР±РєР° РєРѕРґРёСЂРѕРІРєРё РґР°РЅРЅС‹С… РєСЂРёС‚С‚РµСЂР°\n");
 		return 0;
 	}
 
@@ -726,7 +726,7 @@ int SQL::CheckVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, in
 		sprintf(uniq_name,"%d_%s",npc_id,var_name.c_str());
 	else
 	{
-		LogExecStr("Неизвестная переменная %s у %d при попытке проверки\n",var_name.c_str(),npc_id);
+		LogExecStr("РќРµРёР·РІРµСЃС‚РЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ %s Сѓ %d РїСЂРё РїРѕРїС‹С‚РєРµ РїСЂРѕРІРµСЂРєРё\n",var_name.c_str(),npc_id);
 		return 0;
 	}
 
@@ -743,8 +743,8 @@ int SQL::CheckVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, in
 			return 0;
 		}
 
-		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("Проверка - Ошибка в записи переменной\n"); return 0; }
-		if(!mysql_num_rows(mySQL_res)) { LogExecStr("Проверка - Шаблон переменной не найден\n"); return 0; }
+		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("РџСЂРѕРІРµСЂРєР° - РћС€РёР±РєР° РІ Р·Р°РїРёСЃРё РїРµСЂРµРјРµРЅРЅРѕР№\n"); return 0; }
+		if(!mysql_num_rows(mySQL_res)) { LogExecStr("РџСЂРѕРІРµСЂРєР° - РЁР°Р±Р»РѕРЅ РїРµСЂРµРјРµРЅРЅРѕР№ РЅРµ РЅР°Р№РґРµРЅ\n"); return 0; }
 		mySQL_row=mysql_fetch_row(mySQL_res);
 
 		int var_count=atoi(mySQL_row[3]);
@@ -774,7 +774,7 @@ void SQL::ChangeVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, 
 		sprintf(uniq_name,"%d_%s",npc_id,var_name.c_str());
 	else
 	{
-		LogExecStr("Неизвестная переменная %s у %d при попытке изменения\n",var_name.c_str(),npc_id);
+		LogExecStr("РќРµРёР·РІРµСЃС‚РЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ %s Сѓ %d РїСЂРё РїРѕРїС‹С‚РєРµ РёР·РјРµРЅРµРЅРёСЏ\n",var_name.c_str(),npc_id);
 		return;
 	}
 
@@ -796,8 +796,8 @@ void SQL::ChangeVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, 
 			return;
 		}
 
-		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("Изменение - Ошибка в записи переменной\n"); return; }
-		if(!mysql_num_rows(mySQL_res)) { LogExecStr("Изменение - Шаблон переменной не найден\n"); return; }
+		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("РР·РјРµРЅРµРЅРёРµ - РћС€РёР±РєР° РІ Р·Р°РїРёСЃРё РїРµСЂРµРјРµРЅРЅРѕР№\n"); return; }
+		if(!mysql_num_rows(mySQL_res)) { LogExecStr("РР·РјРµРЅРµРЅРёРµ - РЁР°Р±Р»РѕРЅ РїРµСЂРµРјРµРЅРЅРѕР№ РЅРµ РЅР°Р№РґРµРЅ\n"); return; }
 		mySQL_row=mysql_fetch_row(mySQL_res);
 
 		int var_count=atoi(mySQL_row[3]);
@@ -855,8 +855,8 @@ int SQL::CheckVar(CrID crid, WORD var_num, char oper, int count)
 			return 0;
 		}
 
-		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("Проверка2 - Ошибка в записи переменной\n"); return 0; }
-		if(!mysql_num_rows(mySQL_res)) { LogExecStr("Проверка2 - Шаблон переменной не найден\n"); return 0; }
+		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("РџСЂРѕРІРµСЂРєР°2 - РћС€РёР±РєР° РІ Р·Р°РїРёСЃРё РїРµСЂРµРјРµРЅРЅРѕР№\n"); return 0; }
+		if(!mysql_num_rows(mySQL_res)) { LogExecStr("РџСЂРѕРІРµСЂРєР°2 - РЁР°Р±Р»РѕРЅ РїРµСЂРµРјРµРЅРЅРѕР№ РЅРµ РЅР°Р№РґРµРЅ\n"); return 0; }
 		mySQL_row=mysql_fetch_row(mySQL_res);
 
 		int var_count=atoi(mySQL_row[2]);
@@ -910,8 +910,8 @@ void SQL::ChangeVar(CrID crid, WORD var_num, char oper, int count)
 				return;
 			}
 
-			if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("Установка вары - Ошибка в записи переменной\n"); return; }
-			if(!mysql_num_rows(mySQL_res)) { LogExecStr("Установка вары - Шаблон переменной не найден\n"); return; }
+			if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("РЈСЃС‚Р°РЅРѕРІРєР° РІР°СЂС‹ - РћС€РёР±РєР° РІ Р·Р°РїРёСЃРё РїРµСЂРµРјРµРЅРЅРѕР№\n"); return; }
+			if(!mysql_num_rows(mySQL_res)) { LogExecStr("РЈСЃС‚Р°РЅРѕРІРєР° РІР°СЂС‹ - РЁР°Р±Р»РѕРЅ РїРµСЂРµРјРµРЅРЅРѕР№ РЅРµ РЅР°Р№РґРµРЅ\n"); return; }
 			mySQL_row=mysql_fetch_row(mySQL_res);
 
 			int var_count=atoi(mySQL_row[2]);
@@ -1030,11 +1030,11 @@ void SQL::ChangeQuest(CrID crid, WORD quest_num, char choose, int count)
 
 	mySQL_row=mysql_fetch_row(mySQL_res);
 
-	for(int i=0;i<num_rows;++i) //!!!требуется оптимизация
+	for(int i=0;i<num_rows;++i) //!!!С‚СЂРµР±СѓРµС‚СЃСЏ РѕРїС‚РёРјРёР·Р°С†РёСЏ
 	{
 		Query("UPDATE `quests` SET `value`='%d' WHERE `quest_num`='%d' AND `crid`='%s'",value1,quest_num,mySQL_row[i]);
-		//!!! отправлять данные игрокам о квестах
-		//дублирование?
+		//!!! РѕС‚РїСЂР°РІР»СЏС‚СЊ РґР°РЅРЅС‹Рµ РёРіСЂРѕРєР°Рј Рѕ РєРІРµСЃС‚Р°С…
+		//РґСѓР±Р»РёСЂРѕРІР°РЅРёРµ?
 	}
 }
 
@@ -1404,13 +1404,13 @@ int SQL::CountTable(char* table, char* row)
 
 void SQL::PrintTableInLog(char* table, char* rows)
 {
-	LogExecStr("Выводим таблицу: %s\n", table);
+	LogExecStr("Р’С‹РІРѕРґРёРј С‚Р°Р±Р»РёС†Сѓ: %s\n", table);
 
 	if(!Query("SELECT %s FROM %s",rows,table)) return;
 	
 	if(!(mySQL_res=mysql_store_result(mySQL))) return;
 
-	LogExecStr("Всего записей: %d \n",mysql_num_rows(mySQL_res));
+	LogExecStr("Р’СЃРµРіРѕ Р·Р°РїРёСЃРµР№: %d \n",mysql_num_rows(mySQL_res));
 
 	while((mySQL_row=mysql_fetch_row(mySQL_res)))
 	{

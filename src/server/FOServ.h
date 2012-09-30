@@ -36,7 +36,7 @@
 #define MAXHEXY	400
 
 //Mobs
-#define MOBS_MAX_GROUPS		(100+1) // 0 не производиться
+#define MOBS_MAX_GROUPS		(100+1) // 0 РЅРµ РїСЂРѕРёР·РІРѕРґРёС‚СЊСЃСЏ
 
 
 //Move Results
@@ -173,14 +173,14 @@ typedef map<WORD, string, less<WORD> > map_str_map;
 
 typedef map<DHexTYPE, LONGLONG, less<DHexTYPE> > longlong_map;
 
-typedef map<DHexTYPE, dyn_map*, less<DHexTYPE> > dyn_map_map; //контейнер контейнеров
+typedef map<DHexTYPE, dyn_map*, less<DHexTYPE> > dyn_map_map; //РєРѕРЅС‚РµР№РЅРµСЂ РєРѕРЅС‚РµР№РЅРµСЂРѕРІ
 
 //==============================================================================================================================
 //*****  MAPS DATA by Cvet  *** end ********************************************************************************************
 //==============================================================================================================================
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++
-//макросы для работы с параметрами
+//РјР°РєСЂРѕСЃС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїР°СЂР°РјРµС‚СЂР°РјРё
 #define CHANGE_STAT(CCritter,stat,oper,count) {CCritter##->info.st[(stat)]##oper##(count);\
 if(CCritter##->info.st[(stat)]>9999) CCritter##->info.st[(stat)]=9999;\
 if(FLAG(CCritter##->info.flags,FCRIT_PLAYER)&&!FLAG(CCritter##->info.flags,FCRIT_DISCONNECT))\
@@ -194,7 +194,7 @@ if(CCritter##->info.pe[(perk)]>9) CCritter##->info.pe[(perk)]=9;\
 if(FLAG(CCritter##->info.flags,FCRIT_PLAYER)&&!FLAG(CCritter##->info.flags,FCRIT_DISCONNECT))\
 Send_Param(CCritter,TYPE_PERK,(perk));}
 
-//дистанция
+//РґРёСЃС‚Р°РЅС†РёСЏ
 #define DISTANCE(cl1,cl2) (sqrt(((cl1##->info.x-cl2##->info.x)*(cl1##->info.x-cl2##->info.x))+\
 ((cl1##->info.y-cl2##->info.y)*(cl1##->info.y-cl2##->info.y))))
 
@@ -229,9 +229,9 @@ class CServer
 //*****  CLIENTS  by Cvet  *****************************************************************************************************
 //==============================================================================================================================
 
-//Списки криттеров
-	cl_map cl; //Карта клиентов
-	cl_map cr; //Карта всех криттеров + в картах по картам
+//РЎРїРёСЃРєРё РєСЂРёС‚С‚РµСЂРѕРІ
+	cl_map cl; //РљР°СЂС‚Р° РєР»РёРµРЅС‚РѕРІ
+	cl_map cr; //РљР°СЂС‚Р° РІСЃРµС… РєСЂРёС‚С‚РµСЂРѕРІ + РІ РєР°СЂС‚Р°С… РїРѕ РєР°СЂС‚Р°Рј
 
 //Net proccess
 	void Process_MapLoaded(CCritter* acl);
@@ -240,15 +240,15 @@ class CServer
 	void Process_GetLogIn(CCritter* acl);
 	void Process_Dir(CCritter* acl);
 	void Process_ChangeObject(CCritter* acl);
-	void Process_UseObject(CCritter* acl); //заявка на использование объекта
+	void Process_UseObject(CCritter* acl); //Р·Р°СЏРІРєР° РЅР° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РѕР±СЉРµРєС‚Р°
 	void Process_PickObject(CCritter* acl);
-	void Process_UseSkill(CCritter* acl); //заявка на использование скилла
+	void Process_UseSkill(CCritter* acl); //Р·Р°СЏРІРєР° РЅР° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ СЃРєРёР»Р»Р°
 
-//Работа с данными
-	int LoadAllPlayers(); //загрузка всех клиентов (при запуске сервера)
-	void SaveAllDataPlayers(); //сохранение всех данных всех игроков
+//Р Р°Р±РѕС‚Р° СЃ РґР°РЅРЅС‹РјРё
+	int LoadAllPlayers(); //Р·Р°РіСЂСѓР·РєР° РІСЃРµС… РєР»РёРµРЅС‚РѕРІ (РїСЂРё Р·Р°РїСѓСЃРєРµ СЃРµСЂРІРµСЂР°)
+	void SaveAllDataPlayers(); //СЃРѕС…СЂР°РЅРµРЅРёРµ РІСЃРµС… РґР°РЅРЅС‹С… РІСЃРµС… РёРіСЂРѕРєРѕРІ
 
-//Параметры
+//РџР°СЂР°РјРµС‚СЂС‹
 	void CreateParamsMaps();
 	params_map stats_map;
 	params_map skills_map;
@@ -257,19 +257,19 @@ class CServer
 	
 	int UpdateVarsTemplate();
 
-//Работа с параметрами
+//Р Р°Р±РѕС‚Р° СЃ РїР°СЂР°РјРµС‚СЂР°РјРё
 	void GenWear(dyn_obj* wear_obj, bool use_obj);
 
 	void Skill_Sneak_Change(CCritter* acl);
 	void Skill_Sneak_Set(CCritter* acl);
 	void Skill_Sneak_UnSet(CCritter* acl);
 
-//Действия
+//Р”РµР№СЃС‚РІРёСЏ
 	int Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id);
 
 	void UseDefObj(CCritter* acl, BYTE slot);
 
-//Работа с криттерами, чтобы было нормально обращение со скриптов должны быть static
+//Р Р°Р±РѕС‚Р° СЃ РєСЂРёС‚С‚РµСЂР°РјРё, С‡С‚РѕР±С‹ Р±С‹Р»Рѕ РЅРѕСЂРјР°Р»СЊРЅРѕ РѕР±СЂР°С‰РµРЅРёРµ СЃРѕ СЃРєСЂРёРїС‚РѕРІ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ static
 	static int Crit_FindTarget(CCritter* acl, BYTE flags);
 	static int Crit_FreeTarget(CCritter* acl);
 	static int Crit_IsTarget(CCritter* acl);
@@ -290,29 +290,29 @@ class CServer
 //*****  OBJECTS  by Cvet  *****************************************************************************************************
 //==============================================================================================================================
 
-//списки
-	stat_map all_s_obj; //вся статика в игре
-	dyn_map all_obj; //вся динамика объектов в игре
+//СЃРїРёСЃРєРё
+	stat_map all_s_obj; //РІСЃСЏ СЃС‚Р°С‚РёРєР° РІ РёРіСЂРµ
+	dyn_map all_obj; //РІСЃСЏ РґРёРЅР°РјРёРєР° РѕР±СЉРµРєС‚РѕРІ РІ РёРіСЂРµ
 
-//Текущий ИД
+//РўРµРєСѓС‰РёР№ РР”
 	DWORD cur_obj_id;
 
-//статика
+//СЃС‚Р°С‚РёРєР°
 	int LoadAllStaticObjects();
 
-//динамика
-	int LoadAllObj(); //загрузка динамических объектов из mySQL
-	void SaveAllObj(); //запись динамических объектов в mySQL
+//РґРёРЅР°РјРёРєР°
+	int LoadAllObj(); //Р·Р°РіСЂСѓР·РєР° РґРёРЅР°РјРёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РёР· mySQL
+	void SaveAllObj(); //Р·Р°РїРёСЃСЊ РґРёРЅР°РјРёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РІ mySQL
 
-	void DeleteObj(DWORD id_obj); //удаление объекта
-	void CreateObjToPl(CrID c_pl_idchannel, WORD num_st_obj); //создание объекта на тайле
-	void CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, WORD num_st_obj); //создание объекта у игрока
+	void DeleteObj(DWORD id_obj); //СѓРґР°Р»РµРЅРёРµ РѕР±СЉРµРєС‚Р°
+	void CreateObjToPl(CrID c_pl_idchannel, WORD num_st_obj); //СЃРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р° РЅР° С‚Р°Р№Р»Рµ
+	void CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, WORD num_st_obj); //СЃРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р° Сѓ РёРіСЂРѕРєР°
 
 	void SetVisibleObj(CCritter* acl);
 	int AddObjIntoListInd(CCritter* acl, DWORD add_ind);
 	int DelObjFromListInd(CCritter* acl, DWORD del_ind);
 
-//обмен объектами
+//РѕР±РјРµРЅ РѕР±СЉРµРєС‚Р°РјРё
 	void TransferDynObjPlPl(CCritter* from_acl, CCritter* to_acl, dyn_obj* obj);
 	void TransferDynObjTlPl(CCritter* acl, dyn_obj* obj);
 	void TransferDynObjPlTl(CCritter* acl, dyn_obj* obj);
@@ -358,20 +358,20 @@ class CServer
 	void Send_Text(CCritter* to_acl, char* s_str, BYTE say_param);
 	void SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o_str, BYTE say_param);
 
-// просто - список видимых клиентов
-// крик - список карты
-// глобал - список группы
+// РїСЂРѕСЃС‚Рѕ - СЃРїРёСЃРѕРє РІРёРґРёРјС‹С… РєР»РёРµРЅС‚РѕРІ
+// РєСЂРёРє - СЃРїРёСЃРѕРє РєР°СЂС‚С‹
+// РіР»РѕР±Р°Р» - СЃРїРёСЃРѕРє РіСЂСѓРїРїС‹
 //==============================================================================================================================
 //*****  NPC by Cvet  **********************************************************************************************************
 //==============================================================================================================================
 
-	cl_map pc; //Карта НПЦ
+	cl_map pc; //РљР°СЂС‚Р° РќРџР¦
 
 	int  NPC_LoadAll();
 	void NPC_Remove(CCritter* npc);
 
 //Net Proccess
-	void Process_Talk_NPC(CCritter* acl); //разговор с НПЦ
+	void Process_Talk_NPC(CCritter* acl); //СЂР°Р·РіРѕРІРѕСЂ СЃ РќРџР¦
 
 	void NPC_Process(CCritter* npc);
 
@@ -384,7 +384,7 @@ class CServer
 //*****  MOBs by Cvet  *********************************************************************************************************
 //==============================================================================================================================
 
-	cl_map mb; //Карта мобов
+	cl_map mb; //РљР°СЂС‚Р° РјРѕР±РѕРІ
 
 	word_set mobs_group_free;
 	word_set mobs_group_busy;
@@ -491,7 +491,7 @@ class CServer
 
 	static CServer* self;
 
-	bool Active; // включен сервер
+	bool Active; // РІРєР»СЋС‡РµРЅ СЃРµСЂРІРµСЂ
 
 	SOCKET s; // socket
 	fd_set read_set,write_set,exc_set;
@@ -507,7 +507,7 @@ class CServer
 	int Output(CCritter* acl);
 	void Process(CCritter* acl);
 
-//	void Process_GetName(CCritter* acl); !Cvet убрал
+//	void Process_GetName(CCritter* acl); !Cvet СѓР±СЂР°Р»
 
 	void Process_GetText(CCritter* acl);
 
@@ -526,8 +526,8 @@ class CServer
 	char *outBUF;
 	DWORD outLEN;
 
-	// Для того чтобы исключить повторный сигнал о подключение уже
-	// присутствующего игрока на сервере, ид посл-го подключенного.
+	// Р”Р»СЏ С‚РѕРіРѕ С‡С‚РѕР±С‹ РёСЃРєР»СЋС‡РёС‚СЊ РїРѕРІС‚РѕСЂРЅС‹Р№ СЃРёРіРЅР°Р» Рѕ РїРѕРґРєР»СЋС‡РµРЅРёРµ СѓР¶Рµ
+	// РїСЂРёСЃСѓС‚СЃС‚РІСѓСЋС‰РµРіРѕ РёРіСЂРѕРєР° РЅР° СЃРµСЂРІРµСЂРµ, РёРґ РїРѕСЃР»-РіРѕ РїРѕРґРєР»СЋС‡РµРЅРЅРѕРіРѕ.
 	CrID last_id;
 
 //!Cvet ++++++++++++++++++++++++
@@ -536,14 +536,14 @@ class CServer
 
 	FileManager fm;
 
-//Игровое время
+//РРіСЂРѕРІРѕРµ РІСЂРµРјСЏ
 	SYSTEMTIME sys_time;
 	WORD Game_Time;
 	BYTE Game_Day;
 	BYTE Game_Month;
 	WORD Game_Year;
 
-//Слежение за читерством
+//РЎР»РµР¶РµРЅРёРµ Р·Р° С‡РёС‚РµСЂСЃС‚РІРѕРј
 	void SetCheat(CCritter* acl, char* cheat_message);
 //!Cvet ------------------------
 
@@ -551,7 +551,7 @@ public:
 
 	SQL sql; //!Cvet
 
-//!Cvet запись времени выполнения +++
+//!Cvet Р·Р°РїРёСЃСЊ РІСЂРµРјРµРЅРё РІС‹РїРѕР»РЅРµРЅРёСЏ +++
 	int loop_time;
 	int loop_cycles;
 	int loop_min;
@@ -579,7 +579,7 @@ public:
 	int Init();
 	void Finish();
 
-	void RunGameLoop(); // серверная петля
+	void RunGameLoop(); // СЃРµСЂРІРµСЂРЅР°СЏ РїРµС‚Р»СЏ
 
 	 CServer();
 	 ~CServer();

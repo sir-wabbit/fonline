@@ -6,6 +6,8 @@
 
 #include "CFileMngr.h"
 
+#include <stdio.h>
+#include <assert.h>
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
@@ -15,16 +17,91 @@ char pathlst[][50]=
 	"maps\\wm_mask\\",
 };
 
+namespace {
 
-int FileManager::Init()
+// Returns size of a file.
+long FileSize(FILE* file) {
+  assert(file != NULL);
+
+  long pos = ftell(file);
+  fseek(file, 0, SEEK_END);
+  long result = ftell(file);
+  fseek(file, pos, SEEK_SET);
+  return result;
+}
+
+// Reads exactly given number of bytes from the file. 
+// Returns -1 if there was some IO error.
+int ReadExactly(FILE* file, void* buf, size_t size) {
+  assert(file != NULL);
+  assert(buf != NULL);
+  
+  size_t read = 0;
+  while (read != size) {
+    int err = ::fread(buf, 1, size - read, file);
+    if (err <= 0) {
+      return false;
+    }
+    read += err;
+  }
+  
+  return true;
+}
+
+// Loads contents of a file. If the file does not exist or
+// there is some other IO error, returns false. 
+bool LoadFile(const char* path, void** buf, size_t* size) {
+  assert(path != NULL);
+  assert(buf != NULL);
+  assert(size != NULL);
+
+  FILE* file = ::fopen(path, "rb");
+  if (file == NULL) {
+    return false;
+  }
+  
+  long fsize = FileSize(file);
+  if (fsize < 0) {
+    ::fclose(file);
+    return false;
+  }
+  
+  *size = fsize;
+  
+  // Allocate the memory. Note this one additional byte,
+  // we will later set it to 0.
+  *buf = ::malloc(*size + 1);
+  if (*buf == NULL) {
+    ::fclose(file);
+    return false;
+  }
+  
+  if (ReadExactly(file, *buf, *size) == false) {
+    ::free(*buf);
+    ::fclose(file);
+    return false;
+  }
+  
+  // Set the last allocated byte to zero.
+  (*(char**)buf)[*size] = 0;
+  
+  ::fclose(file);
+  
+  return true;
+}
+
+}; // anonymous namespace
+
+
+bool FileManager::Init()
 {
-	if(crtd) return 1;
+	if(initialized) return true;
 
 	LogExecStr("FileManager Initialization...\n");
-
+  
 	LogExecStr("FileManager Initialization complete\n");
-	crtd=1;
-	return 1;
+	initialized = true;
+	return true;
 }
 
 void FileManager::Clear()
@@ -36,143 +113,115 @@ void FileManager::Clear()
 
 void FileManager::UnloadFile()
 {
-	SAFEDELA(buf);
-}
-
-void FileManager::LoadSimple(HANDLE hFile)
-{
-  	fsize = GetFileSize(hFile,NULL);
-	buf = new BYTE[fsize+1];
-	DWORD br;
-	ReadFile(hFile,buf,fsize,&br,NULL);
-	CloseHandle(hFile);	
-
-	buf[fsize]=0;
-
-	cur_pos=0;
+	SAFEDELA(buffer);
 }
 
 int FileManager::LoadFile(char* fname, int PathType)
 {
-		if(!crtd)
+		if(!initialized)
 		{
-			LogExecStr("FileMngr LoadFile","FileMngr íå áûë èíèöèëàçèðîâàí äî çàãðóçêè ôàéëà %s",fname);
+			LogExecStr("FileMngr LoadFile","FileMngr Ð½Ðµ Ð±Ñ‹Ð» Ð¸Ð½Ð¸Ñ†Ð¸Ð»Ð°Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½ Ð´Ð¾ Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ¸ Ñ„Ð°Ð¹Ð»Ð° %s",fname);
 			return 0;
 		}
 		UnloadFile();
 
-		char path[1024]="";
-		char pfname[1024]="";
-
-		strcpy(pfname,pathlst[PathType]);
-		strcat(pfname,fname);
-
-		strcpy(path,fo_dat);
-		strcat(path,pfname);
-	
-		WIN32_FIND_DATA fd;
-		HANDLE f=FindFirstFile(path,&fd);
-		if(f!=INVALID_HANDLE_VALUE)
-		{
-			HANDLE hFile=CreateFile(path,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_FLAG_SEQUENTIAL_SCAN,NULL);
-			if(hFile!=INVALID_HANDLE_VALUE)
-			{
-				LoadSimple(hFile);
-				return 1;
-			}
+    std::string path = "";
+    path += pathlst[PathType];
+    path += fname;
+    
+		if (!::LoadFile((foDataPath + path).c_str(), (void**) &buffer, &fileSize)) {
+		  LogExecStr("FileMngr LoadFile - Ð¤Ð°Ð¹Ð» %s Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½", path);
 		}
-		FindClose(f);
 
-//		LogExecStr("FileMngr LoadFile - Ôàéë %s íå íàéäåí",pfname);//!Cvet
 		return 0;
 }
 
 void FileManager::SetCurPos(DWORD pos)
 {
-	if(pos<fsize) cur_pos=pos;
+	if(pos<fileSize) position=pos;
 }
 
 void FileManager::GoForward(DWORD offs)
 {
-	if((cur_pos+offs)<fsize) cur_pos+=offs;
+	if((position+offs)<fileSize) position+=offs;
 }
 
 
 int FileManager::GetStr(char* str,DWORD len)
 {
-	if(cur_pos>=fsize) return 0;
+	if(position>=fileSize) return 0;
 
-	int rpos=cur_pos;
+	int rpos=position;
 	int wpos=0;
-	for(;wpos<len && rpos<fsize;rpos++)
+	for(;wpos<len && rpos<fileSize;rpos++)
 	{
-		if(buf[rpos]==0xD)
+		if(buffer[rpos]==0xD)
 		{
 			rpos+=2;
 			break;
 		}
 
-		str[wpos++]=buf[rpos];
+		str[wpos++]=buffer[rpos];
 	}
 	str[wpos]=0;
-	cur_pos=rpos;
+	position=rpos;
 
 	return 1;
 }
 
 int FileManager::CopyMem(void* ptr, size_t size)
 {
-	if(cur_pos+size>fsize) return 0;
+	if(position+size>fileSize) return 0;
 
-	memcpy(ptr,buf+cur_pos,size);
+	memcpy(ptr,buffer+position,size);
 
-	cur_pos+=size;
+	position+=size;
 
 	return 1;
 }
 
 BYTE FileManager::GetByte() //!Cvet
 {
-	if(cur_pos>=fsize) return 0;
+	if(position>=fileSize) return 0;
 	BYTE res=0;
 
-	res=buf[cur_pos++];
+	res=buffer[position++];
 
 	return res;
 }
 
 WORD FileManager::GetWord()
 {
-	if(cur_pos>=fsize) return 0;
+	if(position>=fileSize) return 0;
 	WORD res=0;
 
 	BYTE *cres=(BYTE*)&res;
-	cres[1]=buf[cur_pos++];
-	cres[0]=buf[cur_pos++];
+	cres[1]=buffer[position++];
+	cres[0]=buffer[position++];
 
 	return res;
 }
 
 WORD FileManager::GetRWord() //!Cvet
 {
-	if(cur_pos>=fsize) return 0;
+	if(position>=fileSize) return 0;
 	WORD res=0;
 
 	BYTE *cres=(BYTE*)&res;
-	cres[0]=buf[cur_pos++];
-	cres[1]=buf[cur_pos++];
+	cres[0]=buffer[position++];
+	cres[1]=buffer[position++];
 
 	return res;
 }
 
 DWORD FileManager::GetDWord()
 {
-	if(cur_pos>=fsize) return 0;
+	if(position>=fileSize) return 0;
 	DWORD res=0;
 	BYTE *cres=(BYTE*)&res;
 	for(int i=3;i>=0;i--)
 	{
-		cres[i]=buf[cur_pos++];
+		cres[i]=buffer[position++];
 	}
 
 	return res;
@@ -180,21 +229,21 @@ DWORD FileManager::GetDWord()
 
 DWORD FileManager::GetRDWord() //!Cvet
 {
-	if(cur_pos>=fsize) return 0;
+	if(position>=fileSize) return 0;
 	DWORD res=0;
 	BYTE *cres=(BYTE*)&res;
 	for(int i=0;i<=3;i++)
 	{
-		cres[i]=buf[cur_pos++];
+		cres[i]=buffer[position++];
 	}
 
 	return res;
 }
 
-int FileManager::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet ïîëíûé ïóòü ê ôàéëó
+int FileManager::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet Ð¿Ð¾Ð»Ð½Ñ‹Ð¹ Ð¿ÑƒÑ‚ÑŒ Ðº Ñ„Ð°Ð¹Ð»Ñƒ
 {
 	get_path[0]=0;
-	strcpy(get_path,fo_dat);
+	strcpy(get_path,foDataPath.c_str());
 	strcat(get_path,pathlst[PathType]);
 	strcat(get_path,fname);
 
@@ -203,7 +252,7 @@ int FileManager::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet 
 
 	if(f!=INVALID_HANDLE_VALUE) return 1;
 
-//	LogExecStr("Ôàéë:|%s|\n",get_path);
+//	LogExecStr("Ð¤Ð°Ð¹Ð»:|%s|\n",get_path);
 
 	return 0;
 }

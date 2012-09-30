@@ -15,12 +15,12 @@ extern char pathlst[][50];
 class FileManager
 {
 public:
-	int Init();
+	bool Init();
 	void Clear();
 	void UnloadFile();
 	int LoadFile(char* fname, int PathType);
 
-	int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet полный путь к файлу
+	int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ
 
 	void SetCurPos(DWORD pos);
 	void GoForward(DWORD offs);
@@ -33,25 +33,21 @@ public:
 	DWORD GetRDWord(); //!Cvet
 	int CopyMem(void* ptr, size_t size);
 
-	BYTE* GetBuf(){ return buf; }; //!Cvet
-	DWORD GetFsize(){ return fsize; }; //!Cvet
+	char* GetBuf(){ return buffer; }; //!Cvet
+	size_t GetFsize(){ return fileSize; }; //!Cvet
 
 
-	FileManager(): crtd(0),hFile(NULL),fsize(0),cur_pos(0),buf(NULL){};
+	FileManager(): initialized(0), fileSize(0),position(0),buffer(NULL){};
 private:
-	bool crtd;
+	bool initialized;
 
-	HANDLE hFile;
-	DWORD fsize;
-	DWORD cur_pos;
-	BYTE* buf;
+	size_t fileSize;
+	size_t position;
+	char* buffer;
 
-
-	char master_dat[1024];
-	char crit_dat[1024];
-	char fo_dat[1024];
-
-	void LoadSimple(HANDLE hFile);
+  std::string masterDatPath;
+  std::string critterDatPath;
+  std::string foDataPath;
 };
 
 #endif
