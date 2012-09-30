@@ -43,7 +43,7 @@ int opt_basetex=256;
 int opt_dbgclear=0;
 int opt_light=0;
 
-DWORD opt_rport=0;
+uint32_t opt_rport=0;
 std::string opt_rhost="";
 std::string opt_name="";
 std::string opt_cases[5];
@@ -63,23 +63,23 @@ bool opt_msgbox_invert = false; //!Cvet
 int opt_change_lang=CHANGE_LANG_CTRL_SHIFT; //!Cvet change language
 
 //!Cvet colors +++++++++++++
-DWORD opt_gcolor_default=D3DCOLOR_ARGB(255,103,95,86);
+uint32_t opt_gcolor_default=D3DCOLOR_ARGB(255,103,95,86);
 
-DWORD opt_tcolor_namecrit=0xFFFDFDB9;
+uint32_t opt_tcolor_namecrit=0xFFFDFDB9;
 
-DWORD opt_tcolor_default=D3DCOLOR_ARGB(255,60,248,0);
-DWORD opt_tcolor_shout=0xFFFF0000;
-DWORD opt_tcolor_whisp=0xFF0000FF;
-DWORD opt_tcolor_emote=0xFFFF00FF;
-DWORD opt_tcolor_social=0xFFFFFFFF;
+uint32_t opt_tcolor_default=D3DCOLOR_ARGB(255,60,248,0);
+uint32_t opt_tcolor_shout=0xFFFF0000;
+uint32_t opt_tcolor_whisp=0xFF0000FF;
+uint32_t opt_tcolor_emote=0xFFFF00FF;
+uint32_t opt_tcolor_social=0xFFFFFFFF;
 
-DWORD opt_roof_alpha=0xC8;
+uint32_t opt_roof_alpha=0xC8;
 //!Cvet -----------
 
 int ac1,ac2,ac3,ac4,ac5,ac6,ac7,acres;
 
 TICK opt_text_delay=3000;
-DWORD opt_screen_mode=0;
+uint32_t opt_screen_mode=0;
 
 //!Cvet ++++++++++++++
 int screen_width[]={800,1024,1280};
@@ -127,7 +127,7 @@ void GetOptions()
 		opt_change_lang = CHANGE_LANG_CTRL_SHIFT;
 
 //colors
-	DWORD get_dword=0;
+	uint32_t get_dword=0;
 
 	get_dword = GetValue(ini, "Game.color_game_default", 0);
 	if (get_dword) opt_gcolor_default=get_dword;
@@ -197,11 +197,11 @@ void WriteLog(char* frmt, ...)
 	
 	char str[2048];
 
-    va_list list;
+  va_list list;
 
-    va_start(list, frmt);
-    wvsprintf(str, frmt, list);
-    va_end(list);
+  va_start(list, frmt);
+  vsprintf(str, frmt, list);
+  va_end(list);
 
 	DWORD br;
 	WriteFile(hLogFile,str,strlen(str),&br,NULL);
@@ -217,7 +217,6 @@ void ErrMsg(char* hdr, char* frmt, ...)
   size_t len = vsprintf(str, frmt, list);
   va_end(list);
 
-	DWORD br;
 	if(!opt_fullscr) {
     wchar_t wbuf[2048];
     size_t wlen = MultiByteToWideChar(CP_UTF8, 0, str, len, wbuf, sizeof(wbuf) / sizeof(wchar_t) - 1);
@@ -230,6 +229,7 @@ void ErrMsg(char* hdr, char* frmt, ...)
 	  MessageBoxW(NULL, wbuf, whdr, MB_OK|MB_ICONERROR);
 	
 	} else {
+	  DWORD br;
 		char str2[1024]="\n\nErrMsg> ";
 		strcat(str2,str);
 		strcat(str2,"\n");

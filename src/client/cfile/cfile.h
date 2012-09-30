@@ -2,6 +2,8 @@
 #define _GAP_FDAT_CFILE_H
 
 #include <windows.h>
+#include <stdint.h>
+
 #include "../zlib/zlib.h"
 #include "../unlzss/unlzss.h"
 
@@ -45,7 +47,7 @@ public:
 
 class CPackedFile: public CFile {
 protected:
-	BYTE *skipper,
+	uint8_t *skipper,
 		*inBuf;
 	long packedSize;
 	long curPos; // position from beginning of unpacked image

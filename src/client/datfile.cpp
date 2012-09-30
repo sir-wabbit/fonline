@@ -51,7 +51,7 @@ TDatFile::TDatFile(char* filename)
    {
       return;
    }
-   m_pInBuf = (BYTE *) malloc(ZLIB_BUFF_SIZE);
+   m_pInBuf = (uint8_t *) malloc(ZLIB_BUFF_SIZE);
    if(m_pInBuf == NULL)
    {
       ErrorType = ERR_ALLOC_MEMORY;
@@ -103,7 +103,7 @@ int TDatFile::ReadTree()
 
    i = SetFilePointer(h_in, 0, NULL, FILE_BEGIN); //Added for Fallout1
    ReadFile(h_in, &F1DirCount, 4, &i, NULL); //Added for Fallout1
-   RevDw(&F1DirCount); //Added for Fallout1
+   RevDw((uint32_t*) &F1DirCount); //Added for Fallout1
    if(F1DirCount == 0x01 || F1DirCount == 0x33) Fallout1 = true; //Added for Fallout1
    if(GetFileSize(h_in, NULL) != FileSizeFromDat && Fallout1 == false)
       return ERR_FILE_NOT_SUPPORTED;
@@ -118,7 +118,7 @@ int TDatFile::ReadTree()
 
    if(buff != NULL)
       delete[] buff;
-   if((buff = new BYTE[TreeSize]) == NULL)
+   if((buff = new uint8_t[TreeSize]) == NULL)
       return ERR_ALLOC_MEMORY;
    ZeroMemory(buff, TreeSize);
 
@@ -130,10 +130,10 @@ int TDatFile::ReadTree()
    return RES_OK;
 }
 //------------------------------------------------------------------------------
-void TDatFile::RevDw(DWORD *addr)
+void TDatFile::RevDw(uint32_t *addr)
 {
-   BYTE *b, tmp;
-   b = (BYTE*)addr;
+   uint8_t *b, tmp;
+   b = (uint8_t*)addr;
    tmp = *(b + 3);
    *(b + 3) = *b;
    *b = tmp;
@@ -182,7 +182,7 @@ void TDatFile::IndexingDAT()
    ptr = buff;
    while (true)
    {
-      DWORD fnsz = *(ULONG *)ptr;
+      uint32_t fnsz = *(ULONG *)ptr;
       memcpy(fname, ptr + 4, fnsz);
       fname[fnsz] = 0;
 	  GetPath(path,fname);
@@ -190,7 +190,7 @@ void TDatFile::IndexingDAT()
       {
          char* str=new char[strlen(path)+1];
 		 strcpy(str,path);
-		 DWORD sz=nmap->index.size();
+		 uint32_t sz=nmap->index.size();
 		 nmap->index[str]=ptr;
 		 if(sz==nmap->index.size())
 		 {
@@ -243,7 +243,7 @@ bool TDatFile::FindFile(char* fname)
    int difpos=strlen(str)-5;
    char difchar=str[difpos];
 
-   DWORD fnsz;
+   uint32_t fnsz;
    while (true)
    {
 	  fnsz = *(ULONG *)ptr;
@@ -256,9 +256,9 @@ bool TDatFile::FindFile(char* fname)
 		  fnd[fnsz] = 0;
 		  strlwr(fnd);
 	      FileType = *(ptr + fnsz);
-	      RealSize = *(DWORD *)(ptr + fnsz+ 1);
-	      PackedSize = *(DWORD *)(ptr + fnsz + 5);
-	      Offset = *(DWORD *)(ptr + fnsz + 9);
+	      RealSize = *(uint32_t *)(ptr + fnsz+ 1);
+	      PackedSize = *(uint32_t *)(ptr + fnsz + 5);
+	      Offset = *(uint32_t *)(ptr + fnsz + 9);
 	      if(!strcmp(fnd,str))
 		  {
 	         return true;
@@ -272,14 +272,14 @@ bool TDatFile::FindFile(char* fname)
    return false;
 }
 //------------------------------------------------------------------------------
-bool TDatFile::DATSetFilePointer(LONG lDistanceToMove, DWORD dwMoveMethod)
+bool TDatFile::DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod)
 {
    if(h_in == INVALID_HANDLE_VALUE) return false;
    reader->seek (lDistanceToMove, dwMoveMethod);
    return true;
 }
 //------------------------------------------------------------------------------
-DWORD TDatFile::DATGetFileSize(void)
+uint32_t TDatFile::DATGetFileSize(void)
 {
    if(h_in == INVALID_HANDLE_VALUE) return 0;
    return RealSize;

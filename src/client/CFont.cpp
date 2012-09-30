@@ -81,8 +81,8 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 
 		CloseHandle(hFile);
 
-		fonts[cur_f].eth=fonts[cur_f].let[(BYTE)'а'].h;
-		fonts[cur_f].etw=fonts[cur_f].let[(BYTE)'а'].w;
+		fonts[cur_f].eth=fonts[cur_f].let[(uint8_t)'а'].h;
+		fonts[cur_f].etw=fonts[cur_f].let[(uint8_t)'а'].w;
 
 		D3DSURFACE_DESC sd;
 		fonts[cur_f].font_surf->GetLevelDesc(0,&sd);
@@ -128,7 +128,7 @@ void CFOFont::PostRestore(LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB
 	lpVB=aVB;
 }
 
-void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
+void CFOFont::MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col, int num_font)
 {
 	if(!astr) return;
 
@@ -226,7 +226,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 		case '\r':
 			continue;
 		default:
-			curx+=font->let[(BYTE)str[i]].w+offs_x;
+			curx+=font->let[(uint8_t)str[i]].w+offs_x;
 		}
 
 		if(!str[i]) break;
@@ -276,7 +276,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 		case '\r':
 			continue;
 		default:
-			curx+=font->let[(BYTE)str[i]].w+offs_x;
+			curx+=font->let[(uint8_t)str[i]].w+offs_x;
 			if(curx>font->maxx[curstr]) font->maxx[curstr]=curx;
 		}
 	}
@@ -296,7 +296,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 	font->cur_pos=0;
 	lpDevice->SetTexture(0,font->font_surf);
 
-	DWORD colorize=col;
+	uint32_t colorize=col;
 	for(int i=0;str[i];i++)
 	{
 		if(FLAG(flags,FT_COLORIZE))
@@ -331,14 +331,14 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 
 			int mulpos=font->cur_pos*4;
 			int x=curx;
-			int y=cury-font->let[(BYTE)str[i]].y_offs;
-			int w=font->let[(BYTE)str[i]].w;
-			int h=font->let[(BYTE)str[i]].h;
+			int y=cury-font->let[(uint8_t)str[i]].y_offs;
+			int w=font->let[(uint8_t)str[i]].w;
+			int h=font->let[(uint8_t)str[i]].h;
 
-			FLOAT x1=font->xyarr[(BYTE)str[i]][0];
-			FLOAT y1=font->xyarr[(BYTE)str[i]][1];
-			FLOAT x2=font->xyarr[(BYTE)str[i]][2];
-			FLOAT y2=font->xyarr[(BYTE)str[i]][3];
+			FLOAT x1=font->xyarr[(uint8_t)str[i]][0];
+			FLOAT y1=font->xyarr[(uint8_t)str[i]][1];
+			FLOAT x2=font->xyarr[(uint8_t)str[i]][2];
+			FLOAT y2=font->xyarr[(uint8_t)str[i]][3];
 		
 			lpWaitBuf[mulpos].x=x-0.5f;
 			lpWaitBuf[mulpos].y=y+h-0.5f;
@@ -367,7 +367,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,DWORD flags, DWORD col, int num_font)
 			font->cur_pos++;
 		
 			if(font->cur_pos==spr_cnt) Flush(&font->cur_pos);
-			curx+=font->let[(BYTE)str[i]].w+offs_x;
+			curx+=font->let[(uint8_t)str[i]].w+offs_x;
 		}
 	}
 
@@ -381,7 +381,7 @@ int CFOFont::Flush(int* cur_pos) //!Cvet int* cur_pos
 	if(!crtd) return 0;
 	void* pBuffer;
 	int mulpos=4*(*cur_pos);
-	lpVB->Lock(0,sizeof(MYVERTEX)*mulpos,(BYTE**)&pBuffer,D3DLOCK_DISCARD);
+	lpVB->Lock(0,sizeof(MYVERTEX)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
 		memcpy(pBuffer,lpWaitBuf,sizeof(MYVERTEX)*mulpos);
 	lpVB->Unlock();
 

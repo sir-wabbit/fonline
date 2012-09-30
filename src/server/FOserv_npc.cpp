@@ -592,7 +592,7 @@ void CServer::NPC_Process(CCritter* npc)
 
 //	npc->info.break_time=0;
 
-	WORD move_params=BIN16(00000000,00111100);
+	uint16_t move_params=BIN16(00000000,00111100);
 
 	HexTYPE stepy;
 	if(npc->info.y%2)
@@ -600,7 +600,7 @@ void CServer::NPC_Process(CCritter* npc)
 	else
 		stepy=-1;
 
-	BYTE move_res=MoveToTile(npc,npc->info.x,npc->info.y+stepy);
+	uint8_t move_res=MoveToTile(npc,npc->info.x,npc->info.y+stepy);
 
 	switch(move_res)
 	{
@@ -625,7 +625,7 @@ void CServer::NPC_Process(CCritter* npc)
 	npc->info.break_time=2000;
 }
 
-void CServer::NPC_Dialog_Close(CCritter* npc, CCritter* acl, BYTE onhead_say)
+void CServer::NPC_Dialog_Close(CCritter* npc, CCritter* acl, uint8_t onhead_say)
 {
 	npc->i_npc->talking=0;
 
@@ -756,7 +756,7 @@ void CServer::NPC_Use_result(CCritter* npc, CCritter* acl, answer* use_answ)
 void CServer::Process_Talk_NPC(CCritter* acl)
 {
 	CrID id_npc_talk;
-	BYTE num_answer;
+	uint8_t num_answer;
 
 	acl->bin >> id_npc_talk;
 	acl->bin >> num_answer;

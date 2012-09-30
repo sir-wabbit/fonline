@@ -512,7 +512,7 @@ void CServer::Skill_Sneak_UnSet(CCritter* acl)
 	SetVisCr(acl);
 }
 
-int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
+int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CrID target_id)
 {
 //LogExecStr("Выполняется действие №1: АТАКА...");
 	//находим атакуемого
@@ -523,7 +523,7 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 	//проверяем не мертв ли атакуемый
 	if(t_acl->info.cond==COND_DEAD) return 0;
 	//находим дистанцию
-	WORD dist=(WORD) sqrt(pow(acl->info.x-t_acl->info.x,2.0)+pow(acl->info.y-t_acl->info.y,2.0));
+	uint16_t dist=(uint16_t) sqrt(pow(acl->info.x-t_acl->info.x,2.0)+pow(acl->info.y-t_acl->info.y,2.0));
 //LogExecStr("дистанция до цели =%d...",dist);
 	//проверяем дистанцию
 	int wpn_max_dist=0;
@@ -560,19 +560,19 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 
 	//рассчитываем вероятность попадания
 	//Skill+ammo_mod-AC_target-range
-//	WORD ammo_mod=0;
-//	WORD ammo_DR=0;
+//	uint16_t ammo_mod=0;
+//	uint16_t ammo_DR=0;
 //	if(acl->info.a_obj->object->p[25])
 //	{
 //		ammo_mod=1;
 //		ammo_DR=1;
 //	}
-//	WORD Skill=acl->info.s[acl->info.a_obj->object->p[act+1]];
-//	WORD AC_target=t_acl->info.s[9];
-//	WORD min_dmg=acl->info.a_obj->object->p[act+17];
-//	WORD max_dmg=acl->info.a_obj->object->p[act+16];
-//	WORD luck=acl->info.s[6];
-//	WORD DR=acl->info.s[acl->info.a_obj->object->p[act+15]+24];
+//	uint16_t Skill=acl->info.s[acl->info.a_obj->object->p[act+1]];
+//	uint16_t AC_target=t_acl->info.s[9];
+//	uint16_t min_dmg=acl->info.a_obj->object->p[act+17];
+//	uint16_t max_dmg=acl->info.a_obj->object->p[act+16];
+//	uint16_t luck=acl->info.s[6];
+//	uint16_t DR=acl->info.s[acl->info.a_obj->object->p[act+15]+24];
 
 //	int hit=Skill+ammo_mod-AC_target-dist;
 //	if(hit<10) hit=(100-hit-luck)/10;
@@ -594,7 +594,7 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 //LogExecStr("лифе нев =%d...",t_acl->info.st[ST_CURRENT_HP]);
 
 	//обновляем ориентацию атакуемого
-//	BYTE new_ori=acl->info.ori+3;
+//	uint8_t new_ori=acl->info.ori+3;
 //	if(new_ori>5) new_ori-=6;
 
 	bool attack_miss=false;
@@ -633,7 +633,7 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 	}
 	else //отыгрываем повреждение
 	{
-		BYTE defeat_type=0;
+		uint8_t defeat_type=0;
 
 		if(attack_front==true)
 			defeat_type=ACT_DEFEAT_FRONT;
@@ -1060,7 +1060,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 	LogExecStr("Local OK\n");
 }
 
-void CServer::UseDefObj(CCritter* acl, BYTE slot)
+void CServer::UseDefObj(CCritter* acl, uint8_t slot)
 {
 	switch(slot)
 	{
@@ -1099,13 +1099,13 @@ void CServer::UseDefObj(CCritter* acl, BYTE slot)
 
 void CServer::Process_Move(CCritter* acl)
 {
-	WORD move_params;
+	uint16_t move_params;
 
 	acl->bin >> move_params;
 
 	if(!acl->info.map) return;
 
-	BYTE dir=FLAG(move_params,BIN8(00000111));
+	uint8_t dir=FLAG(move_params,BIN8(00000111));
 
 //	LogExecStr("Process_Move move_params=%d, dir=%d, how_move=%d\n",move_params,dir,how_move);
 
@@ -1123,9 +1123,9 @@ void CServer::Process_Move(CCritter* acl)
 		return;
 	}
 
-	WORD old_map=acl->info.map;
+	uint16_t old_map=acl->info.map;
 
-	BYTE move_res=0;
+	uint8_t move_res=0;
 
 	switch(dir)
 	{
@@ -1188,8 +1188,8 @@ void CServer::Process_Move(CCritter* acl)
 
 void CServer::Process_ChangeObject(CCritter* acl)
 {
-	DWORD idobj;
-	BYTE num_slot;
+	uint32_t idobj;
+	uint8_t num_slot;
 	//num_slot
 	//1 - работаем с предметом в руке
 	//2 - с слотом армор
@@ -1273,7 +1273,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 	acl->bout << ACT_NULL;
 	acl->bout << acl->info.a_obj->object->id;
 	acl->bout << acl->info.a_obj_arm->object->id;
-	acl->bout << BYTE(0);
+	acl->bout << uint8_t(0);
 	acl->bout << acl->info.ori;
 }
 
@@ -1281,11 +1281,11 @@ void CServer::Process_UseObject(CCritter* acl)
 {
 //LogExecStr("Process_UseObject...");
 
-	BYTE c_type_target;
-	DWORD t_id;
-	BYTE c_ori;
-	BYTE c_action;
-	BYTE c_rate_object;
+	uint8_t c_type_target;
+	uint32_t t_id;
+	uint8_t c_ori;
+	uint8_t c_action;
+	uint8_t c_rate_object;
 
 	acl->bin >> c_type_target;
 	acl->bin >> t_id;
@@ -1381,7 +1381,7 @@ void CServer::Process_PickObject(CCritter* acl)
 {
 	HexTYPE targ_x;
 	HexTYPE targ_y;
-	WORD id_sobj;
+	uint16_t id_sobj;
 
 	acl->bin >> targ_x;
 	acl->bin >> targ_y;
@@ -1461,9 +1461,9 @@ void CServer::Process_PickObject(CCritter* acl)
 
 void CServer::Process_UseSkill(CCritter* acl)
 {
-	BYTE skill;
-	DWORD targ_id;
-	BYTE ori;
+	uint8_t skill;
+	uint32_t targ_id;
+	uint8_t ori;
 
 	acl->bin >> skill;
 	acl->bin >> targ_id;
@@ -1512,7 +1512,7 @@ void CServer::Process_UseSkill(CCritter* acl)
 
 void CServer::Process_Dir(CCritter* acl) //!Cvet переделал
 {
-	BYTE new_dir;
+	uint8_t new_dir;
 	acl->bin >> new_dir;
 
 	if(acl->bin.IsError())
@@ -1554,7 +1554,7 @@ void CServer::Process_Dir(CCritter* acl) //!Cvet переделал
 	}
 }
 
-int CServer::Crit_FindTarget(CCritter* acl, BYTE flags)
+int CServer::Crit_FindTarget(CCritter* acl, uint8_t flags)
 {
 	if(!acl) return 0;
 	return 1;
@@ -1633,14 +1633,14 @@ int CServer::Crit_MoveRandom(CCritter* acl)
 {
 	if(!acl) return 0;
 
-	static BYTE dir_move=0;
+	static uint8_t dir_move=0;
 	HexTYPE new_x=0,new_y=0;
 	if(!self->LMapGetCoords(dir_move,acl->info.x,acl->info.y,new_x,new_y)) return 0;
 	if(++dir_move>5) dir_move=0;
 
 	if(self->MoveToTile(acl,new_x,new_y)!=TR_OK) return 0;
 
-	WORD move_flags=BIN16(00000000,00111100);
+	uint16_t move_flags=BIN16(00000000,00111100);
 
 	self->SetVisCr(acl);
 	self->SendA_Move(acl,move_flags);
@@ -1650,7 +1650,7 @@ int CServer::Crit_MoveRandom(CCritter* acl)
 	return 1;
 }
 
-int CServer::Crit_GetStat(CCritter* acl, BYTE num_stat)
+int CServer::Crit_GetStat(CCritter* acl, uint8_t num_stat)
 {
 	if(!acl) return -1;
 	if(num_stat>=ALL_STATS) return -1;
@@ -1658,7 +1658,7 @@ int CServer::Crit_GetStat(CCritter* acl, BYTE num_stat)
 	return acl->info.st[num_stat];
 }
 
-int CServer::Crit_GetSkill(CCritter* acl, BYTE num_skill)
+int CServer::Crit_GetSkill(CCritter* acl, uint8_t num_skill)
 {
 	if(!acl) return -1;
 	if(num_skill>=ALL_SKILLS) return -1;
@@ -1666,7 +1666,7 @@ int CServer::Crit_GetSkill(CCritter* acl, BYTE num_skill)
 	return acl->info.sk[num_skill];
 }
 
-int CServer::Crit_GetPerk(CCritter* acl, BYTE num_perk)
+int CServer::Crit_GetPerk(CCritter* acl, uint8_t num_perk)
 {
 	if(!acl) return -1;
 	if(num_perk>=ALL_PERKS) return -1;

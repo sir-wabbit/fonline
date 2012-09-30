@@ -20,7 +20,7 @@ int bQuit=0;
 int FOQuit=0;
 
 int logging=1;
-DWORD start_srv_time=GetTickCount();
+uint32_t start_srv_time=GetTickCount();
 
 HANDLE hGameThread=NULL;
 DWORD dwGameThreadID=0;
@@ -177,8 +177,8 @@ DWORD WINAPI GameLoopThread(void *);
 	SERVICE_STATUS          FOServiceStatus;  
 	SERVICE_STATUS_HANDLE   FOServiceStatusHandle; 
 	 
-	VOID  WINAPI FOServiceStart (DWORD argc, LPTSTR *argv); 
-	VOID  WINAPI FOServiceCtrlHandler (DWORD opcode); 
+	VOID  WINAPI FOServiceStart (uint32_t argc, LPTSTR *argv); 
+	VOID  WINAPI FOServiceCtrlHandler (uint32_t opcode); 
 	 
 	VOID _CRTAPI1 main()
 	{
@@ -204,7 +204,7 @@ DWORD WINAPI GameLoopThread(void *);
 			return;
 		}
 		LPQUERY_SERVICE_CONFIG lpqscBuf; 
-	    DWORD dwBytesNeeded; 
+	    uint32_t dwBytesNeeded; 
 
 	    lpqscBuf = (LPQUERY_SERVICE_CONFIG) LocalAlloc(LPTR, 4096); 
 	 
@@ -234,7 +234,7 @@ DWORD WINAPI GameLoopThread(void *);
 		StartServiceCtrlDispatcher( DispatchTable);
 	}
 
-	void WINAPI FOServiceStart (DWORD argc, LPTSTR *argv)  
+	void WINAPI FOServiceStart (uint32_t argc, LPTSTR *argv)  
 	{
 	    FOServiceStatus.dwServiceType        = SERVICE_WIN32_OWN_PROCESS; 
 	    FOServiceStatus.dwCurrentState       = SERVICE_START_PENDING; 
@@ -266,7 +266,7 @@ DWORD WINAPI GameLoopThread(void *);
 	    return; 
 	} 
 	
-	VOID WINAPI FOServiceCtrlHandler (DWORD Opcode)  
+	VOID WINAPI FOServiceCtrlHandler (uint32_t Opcode)  
 	{ 
 	    switch(Opcode) 
 	    {
@@ -350,7 +350,7 @@ DWORD WINAPI GameLoopThread(void *);
 		switch(logging)
 		{
 		case 1:
-			DWORD br;
+			uint32_t br;
 			WriteFile(hLogFile,str,strlen(str),&br,NULL);
 			break;
 		case 2:
@@ -359,7 +359,7 @@ DWORD WINAPI GameLoopThread(void *);
 		}
 	}
 
-	DWORD WINAPI GameLoopThread(void *)
+	uint32_t WINAPI GameLoopThread(void *)
 	{
 		if(!LogStart()) goto GAMELOOPEND; //!Cvet
 	

@@ -45,7 +45,7 @@ struct cmdlist_def
 {
 	char cmd[30];
 	int id;
-	BYTE access;
+	uint8_t access;
 };
 
 const int CMN_LIST_COUNT=12;
@@ -418,7 +418,7 @@ void CServer::RunGameLoop()
 		lt_discon+=GetTickCount()-lt_ticks;
 
 	//!Cvet сбор статистики
-		DWORD loop_cur=GetTickCount()-(ticks-100);
+		uint32_t loop_cur=GetTickCount()-(ticks-100);
 		loop_time+=loop_cur;
 		loop_cycles++;
 		if(loop_cur > loop_max) loop_max=loop_cur;
@@ -576,7 +576,7 @@ void CServer::Process(CCritter* acl) // Лист Событий
 
 void CServer::Process_GetText(CCritter* acl)
 {
-	WORD len;
+	uint16_t len;
 	char str[MAX_TEXT+1];
 
 	acl->bin >> len;
@@ -604,15 +604,15 @@ void CServer::Process_GetText(CCritter* acl)
 	char* param;
 	char* next;
 
-	WORD self_len=0;
-	WORD o_len=0;
+	uint16_t self_len=0;
+	uint16_t o_len=0;
 	char self_str[MAX_TEXT+255+1]="";
 	char o_str[MAX_TEXT+255+1]="";
 	char mname[MAX_NAME+1];
 
 //!Cvet переделал концепцию +++++++++++++++++++++++++
-	WORD cmd=CMD_SAY;
-	BYTE say_param=SAY_NORM;
+	uint16_t cmd=CMD_SAY;
+	uint8_t say_param=SAY_NORM;
 
 	if(str[0]=='~')
 	{
@@ -783,14 +783,14 @@ void CServer::Process_GetText(CCritter* acl)
 //	LogExecStr("self: %s\not: %s\n",self_str,o_str);
 }
 
-void CServer::ProcessSocial(CCritter* sender,WORD socid,char* aparam)
+void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
 {
 	char* param;
 	char* next;
 
-	WORD self_len=0;
-	WORD vic_len=0;
-	WORD all_len=0;
+	uint16_t self_len=0;
+	uint16_t vic_len=0;
+	uint16_t all_len=0;
 
 	char SelfStr[MAX_TEXT+255+1]="";
 	char VicStr[MAX_TEXT+255+1]="";
@@ -836,7 +836,7 @@ void CServer::ProcessSocial(CCritter* sender,WORD socid,char* aparam)
 		{
 			c->bout << msg;
 			c->bout << sender->info.id;
-			c->bout << (BYTE)(SAY_SOCIAL);
+			c->bout << (uint8_t)(SAY_SOCIAL);
 			c->bout << self_len;
 			c->bout.Write(SelfStr,self_len);
 		}
@@ -844,7 +844,7 @@ void CServer::ProcessSocial(CCritter* sender,WORD socid,char* aparam)
 		{
 			c->bout << msg;
 			c->bout << sender->info.id;
-			c->bout << (BYTE)(SAY_SOCIAL);
+			c->bout << (uint8_t)(SAY_SOCIAL);
 			c->bout << vic_len;
 			c->bout.Write(VicStr,vic_len);
 		}
@@ -852,7 +852,7 @@ void CServer::ProcessSocial(CCritter* sender,WORD socid,char* aparam)
 		{
 			c->bout << msg;
 			c->bout << sender->info.id;
-			c->bout << (BYTE)(SAY_SOCIAL);
+			c->bout << (uint8_t)(SAY_SOCIAL);
 			c->bout << all_len;
 			c->bout.Write(AllStr,all_len);
 		}
@@ -1077,7 +1077,7 @@ void CServer::Finish()
 	Active=0;
 }
 
-int CServer::GetCmdNum(char* cmd, BYTE access_level)
+int CServer::GetCmdNum(char* cmd, uint8_t access_level)
 {
 //	my_strlwr(cmd);
 

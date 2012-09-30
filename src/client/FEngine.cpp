@@ -478,7 +478,7 @@ int CFEngine::Render()
 {
 //PROCESS
 	static TICK LastCall=GetTickCount();
-	static WORD call_cnt=0;
+	static uint16_t call_cnt=0;
 
     if((GetTickCount()-LastCall)>=1000)
 	{
@@ -684,7 +684,7 @@ void CFEngine::ParseInput()
 //!Cvet +++
 	static TICK tick_press=GetTickCount();
 	static int time_press=1000;
-	static WORD last_key=NULL;
+	static uint16_t last_key=NULL;
 	if(last_key && GetTickCount()>tick_press+time_press)
 	{
 		if(!GetChar(last_key,ed_str,&cur_edit,EDIT_LEN,lang,ShiftDwn)) last_key=NULL;
@@ -721,7 +721,7 @@ void CFEngine::ParseInput()
 		if(edit_mode)
 		{
 			int fnd=0;
-			WORD tst;
+			uint16_t tst;
 			for(tst=0;tst<256;tst++) //!Cvet было DI_BUF_SIZE
 			{
 				DI_ONDOWN(tst, last_key=NULL; if(GetChar(tst,ed_str,&cur_edit,EDIT_LEN,lang,ShiftDwn)) {fnd=1;break;});
@@ -1203,7 +1203,7 @@ void CFEngine::NetDiscon()
 	hf.UnLoadMap(); //!Cvet
 }
 
-void CFEngine::ParseSocket(WORD wait)
+void CFEngine::ParseSocket(uint16_t wait)
 {
 	timeval tv;
 	tv.tv_sec=wait;
@@ -1344,7 +1344,7 @@ void CFEngine::NetProcess()
 	bout.Write(name,MAX_NAME);
 	for(int i=0;i<5;i++)
 		bout.Write(opt_cases[i],MAX_NAME);
-	BYTE gen=opt_gender[0];
+	uint8_t gen=opt_gender[0];
 	bout << gen;
 
 	state=STATE_NAMESEND;
@@ -1402,7 +1402,7 @@ void CFEngine::Net_SendText(char* str)
 {
 	WriteLog("Net_SendText...");
 
-	WORD len=strlen(str);
+	uint16_t len=strlen(str);
 	if(len>=MAX_TEXT) len=MAX_TEXT;
 	MSGTYPE msg=NETMSG_TEXT;
 
@@ -1426,11 +1426,11 @@ void CFEngine::Net_SendDir()
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CFEngine::Net_SendMove(BYTE* dir) //переделал
+void CFEngine::Net_SendMove(uint8_t* dir) //переделал
 {
 	WriteLog("Net_SendMove...");
 
-	BYTE how_move=lpChosen->Move(dir[0]);
+	uint8_t how_move=lpChosen->Move(dir[0]);
 
 	if(how_move==MOVE_ERROR)
 	{
@@ -1441,7 +1441,7 @@ void CFEngine::Net_SendMove(BYTE* dir) //переделал
 
 //	lpChosen->AccamulateCur_offs();
 
-	WORD move_params=0;
+	uint16_t move_params=0;
 
 	for(int p=0;p<5;p++)
 		switch(dir[p])
@@ -1469,7 +1469,7 @@ void CFEngine::Net_SendMove(BYTE* dir) //переделал
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendUseSkill(BYTE skill, DWORD targ_id, BYTE ori)
+void CFEngine::Net_SendUseSkill(uint8_t skill, uint32_t targ_id, uint8_t ori)
 {
 	WriteLog("Отправка использования скилла...");
 
@@ -1483,7 +1483,7 @@ void CFEngine::Net_SendUseSkill(BYTE skill, DWORD targ_id, BYTE ori)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendUseObject(BYTE type_target, DWORD targ_id, BYTE crit_ori, BYTE crit_num_action, BYTE crit_rate_object)
+void CFEngine::Net_SendUseObject(uint8_t type_target, uint32_t targ_id, uint8_t crit_ori, uint8_t crit_num_action, uint8_t crit_rate_object)
 {
 	WriteLog("Отправка действия над предметом...");
 
@@ -1499,7 +1499,7 @@ void CFEngine::Net_SendUseObject(BYTE type_target, DWORD targ_id, BYTE crit_ori,
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, WORD id_sobj)
+void CFEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, uint16_t id_sobj)
 {
 	WriteLog("Отправка взаимодействия с предметом на земле...");
 
@@ -1513,7 +1513,7 @@ void CFEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, WORD id_sobj)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendChangeObject(DWORD idobj, BYTE num_slot)
+void CFEngine::Net_SendChangeObject(uint32_t idobj, uint8_t num_slot)
 {
 	WriteLog("Отправка смены предмета id=%d, slot=%d...",idobj, num_slot);
 
@@ -1526,7 +1526,7 @@ void CFEngine::Net_SendChangeObject(DWORD idobj, BYTE num_slot)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendTalk(CrID id_to_talk, BYTE answer)
+void CFEngine::Net_SendTalk(CrID id_to_talk, uint8_t answer)
 {
 	WriteLog("Отпрака сообщения по общению с НПЦ id_NPC=%d, ответ=%d...", id_to_talk, answer);
 
@@ -1552,7 +1552,7 @@ void CFEngine::Net_SendGetTime()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendGiveMeMap(WORD map_num)
+void CFEngine::Net_SendGiveMeMap(uint16_t map_num)
 {
 	WriteLog("Отпрака сообщения по запросу загрузки карты...");
 
@@ -1575,7 +1575,7 @@ void CFEngine::Net_SendLoadMapOK()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendGiveGlobalInfo(BYTE info_flags)
+void CFEngine::Net_SendGiveGlobalInfo(uint8_t info_flags)
 {
 	WriteLog("Отпрака сообщения запросу инфы о глобале №%d...",info_flags);
 
@@ -1587,7 +1587,7 @@ void CFEngine::Net_SendGiveGlobalInfo(BYTE info_flags)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendRuleGlobal(BYTE command, DWORD param1, DWORD param2)
+void CFEngine::Net_SendRuleGlobal(uint8_t command, uint32_t param1, uint32_t param2)
 {
 	WriteLog("Отправка запроса управлением группой...");
 
@@ -1610,7 +1610,7 @@ void CFEngine::Net_OnAddCritter()
 	info.a_obj=&info.def_obj1;
 	info.a_obj_arm=&info.def_obj2;
 
-	WORD id_obj;
+	uint16_t id_obj;
 
 	bin >> info.id;
 	bin >> info.base_type;
@@ -1691,7 +1691,7 @@ void CFEngine::Net_OnRemoveCritter()
 void CFEngine::Net_OnCritterText()
 {
 	CrID crid;
-	BYTE how_say; //!Cvet
+	uint8_t how_say; //!Cvet
 
 	bin >> crid;
 
@@ -1705,7 +1705,7 @@ void CFEngine::Net_OnCritterText()
 	}
     LstSayCritId=crid;// отладка
 
-	WORD len;
+	uint16_t len;
 	char str[MAX_TEXT+256];
 
 	bin >> len;
@@ -1728,7 +1728,7 @@ void CFEngine::Net_OnCritterText()
 	}
 
 //!Cvet ++++++++++++++++++++++++++++++++
-	DWORD text_color=COLOR_TEXT_DEFAULT;
+	uint32_t text_color=COLOR_TEXT_DEFAULT;
 	switch(how_say)
 	{
 	default:
@@ -1769,7 +1769,7 @@ void CFEngine::Net_OnCritterDir()
 	WriteLog("Установка игроку ");
 
 	CrID crid;
-	BYTE new_dir;
+	uint8_t new_dir;
 
 	bin >> crid;
 	bin >> new_dir;
@@ -1811,12 +1811,12 @@ void CFEngine::Net_OnCritterMove()
 	WriteLog("Ходит игрок id=");
 
 	CrID crid=0;
-//	BYTE dir=0;
-	BYTE how_move=0;
+//	uint8_t dir=0;
+	uint8_t how_move=0;
 	HexTYPE new_x=0;
 	HexTYPE new_y=0;
 
-	WORD move_params=0;
+	uint16_t move_params=0;
 
 	//присланные данные
 	bin >> crid;
@@ -1878,11 +1878,11 @@ void CFEngine::Net_OnCritterAction()
 	WriteLog("Пинг: %d\n",GetTickCount()-Ping);
 
 	CrID crid;
-	BYTE num_action;
-	WORD id_st_obj;
-	WORD id_st_obj_arm;
-	BYTE rate_obj;
-	BYTE ori;
+	uint8_t num_action;
+	uint16_t id_st_obj;
+	uint16_t id_st_obj_arm;
+	uint8_t rate_obj;
+	uint8_t ori;
 
 	bin >> crid;
 	bin >> num_action; //номер действия
@@ -2126,7 +2126,7 @@ void CFEngine::Net_OnChosenXY() // направление надо переда�
 
 	HexTYPE Chex_x;
 	HexTYPE Chex_y;
-	BYTE Cori;
+	uint8_t Cori;
 
 	bin >> Chex_x;
 	bin >> Chex_y;
@@ -2174,9 +2174,9 @@ void CFEngine::Net_OnChosenParams()
 {
 	WriteLog("Присланны параметры...");
 
-	BYTE type_param=0;
-	BYTE all_send_params=0;
-	BYTE num_param=0;
+	uint8_t type_param=0;
+	uint8_t all_send_params=0;
+	uint8_t num_param=0;
 	int go=0;
 
 	bin >> type_param;
@@ -2236,9 +2236,9 @@ void CFEngine::Net_OnChosenParam()
 {
 	WriteLog("Прислан параметр...");
 
-	BYTE type_param=0;
-	BYTE num_param=0;
-	WORD old_count=0;
+	uint8_t type_param=0;
+	uint8_t num_param=0;
+	uint16_t old_count=0;
 	params_str_map::iterator it;
 
 	bin >> type_param;
@@ -2310,11 +2310,11 @@ void CFEngine::Net_OnChosenAddObject()
 {
 	WriteLog("Добавляеться предмет...");
 
-	DWORD id_d;
-	WORD id_s;
-	BYTE aslot;
-	DWORD time_wear;
-	DWORD broken_info;
+	uint32_t id_d;
+	uint16_t id_s;
+	uint8_t aslot;
+	uint32_t time_wear;
+	uint32_t broken_info;
 	
 
 	bin >> id_d;
@@ -2342,8 +2342,8 @@ void CFEngine::Net_OnAddObjOnMap()
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
-	WORD obj_id;
-	WORD tile_flags;
+	uint16_t obj_id;
+	uint16_t tile_flags;
 
 	bin >> obj_x;
 	bin >> obj_y;
@@ -2387,8 +2387,8 @@ void CFEngine::Net_OnChangeObjOnMap()
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
-	WORD obj_id;
-	WORD tile_flags;
+	uint16_t obj_id;
+	uint16_t tile_flags;
 
 	bin >> obj_x;
 	bin >> obj_y;
@@ -2428,7 +2428,7 @@ void CFEngine::Net_OnRemObjFromMap()
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
-	WORD obj_id;
+	uint16_t obj_id;
 
 	bin >> obj_x;
 	bin >> obj_y;
@@ -2465,8 +2465,8 @@ void CFEngine::Net_OnChosenTalk()
 {
 	WriteLog("Новая диалоговая ветка...");
 
-	DWORD main_text;
-	DWORD answer[MAX_ANSWERS];
+	uint32_t main_text;
+	uint32_t answer[MAX_ANSWERS];
 
 	bin >> all_answers;
 	
@@ -2516,7 +2516,7 @@ void CFEngine::Net_OnLoadMap()
 {
 	WriteLog("Приказ смены карты...\n");
 
-	WORD num_map;
+	uint16_t num_map;
 	char name_map[30];
 
 	bin >> num_map;
@@ -2557,7 +2557,7 @@ void CFEngine::Net_OnGlobalInfo()
 {
 	WriteLog("Сведения о глобале...");
 
-	BYTE info_flags=0;
+	uint8_t info_flags=0;
 
 	bin >> info_flags;
 
@@ -2571,7 +2571,7 @@ void CFEngine::Net_OnGlobalInfo()
 			delete (*it_c);
 		gm_cities.clear();
 
-		WORD count_cities;
+		uint16_t count_cities;
 
 		bin >> count_cities;
 
@@ -2579,10 +2579,10 @@ void CFEngine::Net_OnGlobalInfo()
 
 		for(int i=0;i<count_cities;++i)
 		{
-			WORD city_num;
-			WORD city_x;
-			WORD city_y;
-			BYTE city_radius;
+			uint16_t city_num;
+			uint16_t city_x;
+			uint16_t city_y;
+			uint8_t city_radius;
 
 			bin >> city_num;
 			bin >> city_x;
@@ -2602,10 +2602,10 @@ void CFEngine::Net_OnGlobalInfo()
 			delete (*it_cr);
 		gm_crits.clear();
 
-		BYTE count_group;
+		uint8_t count_group;
 		CrID id_crit;
 		char cur_name[MAX_NAME+1];
-		WORD flags_crit;
+		uint16_t flags_crit;
 
 		bin >> count_group;
 
@@ -2663,11 +2663,11 @@ void CFEngine::Net_OnGlobalInfo()
 	{
 		WriteLog("параметры...");
 
-		WORD group_x;
-		WORD group_y;
-		WORD move_x;
-		WORD move_y;
-		BYTE speed;
+		uint16_t group_x;
+		uint16_t group_y;
+		uint16_t move_x;
+		uint16_t move_y;
+		uint8_t speed;
 		int speed_x;
 		int speed_y;
 
@@ -2712,7 +2712,7 @@ void CFEngine::Net_OnGlobalInfo()
 		gm_process=true;
 	}
 
-	BYTE end_info=0;
+	uint8_t end_info=0;
 	bin >> end_info;
 
 	if(end_info!=0xAA)
@@ -2770,7 +2770,7 @@ int CFEngine::NetInput()
 	while(compos==comlen)
 	{
 		rebuf=1;
-		DWORD newcomlen=comlen<<2;
+		uint32_t newcomlen=comlen<<2;
 		char * NewCOM=new char[newcomlen];
 		memcpy(NewCOM,ComBuf,comlen);
 		SAFEDELA(ComBuf);
@@ -2856,14 +2856,14 @@ void CFEngine::IntAnim()
 }
 */
 
-void CFEngine::SetColor(BYTE r,BYTE g,BYTE b)
+void CFEngine::SetColor(uint8_t r,uint8_t g,uint8_t b)
 {
 	sm.SetColor(D3DCOLOR_ARGB(255,r+opt_light,g+opt_light,b+opt_light));
 	hf.OnChangeCol();
 }
 
 // !Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CFEngine::SetColor(DWORD color)
+void CFEngine::SetColor(uint32_t color)
 {
 	sm.SetColor(color);
 	hf.OnChangeCol();
@@ -3057,15 +3057,15 @@ void CFEngine::ProccessDayTime()
 	SetDayTime(Game_CurTime);
 }
 
-void CFEngine::SetDayTime(DWORD time_ms)
+void CFEngine::SetDayTime(uint32_t time_ms)
 {
-	static const WORD DAY_MIN=24*60;
+	static const uint16_t DAY_MIN=24*60;
 
-	static const BYTE countR[]={18 ,128,103,51 };
-	static const BYTE countG[]={18 ,128,95 ,40 };
-	static const BYTE countB[]={53 ,128,86 ,29 };
+	static const uint8_t countR[]={18 ,128,103,51 };
+	static const uint8_t countG[]={18 ,128,95 ,40 };
+	static const uint8_t countB[]={53 ,128,86 ,29 };
 
-	DWORD time_day=(time_ms/1000/60)%DAY_MIN;
+	uint32_t time_day=(time_ms/1000/60)%DAY_MIN;
 
 	Game_Hours=time_day/60;
 	Game_Mins=time_day%60;
@@ -3098,7 +3098,7 @@ void CFEngine::SetDayTime(DWORD time_ms)
 		dayB=countB[3]+(float)(countB[0]-countB[3])/(DAY_MIN/4)*time_day;
 	}
 
-	static WORD sum_RGB=0;
+	static uint16_t sum_RGB=0;
 	if(sum_RGB!=(dayR+dayG+dayB))
 	{
 		SetColor(dayR,dayG,dayB);
@@ -3145,7 +3145,7 @@ void CFEngine::ChosenProcess()
 		//ищем направление
 //WriteLog("hx=%d,px=%d,hy=%d,py=%d\n",lpChosen->hex_x,PathMoveX,lpChosen->hex_y,PathMoveY);
 
-			BYTE steps[FINDPATH_MAX_PATH];
+			uint8_t steps[FINDPATH_MAX_PATH];
 			HRESULT res=hf.FindStep(lpChosen->hex_x,lpChosen->hex_y,PathMoveX,PathMoveY,&steps[0]);
 			if(res==FP_OK)
 			{
@@ -3192,7 +3192,7 @@ void CFEngine::ChosenProcess()
 
 		if(lpChosen->a_obj->object->type==OBJ_TYPE_WEAPON && lpChosen==tosendTargetCrit) break;
 
-		BYTE AttDir=hf.FindTarget(lpChosen->hex_x,lpChosen->hex_y,tosendTargetCrit->hex_x,tosendTargetCrit->hex_y,lpChosen->GetMaxDistance());
+		uint8_t AttDir=hf.FindTarget(lpChosen->hex_x,lpChosen->hex_y,tosendTargetCrit->hex_x,tosendTargetCrit->hex_y,lpChosen->GetMaxDistance());
 
 		if(hf.IsShowTrack()) hf.PostRestore();
 
@@ -3213,8 +3213,8 @@ void CFEngine::ChosenProcess()
 			if(lpChosen->a_obj->object->p[OBJ_WEAP_TIME_ACTIV] && lpChosen->cond_ext!=COND_LIFE_ACTWEAP) break;
 
 			float mod_TypeAttack=0;
-			BYTE attack_skill=0;
-			BYTE num_anim2=0;
+			uint8_t attack_skill=0;
+			uint8_t num_anim2=0;
 
 			switch(lpChosen->rate_object)
 			{
@@ -3257,7 +3257,7 @@ void CFEngine::ChosenProcess()
 			float tick_flt=(3.01f-lpChosen->sk[attack_skill]/100+mod_TypeWeap+mod_TypeAttack)*
 				(13/6-lpChosen->st[ST_AGILITY]/6)*1000;
 
-			lpChosen->Action(num_anim2,WORD(tick_flt));
+			lpChosen->Action(num_anim2,uint16_t(tick_flt));
 		}
 		else
 		{

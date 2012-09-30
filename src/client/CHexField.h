@@ -20,24 +20,24 @@
 #define MAXTILEX 400
 #define MAXTILEY 400
 
-const BYTE HEX_IMPASSABLE			=1;
-const BYTE HEX_IMPASSABLE_NOT_RAKED	=2;
+const uint8_t HEX_IMPASSABLE			=1;
+const uint8_t HEX_IMPASSABLE_NOT_RAKED	=2;
 
 //поиск пути
 //максимальный путь
-const BYTE FINDPATH_MAX_PATH		=50;
+const uint8_t FINDPATH_MAX_PATH		=50;
 //возвращаемые ошибки
-const BYTE FP_ERROR					=0;
-const BYTE FP_OK					=1;
-const BYTE FP_DEADLOCK				=2;
-const BYTE FP_TOOFAR				=3;
-const BYTE FP_ALREADY_HERE			=4;
+const uint8_t FP_ERROR					=0;
+const uint8_t FP_OK					=1;
+const uint8_t FP_DEADLOCK				=2;
+const uint8_t FP_TOOFAR				=3;
+const uint8_t FP_ALREADY_HERE			=4;
 
 //поиск цели
-const BYTE FINDTARGET_BARRIER		=10;
-const BYTE FINDTARGET_TOOFAR		=11;
-const BYTE FINDTARGET_ERROR			=12;
-const BYTE FINDTARGET_INVALID_TARG	=13;
+const uint8_t FINDTARGET_BARRIER		=10;
+const uint8_t FINDTARGET_TOOFAR		=11;
+const uint8_t FINDTARGET_ERROR			=12;
+const uint8_t FINDTARGET_INVALID_TARG	=13;
 
 //прозрачность
 #define TILE_ALPHA	255
@@ -71,17 +71,17 @@ struct ViewField
 
 struct ScenObj
 {
-	WORD spr_id;
+	uint16_t spr_id;
 
 	ScenObj(): spr_id(0){};
-	ScenObj(WORD _spr_id): spr_id(_spr_id){};
+	ScenObj(uint16_t _spr_id): spr_id(_spr_id){};
 };
 
 typedef std::vector<ScenObj*> scen_vect;
 
 struct ItemObj
 {
-	WORD spr_id;
+	uint16_t spr_id;
 
 //!Cvet +++++++++++++++++++++++
 	int hex_x;
@@ -101,7 +101,7 @@ struct ItemObj
 
 	ItemObj(): sobj(NULL),spr_id(0),hex_x(0),hex_y(0),scr_x(0),scr_y(0),hex_scr_x(NULL),hex_scr_y(NULL),anim(NULL),
 	cur_spr(0),need_spr(0),last_tick(0){};
-	ItemObj(stat_obj* _sobj, WORD _spr_id, int _hex_x, int _hex_y, short _scr_x, short _scr_y, int* _hex_scr_x, int* _hex_scr_y):
+	ItemObj(stat_obj* _sobj, uint16_t _spr_id, int _hex_x, int _hex_y, short _scr_x, short _scr_y, int* _hex_scr_x, int* _hex_scr_y):
 	sobj(_sobj),spr_id(_spr_id),hex_x(_hex_x),hex_y(_hex_y),scr_x(_scr_x),scr_y(_scr_y),hex_scr_x(_hex_scr_x),hex_scr_y(_hex_scr_y),anim(NULL),
 	cur_spr(0),need_spr(0),last_tick(0){};
 	~ItemObj(){SAFEDEL(anim);};
@@ -120,10 +120,10 @@ typedef std::vector<ItemObj*> item_vect;
 /*
 struct MiscObj //!Cvet
 {
-	WORD spr_id;
+	uint16_t spr_id;
 
 	MiscObj(): spr_id(0){};
-	MiscObj(WORD _spr_id): spr_id(_spr_id){};
+	MiscObj(uint16_t _spr_id): spr_id(_spr_id){};
 };
 
 typedef vector<MiscObj*> misc_vect;
@@ -137,16 +137,16 @@ struct Field
 
 	int scr_x, scr_y;
 
-	WORD tile_id; //тайл земли
-	WORD roof_id; //тайл крыши
-	WORD wall_id[MAX_WALL_CNT]; //стены
+	uint16_t tile_id; //тайл земли
+	uint16_t roof_id; //тайл крыши
+	uint16_t wall_id[MAX_WALL_CNT]; //стены
 	scen_vect sc_obj; //сценери
 	item_vect itm_obj; //итемы
 //	misc_vect msc_obj; //!Cvet другое
 
-	DWORD pos;
+	uint32_t pos;
 
-	WORD flags;
+	uint16_t flags;
 	BOOL scroll_block; //!Cvet - скролл-локер
 
 	int track; //!Cvet траектория
@@ -156,14 +156,14 @@ struct Field
 };
 
 
-typedef std::map<WORD, char*> char_map;
-typedef std::map<WORD, WORD> word_map;
+typedef std::map<uint16_t, char*> char_map;
+typedef std::map<uint16_t, uint16_t> word_map;
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 //!Cvet ++++++++
 struct Drop
 {
-	WORD id;
+	uint16_t id;
 
 	short x;
 	short y;
@@ -171,10 +171,10 @@ struct Drop
 	short ground_y;
 
 	short adrop;
-	//DWORD dtime;
+	//uint32_t dtime;
 
 	Drop():id(0),x(0),y(0),adrop(0),ground_y(0){};
-	Drop(WORD _id, short _x, short _y, short _ground_y):id(_id),x(_x),y(_y),adrop(0),
+	Drop(uint16_t _id, short _x, short _y, short _ground_y):id(_id),x(_x),y(_y),adrop(0),
 		ground_y(_ground_y){};
 };
 
@@ -189,12 +189,12 @@ public:
 //!Cvet++++++++++++++++++++
 	Rain rain;
 
-	int FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, BYTE* steps=NULL);
-	int CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE* end_y, BYTE count_correct);
-	int FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, BYTE max_weapon_distance);
+	int FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, uint8_t* steps=NULL);
+	int CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE* end_y, uint8_t count_correct);
+	int FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, uint8_t max_weapon_distance);
 
 //траектория
-	WORD pic_track1,pic_track2;
+	uint16_t pic_track1,pic_track2;
 	bool ShowTrack;
 	void SwitchShowTrack();
 	BOOL IsShowTrack(){if(ShowTrack==true) return TRUE; return FALSE;}
@@ -204,8 +204,8 @@ public:
 	BOOL IsMapLoaded() { if(MapLoaded==TRUE) return 1; return 0; };
 
 //добавление/удаление объектов по ходу игры
-	int AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, WORD tile_flags);
-	void ChangeObj(stat_obj* chn_sobj, HexTYPE x, HexTYPE y, WORD tile_flags);
+	int AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, uint16_t tile_flags);
+	void ChangeObj(stat_obj* chn_sobj, HexTYPE x, HexTYPE y, uint16_t tile_flags);
 	void DelObj(stat_obj* del_sobj, HexTYPE x, HexTYPE y);
 
 //обработака дин. объектов
@@ -215,7 +215,7 @@ public:
 //поиск и установка нового центра
 	void FindSetCenter(int x, int y);
 
-	WORD egg;
+	uint16_t egg;
 //!Cvet--------------------
 
 	int Init(CSpriteManager* lpsm);
@@ -264,21 +264,21 @@ private:
 	bool crtd;
 
 	bool ShowRain; //!Cvet
-	WORD pic_drop; //!Cvet
-	WORD pic_adrop[7]; //!Cvet
+	uint16_t pic_drop; //!Cvet
+	uint16_t pic_adrop[7]; //!Cvet
 	bool ShowHex;
-	WORD hex,hexb;
+	uint16_t hex,hexb;
 
 	int cnt_x,cnt_y;
 
 //tiles
 	LPDIRECT3DVERTEXBUFFER8 lpVBpr_tile; //подгототвленный буфер
 	onesurf_vec prep_vec_tile; //указывается очередность смен текстур при прорисовке буфера
-	WORD prep_cnt_tile;
+	uint16_t prep_cnt_tile;
 //!Cvet roof
 	LPDIRECT3DVERTEXBUFFER8 lpVBpr_roof;
 	onesurf_vec prep_vec_roof;
-	WORD prep_cnt_roof;
+	uint16_t prep_cnt_roof;
 
 	ViewField* view2;
 
@@ -319,13 +319,13 @@ private:
 
 	void InitView2(int cx,int cy); // Инициализация области видимости
 
-	int ParseItemObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax); //!Cvet
-	int ParseItemObjCont(DWORD proto_id,DWORD x,DWORD y); //!Cvet
-	int ParseMiscObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax); //!Cvet
-	int ParseScenObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax);
-	int ParseWallObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax);
+	int ParseItemObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,uint16_t* hbmax,uint16_t* hemax,uint16_t* wrmax,uint16_t* wlmax); //!Cvet
+	int ParseItemObjCont(uint32_t proto_id,uint32_t x,uint32_t y); //!Cvet
+	int ParseMiscObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,uint16_t* hbmax,uint16_t* hemax,uint16_t* wrmax,uint16_t* wlmax); //!Cvet
+	int ParseScenObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,uint16_t* hbmax,uint16_t* hemax,uint16_t* wrmax,uint16_t* wlmax);
+	int ParseWallObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,uint16_t* hbmax,uint16_t* hemax,uint16_t* wrmax,uint16_t* wlmax);
 
-	int IsVisible(int nx, int ny,WORD id);
+	int IsVisible(int nx, int ny,uint16_t id);
 
 };
 

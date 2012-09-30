@@ -88,8 +88,8 @@ void ParseSymbolStr(char* symstr,char* resstr, crit_info* self, crit_info* victi
 	char selfcase[MAX_NAME+1];
 	char viccase[MAX_NAME+1];
 
-	BYTE selfgen;
-	BYTE vicgen;
+	uint8_t selfgen;
+	uint8_t vicgen;
 
 	if(self)
 	{

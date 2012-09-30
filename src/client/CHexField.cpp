@@ -220,17 +220,17 @@ int CHexField::LoadMap(char* fname)
 	if(!fm_map.LoadFile(fname,PT_MAPS)) return 0;
 
 	fm_map.SetCurPos(0x20);
-	DWORD nlv=fm_map.GetDWord();//localvars
+	uint32_t nlv=fm_map.GetDWord();//localvars
 	fm_map.SetCurPos(0x30);
-	DWORD ngv=fm_map.GetDWord();//global vars
+	uint32_t ngv=fm_map.GetDWord();//global vars
 
 	fm_map.SetCurPos(0x28); //!Cvet размеры карты
-	DWORD count_tiles_y=fm_map.GetDWord(); //!Cvet
+	uint32_t count_tiles_y=fm_map.GetDWord(); //!Cvet
 
 	fm_map.SetCurPos(0xEC+4*(nlv+ngv)); //начало секции тайлов
 
-	WORD tile; //ground_tile
-	WORD rtile; //roof_tile
+	uint16_t tile; //ground_tile
+	uint16_t rtile; //roof_tile
 	word_map::iterator it;
 
 	for(int y=0;y<100;y++)
@@ -243,7 +243,7 @@ int CHexField::LoadMap(char* fname)
 				it=loaded_tile.find(tile);
 				if(it==loaded_tile.end()) //этот тайл не загружен
 				{
-					WORD id=lpSM->LoadSprite(tile_fnames[tile],PT_ART_TILES);
+					uint16_t id=lpSM->LoadSprite(tile_fnames[tile],PT_ART_TILES);
 					if(!id) return 0;
 					loaded_tile[tile]=id;
 					hex_field[2*y][2*x].tile_id=id;
@@ -259,7 +259,7 @@ int CHexField::LoadMap(char* fname)
 				it=loaded_tile.find(rtile);
 				if(it==loaded_tile.end())
 				{
-					WORD id=lpSM->LoadSprite(tile_fnames[rtile],PT_ART_TILES);
+					uint16_t id=lpSM->LoadSprite(tile_fnames[rtile],PT_ART_TILES);
 					if(!id) return 0;
 					loaded_tile[rtile]=id;
 					hex_field[2*y][2*x].roof_id=id;
@@ -309,14 +309,14 @@ int CHexField::DropScript()
 
 		if(cnt>0)
 		{
-			DWORD loop;
+			uint32_t loop;
 
 			for(loop=16;loop<cnt;loop+=16);
-			DWORD check=0;
+			uint32_t check=0;
 
 			for(int j=0;j<loop;j++)
 			{
-				BYTE group=fm_map.GetByte();
+				uint8_t group=fm_map.GetByte();
 
 			//!Cvet уточнение для типов групп ++++
 				switch (group)
@@ -341,7 +341,7 @@ int CHexField::DropScript()
 
 				if((j % 16) == 15)
 				{
-					DWORD v=fm_map.GetDWord();
+					uint32_t v=fm_map.GetDWord();
 
 					check+=v;
 
@@ -367,53 +367,53 @@ int CHexField::DropScript()
 
 int CHexField::LoadObj()
 {
-	DWORD cnt1=fm_map.GetDWord();
-	DWORD cnt2=fm_map.GetDWord();
+	uint32_t cnt1=fm_map.GetDWord();
+	uint32_t cnt2=fm_map.GetDWord();
 
-	WORD hbmax=0; //подсчитаем максимальные размеры спрайтов
-	WORD hemax=0; //чтобы правильно сделать оптимизцию области видимости
-	WORD wrmax=0;
-	WORD wlmax=0;
+	uint16_t hbmax=0; //подсчитаем максимальные размеры спрайтов
+	uint16_t hemax=0; //чтобы правильно сделать оптимизцию области видимости
+	uint16_t wrmax=0;
+	uint16_t wlmax=0;
 
-	DWORD itm_cnt=0; //!Cvet кол-во итемов
-	DWORD cr_cnt=0; //!Cvet кол-во криттеров
-	DWORD sc_cnt=0; //количество scenery
-	DWORD wl_cnt=0; //количество walls
+	uint32_t itm_cnt=0; //!Cvet кол-во итемов
+	uint32_t cr_cnt=0; //!Cvet кол-во криттеров
+	uint32_t sc_cnt=0; //количество scenery
+	uint32_t wl_cnt=0; //количество walls
 
 	for(int cic=0;cic<cnt2;cic++)
 	{
-		DWORD buf=fm_map.GetDWord();
+		uint32_t buf=fm_map.GetDWord();
 
-		DWORD pos=fm_map.GetDWord();//позиция
-		DWORD y=pos/200;
-		DWORD x=pos%200; //координаты в файле карте (по х остаток)
+		uint32_t pos=fm_map.GetDWord();//позиция
+		uint32_t y=pos/200;
+		uint32_t x=pos%200; //координаты в файле карте (по х остаток)
 
-		DWORD offs_x=fm_map.GetDWord(); //!Cvet
-		DWORD offs_y=fm_map.GetDWord(); //!Cvet
+		uint32_t offs_x=fm_map.GetDWord(); //!Cvet
+		uint32_t offs_y=fm_map.GetDWord(); //!Cvet
 
 		fm_map.GoForward(8); //??? что связанное со смещениями
 
-		DWORD frm_num=fm_map.GetDWord(); //frame number
-		DWORD ori=fm_map.GetDWord(); //ориентация
+		uint32_t frm_num=fm_map.GetDWord(); //frame number
+		uint32_t ori=fm_map.GetDWord(); //ориентация
 
 		buf=fm_map.GetDWord(); //frm pid
-		DWORD type=buf >> 0x18; //тип объекта (scenery, walls etc)
-		DWORD id=buf & 0xFFFF; //идентефикатор
+		uint32_t type=buf >> 0x18; //тип объекта (scenery, walls etc)
+		uint32_t id=buf & 0xFFFF; //идентефикатор
 
-		DWORD flags=fm_map.GetDWord();
+		uint32_t flags=fm_map.GetDWord();
 
-		DWORD elev=fm_map.GetDWord();
+		uint32_t elev=fm_map.GetDWord();
 
-		DWORD proto_id=fm_map.GetDWord();
+		uint32_t proto_id=fm_map.GetDWord();
 
 		fm_map.GoForward(4);
 
-		DWORD lights=fm_map.GetDWord();
-		DWORD lighti=fm_map.GetDWord();
+		uint32_t lights=fm_map.GetDWord();
+		uint32_t lighti=fm_map.GetDWord();
 
 		fm_map.GoForward(12); //проходим через Uncknown поля
 
-		DWORD num_obj=fm_map.GetDWord(); //кол-во объектов в контейнере
+		uint32_t num_obj=fm_map.GetDWord(); //кол-во объектов в контейнере
 
 		fm_map.GoForward(12); //проходим через Uncknown поля
 
@@ -450,7 +450,7 @@ int CHexField::LoadObj()
 
 			fm_map.GoForward(44);
 
-			DWORD proto_id=fm_map.GetDWord();
+			uint32_t proto_id=fm_map.GetDWord();
 
 			fm_map.GoForward(40);
 
@@ -496,9 +496,9 @@ int CHexField::LoadObj()
 }
 
 //!Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-int CHexField::ParseItemObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax)
+int CHexField::ParseItemObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,uint16_t* hbmax,uint16_t* hemax,uint16_t* wrmax,uint16_t* wlmax)
 {
-	DWORD sub_type;
+	uint32_t sub_type;
 
 	proto_id&=0xFFFF; //???Cvet 0xFFFFFF
 
@@ -527,7 +527,7 @@ int CHexField::ParseItemObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 /*
 	SpriteInfo* lpinf;
 	word_map::iterator it;
-	WORD spr_id;
+	uint16_t spr_id;
 
 	it=loaded_item.find(id);
 	if(it==loaded_item.end())
@@ -555,10 +555,10 @@ int CHexField::ParseItemObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 	return 1;
 }
 
-int CHexField::ParseItemObjCont(DWORD proto_id,DWORD x,DWORD y)
+int CHexField::ParseItemObjCont(uint32_t proto_id,uint32_t x,uint32_t y)
 {
-	DWORD sub_type;
-	DWORD frm_inv;
+	uint32_t sub_type;
+	uint32_t frm_inv;
 
 	proto_id&=0xFFFF; //???0xFFFFFF
 
@@ -588,9 +588,9 @@ int CHexField::ParseItemObjCont(DWORD proto_id,DWORD x,DWORD y)
 	return 1;
 }
 
-int CHexField::ParseMiscObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax)
+int CHexField::ParseMiscObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,uint16_t* hbmax,uint16_t* hemax,uint16_t* wrmax,uint16_t* wlmax)
 {
-//	DWORD sub_type=SUB_MISC_MISC;
+//	uint32_t sub_type=SUB_MISC_MISC;
 
 //	WriteLog("misc - %d - %d,%d\n",id,x,y);
 
@@ -614,7 +614,7 @@ int CHexField::ParseMiscObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 /*
 	SpriteInfo* lpinf;
 	word_map::iterator it;
-	WORD spr_id;
+	uint16_t spr_id;
 
 	it=loaded_misc.find(id);
 	if(it==loaded_misc.end())
@@ -643,15 +643,15 @@ int CHexField::ParseMiscObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 */
 }
 
-int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, WORD tile_flags)
+int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, uint16_t tile_flags)
 {
 	if(!add_sobj) return 0;
 
 	SpriteInfo* lpinf;
 	word_map::iterator it;
-	WORD spr_id;
-	WORD pic_id=add_sobj->p[OBJ_PIC_MAP];
-	BYTE type_obj=add_sobj->type;
+	uint16_t spr_id;
+	uint16_t pic_id=add_sobj->p[OBJ_PIC_MAP];
+	uint8_t type_obj=add_sobj->type;
 
 	if(type_obj==OBJ_TYPE_DOOR) //связано с тем что двери находяться в сценери
 	{
@@ -733,7 +733,7 @@ int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, WORD tile_flags)
 	return 1;
 }
 
-void CHexField::ChangeObj(stat_obj* chn_sobj, HexTYPE x, HexTYPE y, WORD tile_flags)
+void CHexField::ChangeObj(stat_obj* chn_sobj, HexTYPE x, HexTYPE y, uint16_t tile_flags)
 {
 	item_vect::iterator it_i;
 	for(it_i=hex_field[y][x].itm_obj.begin();it_i!=hex_field[y][x].itm_obj.end();it_i++)
@@ -818,9 +818,9 @@ void CHexField::ProcessObj()
 //Cvet --------------------------------------------------------------------
 
 //proto_id - ищем информацию об объекте. id - это frm_id - идентификатор картинки
-int CHexField::ParseScenObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax)
+int CHexField::ParseScenObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,uint16_t* hbmax,uint16_t* hemax,uint16_t* wrmax,uint16_t* wlmax)
 {
-	DWORD sub_type;
+	uint32_t sub_type;
 
 	proto_id&=0xFFFF;
 
@@ -865,7 +865,7 @@ int CHexField::ParseScenObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 
 	SpriteInfo* lpinf;
 	word_map::iterator it;
-	WORD spr_id;
+	uint16_t spr_id;
 
 	it=loaded_scen.find(id);
 	if(it==loaded_scen.end()) //картинка этого объекта не загружена еще
@@ -894,7 +894,7 @@ int CHexField::ParseScenObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 }
 
 //proto_id - ищем информацию об объекте. id - это frm_id - идентификатор картинки
-int CHexField::ParseWallObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,WORD* hemax,WORD* wrmax,WORD* wlmax)
+int CHexField::ParseWallObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,uint16_t* hbmax,uint16_t* hemax,uint16_t* wrmax,uint16_t* wlmax)
 {
 	proto_id&=0xFFFF;
 
@@ -917,7 +917,7 @@ int CHexField::ParseWallObj(DWORD proto_id,DWORD id,DWORD x,DWORD y,WORD* hbmax,
 
 	SpriteInfo* lpinf;
 	word_map::iterator it;
-	WORD spr_id;
+	uint16_t spr_id;
 
 	it=loaded_wall.find(id);
 	if(it==loaded_wall.end()) //картинка этого объекта не загружена еще
@@ -1207,7 +1207,7 @@ void CHexField::RebuildTiles() //!Cvet переделал. добавил под
 	ttree_r.clear();
 }
 
-int CHexField::IsVisible(int nx, int ny,WORD id)
+int CHexField::IsVisible(int nx, int ny,uint16_t id)
 {
 	if(!hex_field[ny][nx].to_draw) return 0; //!Cvet ночь отдал чтобы эту ебню вписать...
 
@@ -1857,7 +1857,7 @@ ItemObj* CHexField::GetItemPixel(int pix_x, int pix_y)
 	return NULL;
 }
 
-int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, BYTE* steps)
+int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, uint8_t* steps)
 {
 //	LONGLONG fp; тест скорости
 //	LONGLONG fp2;
@@ -2019,7 +2019,7 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 	return FP_OK;
 }
 
-int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE* end_y, BYTE count_correct)
+int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE* end_y, uint8_t count_correct)
 {
 	int FindPath[MAXTILEX][MAXTILEY];
 	int numindex=1; //текущий индекс
@@ -2155,7 +2155,7 @@ int CHexField::CutPath(HexTYPE start_x, HexTYPE start_y, HexTYPE* end_x, HexTYPE
 	return 1;
 }
 
-int CHexField::FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, BYTE max_weapon_distance)
+int CHexField::FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE end_y, uint8_t max_weapon_distance)
 {
 	if(ShowTrack)
 		for(int tx=0;tx<MAXTILEX;tx++)

@@ -48,14 +48,14 @@ void CServer::Send_LoadMap(CCritter* acl)
 	acl->bout << acl->info.map;
 }
 
-void CServer::Send_LoginMsg(CCritter* acl, BYTE LogMsg)
+void CServer::Send_LoginMsg(CCritter* acl, uint8_t LogMsg)
 {
 	MSGTYPE msg=NETMSG_LOGMSG;
 	acl->bout << msg;
 	acl->bout << LogMsg;
 }
 
-void CServer::SendA_Move(CCritter* acl, WORD move_params)
+void CServer::SendA_Move(CCritter* acl, uint16_t move_params)
 {
 	acl->info.ori=FLAG(move_params,BIN8(00000111));
 
@@ -90,7 +90,7 @@ void CServer::SendA_Move(CCritter* acl, WORD move_params)
 	}
 }
 
-void CServer::SendA_Action(CCritter* acl, BYTE num_action, BYTE rate_action)
+void CServer::SendA_Action(CCritter* acl, uint8_t num_action, uint8_t rate_action)
 {
 //LogExecStr("Send_Action - BEGIN %d\n",acl->info.id);
 	if(!acl->vis_cl.empty())
@@ -139,7 +139,7 @@ void CServer::SendA_AddObjOnMap(CCritter* acl, dyn_obj* o)
 	if(!acl->vis_cl.empty())
 	{
 		MSGTYPE msg=NETMSG_ADD_OBJECT_ON_MAP;
-		WORD tile_flags=GetTileFlags(o->ACC_HEX.map,o->ACC_HEX.x,o->ACC_HEX.y);
+		uint16_t tile_flags=GetTileFlags(o->ACC_HEX.map,o->ACC_HEX.x,o->ACC_HEX.y);
 		CCritter* c=NULL;
 
 		for(cl_map::iterator it_cl=acl->vis_cl.begin();it_cl!=acl->vis_cl.end();)
@@ -178,7 +178,7 @@ void CServer::SendA_ChangeObjOnMap(CCritter* acl, dyn_obj* o)
 	if(!acl->vis_cl.empty())
 	{
 		MSGTYPE msg=NETMSG_CHANGE_OBJECT_ON_MAP;
-		WORD tile_flags=GetTileFlags(o->ACC_HEX.map,o->ACC_HEX.x,o->ACC_HEX.y);
+		uint16_t tile_flags=GetTileFlags(o->ACC_HEX.map,o->ACC_HEX.x,o->ACC_HEX.y);
 		CCritter* c=NULL;
 
 		for(cl_map::iterator it_cl=acl->vis_cl.begin();it_cl!=acl->vis_cl.end();)
@@ -274,7 +274,7 @@ void CServer::Send_WearObject(CCritter* acl, dyn_obj* send_obj)
 	acl->bout << send_obj->broken_info;
 }
 
-void CServer::Send_Map(CCritter* acl, WORD map_num)
+void CServer::Send_Map(CCritter* acl, uint16_t map_num)
 {
 	LogExecStr("Отправка карты №%d игроку ID №%d...",map_num,acl->info.id);
 
@@ -295,11 +295,11 @@ void CServer::Send_XY(CCritter* acl)
 //LogExecStr("Try connect! Send_XY id=%d\n", acl->info.id);
 }
 
-void CServer::Send_AllParams(CCritter* acl, BYTE type_param)
+void CServer::Send_AllParams(CCritter* acl, uint8_t type_param)
 {
 	//отсылаем ствты которые не равны 0
-	BYTE all_send_params=0;
-	BYTE param=0;
+	uint8_t all_send_params=0;
+	uint8_t param=0;
 
 	switch (type_param)
 	{
@@ -354,7 +354,7 @@ void CServer::Send_AllParams(CCritter* acl, BYTE type_param)
 	}
 }
 
-void CServer::Send_Param(CCritter* acl, BYTE type_param, BYTE num_param)
+void CServer::Send_Param(CCritter* acl, uint8_t type_param, uint8_t num_param)
 {
 	MSGTYPE msg=NETMSG_PARAM;
 	acl->bout << msg;
@@ -381,12 +381,12 @@ void CServer::Send_Talk(CCritter* acl, npc_dialog* send_dialog)
 	acl->bout << msg;
 	if(send_dialog==NULL)
 	{
-		const BYTE zero_byte=0;
+		const uint8_t zero_byte=0;
 		acl->bout << zero_byte;
 		return;
 	}
 //всего вариантов ответа
-	BYTE all_answers=send_dialog->answers.size();
+	uint8_t all_answers=send_dialog->answers.size();
 	acl->bout << all_answers;
 	if(!all_answers) return;
 //основной текст
@@ -396,7 +396,7 @@ void CServer::Send_Talk(CCritter* acl, npc_dialog* send_dialog)
 		acl->bout << (*it_a)->id_text;
 }
 
-void CServer::Send_GlobalInfo(CCritter* acl, BYTE info_flags)
+void CServer::Send_GlobalInfo(CCritter* acl, uint8_t info_flags)
 {
 	LogExecStr("Посылаю данные о глобале...");
 
@@ -413,7 +413,7 @@ void CServer::Send_GlobalInfo(CCritter* acl, BYTE info_flags)
 
 	if(FLAG(info_flags,GM_INFO_CITIES))
 	{
-		WORD count_cities=acl->known_cities.size();
+		uint16_t count_cities=acl->known_cities.size();
 		acl->bout << count_cities;
 
 		city_info* cur_city=NULL;
@@ -430,7 +430,7 @@ void CServer::Send_GlobalInfo(CCritter* acl, BYTE info_flags)
 
 	if(FLAG(info_flags,GM_INFO_CRITS))
 	{
-		BYTE count_group=acl->group_move->crit_move.size();
+		uint8_t count_group=acl->group_move->crit_move.size();
 
 		acl->bout << count_group;
 
@@ -456,21 +456,21 @@ void CServer::Send_GlobalInfo(CCritter* acl, BYTE info_flags)
 		int speed_x=(acl->group_move->speedx*1000000);
 		int speed_y=(acl->group_move->speedy*1000000);
 
-		acl->bout << (WORD)(acl->group_move->xi);
-		acl->bout << (WORD)(acl->group_move->yi);
-		acl->bout << (WORD)(acl->group_move->move_x);
-		acl->bout << (WORD)(acl->group_move->move_y);
+		acl->bout << (uint16_t)(acl->group_move->xi);
+		acl->bout << (uint16_t)(acl->group_move->yi);
+		acl->bout << (uint16_t)(acl->group_move->move_x);
+		acl->bout << (uint16_t)(acl->group_move->move_y);
 		acl->bout << acl->group_move->speed;
 		acl->bout << speed_x;
 		acl->bout << speed_y;
 	}
 
-	acl->bout << (BYTE)(0xAA);
+	acl->bout << (uint8_t)(0xAA);
 
 	LogExecStr("OK\n");
 }
 
-void CServer::SendA_GlobalInfo(gmap_group* group, BYTE info_flags)
+void CServer::SendA_GlobalInfo(gmap_group* group, uint8_t info_flags)
 {
 	CCritter* c=NULL;
 	for(cl_map::iterator it_cr=group->crit_move.begin();it_cr!=group->crit_move.end();++it_cr)
@@ -501,13 +501,13 @@ void CServer::Send_GameTime(CCritter* acl)
 	acl->bout << Game_Year;
 }
 
-void CServer::Send_Text(CCritter* to_acl, char* s_str, BYTE say_param)
+void CServer::Send_Text(CCritter* to_acl, char* s_str, uint8_t say_param)
 {
 	if(!s_str) return;
 
 	MSGTYPE msg=NETMSG_CRITTERTEXT;
 
-	WORD s_len=strlen(s_str);
+	uint16_t s_len=strlen(s_str);
 
 	to_acl->bout << msg;
 	to_acl->bout << to_acl->info.id;
@@ -516,12 +516,12 @@ void CServer::Send_Text(CCritter* to_acl, char* s_str, BYTE say_param)
 	to_acl->bout.Write(s_str,s_len);
 }
 
-void CServer::SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o_str, BYTE say_param)
+void CServer::SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o_str, uint8_t say_param)
 {
 	if(!to_cr->empty())
 	{
 		MSGTYPE msg=NETMSG_CRITTERTEXT;
-		WORD o_len=strlen(o_str);
+		uint16_t o_len=strlen(o_str);
 
 		CCritter* c=NULL;
 

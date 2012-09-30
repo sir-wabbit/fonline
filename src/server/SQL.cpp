@@ -815,7 +815,7 @@ void SQL::ChangeVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, 
 	}
 }
 
-int SQL::CheckVar(CrID crid, WORD var_num, char oper, int count)
+int SQL::CheckVar(CrID crid, uint16_t var_num, char oper, int count)
 {
 	char stradd[256];
 
@@ -880,7 +880,7 @@ int SQL::CheckVar(CrID crid, WORD var_num, char oper, int count)
 	return 0;
 }
 
-void SQL::ChangeVar(CrID crid, WORD var_num, char oper, int count)
+void SQL::ChangeVar(CrID crid, uint16_t var_num, char oper, int count)
 {
 	char stradd[256];
 
@@ -955,7 +955,7 @@ void SQL::ChangeVar(CrID crid, WORD var_num, char oper, int count)
 	LogExecStr("mySQL ChangeVar error mysql_store_result\n");
 }
 
-int SQL::CheckQuest(CrID crid, WORD quest_num, char choose, int count)
+int SQL::CheckQuest(CrID crid, uint16_t quest_num, char choose, int count)
 {
 	char stradd[256];
 
@@ -986,7 +986,7 @@ int SQL::CheckQuest(CrID crid, WORD quest_num, char choose, int count)
 	return 1;
 }
 
-void SQL::ChangeQuest(CrID crid, WORD quest_num, char choose, int count)
+void SQL::ChangeQuest(CrID crid, uint16_t quest_num, char choose, int count)
 {
 	char stradd[256];
 
@@ -1117,7 +1117,7 @@ int SQL::DecodeParams(char* stats, char* skills, char* perks, crit_info* info)
 	return 1;
 }
 
-int SQL::NewObject(dyn_obj* obj, DWORD obj_id)
+int SQL::NewObject(dyn_obj* obj, uint32_t obj_id)
 {
 	if(!obj) return 0;
 
@@ -1166,8 +1166,8 @@ int SQL::NewObject(dyn_obj* obj, DWORD obj_id)
 
 void SQL::SaveDataObject(dyn_obj* obj)
 {
-	DWORD acc1=0;
-	DWORD acc2=0;
+	uint32_t acc1=0;
+	uint32_t acc2=0;
 
 	switch(obj->accessory)
 	{
@@ -1265,7 +1265,7 @@ void SQL::SaveDataObject(dyn_obj* obj)
 	}
 }
 
-int SQL::LoadDataObject(dyn_obj* obj, BYTE obj_type)
+int SQL::LoadDataObject(dyn_obj* obj, uint8_t obj_type)
 {
 //	obj->object->p[0]=GetInt("objects","num_st","id",obj->id);
 	char str[256];
@@ -1317,8 +1317,8 @@ int SQL::LoadDataObject(dyn_obj* obj, BYTE obj_type)
 	mySQL_row=mysql_fetch_row(mySQL_res);
 
 	obj->accessory=atoi(mySQL_row[2]);
-	DWORD acc1=atoi(mySQL_row[3]);
-	DWORD acc2=atoi(mySQL_row[4]);
+	uint32_t acc1=atoi(mySQL_row[3]);
+	uint32_t acc2=atoi(mySQL_row[4]);
 	switch(obj->accessory)
 	{
 	case DOBJ_ACCESSORY_CRIT:

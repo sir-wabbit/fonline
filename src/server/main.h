@@ -9,6 +9,7 @@
 	purpose:	
 *********************************************************************/
 
+#include <stdint.h>
 
 extern int bQuit;
 extern int FOQuit;
@@ -17,7 +18,7 @@ extern HANDLE hUpdateEvent;
 
 #define MAX_BUF_LEN 4096
 
-extern DWORD start_srv_time;
+extern uint32_t start_srv_time;
 extern int logging;
 int LogStart(); //!Cvet
 void LogFinish(); //!Cvet

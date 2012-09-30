@@ -87,10 +87,10 @@ int CServer::RefreshZoneMasks()
 	return 1;
 }
 
-DWORD CServer::GetZoneColor(FileManager* fmngr, int zx, int zy)
+uint32_t CServer::GetZoneColor(FileManager* fmngr, int zx, int zy)
 {
-	static const DWORD HBMP_LEN=54;
-	static const DWORD LINE_LEN=(GM_MAXZONEX*3)+((GM_MAXZONEX*3)%4);
+	static const uint32_t HBMP_LEN=54;
+	static const uint32_t LINE_LEN=(GM_MAXZONEX*3)+((GM_MAXZONEX*3)%4);
 
 	fmngr->SetCurPos(HBMP_LEN+(zx*3)+(GM_MAXZONEY-1-zy)*LINE_LEN);
 
@@ -115,7 +115,7 @@ int CServer::LoadAllMaps()
 
 	char ch;
 
-	WORD tmp_wrd;
+	uint16_t tmp_wrd;
 	char tmp_str[32];
 	int tmp_int=0,city_num=0,encaunter_num=0;
 	
@@ -354,7 +354,7 @@ int CServer::LoadAllMaps()
 
 int CServer::TransitCr(CCritter* acl, int to_map, int to_x, int to_y, int to_ori)
 {
-	WORD old_map=acl->info.map;
+	uint16_t old_map=acl->info.map;
 	if(old_map==to_map) return TR_FALSE;
 
 	HexTYPE old_x=acl->info.x;
@@ -386,8 +386,8 @@ int CServer::MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my)
 
 		if(find_transit!=0xFFFFFFFFFFFFFFFF)
 		{
-			WORD new_map= (find_transit & 0xFFFF0000000000) >> 40;
-			BYTE new_ori= (find_transit & 0x0000FF00000000) >> 32;
+			uint16_t new_map= (find_transit & 0xFFFF0000000000) >> 40;
+			uint8_t new_ori= (find_transit & 0x0000FF00000000) >> 32;
 			HexTYPE new_x=(find_transit & 0x000000FFFF0000) >> 16;
 			HexTYPE new_y=(find_transit & 0x0000000000FFFF);
 
@@ -417,7 +417,7 @@ int CServer::MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my)
 	return MR_STEP;
 }
 
-int CServer::AddCrToMap(CCritter* acl, WORD tmap, HexTYPE tx, HexTYPE ty)
+int CServer::AddCrToMap(CCritter* acl, uint16_t tmap, HexTYPE tx, HexTYPE ty)
 {
 	if(!tmap)
 	{
@@ -538,7 +538,7 @@ LogExecStr(".2.");
 	return TR_OK;
 }
 
-LONGLONG CServer::FindTransit(WORD num_map, HexTYPE num_x, HexTYPE num_y)
+LONGLONG CServer::FindTransit(uint16_t num_map, HexTYPE num_x, HexTYPE num_y)
 {
 	LONGLONG find_transit=0;
 
@@ -582,7 +582,7 @@ void CServer::EraseCrFromMap(CCritter* acl, int num_map, int hex_x, int hex_y)
 //	acl->vis_cl.clear();
 }
 
-void CServer::LMapGarbager(WORD num_map)
+void CServer::LMapGarbager(uint16_t num_map)
 {
 	if(map[num_map].encaunter)
 	{
@@ -695,7 +695,7 @@ int CServer::DelClFromVisVec(CCritter* acl, CCritter* del_cl)
 	return 1;
 }
 
-int CServer::DelClFromAllVisVec(CCritter* del_cl, WORD num_map)
+int CServer::DelClFromAllVisVec(CCritter* del_cl, uint16_t num_map)
 {
 	for(cl_map::iterator it=map_cr[num_map].begin();it!=map_cr[num_map].end();it++)
 	{
@@ -709,7 +709,7 @@ int CServer::DelClFromAllVisVec(CCritter* del_cl, WORD num_map)
 	return 1;
 }
 
-int CServer::LMapGetCoords(BYTE dir_move, HexTYPE cur_hx, HexTYPE cur_hy, HexTYPE& to_hx, HexTYPE& to_hy)
+int CServer::LMapGetCoords(uint8_t dir_move, HexTYPE cur_hx, HexTYPE cur_hy, HexTYPE& to_hx, HexTYPE& to_hy)
 {
 	switch(dir_move)
 	{
@@ -849,7 +849,7 @@ void CServer::EraseObject(dyn_obj* ers_obj, dyn_map::iterator* it_obj)
 }
 */
 
-dyn_obj* CServer::GetDynObj(WORD id_sobj, MapTYPE num_map, HexTYPE num_x, HexTYPE num_y)
+dyn_obj* CServer::GetDynObj(uint16_t id_sobj, MapTYPE num_map, HexTYPE num_x, HexTYPE num_y)
 {
 	DHexTYPE hex_ind;
 	hex_ind=num_x<<16;
@@ -875,16 +875,16 @@ dyn_obj* CServer::GetDynObj(WORD id_sobj, MapTYPE num_map, HexTYPE num_x, HexTYP
 
 void CServer::Process_GiveGlobalInfo(CCritter* acl)
 {
-	BYTE info_flags;
+	uint8_t info_flags;
 	acl->bin >> info_flags;
 	Send_GlobalInfo(acl,info_flags);
 }
 
 void CServer::Process_RuleGlobal(CCritter* acl)
 {
-	BYTE command;
-	DWORD param1;
-	DWORD param2;
+	uint8_t command;
+	uint32_t param1;
+	uint32_t param2;
 
 	acl->bin >> command;
 	acl->bin >> param1;
@@ -936,7 +936,7 @@ void CServer::GM_Process(int max_time)
 {
 	if(max_time<=0) return;
 
-	DWORD cur_time=GetTickCount();
+	uint32_t cur_time=GetTickCount();
 	int cur_zone=0;
 
 	while(true)
@@ -1020,7 +1020,7 @@ int CServer::GM_GroupDelPrepCrit(CCritter* rule_acl, CrID id)
 	return 1;
 }
 
-int CServer::GM_GroupMove(gmap_group* group, DWORD time)
+int CServer::GM_GroupMove(gmap_group* group, uint32_t time)
 {
 	if(group->rule->info.map) return 0; //разрулить!!!
 
@@ -1190,7 +1190,7 @@ void CServer::GM_GroupStartMove(CCritter* rule_acl)
 	//если нпц, то выбираем точку прибытия
 }
 
-int CServer::GM_GroupToMap(CCritter* rule_acl, WORD map_num, HexTYPE shx, HexTYPE shy, BYTE sori)
+int CServer::GM_GroupToMap(CCritter* rule_acl, uint16_t map_num, HexTYPE shx, HexTYPE shy, uint8_t sori)
 {
 	if(!map_num) return 0;
 
@@ -1252,7 +1252,7 @@ int CServer::GM_GroupToMap(CCritter* rule_acl, WORD map_num, HexTYPE shx, HexTYP
 	return 1;
 }
 
-int CServer::GM_GroupToCity(CCritter* rule_acl, WORD city_num, WORD map_count)
+int CServer::GM_GroupToCity(CCritter* rule_acl, uint16_t city_num, uint16_t map_count)
 {
 	if(rule_acl->info.map) return 0;
 	if(!rule_acl->group_move) return 0;
@@ -1301,7 +1301,7 @@ int CServer::GM_GroupToCity(CCritter* rule_acl, WORD city_num, WORD map_count)
 	return 1;
 }
 
-int CServer::GM_GroupToEncaunter(CCritter* rule_acl, WORD num_encaunter)
+int CServer::GM_GroupToEncaunter(CCritter* rule_acl, uint16_t num_encaunter)
 {
 	if(rule_acl->info.map) return 0;
 	if(!rule_acl->group_move) return 0;
@@ -1319,7 +1319,7 @@ int CServer::GM_GroupToEncaunter(CCritter* rule_acl, WORD num_encaunter)
 	{
 		if(encaunters_free.empty()) return 0;
 
-		WORD district=gm_zone[GM_ZONE(rule_acl->group_move->xi)][GM_ZONE(rule_acl->group_move->yi)].district;
+		uint16_t district=gm_zone[GM_ZONE(rule_acl->group_move->xi)][GM_ZONE(rule_acl->group_move->yi)].district;
 		word_set::iterator it_en;
 		for(it_en=encaunters_free.begin();it_en!=encaunters_free.end();++it_en)
 			if(encaunter[(*it_en)].district & district)
@@ -1406,7 +1406,7 @@ int CServer::GM_GroupToGemmate(CCritter* rule_acl)
 	//if(!cur_group->crit.size()) cur_zone->groups.erase(it_g);
 //}
 
-void CServer::GM_GroupSetSpeed(CCritter* rule_acl, BYTE speed)
+void CServer::GM_GroupSetSpeed(CCritter* rule_acl, uint8_t speed)
 {
 	if(rule_acl->info.map) return;
 	if(!rule_acl->group_move) return;

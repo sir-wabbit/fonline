@@ -28,7 +28,7 @@ typedef std::map<CrTYPE, char*> ctypes_map; //!Cvet перенес сюда
 struct MYVERTEX
 {
 	FLOAT x,y,z,rhw;
-	DWORD Diffuse;
+	uint32_t Diffuse;
 	FLOAT tu,tv;
 
 	MYVERTEX(): x(0),y(0),z(0),rhw(1),tu(0),tv(0),Diffuse(0){};
@@ -53,17 +53,17 @@ struct SpriteInfo
 {
 	LPDIRECT3DTEXTURE8 lpSurf;
 	FLTRECT spr_rect;
-	WORD w,h;
+	uint16_t w,h;
 	short offs_x,offs_y;
 	SpriteInfo(): lpSurf(NULL),w(0),h(0),offs_x(0),offs_y(0){};
 };
 
-typedef std::map<WORD, SpriteInfo*> sprinfo_map;
+typedef std::map<uint16_t, SpriteInfo*> sprinfo_map;
 
 struct OneSurface
 {
 	LPDIRECT3DTEXTURE8 lpSurf;
-	WORD cnt;
+	uint16_t cnt;
 	OneSurface(LPDIRECT3DTEXTURE8 lps):lpSurf(lps),cnt(1){};
 };
 typedef std::vector<OneSurface*> onesurf_vec;
@@ -71,17 +71,17 @@ typedef std::vector<OneSurface*> onesurf_vec;
 struct PrepSprite
 {
 	int scr_x, scr_y;
-	WORD spr_id;
-	WORD* lp_sprid;
+	uint16_t spr_id;
+	uint16_t* lp_sprid;
 	short* lp_ox;
 	short* lp_oy;
-	BYTE* alpha; //!Cvet
+	uint8_t* alpha; //!Cvet
 
 	PrepSprite() {};
-	PrepSprite(int x, int y, WORD id,WORD* lpid=NULL,short* alp_ox=NULL,short* alp_oy=NULL, BYTE* _alpha=NULL): 
+	PrepSprite(int x, int y, uint16_t id,uint16_t* lpid=NULL,short* alp_ox=NULL,short* alp_oy=NULL, uint8_t* _alpha=NULL): 
 	scr_x(x), scr_y(y), spr_id(id),lp_sprid(lpid),lp_ox(alp_ox),lp_oy(alp_oy),alpha(_alpha) {};
 };
-typedef std::multimap<DWORD, PrepSprite*> dtree_map;
+typedef std::multimap<uint32_t, PrepSprite*> dtree_map;
 
 typedef std::vector<PrepSprite*> spr_vec; //!Cvet
 typedef std::vector<spr_vec> spr_vec_vec; //!Cvet
@@ -90,12 +90,12 @@ typedef std::vector<spr_vec> spr_vec_vec; //!Cvet
 
 struct CritFrames 
 {
-	WORD* ind; //индексы кадров анимации
-	WORD dir_offs[6]; //смещения в индексах для всех 6-ти направлений.
+	uint16_t* ind; //индексы кадров анимации
+	uint16_t dir_offs[6]; //смещения в индексах для всех 6-ти направлений.
 	short *next_x;//смещение кадров относительно предыдущих
 	short *next_y;//смещение кадров относительно предыдущих
-	BYTE cnt_frames; //кол-во кадров в анимации на каждое направление
-	WORD ticks;
+	uint8_t cnt_frames; //кол-во кадров в анимации на каждое направление
+	uint16_t ticks;
 
 	CritFrames(): ind(NULL),next_x(NULL),next_y(NULL){};
 	~CritFrames(){SAFEDELA(ind);SAFEDELA(next_x);SAFEDELA(next_y);};
@@ -108,11 +108,11 @@ struct AnyFrames
 	short offs_x; //!Cvet
 	short offs_y; //!Cvet
 
-	WORD* ind; //индексы кадров анимации
+	uint16_t* ind; //индексы кадров анимации
 	short *next_x;//смещение кадров относительно предыдущих
 	short *next_y;//смещение кадров относительно предыдущих
-	BYTE cnt_frames; //кол-во кадров в анимации
-	WORD ticks;// периоды анимаций
+	uint8_t cnt_frames; //кол-во кадров в анимации
+	uint16_t ticks;// периоды анимаций
 
 	AnyFrames(): ind(NULL),next_x(NULL),next_y(NULL),offs_x(0),offs_y(0){};
 	~AnyFrames(){SAFEDELA(ind);SAFEDELA(next_x);SAFEDELA(next_y);};
@@ -126,14 +126,14 @@ struct PrepPix
 	short y;
 	short* lp_ox;
 	short* lp_oy;
-	WORD* lp_ox2;
-	WORD* lp_oy2;
+	uint16_t* lp_ox2;
+	uint16_t* lp_oy2;
 
-	DWORD color;
+	uint32_t color;
 
 	PrepPix():x(0),y(0),color(0),lp_ox(NULL),lp_oy(NULL),lp_ox2(NULL),lp_oy2(NULL){};
-	PrepPix(short _x, short _y, DWORD _color,
-		short* _lp_ox=NULL, short* _lp_oy=NULL, WORD* _lp_ox2=NULL, WORD* _lp_oy2=NULL):
+	PrepPix(short _x, short _y, uint32_t _color,
+		short* _lp_ox=NULL, short* _lp_oy=NULL, uint16_t* _lp_ox2=NULL, uint16_t* _lp_oy2=NULL):
 	x(_x),y(_y),color(_color),lp_ox(_lp_ox),lp_oy(_lp_oy),lp_ox2(_lp_ox2),lp_oy2(_lp_oy2){};
 };
 
@@ -158,20 +158,20 @@ public:
 	int LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,SpriteInfo** ppInfo = NULL);
 
 	void NextSurface();
-	SpriteInfo* GetSpriteInfo(WORD id) {return spr_data[id];};
+	SpriteInfo* GetSpriteInfo(uint16_t id) {return spr_data[id];};
 
-	int PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lplpBuf,onesurf_vec* lpsvec, DWORD color=NULL, BYTE alpha=NULL); //!Cvet DWORD color
+	int PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lplpBuf,onesurf_vec* lpsvec, uint32_t color=NULL, uint8_t alpha=NULL); //!Cvet uint32_t color
 
 	int Flush();
 
-	int DrawSprite(WORD id, int x, int y, DWORD color, DWORD alpha=NULL); //!Cvet DWORD color DWORD alpha
-    int DrawSpriteSize(WORD id, int x, int y,double size, DWORD color); // Динамически масштабирует //!Cvet DWORD color
+	int DrawSprite(uint16_t id, int x, int y, uint32_t color, uint32_t alpha=NULL); //!Cvet uint32_t color uint32_t alpha
+    int DrawSpriteSize(uint16_t id, int x, int y,double size, uint32_t color); // Динамически масштабирует //!Cvet uint32_t color
 	void DrawTreeCntr(dtree_map* lpdtree);
-	void DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lpsvec, WORD cnt);
+	void DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lpsvec, uint16_t cnt);
 
-	DWORD GetLoadedCnt() {return spr_data.size();};
+	uint32_t GetLoadedCnt() {return spr_data.size();};
 
-	void SetColor(DWORD c){col=c;};
+	void SetColor(uint32_t c){col=c;};
 
 	LPDIRECT3DVERTEXBUFFER8 GetVB() {return lpVB;};
 	LPDIRECT3DINDEXBUFFER8 GetIB() {return lpIB;};
@@ -188,8 +188,8 @@ public:
 	ctypes_map crit_types;
 	CritFrames* CrAnim[150][27][27];
 	int LoadCritTypes();
-	int LoadAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2);
-	int EraseAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2);
+	int LoadAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
+	int EraseAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
 
 	int CheckPixTransp();
 
@@ -207,13 +207,13 @@ private:
 	onesurf_vec call_vec;
 	OneSurface* last_call;
 
-	DWORD next_id;
+	uint32_t next_id;
 
 	LPDIRECT3DTEXTURE8 last_surf;
 	LPDIRECT3DTEXTURE8 cur_surf;
-	WORD last_w,last_h;//размеры загружаемой тестуры
-	WORD busy_w,busy_h;//размеры занятой области
-	WORD free_x,free_y;//размеры занятой области
+	uint16_t last_w,last_h;//размеры загружаемой тестуры
+	uint16_t busy_w,busy_h;//размеры занятой области
+	uint16_t free_x,free_y;//размеры занятой области
   
 	int spr_cnt;//на сколько спрайтов рассчитан. при достижении рисуется сам.
 	int cur_pos;//текущая позиция записи.
@@ -226,11 +226,11 @@ private:
 	//Буфер вершин в системной памяти для постоянно меняющихся спрайтов
 	MYVERTEX* lpWaitBuf;
 
-	LPDIRECT3DTEXTURE8 CreateNewSurf(WORD w, WORD h);
+	LPDIRECT3DTEXTURE8 CreateNewSurf(uint16_t w, uint16_t h);
 
 	FileManager fm;
 
-	DWORD col;
+	uint32_t col;
 };
 
 #endif

@@ -15,9 +15,9 @@ private:
 //!Cvet comment
 //	int hFile; // file handle, can be anything, e.g. ptr to reader-object
 //!Cvet create
-	int str_read (BYTE** d_stream, int d_size, BYTE* f_stream);
-	BYTE* hFile;
-	DWORD fileLen;
+	int str_read (uint8_t** d_stream, int d_size, uint8_t* f_stream);
+	uint8_t* hFile;
+	uint32_t fileLen;
 	int fileCur;
 
 	unsigned char *fileBuffPtr, *buffPos; // pointer to file buffer and current position
@@ -72,7 +72,7 @@ private:
 public:
 //!Cvet
 //	CACMUnpacker (FileReadFunction readFunc, int fileHandle, int &channels, int &frequency, int &samples);
-	CACMUnpacker (BYTE* fileHandle, DWORD fileLenght, int &channels, int &frequency, int &samples); //!Cvet
+	CACMUnpacker (uint8_t* fileHandle, uint32_t fileLenght, int &channels, int &frequency, int &samples); //!Cvet
 		// samples = count of sound samples (one sample is 16bits)
 	~CACMUnpacker() {
 //!Cvet comment

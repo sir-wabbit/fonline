@@ -70,7 +70,7 @@
 
 struct tile_info
 {
-	WORD flags;
+	uint16_t flags;
 
 	tile_info():flags(0){};
 };
@@ -80,22 +80,22 @@ struct encaunter_info;
 
 struct map_info
 {
-	WORD num;
-	WORD flags[MAXHEXX][MAXHEXY];
+	uint16_t num;
+	uint16_t flags[MAXHEXX][MAXHEXY];
 
-	WORD wx;
-	WORD wy;
+	uint16_t wx;
+	uint16_t wy;
 
 	HexTYPE start_hex_x;
 	HexTYPE start_hex_y;
-	BYTE start_ori;
+	uint8_t start_ori;
 
 	city_info* city;
 	encaunter_info* encaunter;
 
 	map_info():num(0),wx(0),wy(0),city(NULL),encaunter(NULL),start_hex_x(0),start_hex_y(0),start_ori(0)
 		{for(int i=0;i<MAXHEXX;++i)for(int i2=0;i2<MAXHEXY;++i2)flags[i][i2]=0;};
-//	map_info(WORD _num, WORD _wx,WORD _wy,city_info* _city,HexTYPE _start_hex_x,HexTYPE _start_hex_y,BYTE _start_ori):
+//	map_info(uint16_t _num, uint16_t _wx,uint16_t _wy,city_info* _city,HexTYPE _start_hex_x,HexTYPE _start_hex_y,uint8_t _start_ori):
 //		num(_num),wx(_wx),wy(_wy),city(_city),start_hex_x(_start_hex_x),start_hex_y(_start_hex_y),start_ori(_start_ori)
 //		{for(int i=0;i<MAXHEXX;++i)for(int i2=0;i2<MAXHEXY;++i2)flags[i][i2]=0;};
 };
@@ -107,11 +107,11 @@ struct gmap_zone;
 struct city_info
 {
 	//for city
-	WORD num;
-	WORD wx;
-	WORD wy;
-	BYTE radius;
-	WORD steal;
+	uint16_t num;
+	uint16_t wx;
+	uint16_t wy;
+	uint8_t radius;
+	uint16_t steal;
 
 	int population;
 	int life_level;
@@ -119,7 +119,7 @@ struct city_info
 	map_vec maps;
 
 	city_info():num(0),wx(0),wy(0),radius(0),population(0),life_level(0),steal(0){};
-//	city_info(WORD _num,WORD _wx,WORD _wy,BYTE _radius,int _population,int _life_level):num(_num),wx(_wx),wy(_wy),radius(_radius),
+//	city_info(uint16_t _num,uint16_t _wx,uint16_t _wy,uint8_t _radius,int _population,int _life_level):num(_num),wx(_wx),wy(_wy),radius(_radius),
 //		population(_population),life_level(_life_level){};
 	~city_info(){maps.clear();};//!!!del for maps
 };
@@ -132,14 +132,14 @@ struct gmap_zone
 
 	city_vec cities;
 	
-	WORD district;
-	WORD mobs_power;
+	uint16_t district;
+	uint16_t mobs_power;
 
-	DWORD last_tick;
+	uint32_t last_tick;
 
 	int worn_lev;
-	WORD zx;
-	WORD zy;
+	uint16_t zx;
+	uint16_t zy;
 
 	gmap_zone():last_tick(0),worn_lev(0),zx(0),zy(0),district(DISTRICT_WESTLAND),mobs_power(1){};
 	~gmap_zone(){groups.clear();cities.clear();};
@@ -147,14 +147,14 @@ struct gmap_zone
 
 struct encaunter_info
 {
-	WORD num;
-	WORD district;
-	WORD max_groups;
-	WORD count_groups;
+	uint16_t num;
+	uint16_t district;
+	uint16_t max_groups;
+	uint16_t count_groups;
 
 	HexTYPE start_hx[ENCAUNTERS_MAX_GROUPS];
 	HexTYPE start_hy[ENCAUNTERS_MAX_GROUPS];
-	BYTE start_ori[ENCAUNTERS_MAX_GROUPS];
+	uint8_t start_ori[ENCAUNTERS_MAX_GROUPS];
 
 	map_info* emap;
 
@@ -164,12 +164,12 @@ struct encaunter_info
 
 struct gmap_dot
 {
-	BYTE relief;
+	uint8_t relief;
 
 	gmap_dot():relief(100){};
 };
 
-typedef map<WORD, string, less<WORD> > map_str_map;
+typedef map<uint16_t, string, less<uint16_t> > map_str_map;
 
 typedef map<DHexTYPE, LONGLONG, less<DHexTYPE> > longlong_map;
 
@@ -265,12 +265,12 @@ class CServer
 	void Skill_Sneak_UnSet(CCritter* acl);
 
 //Действия
-	int Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id);
+	int Act_Attack(CCritter* acl, uint8_t rate_object, CrID target_id);
 
-	void UseDefObj(CCritter* acl, BYTE slot);
+	void UseDefObj(CCritter* acl, uint8_t slot);
 
 //Работа с криттерами, чтобы было нормально обращение со скриптов должны быть static
-	static int Crit_FindTarget(CCritter* acl, BYTE flags);
+	static int Crit_FindTarget(CCritter* acl, uint8_t flags);
 	static int Crit_FreeTarget(CCritter* acl);
 	static int Crit_IsTarget(CCritter* acl);
 	static int Crit_IsSelfTarget(CCritter* acl);
@@ -281,9 +281,9 @@ class CServer
 	static int Crit_Wait(CCritter* acl, int ms);
 	static int Crit_MoveRandom(CCritter* acl);
 
-	static int Crit_GetStat(CCritter* acl, BYTE num_stat);
-	static int Crit_GetSkill(CCritter* acl, BYTE num_skill);
-	static int Crit_GetPerk(CCritter* acl, BYTE num_perk);
+	static int Crit_GetStat(CCritter* acl, uint8_t num_stat);
+	static int Crit_GetSkill(CCritter* acl, uint8_t num_skill);
+	static int Crit_GetPerk(CCritter* acl, uint8_t num_perk);
 
 
 //==============================================================================================================================
@@ -295,7 +295,7 @@ class CServer
 	dyn_map all_obj; //вся динамика объектов в игре
 
 //Текущий ИД
-	DWORD cur_obj_id;
+	uint32_t cur_obj_id;
 
 //статика
 	int LoadAllStaticObjects();
@@ -304,13 +304,13 @@ class CServer
 	int LoadAllObj(); //загрузка динамических объектов из mySQL
 	void SaveAllObj(); //запись динамических объектов в mySQL
 
-	void DeleteObj(DWORD id_obj); //удаление объекта
-	void CreateObjToPl(CrID c_pl_idchannel, WORD num_st_obj); //создание объекта на тайле
-	void CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, WORD num_st_obj); //создание объекта у игрока
+	void DeleteObj(uint32_t id_obj); //удаление объекта
+	void CreateObjToPl(CrID c_pl_idchannel, uint16_t num_st_obj); //создание объекта на тайле
+	void CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, uint16_t num_st_obj); //создание объекта у игрока
 
 	void SetVisibleObj(CCritter* acl);
-	int AddObjIntoListInd(CCritter* acl, DWORD add_ind);
-	int DelObjFromListInd(CCritter* acl, DWORD del_ind);
+	int AddObjIntoListInd(CCritter* acl, uint32_t add_ind);
+	int DelObjFromListInd(CCritter* acl, uint32_t del_ind);
 
 //обмен объектами
 	void TransferDynObjPlPl(CCritter* from_acl, CCritter* to_acl, dyn_obj* obj);
@@ -325,12 +325,12 @@ class CServer
 	void Send_RemoveCritter(CCritter* acl, CrID id); //Oleg
 
 	void Send_LoadMap(CCritter* acl);
-	void Send_LoginMsg(CCritter* acl, BYTE LogMsg);
+	void Send_LoginMsg(CCritter* acl, uint8_t LogMsg);
 
 	void Send_XY(CCritter* acl);
-	void SendA_Move(CCritter* acl, WORD move_params);
+	void SendA_Move(CCritter* acl, uint16_t move_params);
 
-	void SendA_Action(CCritter* acl, BYTE num_action, BYTE rate_object);
+	void SendA_Action(CCritter* acl, uint8_t num_action, uint8_t rate_object);
 
 	void Send_AddObjOnMap(CCritter* acl, dyn_obj* o);
 	void SendA_AddObjOnMap(CCritter* acl, dyn_obj* o);
@@ -343,20 +343,20 @@ class CServer
 	void Send_RemObject(CCritter* acl, dyn_obj* send_obj);
 	void Send_WearObject(CCritter* acl, dyn_obj* send_obj);
 
-	void Send_GlobalInfo(CCritter* acl, BYTE info_flags);
-	void SendA_GlobalInfo(gmap_group* group, BYTE info_flags);
+	void Send_GlobalInfo(CCritter* acl, uint8_t info_flags);
+	void SendA_GlobalInfo(gmap_group* group, uint8_t info_flags);
 
-	void Send_AllParams(CCritter* acl, BYTE type_param);
-	void Send_Param(CCritter* acl, BYTE type_param, BYTE num_param);
+	void Send_AllParams(CCritter* acl, uint8_t type_param);
+	void Send_Param(CCritter* acl, uint8_t type_param, uint8_t num_param);
 
 	void Send_Talk(CCritter* acl, npc_dialog* send_dialog);
 
-	void Send_Map(CCritter* acl, WORD map_num);
+	void Send_Map(CCritter* acl, uint16_t map_num);
 
 	void Send_GameTime(CCritter* acl);
 
-	void Send_Text(CCritter* to_acl, char* s_str, BYTE say_param);
-	void SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o_str, BYTE say_param);
+	void Send_Text(CCritter* to_acl, char* s_str, uint8_t say_param);
+	void SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o_str, uint8_t say_param);
 
 // просто - список видимых клиентов
 // крик - список карты
@@ -375,7 +375,7 @@ class CServer
 
 	void NPC_Process(CCritter* npc);
 
-	void NPC_Dialog_Close(CCritter* npc, CCritter* acl, BYTE onhead_say);
+	void NPC_Dialog_Close(CCritter* npc, CCritter* acl, uint8_t onhead_say);
 	int  NPC_Dialog_Compile(CCritter* npc, CCritter* acl, npc_dialog* new_dlg);
 	int  NPC_Check_demand(CCritter* npc, CCritter* acl, answer* check_answ);
 	void NPC_Use_result(CCritter* npc, CCritter* acl, answer* use_answ);
@@ -397,9 +397,9 @@ class CServer
 	int MOBs_LoadAllGroups();
 
 	void MOBs_Proccess();
-	int MOBs_AddToEncaunter(WORD num_encaunter, BYTE mobs_level);
-	void MOBs_EraseFromMap(WORD num_map);
-	void MOBs_RefreshGroup(WORD num_group);
+	int MOBs_AddToEncaunter(uint16_t num_encaunter, uint8_t mobs_level);
+	void MOBs_EraseFromMap(uint16_t num_map);
+	void MOBs_RefreshGroup(uint16_t num_group);
 
 	mobs_group mobs_gr[MOBS_MAX_GROUPS];
 
@@ -409,7 +409,7 @@ class CServer
 
 //Init LMAP,GMAP
 	int RefreshZoneMasks();
-	DWORD GetZoneColor(FileManager* fmngr, int zx, int zy);
+	uint32_t GetZoneColor(FileManager* fmngr, int zx, int zy);
 	int LoadAllMaps();
 
 //Net proccess
@@ -419,20 +419,20 @@ class CServer
 //GMAP
 	void GM_Process(int max_time);
 	void GM_GroupStartMove(CCritter* rule_acl);
-	int  GM_GroupToMap(CCritter* rule_acl, WORD map_num, HexTYPE shx, HexTYPE shy, BYTE sori);
-	int  GM_GroupToCity(CCritter* rule_acl, WORD city_num, WORD map_count);
-	int  GM_GroupToEncaunter(CCritter* rule_acl, WORD num_encaunter);
+	int  GM_GroupToMap(CCritter* rule_acl, uint16_t map_num, HexTYPE shx, HexTYPE shy, uint8_t sori);
+	int  GM_GroupToCity(CCritter* rule_acl, uint16_t city_num, uint16_t map_count);
+	int  GM_GroupToEncaunter(CCritter* rule_acl, uint16_t num_encaunter);
 	int  GM_GroupAddPrepCrit(CCritter* rule_acl, CrID id);
 	int  GM_GroupDelPrepCrit(CCritter* rule_acl, CrID id);
 	void GM_GroupSetMove(CCritter* rule_acl, int gx, int gy);
 	void GM_GroupStopMove(CCritter* rule_acl);
-	void GM_GroupSetSpeed(CCritter* rule_acl, BYTE speed);
+	void GM_GroupSetSpeed(CCritter* rule_acl, uint8_t speed);
 	int  GM_GroupToGemmate(CCritter* rule_acl);
 	void GM_GroupZeroParams(gmap_group* group);
-	int  GM_GroupMove(gmap_group* group, DWORD time);
+	int  GM_GroupMove(gmap_group* group, uint32_t time);
 	void GM_GroupAddToZone(gmap_group* group, int zx, int zy);
 //	void GM_GroupScanZone(gmap_group* group);
-	map_info* GM_GetMap(WORD cur_map){return &map[cur_map];};
+	map_info* GM_GetMap(uint16_t cur_map){return &map[cur_map];};
 
 	city_info city[MAX_CITIES];
 	encaunter_info encaunter[MAX_ENCAUNTERS];
@@ -447,34 +447,34 @@ class CServer
 
 //LMAP CRITS
 	int MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my);
-	int AddCrToMap(CCritter* acl, WORD tmap, HexTYPE tx, HexTYPE ty);
+	int AddCrToMap(CCritter* acl, uint16_t tmap, HexTYPE tx, HexTYPE ty);
 	void EraseCrFromMap(CCritter* acl, int num_map, int hex_x, int hex_y);
 
 	tile_info* GetTile(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y){return &tile[num_map][num_x][num_y];}
-	WORD GetTileFlags(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y){return tile[num_map][num_x][num_y].flags;};
+	uint16_t GetTileFlags(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y){return tile[num_map][num_x][num_y].flags;};
 
-	void SetTileFlag(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y, WORD flag){SETFLAG(tile[num_map][num_x][num_y].flags,flag);};
-	void UnSetTileFlag(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y, WORD flag){UNSETFLAG(tile[num_map][num_x][num_y].flags,flag);};
+	void SetTileFlag(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y, uint16_t flag){SETFLAG(tile[num_map][num_x][num_y].flags,flag);};
+	void UnSetTileFlag(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y, uint16_t flag){UNSETFLAG(tile[num_map][num_x][num_y].flags,flag);};
 
 	void SetVisCr(CCritter* acl);
 	int AddClIntoVisVec(CCritter* acl, CCritter* add_cl);
 	int DelClFromVisVec(CCritter* acl, CCritter* del_cl);
-	int DelClFromAllVisVec(CCritter* del_cl, WORD num_map);
+	int DelClFromAllVisVec(CCritter* del_cl, uint16_t num_map);
 
 	cl_map map_cr[MAX_MAPS];
 
 	int TransitCr(CCritter* acl, int to_map, int to_x, int to_y, int to_ori);
 
-	LONGLONG FindTransit(WORD num_map, HexTYPE num_x, HexTYPE num_y);
+	LONGLONG FindTransit(uint16_t num_map, HexTYPE num_x, HexTYPE num_y);
 	longlong_map transit_map[MAX_MAPS];
 
 	map_str_map map_str;
 
 	tile_info tile[MAX_MAPS][MAXHEXX][MAXHEXY];
 
-	void LMapGarbager(WORD num_map);
+	void LMapGarbager(uint16_t num_map);
 
-	int LMapGetCoords(BYTE dir_move, HexTYPE cur_hx, HexTYPE cur_hy, HexTYPE& to_hx, HexTYPE& to_hy);
+	int LMapGetCoords(uint8_t dir_move, HexTYPE cur_hx, HexTYPE cur_hy, HexTYPE& to_hx, HexTYPE& to_hy);
 
 //LMAP OBJECTS
 	void InsertObjOnMap(dyn_obj* ins_obj, MapTYPE omap, HexTYPE ox, HexTYPE oy);
@@ -483,7 +483,7 @@ class CServer
 
 	dyn_map_map objects_map[MAX_MAPS];
 
-	dyn_obj* GetDynObj(WORD id_sobj, MapTYPE num_map, HexTYPE num_x, HexTYPE num_y);
+	dyn_obj* GetDynObj(uint16_t id_sobj, MapTYPE num_map, HexTYPE num_x, HexTYPE num_y);
 
 //==============================================================================================================================
 //*****  SERVER by Oleg && Cvet  ***********************************************************************************************
@@ -511,7 +511,7 @@ class CServer
 
 	void Process_GetText(CCritter* acl);
 
-	int GetCmdNum(char* cmd, BYTE access_level); //!Cvet + int access_level
+	int GetCmdNum(char* cmd, uint8_t access_level); //!Cvet + int access_level
 
 	char* GetParam(char* cmdstr,char** next);
 	char* my_strlwr(char* str);
@@ -519,12 +519,12 @@ class CServer
 	int PartialRight(char* str,char* et);
 	char* MakeName(char* str,char* str2);
 
-	void ProcessSocial(CCritter* sender,WORD socid,char* aparam);
+	void ProcessSocial(CCritter* sender,uint16_t socid,char* aparam);
 	CCritter* LocateByPartName(char* name);
 
 	char inBUF[2048];
 	char *outBUF;
-	DWORD outLEN;
+	uint32_t outLEN;
 
 	// Для того чтобы исключить повторный сигнал о подключение уже
 	// присутствующего игрока на сервере, ид посл-го подключенного.
@@ -538,10 +538,10 @@ class CServer
 
 //Игровое время
 	SYSTEMTIME sys_time;
-	WORD Game_Time;
-	BYTE Game_Day;
-	BYTE Game_Month;
-	WORD Game_Year;
+	uint16_t Game_Time;
+	uint8_t Game_Day;
+	uint8_t Game_Month;
+	uint16_t Game_Year;
 
 //Слежение за читерством
 	void SetCheat(CCritter* acl, char* cheat_message);
