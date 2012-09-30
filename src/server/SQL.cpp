@@ -7,7 +7,7 @@
 *********************************************************************/
 
 #include "stdafx.h"
-#include <base/ini_file.hpp>
+#include <IniFile/IniFile.hpp>
 #include "SQL.h"
 
 SQL::SQL()
@@ -28,7 +28,7 @@ int SQL::Init_mySQL()
 
   std::string load_char;
 
-  using namespace fonline::ini;
+  using namespace IniFile;
 
   RecordMap ini;
   LoadINI("./data/server.ini", ini);
