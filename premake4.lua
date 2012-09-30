@@ -81,9 +81,9 @@ solution "fonline-open-source"
     defines { "NDEBUG" }
     flags { "Optimize" }
     
-  configuration "vs2010 or vs2008"
-    defines { "_CRT_SECURE_NO_WARNINGS",
-              "_CRT_NONSTDC_NO_DEPRECATE" }
+  configuration { "windows" }
+    defines { "WIN32", "_WIN32" }
+    defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
     
   configuration "windows"
     defines "HAVE_VSNPRINTF"
@@ -181,3 +181,13 @@ solution "fonline-open-source"
       "src/base/**.cpp",
       "src/base/**.rc"
     }
+  
+  project "IniFile"
+    kind "SharedLib"
+    language "C++"
+    
+    defines "INIFILE_DLL"
+    
+    includedirs { "src" }
+    files { "src/IniFile/*.cpp",
+            "src/IniFile/*.hpp" }
