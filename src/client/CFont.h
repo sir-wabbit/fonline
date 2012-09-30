@@ -14,8 +14,8 @@
 
 struct Letter
 {
-  WORD dx,dy;
-  BYTE w,h;
+  uint16_t dx,dy;
+  uint8_t w,h;
   short y_offs;
   Letter():dx(0),dy(0),w(0),h(0){};
 };
@@ -61,7 +61,7 @@ public:
 	void PreRestore();
 	void PostRestore(LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB);
 
-	void MyDrawText(RECT r,char* astr,DWORD flags, DWORD col=NULL, int num_font=FONT_DEF);
+	void MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col=NULL, int num_font=FONT_DEF);
   
 	
      CFOFont();

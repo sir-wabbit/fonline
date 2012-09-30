@@ -23,7 +23,7 @@ struct Sound
 	IDirectSoundBuffer* buf;
 };
 
-typedef std::map<WORD, Sound*> sound_map;
+typedef std::map<uint16_t, Sound*> sound_map;
 
 class CSoundMngr
 {
@@ -40,23 +40,23 @@ public:
 
 	int LoadSound(char* fname, int TypePath);
 
-	void PlaySound(WORD id);
-//	void PlaySound(WORD id, WORD loop, bool erase);
-	void StopSound(WORD id);
-	void PauseSound(WORD id);
+	void PlaySound(uint16_t id);
+//	void PlaySound(uint16_t id, uint16_t loop, bool erase);
+	void StopSound(uint16_t id);
+	void PauseSound(uint16_t id);
 
-	void EraseSound(WORD id);
+	void EraseSound(uint16_t id);
 
 	IDirectSound8 *lpDS;
 
 	sound_map sounds;
-	WORD cur_snd;
+	uint16_t cur_snd;
 
 private:
 
-	int LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, DWORD* size_data);
-	int LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, DWORD* size_data);
-	int LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, DWORD* size_data, char* ogg_path);
+	int LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data);
+	int LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data);
+	int LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data, char* ogg_path);
 
 	FileManager fm;
 

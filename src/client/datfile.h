@@ -26,7 +26,7 @@ public:
   }
 };
 
-typedef std::map<char*, BYTE*, compare> index_map;
+typedef std::map<char*, uint8_t*, compare> index_map;
 
 struct IndexMap 
 {
@@ -44,23 +44,23 @@ public:
 
    char Datname[1024];
 
-   BYTE  FileType; //если там 1, то файл считается компрессированым(не всегда).
-   DWORD RealSize; //Размер файла без декомпрессии
-   DWORD PackedSize; //Размер сжатого файла
-   DWORD Offset; //Адрес файла в виде смещения от начала DAT-файла.
+   uint8_t  FileType; //если там 1, то файл считается компрессированым(не всегда).
+   uint32_t RealSize; //Размер файла без декомпрессии
+   uint32_t PackedSize; //Размер сжатого файла
+   uint32_t Offset; //Адрес файла в виде смещения от начала DAT-файла.
 
    bool lError;
    UINT ErrorType;
 
    HANDLE h_in; //Handles: (DAT) files
 
-   BYTE *m_pInBuf;
+   uint8_t *m_pInBuf;
 
    ULONG FileSizeFromDat;
    ULONG TreeSize;
    ULONG FilesTotal;
 
-   BYTE* ptr, *buff,*ptr_end;
+   uint8_t* ptr, *buff,*ptr_end;
    //in buff - DATtree, ptr - pointer
 
    CFile* reader; // reader for current file in DAT-archive
@@ -73,11 +73,11 @@ public:
 
    bool DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
                                                    LPDWORD lpNumberOfBytesRead);
-   bool DATSetFilePointer(LONG lDistanceToMove, DWORD dwMoveMethod);
+   bool DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod);
    
-   DWORD DATGetFileSize();
+   uint32_t DATGetFileSize();
 
-   void RevDw(DWORD *addr);
+   void RevDw(uint32_t *addr);
    void ShowError();
 
    TDatFile(char* filename);

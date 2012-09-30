@@ -16,9 +16,9 @@
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-const BYTE DLG_HOLD_NONE	=0;
-const BYTE DLG_HOLD_MAIN	=1;
-const BYTE DLG_HOLD_ANSW	=2;
+const uint8_t DLG_HOLD_NONE	=0;
+const uint8_t DLG_HOLD_MAIN	=1;
+const uint8_t DLG_HOLD_ANSW	=2;
 
 char* LoginMess[50]=
 {
@@ -697,7 +697,7 @@ int CFEngine::Init_Iface()
 
 //Звуки
 TICK gtime=GetTickCount();
-//	WORD snd1;
+//	uint16_t snd1;
 //	if(!(snd1=sdm.LoadSound("01.ogg",PT_SND_MUSIC)))
 //	{
 //		WriteLog("OGG FALSE\n");
@@ -1251,7 +1251,7 @@ int CFEngine::IntMouseUp()
 
 void CFEngine::IntMouseMove()
 {
-	static DWORD mouse_stay=GetTickCount();
+	static uint32_t mouse_stay=GetTickCount();
 	static int x_stay=cur_x;
 	static int y_stay=cur_y;
 
@@ -1289,7 +1289,7 @@ void CFEngine::IntMouseMove()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::AddMess(DWORD text_color,char* message_text, ...)
+void CFEngine::AddMess(uint32_t text_color,char* message_text, ...)
 {
 	if(++max_mess>=MAX_MESS)
 	{
@@ -1427,7 +1427,7 @@ void CFEngine::LogInput()
 		if(LogFocus==1)
 		{
 			int fnd=0;
-			for(WORD tst=0;tst<DI_BUF_SIZE;tst++)
+			for(uint16_t tst=0;tst<DI_BUF_SIZE;tst++)
 			{
 				lang=LANG_ENG;
 				DI_ONDOWN(tst, if(GetChar(tst,opt_login,NULL,MAX_LOGIN,lang,ShiftDwn)) {fnd=1;break;});
@@ -1437,7 +1437,7 @@ void CFEngine::LogInput()
 		if(LogFocus==2)
 		{
 			int fnd=0;
-			for(WORD tst=0;tst<DI_BUF_SIZE;tst++)
+			for(uint16_t tst=0;tst<DI_BUF_SIZE;tst++)
 			{
 				lang=LANG_ENG;
 				DI_ONDOWN(tst, if(GetChar(tst,opt_pass,NULL,MAX_LOGIN,lang,ShiftDwn)) {fnd=1;break;});
@@ -1456,7 +1456,7 @@ void CFEngine::LogInput()
 		return;
 	}
 		
-	for(DWORD i=0;i<dwElements;i++) 
+	for(uint32_t i=0;i<dwElements;i++) 
 	{
 		DI_ONMOUSE(DIMOFS_X, cur_x+=didod[i].dwData*opt_mouse_speed );
 		DI_ONMOUSE(DIMOFS_Y, cur_y+=didod[i].dwData*opt_mouse_speed );
@@ -1591,7 +1591,7 @@ void CFEngine::RegInput()
 	for(int i=0;i<dwElements;i++) 
 	{
 		int fnd=0;
-		for(WORD tst=0;tst<DI_BUF_SIZE;tst++)
+		for(uint16_t tst=0;tst<DI_BUF_SIZE;tst++)
 		{
 			switch (RegFocus)
 			{
@@ -1633,7 +1633,7 @@ void CFEngine::RegInput()
 		return;
 	}
 		
-	for(DWORD i=0;i<dwElements;i++) 
+	for(uint32_t i=0;i<dwElements;i++) 
 	{
 		DI_ONMOUSE(DIMOFS_X, cur_x+=didod[i].dwData*opt_mouse_speed );
 		DI_ONMOUSE(DIMOFS_Y, cur_y+=didod[i].dwData*opt_mouse_speed );
@@ -1832,7 +1832,7 @@ void CFEngine::DlgMouseUp()
 	DlgHold=DLG_HOLD_NONE;
 }
 
-int CFEngine::LoadDialogFromFile(CrID id_npc, DWORD id_dialog, char* dialog)
+int CFEngine::LoadDialogFromFile(CrID id_npc, uint32_t id_dialog, char* dialog)
 {
 //определяем путь
 	char path_text[64];
@@ -2116,7 +2116,7 @@ void CFEngine::LMenuMouseUp()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::SetScreen(BYTE new_screen)
+void CFEngine::SetScreen(uint8_t new_screen)
 {
 	screen_mode=new_screen;
 
@@ -2149,7 +2149,7 @@ void CFEngine::SetScreen(BYTE new_screen)
 	}
 }
 
-void CFEngine::SetCur(BYTE new_cur)
+void CFEngine::SetCur(uint8_t new_cur)
 {
 	cur_mode=new_cur;
 
@@ -2177,7 +2177,7 @@ void CFEngine::SetCur(BYTE new_cur)
 	}
 }
 
-void CFEngine::SetLMenu(BYTE set_lmenu)
+void CFEngine::SetLMenu(uint8_t set_lmenu)
 {
 	LMenu_mode=set_lmenu;
 
@@ -2598,7 +2598,7 @@ void CFEngine::LmapPrepareMap()
 		SAFEDEL((*it_p));
 	lmap_prep_pix.clear();
 
-	DWORD cur_color=0;
+	uint32_t cur_color=0;
 	int pix_x=LmapWMap[2]-LmapWMap[0], pix_y=0;
 	for(int i1=bx;i1<ex;i1++)
 	{
@@ -2793,7 +2793,7 @@ void CFEngine::GmapProcess()
 	if(GmapMapScrX<GmapWMap[2]-GM_MAXX) GmapMapScrX=GmapWMap[2]-GM_MAXX;
 	if(GmapMapScrY<GmapWMap[3]-GM_MAXY) GmapMapScrY=GmapWMap[3]-GM_MAXY;
 
-	DWORD gm_time=GetTickCount()-gm_last_tick;
+	uint32_t gm_time=GetTickCount()-gm_last_tick;
 	if(gm_time>=GM_ZONE_TIME_PROC)
 	{
 		GmapGroupXf+=GmapSpeedX*((float)(gm_time)/GM_ZONE_TIME_PROC);
@@ -2902,7 +2902,7 @@ void CFEngine::GmapDraw()
 		{
 			GM_city* city=(*it_c);
 
-			WORD cur_loc_pic=NULL;
+			uint16_t cur_loc_pic=NULL;
 			switch(city->radius)
 			{
 			case 24:
@@ -3088,7 +3088,7 @@ void CFEngine::GmapDraw()
 
 		cur_crit=0;
 		int posx,posy;
-		WORD cur_pic;
+		uint16_t cur_pic;
 		for(std::vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
 		{
 			GM_crit* crit=(*it_cr);
@@ -3168,7 +3168,7 @@ void CFEngine::GmapInput()
 		DI_ONUP( DIK_RSHIFT ,ShiftDwn=0 );
 
 		int fnd=0;
-		for(WORD tst=0;tst<256;tst++)
+		for(uint16_t tst=0;tst<256;tst++)
 		{
 			DI_ONDOWN(tst, //last_key=NULL; 
 				if(GetChar(tst,ed_str,&cur_edit,EDIT_LEN,lang,ShiftDwn)) {fnd=1;break;});
@@ -3186,7 +3186,7 @@ void CFEngine::GmapInput()
 		return;
 	}
 		
-	for(DWORD i=0;i<dwElements;i++) 
+	for(uint32_t i=0;i<dwElements;i++) 
 	{
 		DI_ONMOUSE(DIMOFS_X, cur_x+=didod[i].dwData*opt_mouse_speed );
 		DI_ONMOUSE(DIMOFS_Y, cur_y+=didod[i].dwData*opt_mouse_speed );
@@ -3265,7 +3265,7 @@ void CFEngine::GmapMouseUp()
 		}
 		if(GmapHold==2 && cur_x>=GmapBToLocal[0] && cur_y>=GmapBToLocal[1] && cur_x<=GmapBToLocal[2] && cur_y<=GmapBToLocal[3])
 		{
-			WORD city_num=0;
+			uint16_t city_num=0;
 			for(std::vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 			  // XXX[27.7.2012 alex]: this code needs Vector class with a length() method
 				if(sqrt(pow((*it_c)->x-GmapGroupX,2.0)+pow((*it_c)->y-GmapGroupY,2.0))<=(*it_c)->radius)

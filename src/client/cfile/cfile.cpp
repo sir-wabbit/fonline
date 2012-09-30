@@ -62,7 +62,7 @@ int CPlainFile::read (void* buf, long toRead, long* read) {
 
 long CPackedFile::seek (long dist, int from) {
 	if (from == FILE_CURRENT) {
-		if (!skipper) skipper = new BYTE [BUFF_SIZE];
+		if (!skipper) skipper = new uint8_t [BUFF_SIZE];
 		if (dist > 0)
 			skip (dist);
 		else if (dist < 0) {
@@ -72,7 +72,7 @@ long CPackedFile::seek (long dist, int from) {
 		}
 	} else if (from == FILE_END) {
 		if (dist < 0) {
-			if (!skipper) skipper = new BYTE [BUFF_SIZE];
+			if (!skipper) skipper = new uint8_t [BUFF_SIZE];
 			if (curPos > dist)
 				reset();
 			skip (dist - curPos);
@@ -82,7 +82,7 @@ long CPackedFile::seek (long dist, int from) {
 		if (dist < 0)
 			reset();
 		else {
-			if (!skipper) skipper = new BYTE [BUFF_SIZE];
+			if (!skipper) skipper = new uint8_t [BUFF_SIZE];
 			if (curPos > dist)
 				reset();
 			skip (dist - curPos);
@@ -116,9 +116,9 @@ int C_Z_PackedFile::read (void* buf, long toRead, long* read) {
 		return 1;
 	}
 
-	if (!inBuf) inBuf = new BYTE [BUFF_SIZE];
+	if (!inBuf) inBuf = new uint8_t [BUFF_SIZE];
 
-	stream. next_out = (BYTE*)buf;
+	stream. next_out = (uint8_t*)buf;
 	stream. avail_out = toRead;
 
 	long oldTotOut = stream. total_out;
@@ -211,7 +211,7 @@ int C_LZ_BlockFile::read (void* buf, long toRead, long* read) {
 		return 1;
 	}
 
-	if (!inBuf) inBuf = new BYTE [BUFF_SIZE];
+	if (!inBuf) inBuf = new uint8_t [BUFF_SIZE];
 #ifdef USE_LZ_BLOCKS
 	if (!blocks)
 		allocateBlocks();
@@ -262,7 +262,7 @@ void C_LZ_BlockFile::allocateBlocks() {
 	unsigned short lhdr;
 	SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
 	while (blocksSize < packedSize) {
-		DWORD dummy;
+		uint32_t dummy;
 		ReadFile (hFile, &lhdr, 2, &dummy, NULL);
 		lhdr = ((lhdr & 0xFF00) >> 8) + ((lhdr & 0x007F) << 8);
 		blocksSize += lhdr;

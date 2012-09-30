@@ -57,7 +57,7 @@ void CServer::SetVisibleObj(CCritter* acl)
 	}
 }
 
-int CServer::AddObjIntoListInd(CCritter* acl, DWORD add_ind)
+int CServer::AddObjIntoListInd(CCritter* acl, uint32_t add_ind)
 {
 	if(!acl->info.obj_id.count(add_ind))
 	{
@@ -67,7 +67,7 @@ int CServer::AddObjIntoListInd(CCritter* acl, DWORD add_ind)
 	return 0;
 }
 
-int CServer::DelObjFromListInd(CCritter* acl, DWORD del_ind)
+int CServer::DelObjFromListInd(CCritter* acl, uint32_t del_ind)
 {
 	if(acl->info.obj_id.count(del_ind))
 	{
@@ -209,7 +209,7 @@ void CServer::SaveAllObj() //запись динамических объект�
 		sql.SaveDataObject((*it).second);
 }
 
-void CServer::CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, WORD num_st_obj)
+void CServer::CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, uint16_t num_st_obj)
 {
 	if(!c_map || c_map>MAX_MAPS) return;
 	if(c_x>MAXHEXX || c_y>MAXHEXY) return;
@@ -249,7 +249,7 @@ void CServer::CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, WORD num_
 LogExecStr("Item Create to TL =%d\n",cur_obj_id);
 }
 
-void CServer::CreateObjToPl(CrID c_pl_idchannel, WORD num_st_obj)
+void CServer::CreateObjToPl(CrID c_pl_idchannel, uint16_t num_st_obj)
 {
 	dyn_obj* new_obj=new dyn_obj;
 
@@ -292,7 +292,7 @@ void CServer::CreateObjToPl(CrID c_pl_idchannel, WORD num_st_obj)
 LogExecStr("Item Create to PL =%d\n",cur_obj_id);
 }
 
-void CServer::DeleteObj(DWORD id_obj)
+void CServer::DeleteObj(uint32_t id_obj)
 {
 	dyn_map::iterator it=all_obj.find(id_obj);
 	if(it==all_obj.end()) return;

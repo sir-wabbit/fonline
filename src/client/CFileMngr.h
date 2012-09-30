@@ -2,6 +2,7 @@
 #define _CFILEMGR_H_
 
 #include "datfile.h"
+#include <stdint.h>
 
 #define PT_ART_CRITTERS 0
 #define PT_ART_INTRFACE 1
@@ -39,19 +40,19 @@ public:
 
 	int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet полный путь к файлу
 
-	void SetCurPos(DWORD pos);
-	void GoForward(DWORD offs);
+	void SetCurPos(uint32_t pos);
+	void GoForward(uint32_t offs);
 
-	int GetStr(char* str,DWORD len);
-	BYTE GetByte(); //!Cvet
-	WORD GetWord();
-	WORD GetRWord(); //!Cvet
-	DWORD GetDWord();
-	DWORD GetRDWord(); //!Cvet
+	int GetStr(char* str,uint32_t len);
+	uint8_t GetByte(); //!Cvet
+	uint16_t GetWord();
+	uint16_t GetRWord(); //!Cvet
+	uint32_t GetDWord();
+	uint32_t GetRDWord(); //!Cvet
 	int CopyMem(void* ptr, size_t size);
 
-	BYTE* GetBuf(){ return buffer; }; //!Cvet
-	DWORD GetFsize(){ return fileSize; }; //!Cvet
+	uint8_t* GetBuf(){ return buffer; }; //!Cvet
+	uint32_t GetFsize(){ return fileSize; }; //!Cvet
 
 
 	FileManager(): initialized(0),file(NULL),fileSize(0),position(0),buffer(NULL),lpDAT(NULL),lpDATcr(NULL){};
@@ -59,9 +60,9 @@ private:
 	bool initialized;
 
 	HANDLE file;
-	DWORD fileSize;
-	DWORD position;
-	BYTE* buffer;
+	uint32_t fileSize;
+	uint32_t position;
+	uint8_t* buffer;
 
 	TDatFile *lpDAT,*lpDATcr;
 

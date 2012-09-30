@@ -220,8 +220,8 @@ void CServer::MOB_Update(CCritter* prep_mob, CCritter* mob)
 {
 	if(!prep_mob || !mob) return;
 
-	DWORD mob_id=mob->info.id;
-	WORD mob_group=mob->i_mob->num_group;
+	uint32_t mob_id=mob->info.id;
+	uint16_t mob_group=mob->i_mob->num_group;
 
 	memcpy(mob->i_mob,prep_mob->i_mob,sizeof(mob_info));
 	memcpy(&mob->info,&prep_mob->info,sizeof(crit_info));
@@ -294,7 +294,7 @@ void CServer::MOBs_Proccess()
 				continue;
 			}
 
-			ctx->SetArgDWord(0,(DWORD)(mob));
+			ctx->SetArgDWord(0,(uint32_t)(mob));
 
 			if(ctx->Execute()<0)
 			{
@@ -308,11 +308,11 @@ void CServer::MOBs_Proccess()
 	}
 }
 
-int CServer::MOBs_AddToEncaunter(WORD num_encaunter, BYTE mobs_level)
+int CServer::MOBs_AddToEncaunter(uint16_t num_encaunter, uint8_t mobs_level)
 {
 LogExecStr("Высаживаем мобов==========================================\n");
 	encaunter_info* cur_encaunter=&encaunter[num_encaunter];
-	WORD num_map=cur_encaunter->emap->num;
+	uint16_t num_map=cur_encaunter->emap->num;
 
 	if(!encaunters_busy.count(num_encaunter)) return 0;
 	if(cur_encaunter->count_groups>=cur_encaunter->max_groups) return 0;
@@ -355,7 +355,7 @@ LogExecStr("Высадили мобов+++++++++++++++++++++++++++++++++++++++++
 	return 1;
 }
 
-void CServer::MOBs_EraseFromMap(WORD num_map)
+void CServer::MOBs_EraseFromMap(uint16_t num_map)
 {
 	if(!num_map && num_map>=MAX_MAPS)
 	{
@@ -383,7 +383,7 @@ void CServer::MOBs_EraseFromMap(WORD num_map)
 
 }
 
-void CServer::MOBs_RefreshGroup(WORD num_group)
+void CServer::MOBs_RefreshGroup(uint16_t num_group)
 {
 	if(!num_group && num_group>=MOBS_MAX_GROUPS)
 	{

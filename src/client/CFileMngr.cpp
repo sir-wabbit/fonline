@@ -230,7 +230,7 @@ int FileManager::LoadFile(char* fname, int PathType)
 			
 				fileSize = lpDATcr->DATGetFileSize();			
 
-				buffer = new BYTE[fileSize+1];
+				buffer = new uint8_t[fileSize+1];
 				DWORD br;
 			
 				lpDATcr->DATReadFile(buffer,fileSize,&br);
@@ -259,7 +259,7 @@ int FileManager::LoadFile(char* fname, int PathType)
 		
 			fileSize = lpDAT->DATGetFileSize();
 
-			buffer = new BYTE[fileSize+1];
+			buffer = new uint8_t[fileSize+1];
 			DWORD br;
 			
 			lpDAT->DATReadFile(buffer,fileSize,&br);
@@ -274,18 +274,18 @@ int FileManager::LoadFile(char* fname, int PathType)
 		return 0;
 }
 
-void FileManager::SetCurPos(DWORD pos)
+void FileManager::SetCurPos(uint32_t pos)
 {
 	if(pos<fileSize) position=pos;
 }
 
-void FileManager::GoForward(DWORD offs)
+void FileManager::GoForward(uint32_t offs)
 {
 	if((position+offs)<fileSize) position+=offs;
 }
 
 
-int FileManager::GetStr(char* str,DWORD len)
+int FileManager::GetStr(char* str,uint32_t len)
 {
 	if(position>=fileSize) return 0;
 
@@ -318,45 +318,45 @@ int FileManager::CopyMem(void* ptr, size_t size)
 	return 1;
 }
 
-BYTE FileManager::GetByte() //!Cvet
+uint8_t FileManager::GetByte() //!Cvet
 {
 	if(position>=fileSize) return 0;
-	BYTE res=0;
+	uint8_t res=0;
 
 	res=buffer[position++];
 
 	return res;
 }
 
-WORD FileManager::GetWord()
+uint16_t FileManager::GetWord()
 {
 	if(position>=fileSize) return 0;
-	WORD res=0;
+	uint16_t res=0;
 
-	BYTE *cres=(BYTE*)&res;
+	uint8_t *cres=(uint8_t*)&res;
 	cres[1]=buffer[position++];
 	cres[0]=buffer[position++];
 
 	return res;
 }
 
-WORD FileManager::GetRWord() //!Cvet
+uint16_t FileManager::GetRWord() //!Cvet
 {
 	if(position>=fileSize) return 0;
-	WORD res=0;
+	uint16_t res=0;
 
-	BYTE *cres=(BYTE*)&res;
+	uint8_t *cres=(uint8_t*)&res;
 	cres[0]=buffer[position++];
 	cres[1]=buffer[position++];
 
 	return res;
 }
 
-DWORD FileManager::GetDWord()
+uint32_t FileManager::GetDWord()
 {
 	if(position>=fileSize) return 0;
-	DWORD res=0;
-	BYTE *cres=(BYTE*)&res;
+	uint32_t res=0;
+	uint8_t *cres=(uint8_t*)&res;
 	for(int i=3;i>=0;i--)
 	{
 		cres[i]=buffer[position++];
@@ -365,11 +365,11 @@ DWORD FileManager::GetDWord()
 	return res;
 }
 
-DWORD FileManager::GetRDWord() //!Cvet
+uint32_t FileManager::GetRDWord() //!Cvet
 {
 	if(position>=fileSize) return 0;
-	DWORD res=0;
-	BYTE *cres=(BYTE*)&res;
+	uint32_t res=0;
+	uint8_t *cres=(uint8_t*)&res;
 	for(int i=0;i<=3;i++)
 	{
 		cres[i]=buffer[position++];

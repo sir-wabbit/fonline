@@ -48,7 +48,7 @@ void CCritter::Initialization()
 	SetAnimation();
 }
 
-void CCritter::AddObject(BYTE aslot,DWORD o_id,DWORD broken_info,DWORD time_wear,stat_obj* s_obj)
+void CCritter::AddObject(uint8_t aslot,uint32_t o_id,uint32_t broken_info,uint32_t time_wear,stat_obj* s_obj)
 {
 	dyn_obj* new_obj=new dyn_obj;
 	new_obj->id=o_id;
@@ -93,7 +93,7 @@ int CCritter::GetMaxDistance()
 	return 1;
 }
 
-int CCritter::Move(BYTE dir)
+int CCritter::Move(uint8_t dir)
 {
 	//проверяем направление
 	if(dir>5 && dir<0) return MOVE_ERROR;
@@ -135,7 +135,7 @@ int CCritter::Move(BYTE dir)
 	return move_type;
 }
 
-void CCritter::Action(Byte action, DWORD action_tick)
+void CCritter::Action(Byte action, uint32_t action_tick)
 {
 	Tick_Start(action_tick);
 
@@ -159,7 +159,7 @@ void CCritter::Action(Byte action, DWORD action_tick)
 	cur_afrm=0;
 }
 
-void CCritter::Animate(BYTE action, BYTE num_frame)
+void CCritter::Animate(uint8_t action, uint8_t num_frame)
 {
 	if(!lpSM->CrAnim[type][weapon][action])
 		if(!lpSM->LoadAnimCr(type,weapon,action)) return;
@@ -266,7 +266,7 @@ void CCritter::SetAnimation()
 //	WriteLog("SetAnimation - cond=%d,cond_ext=%d\n",cond,cond_ext);
 }
 
-void CCritter::SetDir(BYTE dir)
+void CCritter::SetDir(uint8_t dir)
 {
 	if(dir>5 && dir<0) dir=0;
 	cur_dir=dir;
@@ -356,7 +356,7 @@ void CCritter::Process()
 		{
 			change_tkr=GetTickCount();
 
-			WORD or_offs=cur_anim->dir_offs[cur_dir];
+			uint16_t or_offs=cur_anim->dir_offs[cur_dir];
 			cur_id=cur_anim->ind[or_offs+cur_afrm];
 
 			ChangeCur_offs(cur_anim->next_x[or_offs+cur_afrm],cur_anim->next_y[or_offs+cur_afrm]);
@@ -443,7 +443,7 @@ void CCritter::AccamulateCur_offs()
 //	}
 }
 
-void CCritter::SetText(char* str, DWORD color)
+void CCritter::SetText(char* str, uint32_t color)
 {
 	SAFEDELA(text_str);
 	text_str=new char[strlen(str)+1];

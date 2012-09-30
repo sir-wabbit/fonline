@@ -14,8 +14,8 @@
 #include "Critter.h"
 
 //Переменные НПЦ
-const BYTE NPC_VAR_LOCAL	=0;
-const BYTE NPC_VAR_GLOBAL	=1;
+const uint8_t NPC_VAR_LOCAL	=0;
+const uint8_t NPC_VAR_GLOBAL	=1;
 
 typedef set<char> true_char_set;
 
@@ -64,21 +64,21 @@ public:
 	void ChangeVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, int count);
 
 //переменные игроков
-	int CheckVar(CrID crid, WORD var_num, char oper, int count);
-	void ChangeVar(CrID crid, WORD var_num, char oper, int count);
+	int CheckVar(CrID crid, uint16_t var_num, char oper, int count);
+	void ChangeVar(CrID crid, uint16_t var_num, char oper, int count);
 
 //квесты
-	int CheckQuest(CrID crid, WORD quest_num, char choose, int count);
-	void ChangeQuest(CrID crid, WORD quest_num, char choose, int count);
+	int CheckQuest(CrID crid, uint16_t quest_num, char choose, int count);
+	void ChangeQuest(CrID crid, uint16_t quest_num, char choose, int count);
 
 //гвары
-//	int CheckGVar(WORD num_gvar, char oper, int value);
-//	void ChangeGVar(WORD num_gvar, char oper, int value);
+//	int CheckGVar(uint16_t num_gvar, char oper, int value);
+//	void ChangeGVar(uint16_t num_gvar, char oper, int value);
 
 //объекты
-	int NewObject(dyn_obj* obj, DWORD obj_id);
+	int NewObject(dyn_obj* obj, uint32_t obj_id);
 	void SaveDataObject(dyn_obj* obj);
-	int LoadDataObject(dyn_obj* obj, BYTE obj_type);
+	int LoadDataObject(dyn_obj* obj, uint8_t obj_type);
 	void DeleteDataObject(dyn_obj* obj);
 
 //работа с таблицей читов

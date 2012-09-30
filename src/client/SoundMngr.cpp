@@ -65,7 +65,7 @@ void CSoundMngr::Clear()
 
 void CSoundMngr::LPESound(char* fname, int TypePath)
 {
-	WORD lpe=0;
+	uint16_t lpe=0;
 
 	if(!(lpe=LoadSound(fname,TypePath))) return;
 
@@ -93,7 +93,7 @@ int CSoundMngr::LoadSound(char* fname, int TypePath)
 	ZeroMemory(&fmt,sizeof(WAVEFORMATEX));
 
 	unsigned char* smplData=NULL;
-	DWORD sizeData=0;
+	uint32_t sizeData=0;
 
 	if(!stricmp(ext,".wav"))
 	{
@@ -159,9 +159,9 @@ int CSoundMngr::LoadSound(char* fname, int TypePath)
 	return cur_snd;
 }
 
-int CSoundMngr::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, DWORD* size_data)
+int CSoundMngr::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
 {
-	DWORD dw_buf=fm.GetRDWord();
+	uint32_t dw_buf=fm.GetRDWord();
 
 	if(dw_buf!=MAKEFOURCC('R','I','F','F')) { WriteLog("|RIFF| not found |%d|\n"); return 0; }
 
@@ -209,7 +209,7 @@ int CSoundMngr::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, DWOR
 	return 1;
 }
 
-int CSoundMngr::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, DWORD* size_data)
+int CSoundMngr::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
 {
 	int channel;
 	int freq;
@@ -256,7 +256,7 @@ int CSoundMngr::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, DWOR
 	return 1;
 }
 
-int CSoundMngr::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, DWORD* size_data, char* ogg_path)
+int CSoundMngr::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data, char* ogg_path)
 {
 	FILE *fs;
 	if(!(fs=fopen(ogg_path,"rb"))) return 0;
@@ -292,7 +292,7 @@ int CSoundMngr::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, DWOR
 	return 1;
 }
 
-void CSoundMngr::PlaySound(WORD id)
+void CSoundMngr::PlaySound(uint16_t id)
 {
 	if(!id)
 	{
@@ -311,7 +311,7 @@ void CSoundMngr::PlaySound(WORD id)
 	(*it).second->buf->Play(0,0,0);
 }
 
-void CSoundMngr::StopSound(WORD id)
+void CSoundMngr::StopSound(uint16_t id)
 {
 	if(!id)
 	{
@@ -331,7 +331,7 @@ void CSoundMngr::StopSound(WORD id)
 	(*it).second->buf->SetCurrentPosition(0);
 }
 
-void CSoundMngr::PauseSound(WORD id)
+void CSoundMngr::PauseSound(uint16_t id)
 {
 	if(!id)
 	{
@@ -350,7 +350,7 @@ void CSoundMngr::PauseSound(WORD id)
 	(*it).second->buf->Stop();
 }
 
-void CSoundMngr::EraseSound(WORD id)
+void CSoundMngr::EraseSound(uint16_t id)
 {
 	if(!id)
 	{

@@ -19,7 +19,7 @@ struct keyb_data
 	keyb_data(char arus,char as_rus,char aeng,char as_eng) {rus=arus;s_rus=as_rus;eng=aeng;s_eng=as_eng;};
 	keyb_data() {rus='x';s_rus='x';eng='x';s_eng='x';};
 };
-typedef std::map<BYTE, keyb_data> keyb_data_map;
+typedef std::map<uint8_t, keyb_data> keyb_data_map;
 
 keyb_data_map data;
 
@@ -85,7 +85,7 @@ void ClearKeyb()
 	data.clear();
 }
 
-int GetChar(BYTE DIK,char* str,int* position,WORD max,int lang,int shift) //!Cvet int* position
+int GetChar(uint8_t DIK,char* str,int* position,uint16_t max,int lang,int shift) //!Cvet int* position
 {
 	if(max>=2000) return 0; //!Cvet
 

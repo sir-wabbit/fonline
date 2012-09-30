@@ -76,15 +76,15 @@ extern std::string opt_critterpath;
 extern std::string opt_fopath;
 extern std::string opt_crfol;
 
-extern DWORD opt_rport;
+extern uint32_t opt_rport;
 extern std::string opt_rhost;
 extern std::string opt_name;
 extern std::string opt_cases[5];
 extern std::string opt_gender;
 
-extern DWORD opt_text_delay;
+extern uint32_t opt_text_delay;
 
-extern DWORD opt_screen_mode;
+extern uint32_t opt_screen_mode;
 extern int screen_width[]; //!Cvet
 extern int screen_height[]; //!Cvet
 extern int view_width[]; //!Cvet
@@ -101,18 +101,18 @@ extern int opt_change_lang; //!Cvet change language
 #define CHANGE_LANG_RCTRL		2 //!Cvet change language
 
 //!Cvet colors ++++++++++++++++++++++++
-extern DWORD opt_gcolor_default;
+extern uint32_t opt_gcolor_default;
 
-extern DWORD opt_tcolor_namecrit;
+extern uint32_t opt_tcolor_namecrit;
 
-extern DWORD opt_tcolor_default;
-extern DWORD opt_tcolor_shout;
-extern DWORD opt_tcolor_whisp;
-extern DWORD opt_tcolor_emote;
-extern DWORD opt_tcolor_social;
+extern uint32_t opt_tcolor_default;
+extern uint32_t opt_tcolor_shout;
+extern uint32_t opt_tcolor_whisp;
+extern uint32_t opt_tcolor_emote;
+extern uint32_t opt_tcolor_social;
 
 
-extern DWORD opt_roof_alpha;
+extern uint32_t opt_roof_alpha;
 //!Cvet ------------------------------
 
 void GetOptions();

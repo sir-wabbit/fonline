@@ -6,6 +6,7 @@
 #define _CFILEMGR_H_
 
 #include "main.h"
+#include <stdint.h>
 
 #define PT_MAPS		0
 #define PT_MASKS	1
@@ -22,15 +23,15 @@ public:
 
 	int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet полный путь к файлу
 
-	void SetCurPos(DWORD pos);
-	void GoForward(DWORD offs);
+	void SetCurPos(uint32_t pos);
+	void GoForward(uint32_t offs);
 
-	int GetStr(char* str,DWORD len);
-	BYTE GetByte(); //!Cvet
-	WORD GetWord();
-	WORD GetRWord(); //!Cvet
-	DWORD GetDWord();
-	DWORD GetRDWord(); //!Cvet
+	int GetStr(char* str,uint32_t len);
+	uint8_t GetByte(); //!Cvet
+	uint16_t GetWord();
+	uint16_t GetRWord(); //!Cvet
+	uint32_t GetDWord();
+	uint32_t GetRDWord(); //!Cvet
 	int CopyMem(void* ptr, size_t size);
 
 	char* GetBuf(){ return buffer; }; //!Cvet

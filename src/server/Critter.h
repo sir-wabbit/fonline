@@ -17,8 +17,8 @@
 
 #define TALK_MAX_TIME 60000
 
-const BYTE NOT_ANSWER_CLOSE_DIALOG	=0;
-const BYTE NOT_ANSWER_BEGIN_BATTLE	=1;
+const uint8_t NOT_ANSWER_CLOSE_DIALOG	=0;
+const uint8_t NOT_ANSWER_BEGIN_BATTLE	=1;
 
 //Выборка
 const char CHOOSE_PLAYER		=0;
@@ -26,23 +26,23 @@ const char CHOOSE_ALL			=1;
 const char CHOOSE_ALL_NOT_PLAYER=2;
 
 //Условие
-const BYTE DEMAND_NONE		=0;
-const BYTE DEMAND_STAT		=1;
-const BYTE DEMAND_SKILL		=2;
-const BYTE DEMAND_PERK		=3;
-const BYTE DEMAND_QUEST		=4;
-const BYTE DEMAND_ITEM		=5;
-const BYTE DEMAND_VAR		=6;
-const BYTE DEMAND_PVAR		=7;
+const uint8_t DEMAND_NONE		=0;
+const uint8_t DEMAND_STAT		=1;
+const uint8_t DEMAND_SKILL		=2;
+const uint8_t DEMAND_PERK		=3;
+const uint8_t DEMAND_QUEST		=4;
+const uint8_t DEMAND_ITEM		=5;
+const uint8_t DEMAND_VAR		=6;
+const uint8_t DEMAND_PVAR		=7;
 
 struct demand
 {
 	demand():type(DEMAND_NONE),param(0),var_num(0),oper('>'),count(0){};
 
-	BYTE type;
+	uint8_t type;
 
-	BYTE param;
-	WORD var_num; //quest_num
+	uint8_t param;
+	uint16_t var_num; //quest_num
 	string var_name;
 	char oper; //choose
 	int count;
@@ -51,24 +51,24 @@ struct demand
 typedef vector<demand*> demand_list;
 
 //Результат
-const BYTE RESULT_NONE		=0;
-const BYTE RESULT_STAT		=1;
-const BYTE RESULT_SKILL		=2;
-const BYTE RESULT_PERK		=3;
-const BYTE RESULT_QUEST		=4;
-const BYTE RESULT_ITEM		=5;
-const BYTE RESULT_VAR		=6;
-const BYTE RESULT_PVAR		=7;
-const BYTE RESULT_LOCK		=8;
+const uint8_t RESULT_NONE		=0;
+const uint8_t RESULT_STAT		=1;
+const uint8_t RESULT_SKILL		=2;
+const uint8_t RESULT_PERK		=3;
+const uint8_t RESULT_QUEST		=4;
+const uint8_t RESULT_ITEM		=5;
+const uint8_t RESULT_VAR		=6;
+const uint8_t RESULT_PVAR		=7;
+const uint8_t RESULT_LOCK		=8;
 
 struct result
 {
 	result():type(RESULT_NONE),param(0),var_num(0),oper('+'),count(0){};
 
-	BYTE type;
+	uint8_t type;
 
-	BYTE param;
-	WORD var_num;
+	uint8_t param;
+	uint16_t var_num;
 	string var_name;
 	char oper;
 	int count;
@@ -81,8 +81,8 @@ struct answer
 	answer():link(0),id_text(0){};
 //	~answer(){SAFEDELA(demands);SAFEDELA(results);};
 
-	DWORD link;
-	DWORD id_text;
+	uint32_t link;
+	uint32_t id_text;
 
 	demand_list demands;
 
@@ -96,16 +96,16 @@ struct npc_dialog
 	npc_dialog():id(0),id_text(0),time_break(TALK_MAX_TIME),not_answer(NOT_ANSWER_CLOSE_DIALOG){};
 //	~npc_dialog(){SAFEDELA(answers);};
 
-	DWORD id;
+	uint32_t id;
 
-	DWORD id_text;
+	uint32_t id_text;
 	answers_list answers;
 
 	UINT time_break; //время на прочтение диалога игроком
-	BYTE not_answer; //что делать если нет ответа
+	uint8_t not_answer; //что делать если нет ответа
 };
 
-typedef map<DWORD, npc_dialog*, less<DWORD> > dialogs_map;
+typedef map<uint32_t, npc_dialog*, less<uint32_t> > dialogs_map;
 
 struct npc_info
 {
@@ -120,16 +120,16 @@ struct npc_info
 	//~npc_info(){SAFEDELA(dialogs);};
 };
 
-const BYTE MOB_COND_PASSIVE			=0;
-const BYTE MOB_COND_AGGRESSIVE		=1;
-const BYTE MOB_COND_DEFENCE			=2;
+const uint8_t MOB_COND_PASSIVE			=0;
+const uint8_t MOB_COND_AGGRESSIVE		=1;
+const uint8_t MOB_COND_DEFENCE			=2;
 
 struct mob_info
 {
 	string name;
-	WORD num_group;
-	BYTE base_cond;
-	BYTE cond;
+	uint16_t num_group;
+	uint8_t base_cond;
+	uint8_t cond;
 
 	mob_info():name(""),num_group(0),base_cond(0),cond(0){};
 };
@@ -140,16 +140,16 @@ typedef map<CrID, CCritter*, less<CrID> > cl_map;
 //typedef list<CCritter*> cl_list;
 
 typedef set<CrID> crid_set;
-typedef set<WORD> word_set;
+typedef set<uint16_t> word_set;
 
 struct mobs_group
 {
-	WORD num;
+	uint16_t num;
 
 	cl_map mobs;
 
-	BYTE mobs_level;
-	BYTE mobs_count;
+	uint8_t mobs_level;
+	uint8_t mobs_count;
 
 	mobs_group():num(0),mobs_level(0),mobs_count(0){};
 };
@@ -161,7 +161,7 @@ struct gmap_group
 	crid_set prep_crit;
 
 	cl_map crit_move;
-	BYTE players;
+	uint8_t players;
 
 	CCritter* rule;
 
@@ -174,11 +174,11 @@ struct gmap_group
 	float yf;
 	int move_x;
 	int move_y;
-	BYTE speed;
+	uint8_t speed;
 	float speedx;
 	float speedy;
 
-	DWORD last_encaunter;
+	uint32_t last_encaunter;
 
 	gmap_group():crits_luck(0),crits_pathfind(0),xi(0),yi(0),xf(0),yf(0),players(0),
 	move_x(0),move_y(0),speed(0),speedx(0),speedy(0),rule(0),last_encaunter(0){};
@@ -204,7 +204,7 @@ public:
   fonline::Buffer bin; // буфер входящий
 	fonline::Buffer bout; // буфер исходящий
 
-	WORD state; // состояние
+	uint16_t state; // состояние
 	z_stream zstrm; // поток
 
 	crit_info info; //Общая инфа криттера
@@ -222,12 +222,12 @@ public:
 	inline void GenParam();
 	inline void GenLook();
 
-	int CheckKnownCity(WORD city_num){if(known_cities.count(city_num)) return 1; return 0;};
-	int AddKnownCity(WORD city_num){if(known_cities.count(city_num)) return 0; known_cities.insert(city_num); return 1;};
-	int DelKnownCity(WORD city_num){if(!known_cities.count(city_num)) return 0; known_cities.erase(city_num); return 1;};
+	int CheckKnownCity(uint16_t city_num){if(known_cities.count(city_num)) return 1; return 0;};
+	int AddKnownCity(uint16_t city_num){if(known_cities.count(city_num)) return 0; known_cities.insert(city_num); return 1;};
+	int DelKnownCity(uint16_t city_num){if(!known_cities.count(city_num)) return 0; known_cities.erase(city_num); return 1;};
 	//int LoadAllKnownCitySQL(); //при старте сервера
-	//int SaveKnownCitySQL(WORD city_num);
-	//int EraseKnownCitySQL(WORD city_num);
+	//int SaveKnownCitySQL(uint16_t city_num);
+	//int EraseKnownCitySQL(uint16_t city_num);
 
 	int IsFree(){if(GetTickCount()-info.start_bt>=info.break_time) return 1; return 0;};
 	int IsBusy(){if(GetTickCount()-info.start_bt>=info.break_time) return 0; return 1;};

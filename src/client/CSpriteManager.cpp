@@ -45,7 +45,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	}
 
 	//и индексов
-	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(WORD),D3DUSAGE_WRITEONLY,
+	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(uint16_t),D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 	if(hr!=D3D_OK){
 		ErrMsg("SM::CreateIndexBuffer",(char*)DXGetErrorString8(hr));
@@ -53,7 +53,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	}
 	
 
-	WORD* IndexList=new WORD[6*spr_cnt];
+	uint16_t* IndexList=new uint16_t[6*spr_cnt];
 	for(int i=0;i<spr_cnt;i++)
 	{
 		IndexList[6*i+0]=4*i+0;
@@ -65,8 +65,8 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	}
 	
 	void* pBuffer;
-	lpIB->Lock(0,0,(BYTE**)&pBuffer,0);
-		memcpy(pBuffer,IndexList,spr_cnt*6*sizeof(WORD));
+	lpIB->Lock(0,0,(uint8_t**)&pBuffer,0);
+		memcpy(pBuffer,IndexList,spr_cnt*6*sizeof(uint16_t));
 	lpIB->Unlock();
 
 	delete[] IndexList;
@@ -135,8 +135,8 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 
 
 	fm.SetCurPos(0x3e);
-	WORD w=fm.GetWord();
-	WORD h=fm.GetWord();
+	uint16_t w=fm.GetWord();
+	uint16_t h=fm.GetWord();
 	lpinf->w=w;
 	lpinf->h=h;
 	if(!last_surf)
@@ -169,12 +169,12 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	int aligned_width = (4 - w%4)%4;
 
 	// let's write the bmp 
-	DWORD wpos=sizeof(bmpheader);
-	BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
+	uint32_t wpos=sizeof(bmpheader);
+	uint8_t* res=new uint8_t[wpos+h*(w+aligned_width)];
 	memcpy(res,bmpheader,wpos);
 			
 	
-	DWORD ptr = 0x4A+w*(h-1);
+	uint32_t ptr = 0x4A+w*(h-1);
 	for(int i=0;i < h; i++) 
 	{
 		fm.SetCurPos(ptr);
@@ -185,7 +185,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 		ptr -= w;
 	}
 
-	DWORD* spos=(DWORD*)(res+18);
+	uint32_t* spos=(uint32_t*)(res+18);
 	spos[0]=w;
 	spos[1]=h;
 
@@ -273,8 +273,8 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 
 
 	fm.SetCurPos(0x3e);
-	WORD w=fm.GetWord();
-	WORD h=fm.GetWord();
+	uint16_t w=fm.GetWord();
+	uint16_t h=fm.GetWord();
 	lpinf->w=w;
 	lpinf->h=h;
 	if(!last_surf)
@@ -307,12 +307,12 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	int aligned_width = (4 - w%4)%4;
 
 	// let's write the bmp 
-	DWORD wpos=sizeof(bmpheader);
-	BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
+	uint32_t wpos=sizeof(bmpheader);
+	uint8_t* res=new uint8_t[wpos+h*(w+aligned_width)];
 	memcpy(res,bmpheader,wpos);
 			
 	
-	DWORD ptr = 0x4A+w*(h-1);
+	uint32_t ptr = 0x4A+w*(h-1);
 	for(int i=0;i < h; i++) 
 	{
 		fm.SetCurPos(ptr);
@@ -323,7 +323,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 		ptr -= w;
 	}
 
-	DWORD* spos=(DWORD*)(res+18);
+	uint32_t* spos=(uint32_t*)(res+18);
 	spos[0]=w;
 	spos[1]=h;
 
@@ -388,8 +388,8 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	}
 
 	SpriteInfo* lpinf=new SpriteInfo;
-	DWORD w=0;
-	DWORD h=0;
+	uint32_t w=0;
+	uint32_t h=0;
 
 //.bmp+, .dds-, .dib-, .hdr-, .jpg+, .pfm-, .png+, .ppm-, .tga-
 
@@ -512,11 +512,11 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 		return 0;
 
 	fm.SetCurPos(0x4); //!Cvet
-	WORD frm_fps=fm.GetWord(); //!Cvet
+	uint16_t frm_fps=fm.GetWord(); //!Cvet
 	if(!frm_fps) frm_fps=10; //!Cvet
 
 	fm.SetCurPos(0x8);
-	WORD frm_num=fm.GetWord();
+	uint16_t frm_num=fm.GetWord();
 
 	//Получаем общие смещения по всем направлениям
 	short offs_x[6], offs_y[6];
@@ -529,13 +529,13 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 
 	pframes->ticks=1000/frm_fps*frm_num; //!Cvet
 	pframes->cnt_frames=frm_num;
-	pframes->ind=new WORD[frm_num*6];
+	pframes->ind=new uint16_t[frm_num*6];
 	pframes->next_x=new short[frm_num*6];
 	pframes->next_y=new short[frm_num*6];
 	for(int i=0;i<6;i++)
 		pframes->dir_offs[i]=i*frm_num;
 
-	DWORD cur_ptr=0x3E;
+	uint32_t cur_ptr=0x3E;
 	for(int or=0;or<6;or++)
 		for(int frm=0;frm<frm_num;frm++)
 		{
@@ -544,8 +544,8 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			lpinf->offs_y=offs_y[or];
 		
 			fm.SetCurPos(cur_ptr);
-			WORD w=fm.GetWord();
-			WORD h=fm.GetWord();
+			uint16_t w=fm.GetWord();
+			uint16_t h=fm.GetWord();
 			lpinf->w=w;
 			lpinf->h=h;
 			fm.GoForward(4);
@@ -586,12 +586,12 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			int aligned_width = (4 - w%4)%4;
 
 			// создаем файл формата bmp в памяти 
-			DWORD wpos=sizeof(bmpheader);
-			BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
+			uint32_t wpos=sizeof(bmpheader);
+			uint8_t* res=new uint8_t[wpos+h*(w+aligned_width)];
 			memcpy(res,bmpheader,wpos);
 			
 	
-			DWORD ptr = cur_ptr+12+w*(h-1);
+			uint32_t ptr = cur_ptr+12+w*(h-1);
 			cur_ptr+=w*h+12;
 			for(int i=0;i < h; i++) 
 			{
@@ -603,7 +603,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 				ptr -= w;
 			}
 
-			DWORD* spos=(DWORD*)(res+18);
+			uint32_t* spos=(uint32_t*)(res+18);
 			spos[0]=w;
 			spos[1]=h;
 
@@ -667,8 +667,8 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 
 	SpriteInfo* lpinf=new SpriteInfo;
 	fm.SetCurPos(0x4);
-	WORD w;fm.CopyMem(&w,2);
-	WORD h;fm.CopyMem(&h,2);
+	uint16_t w;fm.CopyMem(&w,2);
+	uint16_t h;fm.CopyMem(&h,2);
 	if(w!=640 || h!=480) return 0;
 	lpinf->w=MODE_WIDTH;
 	lpinf->h=MODE_HEIGHT;
@@ -703,28 +703,28 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	int aligned_width = (4 - w%4)%4;
 
 	// let's write the bmp 
-	DWORD wpos=sizeof(bmpheader);
-	BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
+	uint32_t wpos=sizeof(bmpheader);
+	uint8_t* res=new uint8_t[wpos+h*(w+aligned_width)];
 	memcpy(res,bmpheader,wpos);
 
 	int i;
 
 	//заменим палитру
 	fm.SetCurPos(0xA);
-	BYTE* ppos=res+sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER);
+	uint8_t* ppos=res+sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER);
 	for(i=0;i<256;i++)
 	{
 		fm.CopyMem(ppos,3);
 		for(int j=0;j<3;j++)
 			ppos[j]*=4;
-		BYTE t=ppos[2];
+		uint8_t t=ppos[2];
 		ppos[2]=ppos[0];
 		ppos[0]=t;
 		ppos+=4;
 	}
 
 			
-	DWORD ptr = 0xA+256*3+w*(h-1);
+	uint32_t ptr = 0xA+256*3+w*(h-1);
 	for(i=0;i < h; i++) 
 	{
 		fm.SetCurPos(ptr);
@@ -735,7 +735,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 		ptr -= w;
 	}
 
-	DWORD* spos=(DWORD*)(res+18);
+	uint32_t* spos=(uint32_t*)(res+18);
 	spos[0]=w;
 	spos[1]=h;
 
@@ -791,7 +791,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 	if(!fname[0]) return 0;
 
 	char path[1024];
-	WORD frm_num;
+	uint16_t frm_num;
 	short offs_x[6], offs_y[6];
 
 	for(int or=0;or<6;or++)
@@ -809,7 +809,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 	//	WriteLog("Loading offsets animation %s\n",path);
 
 		fm.SetCurPos(0x4); //!Cvet
-		WORD frm_fps=fm.GetWord(); //!Cvet
+		uint16_t frm_fps=fm.GetWord(); //!Cvet
 		if(!frm_fps) frm_fps=10; //!Cvet
 
 		fm.SetCurPos(0x8);
@@ -826,14 +826,14 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 		{
 			pframes->ticks=1000/frm_fps*frm_num; //!Cvet
 			pframes->cnt_frames=frm_num;
-			pframes->ind=new WORD[frm_num*6];
+			pframes->ind=new uint16_t[frm_num*6];
 			pframes->next_x=new short[frm_num*6];
 			pframes->next_y=new short[frm_num*6];
 		}
 	
 		pframes->dir_offs[or]=or*frm_num;
 
-		DWORD cur_ptr=0x3E;
+		uint32_t cur_ptr=0x3E;
 		for(int frm=0;frm<frm_num;frm++)
 		{
 			SpriteInfo* lpinf=new SpriteInfo;
@@ -841,8 +841,8 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			lpinf->offs_y=offs_y[or];
 		
 			fm.SetCurPos(cur_ptr);
-			WORD w=fm.GetWord();
-			WORD h=fm.GetWord();
+			uint16_t w=fm.GetWord();
+			uint16_t h=fm.GetWord();
 			lpinf->w=w;
 			lpinf->h=h;
 			fm.GoForward(4);
@@ -883,12 +883,12 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			int aligned_width = (4 - w%4)%4;
 
 			// создаем файл формата bmp в памяти 
-			DWORD wpos=sizeof(bmpheader);
-			BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
+			uint32_t wpos=sizeof(bmpheader);
+			uint8_t* res=new uint8_t[wpos+h*(w+aligned_width)];
 			memcpy(res,bmpheader,wpos);
 			
 	
-			DWORD ptr = cur_ptr+12+w*(h-1);
+			uint32_t ptr = cur_ptr+12+w*(h-1);
 			cur_ptr+=w*h+12;
 			for(int i=0;i < h; i++) 
 			{
@@ -900,7 +900,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 				ptr -= w;
 			}
 
-			DWORD* spos=(DWORD*)(res+18);
+			uint32_t* spos=(uint32_t*)(res+18);
 			spos[0]=w;
 			spos[1]=h;
 
@@ -962,7 +962,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 	if(!fname[0]) return 0;
 
 	char path[1024];
-	WORD frm_num;
+	uint16_t frm_num;
 	short offs_x, offs_y;
 
 	strcpy(path,fname);
@@ -972,7 +972,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 
 //!Cvet +++++++++
 	fm.SetCurPos(0x4);
-	WORD frm_fps=fm.GetWord();
+	uint16_t frm_fps=fm.GetWord();
 	if(!frm_fps) frm_fps=10;
 
 	fm.SetCurPos(0x8);
@@ -988,12 +988,12 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 	aanim->cnt_frames=frm_num; 
 	aanim->ticks=1000/frm_fps*frm_num;
 
-	aanim->ind=new WORD[frm_num];
+	aanim->ind=new uint16_t[frm_num];
 	aanim->next_x=new short[frm_num];
 	aanim->next_y=new short[frm_num];
 //!Cvet ---------
 
-    DWORD cur_ptr=0x3E;
+    uint32_t cur_ptr=0x3E;
 	// Здесь включить цикл на количество ФРМ-ок
 	for(int frm=0;frm<frm_num;frm++)
 	{
@@ -1001,8 +1001,8 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 //!Cvet +++++++++ был сумбур какойто. по всей функции...
 		fm.SetCurPos(cur_ptr);
 
-		WORD w=fm.GetWord();
-		WORD h=fm.GetWord();
+		uint16_t w=fm.GetWord();
+		uint16_t h=fm.GetWord();
 		lpinf->w=w;
 		lpinf->h=h;
 
@@ -1045,11 +1045,11 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		int aligned_width = (4 - w%4)%4;
 
 		// let's write the bmp 
-		DWORD wpos=sizeof(bmpheader);
-		BYTE* res=new BYTE[wpos+h*(w+aligned_width)];
+		uint32_t wpos=sizeof(bmpheader);
+		uint8_t* res=new uint8_t[wpos+h*(w+aligned_width)];
 		memcpy(res,bmpheader,wpos);			
 		// Сдвиг по картинке в нужных координатах
-		DWORD ptr = cur_ptr+12+w*(h-1);
+		uint32_t ptr = cur_ptr+12+w*(h-1);
 		cur_ptr+=w*h+12;
 		for(int i=0;i < h; i++) 
 		{
@@ -1061,7 +1061,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 			ptr -= w;
 		}
 /*
-	DWORD ptr = 0x4A+w*(h-1);
+	uint32_t ptr = 0x4A+w*(h-1);
 	for(int i=0;i < h; i++) 
 	{
 		fm.SetCurPos(ptr);
@@ -1072,7 +1072,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		ptr -= w;
 	}*/
 
-		DWORD* spos=(DWORD*)(res+18);
+		uint32_t* spos=(uint32_t*)(res+18);
 		spos[0]=w;
 		spos[1]=h;
 
@@ -1131,7 +1131,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
-LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(WORD w, WORD h)
+LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(uint16_t w, uint16_t h)
 {
 	if(!crtd) return 0;
 	if(w>opt_basetex || h>opt_basetex)
@@ -1172,14 +1172,14 @@ int CSpriteManager::Flush()
 	if(!crtd) return 0;
 	void* pBuffer;
 	int mulpos=4*cur_pos;
-	lpVB->Lock(0,sizeof(MYVERTEX)*mulpos,(BYTE**)&pBuffer,D3DLOCK_DISCARD);
+	lpVB->Lock(0,sizeof(MYVERTEX)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
 		memcpy(pBuffer,lpWaitBuf,sizeof(MYVERTEX)*mulpos);
 	lpVB->Unlock();
 
 	//рисуем спрайты
 	if(!call_vec.empty())
 	{
-		WORD rpos=0;
+		uint16_t rpos=0;
 		for(onesurf_vec::iterator iv=call_vec.begin();iv!=call_vec.end();iv++)
 		{
 			lpDevice->SetTexture(0,(*iv)->lpSurf);
@@ -1198,7 +1198,7 @@ int CSpriteManager::Flush()
 	return 1;
 }
 
-int CSpriteManager::DrawSprite(WORD id, int x, int y, DWORD color, DWORD alpha) //!Cvet DWORD color DWORD alpha
+int CSpriteManager::DrawSprite(uint16_t id, int x, int y, uint32_t color, uint32_t alpha) //!Cvet uint32_t color uint32_t alpha
 {
 	SpriteInfo* lpinf=spr_data[id];
 	if(!lpinf) return 0;
@@ -1279,7 +1279,7 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 	}
 
 	VOID* pVertices;
-	p_VB->Lock (0, cnt_pix*sizeof(CUSTOMVERTEX), (BYTE**)&pVertices, D3DLOCK_DISCARD);
+	p_VB->Lock (0, cnt_pix*sizeof(CUSTOMVERTEX), (uint8_t**)&pVertices, D3DLOCK_DISCARD);
 	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(CUSTOMVERTEX));
 	p_VB->Unlock();
 
@@ -1308,7 +1308,7 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 }
 */
 
-int CSpriteManager::DrawSpriteSize(WORD id, int x, int y,double size, DWORD color) //!Cvet DWORD color
+int CSpriteManager::DrawSpriteSize(uint16_t id, int x, int y,double size, uint32_t color) //!Cvet uint32_t color
 {
 	SpriteInfo* lpinf=spr_data[id];
 	if(!lpinf) return 0;
@@ -1358,14 +1358,14 @@ int CSpriteManager::DrawSpriteSize(WORD id, int x, int y,double size, DWORD colo
 	return 1;
 }
 
-int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lplpBuf,onesurf_vec* lpsvec, DWORD color, BYTE alpha)
+int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lplpBuf,onesurf_vec* lpsvec, uint32_t color, uint8_t alpha)
 {
 	SAFEREL((*lplpBuf));
 	for(onesurf_vec::iterator iv=lpsvec->begin();iv!=lpsvec->end();iv++)
 		delete (*iv);
 	lpsvec->clear();
 
-	WORD cnt=lpdtree->size();
+	uint16_t cnt=lpdtree->size();
 
 	if(!cnt) return 1;
 
@@ -1377,7 +1377,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 		return 0;
 	}
 
-	DWORD need_size=cnt*6*sizeof(WORD);
+	uint32_t need_size=cnt*6*sizeof(uint16_t);
 	D3DINDEXBUFFER_DESC ibdesc;
 
 	lpIB->GetDesc(&ibdesc);
@@ -1393,7 +1393,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 			return 0;
 		}
 
-		WORD* IndexList=new WORD[6*cnt];
+		uint16_t* IndexList=new uint16_t[6*cnt];
 		for(int i=0;i<cnt;i++)
 		{
 			IndexList[6*i+0]=4*i+0;
@@ -1405,7 +1405,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 		}
 	
 		void* pBuffer;
-		lpIB->Lock(0,0,(BYTE**)&pBuffer,0);
+		lpIB->Lock(0,0,(uint8_t**)&pBuffer,0);
 			memcpy(pBuffer,IndexList,need_size);
 		lpIB->Unlock();
 
@@ -1414,11 +1414,11 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 		lpDevice->SetIndices(lpIB,0);
 	}
 
-	WORD mulpos=0;
+	uint16_t mulpos=0;
 	OneSurface* lc=NULL;
 	MYVERTEX* localBuf=new MYVERTEX[cnt*4];
 
-	DWORD new_color=col; //!Cvet
+	uint32_t new_color=col; //!Cvet
 	if(color) new_color=(new_color & 0xFF000000) + (color & 0xFFFFFF); //!Cvet
 	if(alpha) new_color=(new_color & 0xFFFFFF) + ((alpha << 24) & 0xFF000000); //!Cvet
 
@@ -1493,7 +1493,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 		}
 
 	void* pBuffer;
-	(*lplpBuf)->Lock(0,sizeof(MYVERTEX)*mulpos,(BYTE**)&pBuffer,D3DLOCK_DISCARD);
+	(*lplpBuf)->Lock(0,sizeof(MYVERTEX)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
 		memcpy(pBuffer,localBuf,sizeof(MYVERTEX)*mulpos);
 	(*lplpBuf)->Unlock();
 
@@ -1502,14 +1502,14 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 	return 1;
 }
 
-void CSpriteManager::DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lpsvec, WORD cnt)
+void CSpriteManager::DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lpsvec, uint16_t cnt)
 {
 	if(!cnt) return;
 	Flush();
 
 	lpDevice->SetStreamSource(0,lpBuf,sizeof(MYVERTEX));
 
-	WORD rpos=0;
+	uint16_t rpos=0;
 	for(onesurf_vec::iterator iv=lpsvec->begin();iv!=lpsvec->end();iv++)
 	{
 		lpDevice->SetTexture(0,(*iv)->lpSurf);
@@ -1522,7 +1522,7 @@ void CSpriteManager::DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lps
 
 void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, INTRECT* prect)
 {
-	WORD id;
+	uint16_t id;
 	if(prep->lp_sprid) id=*prep->lp_sprid;
 	else id=prep->spr_id;
 	SpriteInfo* lpinf=spr_data[id];
@@ -1543,7 +1543,7 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 {
 	for(dtree_map::iterator jt=lpdtree->begin();jt!=lpdtree->end();jt++)
 	{
-		WORD id;
+		uint16_t id;
 		if((*jt).second->lp_sprid) id=*(*jt).second->lp_sprid;
 		else id=(*jt).second->spr_id;
 		SpriteInfo* lpinf=spr_data[id];
@@ -1564,8 +1564,8 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 
 		int mulpos=cur_pos*4;
 
-		DWORD cur_color=col;
-		if((*jt).second->alpha) cur_color+=((DWORD)(*(*jt).second->alpha)<<24) & 0xFF000000;
+		uint32_t cur_color=col;
+		if((*jt).second->alpha) cur_color+=((uint32_t)(*(*jt).second->alpha)<<24) & 0xFF000000;
 
 		lpWaitBuf[mulpos].x=x-0.5f;
 		lpWaitBuf[mulpos].y=y+lpinf->h-0.5f;
@@ -1615,7 +1615,7 @@ void CSpriteManager::PostRestore()
 	}
 
 	//и индексов
-	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(WORD),D3DUSAGE_WRITEONLY,
+	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(uint16_t),D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 	if(hr!=D3D_OK){
 		ErrMsg("SM::CreateIndexBuffer",(char*)DXGetErrorString8(hr));
@@ -1623,7 +1623,7 @@ void CSpriteManager::PostRestore()
 	}
 	
 
-	WORD* IndexList=new WORD[6*spr_cnt];
+	uint16_t* IndexList=new uint16_t[6*spr_cnt];
 	for(int i=0;i<spr_cnt;i++)
 	{
 		IndexList[6*i+0]=4*i+0;
@@ -1635,8 +1635,8 @@ void CSpriteManager::PostRestore()
 	}
 	
 	void* pBuffer;
-	lpIB->Lock(0,0,(BYTE**)&pBuffer,0);
-		memcpy(pBuffer,IndexList,spr_cnt*6*sizeof(WORD));
+	lpIB->Lock(0,0,(uint8_t**)&pBuffer,0);
+		memcpy(pBuffer,IndexList,spr_cnt*6*sizeof(uint16_t));
 	lpIB->Unlock();
 
 	delete[] IndexList;
@@ -1669,7 +1669,7 @@ int CSpriteManager::LoadCritTypes()
 	return 1;
 }
 
-int CSpriteManager::LoadAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2)
+int CSpriteManager::LoadAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
 {
 	if(CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 
@@ -1698,7 +1698,7 @@ int CSpriteManager::LoadAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2)
 	return 1;
 }
 
-int CSpriteManager::EraseAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2)
+int CSpriteManager::EraseAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
 {
 	if(!CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 	TICK loadA=GetTickCount();
@@ -1708,7 +1708,7 @@ int CSpriteManager::EraseAnimCr(CrTYPE anim_type, BYTE anim_ind1, BYTE anim_ind2
 	for(int or=0;or<6;or++)
 		for(int frm=0;frm<num_frm;frm++)
 		{
-			DWORD num_sprite=or*num_frm+frm;
+			uint32_t num_sprite=or*num_frm+frm;
 			it=spr_data.find(CrAnim[anim_type][anim_ind1][anim_ind2]->ind[num_sprite]);
 			if(it==spr_data.end()) return 0;
 			delete (*it).second;
@@ -1756,7 +1756,7 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 	}
 
 	VOID* pVertices;
-	p_VB->Lock (0, cnt_pix*sizeof(MYVERTEX), (BYTE**)&pVertices, D3DLOCK_DISCARD);
+	p_VB->Lock (0, cnt_pix*sizeof(MYVERTEX), (uint8_t**)&pVertices, D3DLOCK_DISCARD);
 	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(MYVERTEX));
 	p_VB->Unlock();
 
@@ -1811,7 +1811,7 @@ void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
 	}
 
 	VOID* pVertices;
-	p_VB->Lock (0, cnt_pix*sizeof(MYVERTEX), (BYTE**)&pVertices, D3DLOCK_DISCARD);
+	p_VB->Lock (0, cnt_pix*sizeof(MYVERTEX), (uint8_t**)&pVertices, D3DLOCK_DISCARD);
 	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(MYVERTEX));
 	p_VB->Unlock();
 

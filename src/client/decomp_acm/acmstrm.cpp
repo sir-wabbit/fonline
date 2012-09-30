@@ -88,7 +88,7 @@ void sub_4d420c (int *decBuff, int *someBuff, int someSize, int blocks);
 
 //!Cvet edit
 //CACMUnpacker::CACMUnpacker (FileReadFunction readFunc, int fileHandle, int &channels, int &frequency, int &samples)
-CACMUnpacker::CACMUnpacker (BYTE* fileHandle, DWORD fileLenght, int &channels, int &frequency, int &samples) //!Cvet
+CACMUnpacker::CACMUnpacker (uint8_t* fileHandle, uint32_t fileLenght, int &channels, int &frequency, int &samples) //!Cvet
 :	fileBuffPtr (NULL),
 	decompBuff (NULL),
 	someBuff (NULL)
@@ -158,7 +158,7 @@ unsigned char CACMUnpacker::readNextPortion() {
 	return *fileBuffPtr;
 }
 //!Cvet++++++++++++++++++++++++++++++
-int CACMUnpacker::str_read  (BYTE** d_stream, int d_size, BYTE* f_stream)
+int CACMUnpacker::str_read  (uint8_t** d_stream, int d_size, uint8_t* f_stream)
 {
 //	if(fileCur+d_size>fileLen) return 0; //!!!!доделать
 
