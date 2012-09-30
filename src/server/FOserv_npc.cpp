@@ -17,7 +17,7 @@ int CServer::NPC_LoadAll()
 
 	if((cf2=fopen(file_name, "rt"))==NULL)
 	{
-		LogExecStr("Файл не найден |%s|\n", file_name);
+		LogExecStr("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ |%s|\n", file_name);
 		return 0;
 	}
 
@@ -31,11 +31,11 @@ int CServer::NPC_LoadAll()
 		
 		if(ch!='#') continue;
 
-		LogExecStr("Инициализация НПЦ:...");
+		LogExecStr("РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РќРџР¦:...");
 
 		if(fscanf(cf2,"%d%s",&npc_id,&npc_name[0])!=2)
 		{
-			LogExecStr("ошибка в чтении данных\n");
+			LogExecStr("РѕС€РёР±РєР° РІ С‡С‚РµРЅРёРё РґР°РЅРЅС‹С…\n");
 			return 0;
 		}
 
@@ -48,7 +48,7 @@ int CServer::NPC_LoadAll()
 
 		if(npc_id<NPC_MIN_ID || npc_id>NPC_MAX_ID)
 		{
-			LogExecStr("неверный ID\n");
+			LogExecStr("РЅРµРІРµСЂРЅС‹Р№ ID\n");
 			return 0;
 		}
 
@@ -56,22 +56,22 @@ int CServer::NPC_LoadAll()
 
 		if(sql.CountRows("npc","id",npc->info.id))
 		{
-			LogExecStr("найден в базе...");
+			LogExecStr("РЅР°Р№РґРµРЅ РІ Р±Р°Р·Рµ...");
 
 			if(!sql.LoadDataNPC(&npc->info))
 			{
-				LogExecStr("Ошибка при загрузке основных параметров из БД\n");
+				LogExecStr("РћС€РёР±РєР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РёР· Р‘Р”\n");
 				return 0;
 			}
 		}
 		else
 		{
-			LogExecStr("в файле |%s|...",file_name);
+			LogExecStr("РІ С„Р°Р№Р»Рµ |%s|...",file_name);
 
 			bool Err_load=false;
 
 			Err_load=false;
-		//основные параметры
+		//РѕСЃРЅРѕРІРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
 		//	if((npc->info.id		=GetPrivateProfileInt("info","id"		,-1,file_name))==-1) Err_load=true;
 			if((npc->info.base_type	=GetPrivateProfileInt("info","base_type",-1,file_name))==-1) Err_load=true;
 			if((npc->info.map		=GetPrivateProfileInt("info","map"		,-1,file_name))==-1) Err_load=true;
@@ -92,13 +92,13 @@ int CServer::NPC_LoadAll()
 			GetPrivateProfileString("info","cases4"	,"e",npc->info.cases[4]	,MAX_NAME,file_name);
 			if(npc->info.cases[4][0]	=='e') Err_load=true;
 
-		//объекты
+		//РѕР±СЉРµРєС‚С‹
 			npc->info.a_obj=&npc->info.def_obj1;
 			npc->info.a_obj_arm=&npc->info.def_obj2;
 			npc->info.a_obj->object=all_s_obj[npc->info.base_type];
 			npc->info.a_obj_arm->object=all_s_obj[npc->info.base_type+200];
 
-		//статы, скиллы, перки
+		//СЃС‚Р°С‚С‹, СЃРєРёР»Р»С‹, РїРµСЂРєРё
 			int go=0;
 			for(go=0; go<ALL_STATS ; go++) npc->info.st[go]=5;
 			for(go=0; go<ALL_SKILLS; go++) npc->info.sk[go]=5;
@@ -111,7 +111,7 @@ int CServer::NPC_LoadAll()
 
 			npc->InitNPC();
 
-		//состояния
+		//СЃРѕСЃС‚РѕСЏРЅРёСЏ
 			npc->info.cond=COND_LIFE;
 			npc->info.cond_ext=COND_LIFE_NONE;
 			npc->info.flags=FCRIT_NPC;
@@ -119,18 +119,18 @@ int CServer::NPC_LoadAll()
 
 			if(Err_load==true)
 			{
-				LogExecStr("Ошибка при загрузке основных параметров из файла\n");
+				LogExecStr("РћС€РёР±РєР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РёР· С„Р°Р№Р»Р°\n");
 				return 0;
 			}
 		}
 
-	//переменные
+	//РїРµСЂРµРјРµРЅРЅС‹Рµ
 		FILE* cf;
 		char p_tmp1[200];
 		int p_tmpi=0;
 		if((cf=fopen(file_name, "rt"))==NULL)
 		{
-			LogExecStr("Файл не найден |%s|\n", file_name);
+			LogExecStr("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ |%s|\n", file_name);
 			return 0;
 		}
 		
@@ -148,9 +148,9 @@ int CServer::NPC_LoadAll()
 				{
 					fscanf(cf, "%s", &p_tmp1);
 					if(!stricmp(p_tmp1,"[end_vars]")) break;
-				//имя
+				//РёРјСЏ
 			//		if(sql.GetInt("npc_vars_templates","COUNT(*)","name",p_tmp1))
-			//			{ LogExecStr("Ошибка в переменных - реиндитификация\n"); return 0; }
+			//			{ LogExecStr("РћС€РёР±РєР° РІ РїРµСЂРµРјРµРЅРЅС‹С… - СЂРµРёРЅРґРёС‚РёС„РёРєР°С†РёСЏ\n"); return 0; }
 					strcpy(var_name,p_tmp1);
 
 				//count
@@ -166,7 +166,7 @@ int CServer::NPC_LoadAll()
 					var_max=p_tmpi;
 
 					if(var_count<var_min || var_count>var_max)
-						{ LogExecStr("Ошибка в переменных - неверные данные\n"); return 0; }
+						{ LogExecStr("РћС€РёР±РєР° РІ РїРµСЂРµРјРµРЅРЅС‹С… - РЅРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ\n"); return 0; }
 
 					sql.Query("INSERT INTO npc_vars_templates (npc_id,name,count,min,max) VALUES('%d','%s','%d','%d','%d')",
 						npc->info.id,var_name,var_count,var_min,var_max);
@@ -176,7 +176,7 @@ int CServer::NPC_LoadAll()
 		}
 		fclose(cf);
 
-	//диалоги
+	//РґРёР°Р»РѕРіРё
 		int read_int=0;
 		int read_int2=0;
 		int read_int3=0;
@@ -200,23 +200,23 @@ int CServer::NPC_LoadAll()
 
 			npc_dialog* dlg;
 			answer* answ;
-//ДИАЛОГИ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//Р”РРђР›РћР“Р++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			while((!feof(cf))&&(read_proc))
 			{
 				dlg=new npc_dialog;
-			//ID диалога
+			//ID РґРёР°Р»РѕРіР°
 				fscanf(cf, "%d", &read_int);
 				dlg->id=read_int;
-			//ID текста
+			//ID С‚РµРєСЃС‚Р°
 				fscanf(cf, "%d", &read_int);
 				dlg->id_text=read_int;
-			//действия при неответе
+			//РґРµР№СЃС‚РІРёСЏ РїСЂРё РЅРµРѕС‚РІРµС‚Рµ
 				fscanf(cf, "%s", &read_str);
 				dlg->not_answer=0;
-			//время на прочтение
+			//РІСЂРµРјСЏ РЅР° РїСЂРѕС‡С‚РµРЅРёРµ
 				fscanf(cf, "%d", &read_int);
 				if(read_int) dlg->time_break=read_int;
-//ДИАЛОГИ----------------------------------------------------------------------------------------
+//Р”РРђР›РћР“Р----------------------------------------------------------------------------------------
 				fscanf(cf, "%c", &ch);
 				if(ch[0]=='@') continue;
 				else if(ch[0]=='&') break;
@@ -225,19 +225,19 @@ int CServer::NPC_LoadAll()
 					read_proc=FALSE;
 					break;
 				}
-//ОТВЕТЫ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//РћРўР’Р•РўР«++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				while(!feof(cf))
 				{
 					answ=new answer;
-				//ID линка
+				//ID Р»РёРЅРєР°
 					fscanf(cf, "%d", &read_int);
 					answ->link=read_int;
-				//ID текста
+				//ID С‚РµРєСЃС‚Р°
 					fscanf(cf, "%d", &read_int);
 					answ->id_text=read_int;
-//ОТВЕТЫ----------------------------------------------------------------------------------------
+//РћРўР’Р•РўР«----------------------------------------------------------------------------------------
 					fscanf(cf, "%c", &ch);
-//УСЛОВИЯ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//РЈРЎР›РћР’РРЇ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 					if(ch[0]=='u')
 					{
 						demand* new_demand;
@@ -247,66 +247,66 @@ int CServer::NPC_LoadAll()
 							fscanf(cf, "%c", &ch);
 							if(ch[0]!='*') break;
 							new_demand=new demand;
-						//название требования
+						//РЅР°Р·РІР°РЅРёРµ С‚СЂРµР±РѕРІР°РЅРёСЏ
 							fscanf(cf, "%s", &read_str);
 
 							if(!stricmp(read_str,"stat"))
 							{
-								fscanf(cf, "%s", &read_str2); //название стата
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
-								fscanf(cf, "%d", &read_int); //значение
+								fscanf(cf, "%s", &read_str2); //РЅР°Р·РІР°РЅРёРµ СЃС‚Р°С‚Р°
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ
+								fscanf(cf, "%d", &read_int); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_demand->type=DEMAND_STAT;
 								it_d=stats_map.find(read_str2);
-								if(it_d==stats_map.end()) {SAFEDEL(new_demand); LogExecStr("Неизвестный стат %s\n", read_str2); return 0;}
+								if(it_d==stats_map.end()) {SAFEDEL(new_demand); LogExecStr("РќРµРёР·РІРµСЃС‚РЅС‹Р№ СЃС‚Р°С‚ %s\n", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
 							}
 							else if(!stricmp(read_str,"skill"))
 							{
-								fscanf(cf, "%s", &read_str2); //название скилла
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
-								fscanf(cf, "%d", &read_int); //значение
+								fscanf(cf, "%s", &read_str2); //РЅР°Р·РІР°РЅРёРµ СЃРєРёР»Р»Р°
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ
+								fscanf(cf, "%d", &read_int); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_demand->type=DEMAND_SKILL;
 								it_d=skills_map.find(read_str2);
-								if(it_d==skills_map.end()) {SAFEDEL(new_demand); LogExecStr("Неизвестный скилл %s\n", read_str2); return 0;}
+								if(it_d==skills_map.end()) {SAFEDEL(new_demand); LogExecStr("РќРµРёР·РІРµСЃС‚РЅС‹Р№ СЃРєРёР»Р» %s\n", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
 							}
 							else if(!stricmp(read_str,"perk"))
 							{
-								fscanf(cf, "%s", &read_str2); //название перка
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
-								fscanf(cf, "%d", &read_int); //значение
+								fscanf(cf, "%s", &read_str2); //РЅР°Р·РІР°РЅРёРµ РїРµСЂРєР°
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ
+								fscanf(cf, "%d", &read_int); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_demand->type=DEMAND_PERK;
 								it_d=perks_map.find(read_str2);
-								if(it_d==perks_map.end()) {SAFEDEL(new_demand); LogExecStr("Неизвестный перк %s\n", read_str2); return 0;}
+								if(it_d==perks_map.end()) {SAFEDEL(new_demand); LogExecStr("РќРµРёР·РІРµСЃС‚РЅС‹Р№ РїРµСЂРє %s\n", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
 							}
 							else if(!stricmp(read_str,"var"))
 							{
-								fscanf(cf, "%s", &read_str2); //название переменной
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
-								fscanf(cf, "%d", &read_int); //значение
+								fscanf(cf, "%s", &read_str2); //РЅР°Р·РІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅРѕР№
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ
+								fscanf(cf, "%d", &read_int); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_demand->type=DEMAND_VAR;
 								
-						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); LogExecStr("Неизвестная переменная %s\n", read_str2); return 0;}
+						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); LogExecStr("РќРµРёР·РІРµСЃС‚РЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ %s\n", read_str2); return 0;}
 								new_demand->var_name=read_str2;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
 							}
 							else if(!stricmp(read_str,"pvar"))
 							{
-								fscanf(cf, "%d", &read_int); //номер переменной
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
-								fscanf(cf, "%d", &read_int2); //значение
+								fscanf(cf, "%d", &read_int); //РЅРѕРјРµСЂ РїРµСЂРµРјРµРЅРЅРѕР№
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ
+								fscanf(cf, "%d", &read_int2); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_demand->type=DEMAND_PVAR;
 								
@@ -316,9 +316,9 @@ int CServer::NPC_LoadAll()
 							}
 							else if(!stricmp(read_str,"quest"))
 							{
-								fscanf(cf, "%d", &read_int); //номер квеста
-								fscanf(cf, "%d", &read_int2); //номер выборки
-								fscanf(cf, "%d", &read_int3); //значение квеста
+								fscanf(cf, "%d", &read_int); //РЅРѕРјРµСЂ РєРІРµСЃС‚Р°
+								fscanf(cf, "%d", &read_int2); //РЅРѕРјРµСЂ РІС‹Р±РѕСЂРєРё
+								fscanf(cf, "%d", &read_int3); //Р·РЅР°С‡РµРЅРёРµ РєРІРµСЃС‚Р°
 
 								new_demand->type=DEMAND_QUEST;
 
@@ -328,8 +328,8 @@ int CServer::NPC_LoadAll()
 							}
 							else if(!stricmp(read_str,"item"))
 							{
-								fscanf(cf, "%d", &read_int); //номер итема
-								fscanf(cf, "%1s", &read_str2); //оператор сравнения
+								fscanf(cf, "%d", &read_int); //РЅРѕРјРµСЂ РёС‚РµРјР°
+								fscanf(cf, "%1s", &read_str2); //РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ
 
 								SAFEDEL(new_demand);
 								continue;
@@ -337,14 +337,14 @@ int CServer::NPC_LoadAll()
 							else
 							{
 								SAFEDEL(new_demand);
-								LogExecStr("Неизвестное условие %s\n", read_str);
+								LogExecStr("РќРµРёР·РІРµСЃС‚РЅРѕРµ СѓСЃР»РѕРІРёРµ %s\n", read_str);
 								continue;
 							}
 							answ->demands.push_back(new_demand);
 						}
 					}
-//УСЛОВИЯ----------------------------------------------------------------------------------------
-//РЕЗУЛЬТАТ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//РЈРЎР›РћР’РРЇ----------------------------------------------------------------------------------------
+//Р Р•Р—РЈР›Р¬РўРђРў++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 					if(ch[0]=='r')
 					{
 						result* new_result;
@@ -354,65 +354,65 @@ int CServer::NPC_LoadAll()
 							fscanf(cf, "%c", &ch);
 							if(ch[0]!='*') break;
 							new_result=new result;
-						//название результата
+						//РЅР°Р·РІР°РЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 							fscanf(cf, "%s", &read_str);
 							if(!stricmp(read_str,"stat"))
 								{
-								fscanf(cf, "%s", &read_str2); //название стата
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
-								fscanf(cf, "%d", &read_int); //значение
+								fscanf(cf, "%s", &read_str2); //РЅР°Р·РІР°РЅРёРµ СЃС‚Р°С‚Р°
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+								fscanf(cf, "%d", &read_int); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_result->type=RESULT_STAT;
 								it_r=stats_map.find(read_str2);
-								if(it_r==stats_map.end()) {SAFEDEL(new_result); LogExecStr("Неизвестный стат %s\n", read_str2); return 0;}
+								if(it_r==stats_map.end()) {SAFEDEL(new_result); LogExecStr("РќРµРёР·РІРµСЃС‚РЅС‹Р№ СЃС‚Р°С‚ %s\n", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
 							}
 							else if(!stricmp(read_str,"skill"))
 							{
-								fscanf(cf, "%s", &read_str2); //название скилла
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
-								fscanf(cf, "%d", &read_int); //значение
+								fscanf(cf, "%s", &read_str2); //РЅР°Р·РІР°РЅРёРµ СЃРєРёР»Р»Р°
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+								fscanf(cf, "%d", &read_int); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_result->type=RESULT_SKILL;
 								it_r=skills_map.find(read_str2);
-								if(it_r==skills_map.end()) {SAFEDEL(new_result); LogExecStr("Неизвестный скилл %s\n", read_str2); return 0;}
+								if(it_r==skills_map.end()) {SAFEDEL(new_result); LogExecStr("РќРµРёР·РІРµСЃС‚РЅС‹Р№ СЃРєРёР»Р» %s\n", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
 							}
 							else if(!stricmp(read_str,"perk"))
 							{
-								fscanf(cf, "%s", &read_str2); //название перка
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
-								fscanf(cf, "%d", &read_int); //значение
+								fscanf(cf, "%s", &read_str2); //РЅР°Р·РІР°РЅРёРµ РїРµСЂРєР°
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+								fscanf(cf, "%d", &read_int); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_result->type=RESULT_PERK;
 								it_r=perks_map.find(read_str2);
-								if(it_r==perks_map.end()) {SAFEDEL(new_result); LogExecStr("Неизвестный перк %s\n", read_str2); return 0;}
+								if(it_r==perks_map.end()) {SAFEDEL(new_result); LogExecStr("РќРµРёР·РІРµСЃС‚РЅС‹Р№ РїРµСЂРє %s\n", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
 							}
 							else if(!stricmp(read_str,"var"))
 							{
-								fscanf(cf, "%s", &read_str2); //название переменной
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
-								fscanf(cf, "%d", &read_int); //значение
+								fscanf(cf, "%s", &read_str2); //РЅР°Р·РІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅРѕР№
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+								fscanf(cf, "%d", &read_int); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_result->type=RESULT_VAR;
 								
-						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); LogExecStr("Неизвестная переменная %s\n", read_str2); return 0;}
+						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); LogExecStr("РќРµРёР·РІРµСЃС‚РЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ %s\n", read_str2); return 0;}
 								new_result->var_name=read_str2;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
 							}
 							else if(!stricmp(read_str,"pvar"))
 							{
-								fscanf(cf, "%d", &read_int); //название переменной
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
-								fscanf(cf, "%d", &read_int2); //значение
+								fscanf(cf, "%d", &read_int); //РЅР°Р·РІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅРѕР№
+								fscanf(cf, "%1s", &read_str3); //РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+								fscanf(cf, "%d", &read_int2); //Р·РЅР°С‡РµРЅРёРµ
 
 								new_result->type=RESULT_PVAR;
 								
@@ -422,9 +422,9 @@ int CServer::NPC_LoadAll()
 							}
 							else if(!stricmp(read_str,"quest"))
 							{
-								fscanf(cf, "%d", &read_int); //номер квеста
-								fscanf(cf, "%d", &read_int2); //номер выборки
-								fscanf(cf, "%d", &read_int3); //значение квеста
+								fscanf(cf, "%d", &read_int); //РЅРѕРјРµСЂ РєРІРµСЃС‚Р°
+								fscanf(cf, "%d", &read_int2); //РЅРѕРјРµСЂ РІС‹Р±РѕСЂРєРё
+								fscanf(cf, "%d", &read_int3); //Р·РЅР°С‡РµРЅРёРµ РєРІРµСЃС‚Р°
 
 								new_result->type=RESULT_QUEST;
 
@@ -434,15 +434,15 @@ int CServer::NPC_LoadAll()
 							}
 							else if(!stricmp(read_str,"item"))
 							{
-								fscanf(cf, "%d", &read_int); //номер итема
-								fscanf(cf, "%2s", &read_str2); //оператор присваивания
+								fscanf(cf, "%d", &read_int); //РЅРѕРјРµСЂ РёС‚РµРјР°
+								fscanf(cf, "%2s", &read_str2); //РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
 
 								SAFEDEL(new_result);
 								continue;
 							}
 							else if(!stricmp(read_str,"lock"))
 							{
-								fscanf(cf, "%d", &read_int); //время блокировки
+								fscanf(cf, "%d", &read_int); //РІСЂРµРјСЏ Р±Р»РѕРєРёСЂРѕРІРєРё
 
 								SAFEDEL(new_result);
 								continue;
@@ -450,14 +450,14 @@ int CServer::NPC_LoadAll()
 							else
 							{
 								SAFEDEL(new_result);
-								LogExecStr("Неизвестный результат %s\n", read_str);
+								LogExecStr("РќРµРёР·РІРµСЃС‚РЅС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚ %s\n", read_str);
 								continue;
 							}
 							answ->results.push_back(new_result);
 						}
 					}
-//РЕЗУЛЬТАТ----------------------------------------------------------------------------------------
-				//проверки
+//Р Р•Р—РЈР›Р¬РўРђРў----------------------------------------------------------------------------------------
+				//РїСЂРѕРІРµСЂРєРё
 					if(feof(cf))
 					{
 						read_proc=FALSE;
@@ -484,26 +484,26 @@ int CServer::NPC_LoadAll()
 		} 
 		else
 		{
-			LogExecStr("Файл не найден\n");
+			LogExecStr("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ\n");
 			return 0;
 		}
 
 		if(!read_proc)
 		{
-			LogExecStr("Ошибка при инициализации\n");
+			LogExecStr("РћС€РёР±РєР° РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё\n");
 			return 0;
 		}
 
 		if(!sql.CountRows("npc","id",npc->info.id))
 			if(!sql.NewNPC(&npc->info))
 			{
-				LogExecStr("Ошибка регистрации НПЦ\n");
+				LogExecStr("РћС€РёР±РєР° СЂРµРіРёСЃС‚СЂР°С†РёРё РќРџР¦\n");
 				return 0;
 			}
 
 		if(AddCrToMap(npc,npc->info.map,npc->info.x,npc->info.y)!=TR_OK)
 		{
-			LogExecStr("Не удалось высадить НПЦ\n");
+			LogExecStr("РќРµ СѓРґР°Р»РѕСЃСЊ РІС‹СЃР°РґРёС‚СЊ РќРџР¦\n");
 			return 0;
 		}
 
@@ -517,19 +517,19 @@ int CServer::NPC_LoadAll()
 
 	return 1;
 /*
-//Отладка
+//РћС‚Р»Р°РґРєР°
 	LogExecStr("\n");
-	LogExecStr("Отладочная инфа:\n");
+	LogExecStr("РћС‚Р»Р°РґРѕС‡РЅР°СЏ РёРЅС„Р°:\n");
 
-	LogExecStr("Имя:%s, к0:%s, к2:%s, к3:%s, к4:%s\n", npc->info.name, npc->info.cases[0],
+	LogExecStr("РРјСЏ:%s, Рє0:%s, Рє2:%s, Рє3:%s, Рє4:%s\n", npc->info.name, npc->info.cases[0],
 		npc->info.cases[1], npc->info.cases[2], npc->info.cases[3], npc->info.cases[4]);
-	LogExecStr("id:%d, карта:%d, x:%d, y:%d, ориентация:%d, тип нпц:%d\n", npc->info.id,
+	LogExecStr("id:%d, РєР°СЂС‚Р°:%d, x:%d, y:%d, РѕСЂРёРµРЅС‚Р°С†РёСЏ:%d, С‚РёРї РЅРїС†:%d\n", npc->info.id,
 		npc->info.map, npc->info.x, npc->info.y, npc->info.ori, npc->info.base_type);
 
 	npc_dialog* dlg=NULL;
 	answer* answ=NULL;
 
-	LogExecStr("Всего диалогов: %d\n", npc->i_npc->dialogs.size());
+	LogExecStr("Р’СЃРµРіРѕ РґРёР°Р»РѕРіРѕРІ: %d\n", npc->i_npc->dialogs.size());
 
 	for(dialogs_map::iterator it=npc->i_npc->dialogs.begin(); it!=npc->i_npc->dialogs.end(); it++)
 	{
@@ -537,36 +537,36 @@ int CServer::NPC_LoadAll()
 
 		dlg=(*it).second;
 
-		LogExecStr("Диалог:%d, текст №%d, время на прочтение:%d, нет ответа:%d\n", dlg->id, dlg->id_text,
+		LogExecStr("Р”РёР°Р»РѕРі:%d, С‚РµРєСЃС‚ в„–%d, РІСЂРµРјСЏ РЅР° РїСЂРѕС‡С‚РµРЅРёРµ:%d, РЅРµС‚ РѕС‚РІРµС‚Р°:%d\n", dlg->id, dlg->id_text,
 			dlg->time_break, dlg->not_answer);
 		
 		for(answers_list::iterator it_a=dlg->answers.begin(); it_a!=dlg->answers.end(); it_a++)
 		{
 			answ=(*it_a);
-			LogExecStr("Основной текст:%d, линк:%d, блокировка:%d, ", answ->id_text,
+			LogExecStr("РћСЃРЅРѕРІРЅРѕР№ С‚РµРєСЃС‚:%d, Р»РёРЅРє:%d, Р±Р»РѕРєРёСЂРѕРІРєР°:%d, ", answ->id_text,
 				answ->link_dialog, answ->lock_answered);
 
 			if(answ->demand.size())
 			{
-				LogExecStr("требования |");
+				LogExecStr("С‚СЂРµР±РѕРІР°РЅРёСЏ |");
 
 				for(demand_map::iterator it_dm=answ->demand.begin(); it_dm!=answ->demand.end(); it_dm++)
 					LogExecStr(" %d > %d |", (*it_dm).first, (*it_dm).second);
 			}
 			else
-				LogExecStr("требований нет");
+				LogExecStr("С‚СЂРµР±РѕРІР°РЅРёР№ РЅРµС‚");
 
 			LogExecStr(", ");
 
 			if(answ->overpatching.size())
 			{
-				LogExecStr("результат |");
+				LogExecStr("СЂРµР·СѓР»СЊС‚Р°С‚ |");
 
 				for(overpatching_map::iterator it_op=answ->overpatching.begin(); it_op!=answ->overpatching.end(); it_op++)
 					LogExecStr(" %d > %d |", (*it_op).first, (*it_op).second);
 			}
 			else
-				LogExecStr("результатов нет");
+				LogExecStr("СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РЅРµС‚");
 
 			LogExecStr("\n");
 		}
@@ -617,7 +617,7 @@ void CServer::NPC_Process(CCritter* npc)
 		break;*/
 	default:
 	case MR_FALSE:
-		SetCheat(npc,"Process_Move - попытка походить в занятую клетку");	
+		SetCheat(npc,"Process_Move - РїРѕРїС‹С‚РєР° РїРѕС…РѕРґРёС‚СЊ РІ Р·Р°РЅСЏС‚СѓСЋ РєР»РµС‚РєСѓ");	
 		break;
 	}
 
@@ -637,15 +637,15 @@ void CServer::NPC_Dialog_Close(CCritter* npc, CCritter* acl, BYTE onhead_say)
 
 int CServer::NPC_Dialog_Compile(CCritter* npc, CCritter* acl, npc_dialog* new_dlg)
 {
-	npc->i_npc->compiled_dialog=(*new_dlg); //конструктор копирования должен??? уничтожить все старые объекты !!!!!!!!!!
+	npc->i_npc->compiled_dialog=(*new_dlg); //РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ РґРѕР»Р¶РµРЅ??? СѓРЅРёС‡С‚РѕР¶РёС‚СЊ РІСЃРµ СЃС‚Р°СЂС‹Рµ РѕР±СЉРµРєС‚С‹ !!!!!!!!!!
 	npc_dialog* cmp_dlg=&npc->i_npc->compiled_dialog;
 
 	if(cmp_dlg->id==1) return 0;
 
-//составляем ветку ответов
+//СЃРѕСЃС‚Р°РІР»СЏРµРј РІРµС‚РєСѓ РѕС‚РІРµС‚РѕРІ
 	for(answers_list::iterator it_a=cmp_dlg->answers.begin();it_a!=cmp_dlg->answers.end();it_a++)
 	{
-	//смотрим требование
+	//СЃРјРѕС‚СЂРёРј С‚СЂРµР±РѕРІР°РЅРёРµ
 		if(!NPC_Check_demand(npc,acl,(*it_a))) cmp_dlg->answers.erase(it_a);
 		
 		if(it_a==cmp_dlg->answers.end()) break;
@@ -717,7 +717,7 @@ void CServer::NPC_Use_result(CCritter* npc, CCritter* acl, answer* use_answ)
 			else if((*it_r)->oper=='*') acl->info.st[(*it_r)->param]*=(*it_r)->count;
 			else if((*it_r)->oper=='/') acl->info.st[(*it_r)->param]/=(*it_r)->count;
 			else if((*it_r)->oper=='=') acl->info.st[(*it_r)->param] =(*it_r)->count;
-		//посылаем уведомление
+		//РїРѕСЃС‹Р»Р°РµРј СѓРІРµРґРѕРјР»РµРЅРёРµ
 			Send_Param(acl,TYPE_STAT,(*it_r)->param);
 			continue;
 		case RESULT_SKILL:
@@ -726,7 +726,7 @@ void CServer::NPC_Use_result(CCritter* npc, CCritter* acl, answer* use_answ)
 			else if((*it_r)->oper=='*') acl->info.sk[(*it_r)->param]*=(*it_r)->count;
 			else if((*it_r)->oper=='/') acl->info.sk[(*it_r)->param]/=(*it_r)->count;
 			else if((*it_r)->oper=='=') acl->info.sk[(*it_r)->param] =(*it_r)->count;
-		//посылаем уведомление
+		//РїРѕСЃС‹Р»Р°РµРј СѓРІРµРґРѕРјР»РµРЅРёРµ
 			Send_Param(acl,TYPE_STAT,(*it_r)->param);
 			continue;
 		case RESULT_PERK:
@@ -735,7 +735,7 @@ void CServer::NPC_Use_result(CCritter* npc, CCritter* acl, answer* use_answ)
 			else if((*it_r)->oper=='*') acl->info.pe[(*it_r)->param]*=(*it_r)->count;
 			else if((*it_r)->oper=='/') acl->info.pe[(*it_r)->param]/=(*it_r)->count;
 			else if((*it_r)->oper=='=') acl->info.pe[(*it_r)->param] =(*it_r)->count;
-		//посылаем уведомление
+		//РїРѕСЃС‹Р»Р°РµРј СѓРІРµРґРѕРјР»РµРЅРёРµ
 			Send_Param(acl,TYPE_STAT,(*it_r)->param);
 			continue;
 		case RESULT_VAR:
@@ -762,19 +762,19 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 	acl->bin >> num_answer;
 
 	if(!acl->info.map) return;
-//находим непися
+//РЅР°С…РѕРґРёРј РЅРµРїРёСЃСЏ
 	CCritter* npc;
 	cl_map::iterator it=pc.find(id_npc_talk);
 	if(it==pc.end())
 	{
-		SetCheat(acl,"Process_Talk_NPC - не найден НПЦ");
+		SetCheat(acl,"Process_Talk_NPC - РЅРµ РЅР°Р№РґРµРЅ РќРџР¦");
 		return;
 	}
 	npc=(*it).second;
 
 	if(npc->info.cond!=COND_LIFE)
 	{
-		SetCheat(acl,"Process_Talk_NPC - попытка заговорить с не живым НПЦ");
+		SetCheat(acl,"Process_Talk_NPC - РїРѕРїС‹С‚РєР° Р·Р°РіРѕРІРѕСЂРёС‚СЊ СЃ РЅРµ Р¶РёРІС‹Рј РќРџР¦");
 		NPC_Dialog_Close(npc,acl,NPC_SAY_NONE);
 		return;
 	}
@@ -783,7 +783,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 
 	if(dist>TALK_NPC_DISTANCE)
 	{
-		SetCheat(acl,"Process_Talk_NPC - дистанция разговора превышает максимальную");
+		SetCheat(acl,"Process_Talk_NPC - РґРёСЃС‚Р°РЅС†РёСЏ СЂР°Р·РіРѕРІРѕСЂР° РїСЂРµРІС‹С€Р°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅСѓСЋ");
 		NPC_Dialog_Close(npc,acl,NPC_SAY_NONE);
 		return;
 	}
@@ -800,69 +800,69 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 	answers_list::iterator it_a;
 	npc_dialog* send_dialog=&npc->i_npc->compiled_dialog;
 
-//продолжаем разговор
+//РїСЂРѕРґРѕР»Р¶Р°РµРј СЂР°Р·РіРѕРІРѕСЂ
 	if(npc->i_npc->talking==acl->info.id)
 	{
 		if(!send_dialog)
 		{
-			LogExecStr("Диалог - Ошибка. Пустой указатель на предыдущий диалог\n");
+			LogExecStr("Р”РёР°Р»РѕРі - РћС€РёР±РєР°. РџСѓСЃС‚РѕР№ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РїСЂРµРґС‹РґСѓС‰РёР№ РґРёР°Р»РѕРі\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 		if(send_dialog->id==0 || send_dialog->id==1)
 		{
-			LogExecStr("Диалог - Ошибка. ID диалога равна %d\n", send_dialog->id);
+			LogExecStr("Р”РёР°Р»РѕРі - РћС€РёР±РєР°. ID РґРёР°Р»РѕРіР° СЂР°РІРЅР° %d\n", send_dialog->id);
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 		if(num_answer+1 > send_dialog->answers.size())
 		{
-			LogExecStr("Диалог - Ошибка. Ответ первышает максимальное значение ответов\n");
+			LogExecStr("Р”РёР°Р»РѕРі - РћС€РёР±РєР°. РћС‚РІРµС‚ РїРµСЂРІС‹С€Р°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РѕС‚РІРµС‚РѕРІ\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
-	//находим ид ответа
+	//РЅР°С…РѕРґРёРј РёРґ РѕС‚РІРµС‚Р°
 		it_a=send_dialog->answers.begin()+num_answer;
 		if(!(*it_a))
 		{
-			LogExecStr("Диалог - Ошибка. Пустой указатель ответа\n");
+			LogExecStr("Р”РёР°Р»РѕРі - РћС€РёР±РєР°. РџСѓСЃС‚РѕР№ СѓРєР°Р·Р°С‚РµР»СЊ РѕС‚РІРµС‚Р°\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
-	//выполняем результат ответа
+	//РІС‹РїРѕР»РЅСЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚ РѕС‚РІРµС‚Р°
 		NPC_Use_result(npc,acl,(*it_a));
-	//проверяем на нулевой линк, т.е. выход
+	//РїСЂРѕРІРµСЂСЏРµРј РЅР° РЅСѓР»РµРІРѕР№ Р»РёРЅРє, С‚.Рµ. РІС‹С…РѕРґ
 		if(!(*it_a)->link)
 		{
 			NPC_Dialog_Close(npc,acl,NPC_SAY_NONE);
 			return;
 		}
-	//проверяем на еденичный линк, т.е. возврат к предыдущему
+	//РїСЂРѕРІРµСЂСЏРµРј РЅР° РµРґРµРЅРёС‡РЅС‹Р№ Р»РёРЅРє, С‚.Рµ. РІРѕР·РІСЂР°С‚ Рє РїСЂРµРґС‹РґСѓС‰РµРјСѓ
 		if((*it_a)->link==1)
 		{
 			//!!!!!!!!!!!
 		}
-	//ищем диалог
+	//РёС‰РµРј РґРёР°Р»РѕРі
 		it_d=npc->i_npc->dialogs.find((*it_a)->link);
 		if(it_d==npc->i_npc->dialogs.end())
 		{
-			LogExecStr("Диалог - Ошибка. Не найден диалог по ответу\n");
+			LogExecStr("Р”РёР°Р»РѕРі - РћС€РёР±РєР°. РќРµ РЅР°Р№РґРµРЅ РґРёР°Р»РѕРі РїРѕ РѕС‚РІРµС‚Сѓ\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 		
-	//компануем диалог
+	//РєРѕРјРїР°РЅСѓРµРј РґРёР°Р»РѕРі
 		if(!NPC_Dialog_Compile(npc,acl,(*it_d).second))
 		{
-			LogExecStr("Диалог - Ошибка. Неудалось скомпоновать диалог\n");
+			LogExecStr("Р”РёР°Р»РѕРі - РћС€РёР±РєР°. РќРµСѓРґР°Р»РѕСЃСЊ СЃРєРѕРјРїРѕРЅРѕРІР°С‚СЊ РґРёР°Р»РѕРі\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 	}
-//начинаем разговор
+//РЅР°С‡РёРЅР°РµРј СЂР°Р·РіРѕРІРѕСЂ
 	else if(!npc->i_npc->talking)// && !npc->info.break_time)
 	{
-	//впервые
+	//РІРїРµСЂРІС‹Рµ
 		it_d=npc->i_npc->dialogs.begin();
 
 		int go_dialog=0;
@@ -879,7 +879,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
-	//выполняем результат
+	//РІС‹РїРѕР»РЅСЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚
 		NPC_Use_result(npc,acl,(*it_a));
 
 		if(!go_dialog)
@@ -892,26 +892,26 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 
 		if(it_d==npc->i_npc->dialogs.end())
 		{
-			LogExecStr("Диалог - Ошибка. Не найден диалог по предустановкам\n");
+			LogExecStr("Р”РёР°Р»РѕРі - РћС€РёР±РєР°. РќРµ РЅР°Р№РґРµРЅ РґРёР°Р»РѕРі РїРѕ РїСЂРµРґСѓСЃС‚Р°РЅРѕРІРєР°Рј\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
-	//компануем диалог
+	//РєРѕРјРїР°РЅСѓРµРј РґРёР°Р»РѕРі
 		if(!NPC_Dialog_Compile(npc,acl,(*it_d).second))
 		{
-			LogExecStr("Диалог - Ошибка. Неудалось скомпоновать диалог\n");
+			LogExecStr("Р”РёР°Р»РѕРі - РћС€РёР±РєР°. РќРµСѓРґР°Р»РѕСЃСЊ СЃРєРѕРјРїРѕРЅРѕРІР°С‚СЊ РґРёР°Р»РѕРі\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 	}
-//нпц занят
+//РЅРїС† Р·Р°РЅСЏС‚
 	else 
 	{
 		NPC_Dialog_Close(npc,acl,NPC_SAY_IMBYSY); 
 		return;
 	}
 
-//посылаем
+//РїРѕСЃС‹Р»Р°РµРј
 	Send_Talk(acl,&npc->i_npc->compiled_dialog);
 
 //	npc->info.start_bt=GetTickCount();

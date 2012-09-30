@@ -25,7 +25,7 @@ DWORD start_srv_time=GetTickCount();
 HANDLE hGameThread=NULL;
 DWORD dwGameThreadID=0;
 int NumClients=0;
-int NumCritters=0; //!Cvet всего криттеров в игре
+int NumCritters=0; //!Cvet РІСЃРµРіРѕ РєСЂРёС‚С‚РµСЂРѕРІ РІ РёРіСЂРµ
 HANDLE hUpdateEvent;
 
 
@@ -37,7 +37,7 @@ DWORD WINAPI GameLoopThread(void *);
 	
 	void UpdateInfo();
 	
-	HINSTANCE hInstance;//дескриптор
+	HINSTANCE hInstance;//РґРµСЃРєСЂРёРїС‚РѕСЂ
 	HWND hWnd;
 	HWND hDlg=NULL;
 	
@@ -45,28 +45,28 @@ DWORD WINAPI GameLoopThread(void *);
 	
 	int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE hPreviousInst,LPSTR lpCmdLine,int nCmdShow)
 	{
-		MSG msg;//сообщения
+		MSG msg;//СЃРѕРѕР±С‰РµРЅРёСЏ
 	
 		LoadLibrary("RICHED32.dll");
 		
 		hInstance = hCurrentInst;
 
-		hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DLG), NULL, DlgProc);
+		hDlg = CreateDialogW(hInstance, MAKEINTRESOURCEW(IDD_DLG), NULL, DlgProc);
 		hUpdateEvent=CreateEvent(NULL,1,0,NULL);
-		//hGameThread=CreateThread(NULL,0,GameLoopThread,NULL,0,&dwGameThreadID);
-
-    LogExecStr("test");
+		
 
 		serv=new CServer;
 
-	//организация цикла обработки сообщений
+    hGameThread=CreateThread(NULL,0,GameLoopThread,NULL,0,&dwGameThreadID);
+
+	//РѕСЂРіР°РЅРёР·Р°С†РёСЏ С†РёРєР»Р° РѕР±СЂР°Р±РѕС‚РєРё СЃРѕРѕР±С‰РµРЅРёР№
 		while(!bQuit)
 		{
 			if(MsgWaitForMultipleObjects(1,&hUpdateEvent,0,INFINITE,QS_ALLINPUT)==(WAIT_OBJECT_0+1))
-				while(PeekMessage(&msg,NULL,NULL,NULL,PM_REMOVE))
+				while(PeekMessageW(&msg,NULL,NULL,NULL,PM_REMOVE))
 				{
 					TranslateMessage(&msg);
-					DispatchMessage(&msg);
+					DispatchMessageW(&msg);
 				}
 				else UpdateInfo();
 		}
@@ -91,7 +91,7 @@ DWORD WINAPI GameLoopThread(void *);
 		{
 		case WM_INITDIALOG:
 		  //hDlg = hwndDlg;
-			PostMessage(hWnd,WM_SIZE,0,0);
+			PostMessageW(hWnd,WM_SIZE,0,0);
 			return 1;
 		case WM_COMMAND:
 			switch(LOWORD(wParam))
@@ -109,13 +109,13 @@ DWORD WINAPI GameLoopThread(void *);
 				if(!FOQuit)
 				{
 					FOQuit=1;
-					SetDlgItemText(hDlg,IDC_STOP,"Запустить");
+					SetDlgItemTextW(hDlg, IDC_STOP, L"Р—Р°РїСѓСЃС‚РёС‚СЊ");
 					EnableWindow(GetDlgItem(hDlg,IDC_RELOAD),0);
 				}
 				else if(!hGameThread)
 					{
 						FOQuit=0;
-						SetDlgItemText(hDlg,IDC_STOP,"Остановить");
+						SetDlgItemTextW(hDlg, IDC_STOP, L"РћСЃС‚Р°РЅРѕРІРёС‚СЊ");
 						EnableWindow(GetDlgItem(hDlg,IDC_RELOAD),1);
 						hGameThread=CreateThread(NULL,0,GameLoopThread,NULL,0,&dwGameThreadID);
 					}
@@ -127,7 +127,11 @@ DWORD WINAPI GameLoopThread(void *);
 	}
 
   void AppendToLogEditBox(wchar_t* text) {
-    SendDlgItemMessageW(hDlg, IDC_EXECLOG, EM_SETSEL, -1, 0);
+    CHARRANGE cr;
+    cr.cpMin = -1;
+    cr.cpMax = -1;
+
+    SendDlgItemMessageW(hDlg, IDC_EXECLOG, EM_EXSETSEL, 0, (LPARAM)&cr);
     SendDlgItemMessageW(hDlg, IDC_EXECLOG, EM_REPLACESEL, 0, (LPARAM) text); 
   }
   
@@ -137,11 +141,12 @@ DWORD WINAPI GameLoopThread(void *);
 		char buf[2048];
     va_list args;
     va_start(args, fmt);
-    vsnprintf(buf, sizeof(buf) - 1, fmt, args);
+    size_t len = vsnprintf(buf, sizeof(buf) - 1, fmt, args);
     va_end(args);
     
     wchar_t wbuf[2048];
-    mbstowcs(wbuf, buf, sizeof(wbuf) / sizeof(wchar_t) - 1);
+    size_t wlen = MultiByteToWideChar(CP_UTF8, 0, buf, len, wbuf, sizeof(wbuf) / sizeof(wchar_t) - 1);
+    wbuf[wlen] = 0;
     
 		AppendToLogEditBox(wbuf);
 	}
@@ -187,12 +192,12 @@ DWORD WINAPI GameLoopThread(void *);
 		SC_HANDLE SCServ=OpenService(SCManager,"FOService",SERVICE_QUERY_CONFIG);
 		if(!SCServ)
 		{
-			//регистрируем сервис
+			//СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј СЃРµСЂРІРёСЃ
 			HMODULE hm=GetModuleHandle(NULL);
 			char pathstr[1024];
 			GetModuleFileName(hm,pathstr,1024);
 			SCServ=CreateService(SCManager,"FOService","FOService",SERVICE_ALL_ACCESS,
-				SERVICE_WIN32_OWN_PROCESS,SERVICE_DEMAND_START,SERVICE_ERROR_NORMAL,pathstr,NULL,NULL,NULL,NULL,NULL); //!Cvet заменил с SERVICE_AUTO_START на SERVICE_DEMAND_START
+				SERVICE_WIN32_OWN_PROCESS,SERVICE_DEMAND_START,SERVICE_ERROR_NORMAL,pathstr,NULL,NULL,NULL,NULL,NULL); //!Cvet Р·Р°РјРµРЅРёР» СЃ SERVICE_AUTO_START РЅР° SERVICE_DEMAND_START
 			CloseServiceHandle(SCServ);
 			CloseServiceHandle(SCManager);
 			MessageBox(NULL,"Registering FOserver service: OK.\nStart service from the control panel","Registering",MB_OK|MB_ICONEXCLAMATION);
@@ -373,25 +378,25 @@ DWORD WINAPI GameLoopThread(void *);
 
 		LogExecStr("***   Finishing Game loop   ***\n\n");
 
-		LogExecStr("Всего циклов:%d\n"
-		"Средняя продолжительность цикла:%d\n"
-		"Минимальная продолжительность цикла:%d\n"
-		"Максимальная продолжительность цикла:%d\n"
-		"Всего лагов (>100):%d\n",
+		LogExecStr("Р’СЃРµРіРѕ С†РёРєР»РѕРІ:%d\n"
+		"РЎСЂРµРґРЅСЏСЏ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ С†РёРєР»Р°:%d\n"
+		"РњРёРЅРёРјР°Р»СЊРЅР°СЏ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ С†РёРєР»Р°:%d\n"
+		"РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ С†РёРєР»Р°:%d\n"
+		"Р’СЃРµРіРѕ Р»Р°РіРѕРІ (>100):%d\n",
 		serv.loop_cycles,
 		serv.loop_time/serv.loop_cycles,
 		serv.loop_min,
 		serv.loop_max,
 		serv.lags_count);
 
-		LogExecStr("Средняя продолжительность по процессам:\n"
-			"Сеть:%d\n"
-			"Соединение:%d\n"
-			"Прием:%d\n"
-			"Обработка игроков:%d\n"
-			"Обработка НПЦ:%d\n"
-			"Посылка:%d\n"
-			"Отключение:%d\n",
+		LogExecStr("РЎСЂРµРґРЅСЏСЏ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ РїРѕ РїСЂРѕС†РµСЃСЃР°Рј:\n"
+			"РЎРµС‚СЊ:%d\n"
+			"РЎРѕРµРґРёРЅРµРЅРёРµ:%d\n"
+			"РџСЂРёРµРј:%d\n"
+			"РћР±СЂР°Р±РѕС‚РєР° РёРіСЂРѕРєРѕРІ:%d\n"
+			"РћР±СЂР°Р±РѕС‚РєР° РќРџР¦:%d\n"
+			"РџРѕСЃС‹Р»РєР°:%d\n"
+			"РћС‚РєР»СЋС‡РµРЅРёРµ:%d\n",
 			serv.lt_FDsel/serv.loop_cycles,
 			serv.lt_conn/serv.loop_cycles,
 			serv.lt_input/serv.loop_cycles,

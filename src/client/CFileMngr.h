@@ -50,26 +50,24 @@ public:
 	DWORD GetRDWord(); //!Cvet
 	int CopyMem(void* ptr, size_t size);
 
-	BYTE* GetBuf(){ return buf; }; //!Cvet
-	DWORD GetFsize(){ return fsize; }; //!Cvet
+	BYTE* GetBuf(){ return buffer; }; //!Cvet
+	DWORD GetFsize(){ return fileSize; }; //!Cvet
 
 
-	FileManager(): crtd(0),hFile(NULL),fsize(0),cur_pos(0),buf(NULL),lpDAT(NULL),lpDATcr(NULL){};
+	FileManager(): initialized(0),file(NULL),fileSize(0),position(0),buffer(NULL),lpDAT(NULL),lpDATcr(NULL){};
 private:
-	bool crtd;
+	bool initialized;
 
-	HANDLE hFile;
-	DWORD fsize;
-	DWORD cur_pos;
-	BYTE* buf;
+	HANDLE file;
+	DWORD fileSize;
+	DWORD position;
+	BYTE* buffer;
 
 	TDatFile *lpDAT,*lpDATcr;
 
 	char master_dat[1024];
 	char crit_dat[1024];
 	char fo_dat[1024];
-
-	void LoadSimple(HANDLE hFile);
 };
 
 #endif

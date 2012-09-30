@@ -79,7 +79,7 @@ int CServer::DelObjFromListInd(CCritter* acl, DWORD del_ind)
 
 int CServer::LoadAllStaticObjects()
 {
-	LogExecStr("Загрузка статических объектов...");
+	LogExecStr("Р—Р°РіСЂСѓР·РєР° СЃС‚Р°С‚РёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ...");
 
 	FILE *cf;
 	FILE *cf2;
@@ -93,7 +93,7 @@ int CServer::LoadAllStaticObjects()
 
 	if((cf=fopen("objects\\all_obj.st","rt"))==NULL)
 	{
-		LogExecStr("Файл all_obj.st не найден\n");
+		LogExecStr("Р¤Р°Р№Р» all_obj.st РЅРµ РЅР°Р№РґРµРЅ\n");
 		return 0;
 	}
 
@@ -110,7 +110,7 @@ int CServer::LoadAllStaticObjects()
 		sprintf(tmpc,"objects\\%d.st",tmpi);
 		if((cf2=fopen(tmpc,"rt"))==NULL)
 		{
-			LogExecStr("Файл |%s| не найден\n",tmpc);
+			LogExecStr("Р¤Р°Р№Р» |%s| РЅРµ РЅР°Р№РґРµРЅ\n",tmpc);
 			return 0;
 		}
 
@@ -122,7 +122,7 @@ int CServer::LoadAllStaticObjects()
 		it_o=object_map.find(tmpc);
 		if(it_o==object_map.end())
 		{
-			LogExecStr("Параметр |%s| не найден",tmpc);
+			LogExecStr("РџР°СЂР°РјРµС‚СЂ |%s| РЅРµ РЅР°Р№РґРµРЅ",tmpc);
 			return 0;
 		}
 		new_obj->type=(*it_o).second;
@@ -134,7 +134,7 @@ int CServer::LoadAllStaticObjects()
 			it_o=object_map.find(tmpc);
 			if(it_o==object_map.end())
 			{
-				LogExecStr("Параметр |%s| не найден",tmpc);
+				LogExecStr("РџР°СЂР°РјРµС‚СЂ |%s| РЅРµ РЅР°Р№РґРµРЅ",tmpc);
 				return 0;
 			}
 			new_obj->p[(*it_o).second]=tmpi;
@@ -148,15 +148,15 @@ int CServer::LoadAllStaticObjects()
 	
 	fclose(cf);
 
-	LogExecStr("OK (%d объектов)\n",cnt_obj);
+	LogExecStr("OK (%d РѕР±СЉРµРєС‚РѕРІ)\n",cnt_obj);
 
 	return 1;
 }
 
-int CServer::LoadAllObj() //загрузка динамических объектов из mySQL
+int CServer::LoadAllObj() //Р·Р°РіСЂСѓР·РєР° РґРёРЅР°РјРёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РёР· mySQL
 {
-/*	LogExecStr("Загрузка динамических объектов\n");
-	//узнаем кол-во записей всего
+/*	LogExecStr("Р—Р°РіСЂСѓР·РєР° РґРёРЅР°РјРёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ\n");
+	//СѓР·РЅР°РµРј РєРѕР»-РІРѕ Р·Р°РїРёСЃРµР№ РІСЃРµРіРѕ
 	int find_obj=sql.CountTable("objects","id");
 
 	int add_obj=0;
@@ -172,9 +172,9 @@ int CServer::LoadAllObj() //загрузка динамических объектов из mySQL
 				sql.LoadDataObject(new_obj);
 				new_obj->object=all_s_obj[sql.GetInt("objects","num_st","id",new_obj->id)];
 
-				//присваеваем тайлу ссылку на динамический объект
+				//РїСЂРёСЃРІР°РµРІР°РµРј С‚Р°Р№Р»Сѓ СЃСЃС‹Р»РєСѓ РЅР° РґРёРЅР°РјРёС‡РµСЃРєРёР№ РѕР±СЉРµРєС‚
 				if(new_obj->map) InsertObjOnMap(new_obj,new_obj->map,new_obj->x,new_obj->y);
-				//присваеваем игроку ссылку на динамический объект
+				//РїСЂРёСЃРІР°РµРІР°РµРј РёРіСЂРѕРєСѓ СЃСЃС‹Р»РєСѓ РЅР° РґРёРЅР°РјРёС‡РµСЃРєРёР№ РѕР±СЉРµРєС‚
 				else if(new_obj->player)
 				{
 					for(cl_map::iterator it=cl.begin(); it!=cl.end(); it++)
@@ -190,7 +190,7 @@ int CServer::LoadAllObj() //загрузка динамических объектов из mySQL
 							break;
 						}
 				}
-				//присваеваем общему списку ссылку на динамический объект
+				//РїСЂРёСЃРІР°РµРІР°РµРј РѕР±С‰РµРјСѓ СЃРїРёСЃРєСѓ СЃСЃС‹Р»РєСѓ РЅР° РґРёРЅР°РјРёС‡РµСЃРєРёР№ РѕР±СЉРµРєС‚
 				all_obj[num_obj]=new_obj;
 
 				add_obj++;
@@ -198,12 +198,12 @@ int CServer::LoadAllObj() //загрузка динамических объектов из mySQL
 			num_obj++;
 		}
 
-	LogExecStr("Загрузка динамических объектов прошла успешно\n");
+	LogExecStr("Р—Р°РіСЂСѓР·РєР° РґРёРЅР°РјРёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ\n");
 */
 	return 1;
 }
 
-void CServer::SaveAllObj() //запись динамических объектов в mySQL
+void CServer::SaveAllObj() //Р·Р°РїРёСЃСЊ РґРёРЅР°РјРёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РІ mySQL
 {
 	for(dyn_map::iterator it=all_obj.begin(); it!=all_obj.end(); it++)
 		sql.SaveDataObject((*it).second);

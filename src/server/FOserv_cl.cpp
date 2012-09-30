@@ -3,8 +3,8 @@
 
 int CServer::LoadAllPlayers()
 {
-	LogExecStr("Загрузка игроков\n");
-	//узнаем кол-во записей всего
+	LogExecStr("Р—Р°РіСЂСѓР·РєР° РёРіСЂРѕРєРѕРІ\n");
+	//СѓР·РЅР°РµРј РєРѕР»-РІРѕ Р·Р°РїРёСЃРµР№ РІСЃРµРіРѕ
 	int find_cl=sql.CountTable("users","id")-1;
 		
 	sql.PrintTableInLog("users","*");
@@ -40,9 +40,9 @@ int CServer::LoadAllPlayers()
 
 				ncl->info.a_obj->object=all_s_obj[ncl->info.base_type];
 				ncl->info.a_obj_arm->object=all_s_obj[ncl->info.base_type+200];
-				//добавляем в список карты
+				//РґРѕР±Р°РІР»СЏРµРј РІ СЃРїРёСЃРѕРє РєР°СЂС‚С‹
 				if(AddCrToMap(ncl,ncl->info.map,ncl->info.x,ncl->info.y)!=TR_OK) return 0;
-				//добовляем в общий список
+				//РґРѕР±РѕРІР»СЏРµРј РІ РѕР±С‰РёР№ СЃРїРёСЃРѕРє
 				cr[ncl->info.id]=ncl;
 				add_cl++;
 
@@ -51,19 +51,19 @@ int CServer::LoadAllPlayers()
 			num_cl++;
 		}
 
-	LogExecStr("Загрузка игроков прошло успешно\n");
+	LogExecStr("Р—Р°РіСЂСѓР·РєР° РёРіСЂРѕРєРѕРІ РїСЂРѕС€Р»Рѕ СѓСЃРїРµС€РЅРѕ\n");
 	return 1;
 }
 
 void CServer::SaveAllDataPlayers()
 {
 	cl_map::iterator it;
-//сохраняем клиентов
+//СЃРѕС…СЂР°РЅСЏРµРј РєР»РёРµРЅС‚РѕРІ
 	for(it=cl.begin();it!=cl.end();it++)
 	{
 		sql.SaveDataPlayer(&(*it).second->info);
 	}
-//сохраняем нпц
+//СЃРѕС…СЂР°РЅСЏРµРј РЅРїС†
 	for(it=pc.begin();it!=pc.end();it++)
 	{
 		sql.SaveDataNPC(&(*it).second->info);
@@ -74,7 +74,7 @@ void CServer::GenWear(dyn_obj* wear_obj, bool use_obj)
 {
 //	wear_obj->tick-=GetTickCount()-wear_obj->last_tick;
 //	if(use_obj)
-//		wear_obj->tick-=wear_obj->object->p[17]/2000; //штраф за использование
+//		wear_obj->tick-=wear_obj->object->p[17]/2000; //С€С‚СЂР°С„ Р·Р° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ
 //	wear_obj->last_tick=wear_obj->tick;
 }
 
@@ -411,13 +411,13 @@ void CServer::CreateParamsMaps()
 
 int CServer::UpdateVarsTemplate()
 {
-	LogExecStr("Обновление шаблонов переменных игроков\n");
+	LogExecStr("РћР±РЅРѕРІР»РµРЅРёРµ С€Р°Р±Р»РѕРЅРѕРІ РїРµСЂРµРјРµРЅРЅС‹С… РёРіСЂРѕРєРѕРІ\n");
 
 	FILE *cf;
 
-	if(!(cf=fopen("data\\vars.txt","rt")))
+	if(!(cf=fopen("data\\server\\data\\vars.txt","rt")))
 	{
-		LogExecStr("\tФайл vars не найден\n");
+		LogExecStr("\tР¤Р°Р№Р» vars РЅРµ РЅР°Р№РґРµРЅ\n");
 		return 1;
 	}
 
@@ -431,33 +431,33 @@ int CServer::UpdateVarsTemplate()
 
 		if(ch=='#')
 		{
-			LogExecStr("\tНовая переменная...");
+			LogExecStr("\tРќРѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ...");
 			if(!fscanf(cf,"%d",&tmp_int1))
 			{
 				err_update++;
-				LogExecStr("ошибка чтения\n");
+				LogExecStr("РѕС€РёР±РєР° С‡С‚РµРЅРёСЏ\n");
 				continue;
 			}
-			LogExecStr("номер=%d...",tmp_int1);
+			LogExecStr("РЅРѕРјРµСЂ=%d...",tmp_int1);
 
 			if(sql.CountRows("player_vars_templates","var_num",tmp_int1))
 			{
-				LogExecStr("уже создана\n");
+				LogExecStr("СѓР¶Рµ СЃРѕР·РґР°РЅР°\n");
 				continue;
 			}
 
 			if(!fscanf(cf,"%d",&tmp_int2))
 			{
 				err_update++;
-				LogExecStr("ошибка чтения\n");
+				LogExecStr("РѕС€РёР±РєР° С‡С‚РµРЅРёСЏ\n");
 				continue;
 			}
-			LogExecStr("стартовое значение=%d...",tmp_int2);
+			LogExecStr("СЃС‚Р°СЂС‚РѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ=%d...",tmp_int2);
 
 			if(!fscanf(cf,"%d",&tmp_int3))
 			{
 				err_update++;
-				LogExecStr("ошибка чтения\n");
+				LogExecStr("РѕС€РёР±РєР° С‡С‚РµРЅРёСЏ\n");
 				continue;
 			}
 			LogExecStr("min=%d...",tmp_int3);
@@ -465,7 +465,7 @@ int CServer::UpdateVarsTemplate()
 			if(!fscanf(cf,"%d",&tmp_int4))
 			{
 				err_update++;
-				LogExecStr("ошибка чтения\n");
+				LogExecStr("РѕС€РёР±РєР° С‡С‚РµРЅРёСЏ\n");
 				continue;
 			}
 			LogExecStr("max=%d...",tmp_int4);
@@ -473,17 +473,17 @@ int CServer::UpdateVarsTemplate()
 			if(tmp_int3>tmp_int4 || tmp_int2<tmp_int3 || tmp_int2>tmp_int4)
 			{
 				err_update++;
-				LogExecStr("несоответствие в данных\n");
+				LogExecStr("РЅРµСЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ РІ РґР°РЅРЅС‹С…\n");
 				continue;
 			}
 			
 			sql.Query("INSERT INTO `player_vars_templates` (var_num,count,min,max) "
 			"VALUES ('%d','%d','%d','%d');",tmp_int1,tmp_int2,tmp_int3,tmp_int4);
-			LogExecStr("добавлена\n");
+			LogExecStr("РґРѕР±Р°РІР»РµРЅР°\n");
 		}
 	}
 
-	LogExecStr("Обновление шаблонов переменных игроков прошло успешно\n");
+	LogExecStr("РћР±РЅРѕРІР»РµРЅРёРµ С€Р°Р±Р»РѕРЅРѕРІ РїРµСЂРµРјРµРЅРЅС‹С… РёРіСЂРѕРєРѕРІ РїСЂРѕС€Р»Рѕ СѓСЃРїРµС€РЅРѕ\n");
 	return err_update;
 }
 
@@ -514,18 +514,18 @@ void CServer::Skill_Sneak_UnSet(CCritter* acl)
 
 int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 {
-//LogExecStr("Выполняется действие №1: АТАКА...");
-	//находим атакуемого
+//LogExecStr("Р’С‹РїРѕР»РЅСЏРµС‚СЃСЏ РґРµР№СЃС‚РІРёРµ в„–1: РђРўРђРљРђ...");
+	//РЅР°С…РѕРґРёРј Р°С‚Р°РєСѓРµРјРѕРіРѕ
 	if(acl->info.id==target_id) return 0;
 	cl_map::iterator it=map_cr[acl->info.map].find(target_id);
 	if(it==map_cr[acl->info.map].end()) return 0;
 	CCritter* t_acl=(*it).second;
-	//проверяем не мертв ли атакуемый
+	//РїСЂРѕРІРµСЂСЏРµРј РЅРµ РјРµСЂС‚РІ Р»Рё Р°С‚Р°РєСѓРµРјС‹Р№
 	if(t_acl->info.cond==COND_DEAD) return 0;
-	//находим дистанцию
+	//РЅР°С…РѕРґРёРј РґРёСЃС‚Р°РЅС†РёСЋ
 	WORD dist=(WORD) sqrt(pow(acl->info.x-t_acl->info.x,2.0)+pow(acl->info.y-t_acl->info.y,2.0));
-//LogExecStr("дистанция до цели =%d...",dist);
-	//проверяем дистанцию
+//LogExecStr("РґРёСЃС‚Р°РЅС†РёСЏ РґРѕ С†РµР»Рё =%d...",dist);
+	//РїСЂРѕРІРµСЂСЏРµРј РґРёСЃС‚Р°РЅС†РёСЋ
 	int wpn_max_dist=0;
 	int wpn_eff_dist=0;
 	int dmg_max=0;
@@ -558,7 +558,7 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 	bool eff_attack=true;
 	if(dist>wpn_eff_dist) eff_attack=false;
 
-	//рассчитываем вероятность попадания
+	//СЂР°СЃСЃС‡РёС‚С‹РІР°РµРј РІРµСЂРѕСЏС‚РЅРѕСЃС‚СЊ РїРѕРїР°РґР°РЅРёСЏ
 	//Skill+ammo_mod-AC_target-range
 //	WORD ammo_mod=0;
 //	WORD ammo_DR=0;
@@ -580,7 +580,7 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 //	int dmg=max_dmg*((100-DR-ammo_DR)/100);
 //	if(dmg<min_dmg) dmg=min_dmg;
 
-//LogExecStr("лифе олд =%d...",t_acl->info.st[ST_CURRENT_HP]);
+//LogExecStr("Р»РёС„Рµ РѕР»Рґ =%d...",t_acl->info.st[ST_CURRENT_HP]);
 	int t_cur_hp=t_acl->info.st[ST_CURRENT_HP];
 	int t_max_hp=t_acl->info.st[ST_MAX_LIFE];
 
@@ -591,9 +591,9 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 
 	//t_acl->info.st[ST_CURRENT_HP]=t_cur_hp;
 	CHANGE_STAT(t_acl,ST_CURRENT_HP,=,t_cur_hp);
-//LogExecStr("лифе нев =%d...",t_acl->info.st[ST_CURRENT_HP]);
+//LogExecStr("Р»РёС„Рµ РЅРµРІ =%d...",t_acl->info.st[ST_CURRENT_HP]);
 
-	//обновляем ориентацию атакуемого
+	//РѕР±РЅРѕРІР»СЏРµРј РѕСЂРёРµРЅС‚Р°С†РёСЋ Р°С‚Р°РєСѓРµРјРѕРіРѕ
 //	BYTE new_ori=acl->info.ori+3;
 //	if(new_ori>5) new_ori-=6;
 
@@ -603,23 +603,23 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 	if(int(acl->info.ori-t_acl->info.ori)>2 || int(acl->info.ori-t_acl->info.ori)<-1) attack_front=true;
 //	t_acl->info.ori=new_ori;
 
-	//рассылаем всем итоги стычки
+	//СЂР°СЃСЃС‹Р»Р°РµРј РІСЃРµРј РёС‚РѕРіРё СЃС‚С‹С‡РєРё
 	MSGTYPE msg;
-	//отсылает наподавший инфу о атаке
+	//РѕС‚СЃС‹Р»Р°РµС‚ РЅР°РїРѕРґР°РІС€РёР№ РёРЅС„Сѓ Рѕ Р°С‚Р°РєРµ
 	SendA_Action(acl,ACT_USE_OBJ,rate_object);
-	if(!t_acl->info.st[ST_CURRENT_HP]) //отыгрываем смерть
+	if(!t_acl->info.st[ST_CURRENT_HP]) //РѕС‚С‹РіСЂС‹РІР°РµРј СЃРјРµСЂС‚СЊ
 	{
-//LogExecStr("смерть\n",dmg);
-		//устанавливаем флаг смерти игроку
+//LogExecStr("СЃРјРµСЂС‚СЊ\n",dmg);
+		//СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј С„Р»Р°Рі СЃРјРµСЂС‚Рё РёРіСЂРѕРєСѓ
 		t_acl->info.cond=COND_DEAD;
 		if(attack_front==true)
 			t_acl->info.cond_ext=COND_DEAD_NORMAL_UP;
 		else
 			t_acl->info.cond_ext=COND_DEAD_NORMAL_DOWN;
 
-		//отылаем ему результаты
-//		Send_Stat(t_acl,50,t_acl->info.s[50]); //смерть
-//		Send_Stat(t_acl,ST_CURRENT_HP,t_acl->info.st[ST_CURRENT_HP]); //жизнь
+		//РѕС‚С‹Р»Р°РµРј РµРјСѓ СЂРµР·СѓР»СЊС‚Р°С‚С‹
+//		Send_Stat(t_acl,50,t_acl->info.s[50]); //СЃРјРµСЂС‚СЊ
+//		Send_Stat(t_acl,ST_CURRENT_HP,t_acl->info.st[ST_CURRENT_HP]); //Р¶РёР·РЅСЊ
 		msg=NETMSG_CRITTER_ACTION;
 		t_acl->bout << msg;
 		t_acl->bout << t_acl->info.id;
@@ -628,10 +628,10 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 		t_acl->bout << t_acl->info.a_obj_arm->object->id;
 		t_acl->bout << t_acl->info.cond_ext;
 		t_acl->bout << t_acl->info.ori;
-		//отсылаем результаты смерти всем кого он видит
+		//РѕС‚СЃС‹Р»Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚С‹ СЃРјРµСЂС‚Рё РІСЃРµРј РєРѕРіРѕ РѕРЅ РІРёРґРёС‚
 		SendA_Action(t_acl,ACT_DEAD,t_acl->info.cond_ext);
 	}
-	else //отыгрываем повреждение
+	else //РѕС‚С‹РіСЂС‹РІР°РµРј РїРѕРІСЂРµР¶РґРµРЅРёРµ
 	{
 		BYTE defeat_type=0;
 
@@ -642,8 +642,8 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 
 		if(attack_miss==true) defeat_type=ACT_DEFEAT_MISS;
 
-		//отсылаем поврежденному инфу
-		//Send_Stat(t_acl,ST_CURRENT_HP,t_acl->info.s[ST_CURRENT_HP]); //жизнь
+		//РѕС‚СЃС‹Р»Р°РµРј РїРѕРІСЂРµР¶РґРµРЅРЅРѕРјСѓ РёРЅС„Сѓ
+		//Send_Stat(t_acl,ST_CURRENT_HP,t_acl->info.s[ST_CURRENT_HP]); //Р¶РёР·РЅСЊ
 
 		msg=NETMSG_CRITTER_ACTION;
 		t_acl->bout << msg;
@@ -653,7 +653,7 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 		t_acl->bout << t_acl->info.a_obj_arm->object->id;
 		t_acl->bout << defeat_type;
 		t_acl->bout << t_acl->info.ori;
-		//отсылает атакуемумый инфу о приниятии повреждения
+		//РѕС‚СЃС‹Р»Р°РµС‚ Р°С‚Р°РєСѓРµРјСѓРјС‹Р№ РёРЅС„Сѓ Рѕ РїСЂРёРЅРёСЏС‚РёРё РїРѕРІСЂРµР¶РґРµРЅРёСЏ
 		SendA_Action(t_acl,ACT_DEFEAT,defeat_type);
 	}
 
@@ -662,19 +662,19 @@ int CServer::Act_Attack(CCritter* acl, BYTE rate_object, CrID target_id)
 
 void CServer::Process_CreateClient(CCritter* acl)
 {
-	LogExecStr("РЕГИСТРАЦИЯ ИГРОКА\n");
+	LogExecStr("Р Р•Р“РРЎРўР РђР¦РРЇ РР“Р РћРљРђ\n");
 	TICK tickStart=GetTickCount();
 
 	int bi;
 
-//ПРИЕМ ДАННЫХ
-	//логин
+//РџР РР•Рњ Р”РђРќРќР«РҐ
+	//Р»РѕРіРёРЅ
 	acl->bin.Read(acl->info.login,MAX_LOGIN);
 	acl->info.login[MAX_LOGIN]=0;
-	//пасс
+	//РїР°СЃСЃ
 	acl->bin.Read(acl->info.pass,MAX_LOGIN);
 	acl->info.pass[MAX_LOGIN]=0;
-	//имя
+	//РёРјСЏ
 	acl->bin.Read(acl->info.name,MAX_NAME);
 
 	acl->info.name[MAX_NAME]=0;
@@ -691,7 +691,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 //		my_strlwr(acl->info.cases[bi]);
 		sql.Check(acl->info.cases[bi]);
 	}
-	//Обнуляем все статы, скиллы, перки
+	//РћР±РЅСѓР»СЏРµРј РІСЃРµ СЃС‚Р°С‚С‹, СЃРєРёР»Р»С‹, РїРµСЂРєРё
 	for(bi=0; bi<ALL_STATS;  bi++) acl->info.st[bi]=0;
 	for(bi=0; bi<ALL_SKILLS; bi++) acl->info.sk[bi]=0;
 	for(bi=0; bi<ALL_PERKS;  bi++) acl->info.pe[bi]=0;
@@ -703,9 +703,9 @@ void CServer::Process_CreateClient(CCritter* acl)
 	acl->bin >> acl->info.st[ST_INTELLECT	];
 	acl->bin >> acl->info.st[ST_AGILITY		];
 	acl->bin >> acl->info.st[ST_LUCK		];
-	//возраст
+	//РІРѕР·СЂР°СЃС‚
 	acl->bin >> acl->info.st[ST_AGE];
-	//пол
+	//РїРѕР»
 	acl->bin >> acl->info.st[ST_GENDER];
 
 	if(acl->bin.IsError())
@@ -716,18 +716,18 @@ void CServer::Process_CreateClient(CCritter* acl)
 		return;
 	}
 
-//ПРОВЕРКА ДАННЫХ
+//РџР РћР’Р•Р РљРђ Р”РђРќРќР«РҐ
 	if(sql.Check(acl->info.login) || sql.Check(acl->info.pass))
 	{
-		LogExecStr("Запрещенные символы при регистрации игрока: LOGIN или PASSWORD\n");
+		LogExecStr("Р—Р°РїСЂРµС‰РµРЅРЅС‹Рµ СЃРёРјРІРѕР»С‹ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: LOGIN РёР»Рё PASSWORD\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,1);
 		return;
 	}
-	//проверка на длинну логина
+	//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ Р»РѕРіРёРЅР°
 	if(strlen(acl->info.login)<MIN_LOGIN || strlen(acl->info.login)>MAX_LOGIN)
 	{
-		LogExecStr("Неправильные данные при регистрации игрока: LOGIN\n");
+		LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: LOGIN\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,1);
 		return;
@@ -736,55 +736,55 @@ void CServer::Process_CreateClient(CCritter* acl)
 //	LogExecStr("logn:|%s|\n",acl->info.login);
 //	LogExecStr("pass:|%s|\n",acl->info.pass);
 
-//проверка на наличие созданного по такому логину игрока
+//РїСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ СЃРѕР·РґР°РЅРЅРѕРіРѕ РїРѕ С‚Р°РєРѕРјСѓ Р»РѕРіРёРЅСѓ РёРіСЂРѕРєР°
 	if(sql.CheckUser(acl->info.login))
 	{
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,3);
 		return;
 	}
-//проверка на длинну пасса
+//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ РїР°СЃСЃР°
 	if(strlen(acl->info.pass)<MIN_LOGIN || strlen(acl->info.pass)>MAX_LOGIN)
 	{
-		LogExecStr("Неправильные данные при регистрации игрока: PASS\n");
+		LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: PASS\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,2);
 		return;
 	}
-//проверка на длинну имени
+//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ РёРјРµРЅРё
 	if(strlen(acl->info.name)<MIN_NAME || strlen(acl->info.name)>MAX_NAME)
 	{
-		LogExecStr("Неправильные данные при регистрации игрока: NAME\n");
+		LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: NAME\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,13);
 		return;
 	}
-//проверка на длинну cases
+//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ cases
 	for(bi=0; bi<5; bi++)
 		if(strlen(acl->info.cases[bi])<MIN_NAME || strlen(acl->info.cases[bi])>MAX_NAME)
 		{
-			LogExecStr("Неправильные данные при регистрации игрока: CASES%d\n",bi);
+			LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: CASES%d\n",bi);
 			acl->state=STATE_DISCONNECT;
 			Send_LoginMsg(acl,14);
 			return;
 		}
-//проверка пола
+//РїСЂРѕРІРµСЂРєР° РїРѕР»Р°
 	if(acl->info.st[ST_GENDER]<0 || acl->info.st[ST_GENDER]>1) 
 	{ 
-		LogExecStr("Неправильные данные при регистрации игрока: ПОЛ\n");
+		LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: РџРћР›\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,15);
 		return;
 	}
-//проверка возраста
+//РїСЂРѕРІРµСЂРєР° РІРѕР·СЂР°СЃС‚Р°
 	if(acl->info.st[ST_AGE]<14 || acl->info.st[ST_AGE]>80) 
 	{ 
-		LogExecStr("Неправильные данные при регистрации игрока: ВОЗРАСТ\n");
+		LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: Р’РћР—Р РђРЎРў\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,16);
 		return;
 	}
-//проверка SPECIAL
+//РїСЂРѕРІРµСЂРєР° SPECIAL
 	if( (acl->info.st[ST_STRENGHT	]<1)||(acl->info.st[ST_STRENGHT		]>10)||
 		(acl->info.st[ST_PERCEPTION	]<1)||(acl->info.st[ST_PERCEPTION	]>10)||
 		(acl->info.st[ST_ENDURANCE	]<1)||(acl->info.st[ST_ENDURANCE	]>10)||
@@ -793,7 +793,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 		(acl->info.st[ST_AGILITY	]<1)||(acl->info.st[ST_AGILITY		]>10)||
 		(acl->info.st[ST_LUCK		]<1)||(acl->info.st[ST_LUCK			]>10))
 		{
-			LogExecStr("Неправильные данные при регистрации игрока: SPECIAL №%d\n", bi);
+			LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: SPECIAL в„–%d\n", bi);
 			acl->state=STATE_DISCONNECT;
 			Send_LoginMsg(acl,5);
 			return;
@@ -802,14 +802,14 @@ void CServer::Process_CreateClient(CCritter* acl)
 		acl->info.st[ST_CHARISMA]+acl->info.st[ST_INTELLECT]+
 		acl->info.st[ST_AGILITY]+acl->info.st[ST_LUCK])!=40)
 		{
-			LogExecStr("Неправильные данные при регистрации игрока: SPECIAL сумма\n");
+			LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РїСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё РёРіСЂРѕРєР°: SPECIAL СЃСѓРјРјР°\n");
 			acl->state=STATE_DISCONNECT;
 			Send_LoginMsg(acl,5);
 			return;
 		}
 
-//СОЗДАНИЕ ПЕРСОНАЖА
-	//инфа по игроку
+//РЎРћР—Р”РђРќРР• РџР•Р РЎРћРќРђР–Рђ
+	//РёРЅС„Р° РїРѕ РёРіСЂРѕРєСѓ
 	//stats,skills,start_perks,perks
 	acl->info.sk[SK_SMALL_GUNS		]=5	+4*acl->info.st[ST_AGILITY];
 	acl->info.sk[SK_BIG_GUNS		]=0	+2*acl->info.st[ST_AGILITY];
@@ -846,26 +846,26 @@ void CServer::Process_CreateClient(CCritter* acl)
 
 	if(!sql.NewPlayer(&acl->info))
 	{
-		LogExecStr("!!!WORNING!!!: траблы с mySQL - неудалось сохранить игрока\n");
+		LogExecStr("!!!WORNING!!!: С‚СЂР°Р±Р»С‹ СЃ mySQL - РЅРµСѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ РёРіСЂРѕРєР°\n");
 		sql.DeleteDataPlayer(&acl->info);
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,8);
 		return;
 	}
 
-	//вывод инфы в лог
+	//РІС‹РІРѕРґ РёРЅС„С‹ РІ Р»РѕРі
 	//sql.PrintTableInLog("users");
-	//посылка подтверждения
+	//РїРѕСЃС‹Р»РєР° РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ
 	Send_LoginMsg(acl,6);
-	//отключение клиента
+	//РѕС‚РєР»СЋС‡РµРЅРёРµ РєР»РёРµРЅС‚Р°
 	acl->state=STATE_DISCONNECT;
 
-	LogExecStr("РЕГИСТРАЦИЯ ИГРОКА ПРОШЛА УСПЕШНО ЗА %d МСЕК\n", GetTickCount()-tickStart);
+	LogExecStr("Р Р•Р“РРЎРўР РђР¦РРЇ РР“Р РћРљРђ РџР РћРЁР›Рђ РЈРЎРџР•РЁРќРћ Р—Рђ %d РњРЎР•Рљ\n", GetTickCount()-tickStart);
 }
 
 void CServer::Process_GetLogIn(CCritter* acl)
 {
-	LogExecStr("Клиент логиниться...");
+	LogExecStr("РљР»РёРµРЅС‚ Р»РѕРіРёРЅРёС‚СЊСЃСЏ...");
 
 	acl->bin.Read(acl->info.login,MAX_LOGIN);
 	acl->bin.Read(acl->info.pass,MAX_LOGIN);
@@ -885,7 +885,7 @@ void CServer::Process_GetLogIn(CCritter* acl)
 		return;
 	}
 
-	//проверка на длинну логина и пасса
+	//РїСЂРѕРІРµСЂРєР° РЅР° РґР»РёРЅРЅСѓ Р»РѕРіРёРЅР° Рё РїР°СЃСЃР°
 	if(strlen(acl->info.login)<MIN_LOGIN || strlen(acl->info.login)>MAX_LOGIN)
 	{
 		acl->state=STATE_DISCONNECT;
@@ -898,17 +898,17 @@ void CServer::Process_GetLogIn(CCritter* acl)
 		Send_LoginMsg(acl,2);
 		return;
 	}
-	//проверка запрещенных символов
+	//РїСЂРѕРІРµСЂРєР° Р·Р°РїСЂРµС‰РµРЅРЅС‹С… СЃРёРјРІРѕР»РѕРІ
 	if(sql.Check(acl->info.login) || sql.Check(acl->info.pass))
 	{
-		LogExecStr("Запрещенные символы при логине игрока: LOGIN или PASSWORD\n");
+		LogExecStr("Р—Р°РїСЂРµС‰РµРЅРЅС‹Рµ СЃРёРјРІРѕР»С‹ РїСЂРё Р»РѕРіРёРЅРµ РёРіСЂРѕРєР°: LOGIN РёР»Рё PASSWORD\n");
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
 
 	if(!(acl->info.id=sql.CheckUserPass(acl->info.login,acl->info.pass)))
 	{
-		LogExecStr("Неправильный логин|%s| или пароль|%s|\n",acl->info.login,acl->info.pass);
+		LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ Р»РѕРіРёРЅ|%s| РёР»Рё РїР°СЂРѕР»СЊ|%s|\n",acl->info.login,acl->info.pass);
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,9);
 		return;
@@ -935,7 +935,7 @@ void CServer::Process_GetLogIn(CCritter* acl)
 
 void CServer::Process_MapLoaded(CCritter* acl)
 {
-	LogExecStr("Карта загружена. Отправка данных игроку...");
+	LogExecStr("РљР°СЂС‚Р° Р·Р°РіСЂСѓР¶РµРЅР°. РћС‚РїСЂР°РІРєР° РґР°РЅРЅС‹С… РёРіСЂРѕРєСѓ...");
 
 	BREAK_BEGIN
 		cl_map::iterator it_cr=cr.find(acl->info.id);
@@ -969,7 +969,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 			acl->info.cond_ext=COND_LIFE_NONE;
 		}
 
-		if(AddCrToMap(acl,acl->info.map,acl->info.x,acl->info.y)!=TR_OK) //чтоб друг другу на головы не высаживались
+		if(AddCrToMap(acl,acl->info.map,acl->info.x,acl->info.y)!=TR_OK) //С‡С‚РѕР± РґСЂСѓРі РґСЂСѓРіСѓ РЅР° РіРѕР»РѕРІС‹ РЅРµ РІС‹СЃР°Р¶РёРІР°Р»РёСЃСЊ
 		{
 			Send_LoginMsg(acl,11);
 			acl->state=STATE_DISCONNECT;
@@ -1028,9 +1028,9 @@ void CServer::Process_MapLoaded(CCritter* acl)
 	Send_AddCritter(acl,&acl->info);
 	UNSETFLAG(acl->info.flags,FCRIT_CHOSEN);
 
-	Send_AllParams(acl,TYPE_STAT ); //отправка всех статов игроку
-	Send_AllParams(acl,TYPE_SKILL); //отправка всех скиллов игроку
-	Send_AllParams(acl,TYPE_PERK ); //отправка всех перков игроку
+	Send_AllParams(acl,TYPE_STAT ); //РѕС‚РїСЂР°РІРєР° РІСЃРµС… СЃС‚Р°С‚РѕРІ РёРіСЂРѕРєСѓ
+	Send_AllParams(acl,TYPE_SKILL); //РѕС‚РїСЂР°РІРєР° РІСЃРµС… СЃРєРёР»Р»РѕРІ РёРіСЂРѕРєСѓ
+	Send_AllParams(acl,TYPE_PERK ); //РѕС‚РїСЂР°РІРєР° РІСЃРµС… РїРµСЂРєРѕРІ РёРіСЂРѕРєСѓ
 
 	if(!acl->info.obj.size())
 	{
@@ -1038,11 +1038,11 @@ void CServer::Process_MapLoaded(CCritter* acl)
 		CreateObjToPl(acl->info.idchannel,2016);
 	}
 
-	//отправка объектов игроку
+	//РѕС‚РїСЂР°РІРєР° РѕР±СЉРµРєС‚РѕРІ РёРіСЂРѕРєСѓ
 	for(dyn_map::iterator it_o=acl->info.obj.begin();it_o!=acl->info.obj.end();it_o++)
 	{
 //		GenWear((*it_o).second,0);
-//		if(!(*it_o).second->tick) трабла с итератором. исправить!!!!!!!!!!!!!!!!
+//		if(!(*it_o).second->tick) С‚СЂР°Р±Р»Р° СЃ РёС‚РµСЂР°С‚РѕСЂРѕРј. РёСЃРїСЂР°РІРёС‚СЊ!!!!!!!!!!!!!!!!
 //		{
 //			DeleteObj((*it_o).second->id);
 //			continue;
@@ -1118,7 +1118,7 @@ void CServer::Process_Move(CCritter* acl)
 
 	if(dir>PMOVE_5)
 	{
-		SetCheat(acl,"Process_Move - неправильное направление движения");
+		SetCheat(acl,"Process_Move - РЅРµРїСЂР°РІРёР»СЊРЅРѕРµ РЅР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ");
 		Send_XY(acl);
 		return;
 	}
@@ -1164,7 +1164,7 @@ void CServer::Process_Move(CCritter* acl)
 	switch(move_res)
 	{
 	case MR_STEP:
-		if(FLAG(PMOVE_RUN,move_params)) Skill_Sneak_UnSet(acl); //!!!!!! двойной вызов SetVisCr
+		if(FLAG(PMOVE_RUN,move_params)) Skill_Sneak_UnSet(acl); //!!!!!! РґРІРѕР№РЅРѕР№ РІС‹Р·РѕРІ SetVisCr
 
 		SetVisCr(acl); //!!!!!!!
 		SetVisibleObj(acl);
@@ -1180,7 +1180,7 @@ void CServer::Process_Move(CCritter* acl)
 		break;
 	default:
 	case MR_FALSE:
-		SetCheat(acl,"Process_Move - попытка походить в занятую клетку");
+		SetCheat(acl,"Process_Move - РїРѕРїС‹С‚РєР° РїРѕС…РѕРґРёС‚СЊ РІ Р·Р°РЅСЏС‚СѓСЋ РєР»РµС‚РєСѓ");
 		Send_XY(acl);
 		break;
 	}
@@ -1191,9 +1191,9 @@ void CServer::Process_ChangeObject(CCritter* acl)
 	DWORD idobj;
 	BYTE num_slot;
 	//num_slot
-	//1 - работаем с предметом в руке
-	//2 - с слотом армор
-	//3 - кидаем на землю
+	//1 - СЂР°Р±РѕС‚Р°РµРј СЃ РїСЂРµРґРјРµС‚РѕРј РІ СЂСѓРєРµ
+	//2 - СЃ СЃР»РѕС‚РѕРј Р°СЂРјРѕСЂ
+	//3 - РєРёРґР°РµРј РЅР° Р·РµРјР»СЋ
 	
 	acl->bin >> idobj;
 	acl->bin >> num_slot;
@@ -1211,7 +1211,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 
 	Skill_Sneak_UnSet(acl);
 
-//деактивируем предмет в активном слоте
+//РґРµР°РєС‚РёРІРёСЂСѓРµРј РїСЂРµРґРјРµС‚ РІ Р°РєС‚РёРІРЅРѕРј СЃР»РѕС‚Рµ
 	if(!idobj && num_slot==1)
 	{
 		SendA_Action(acl,ACT_HIDE_OBJ,0);
@@ -1219,7 +1219,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 		UseDefObj(acl,DOBJ_SLOT_HAND1);
 		return;
 	}
-//активируем предмет в активном слоте
+//Р°РєС‚РёРІРёСЂСѓРµРј РїСЂРµРґРјРµС‚ РІ Р°РєС‚РёРІРЅРѕРј СЃР»РѕС‚Рµ
 	if(idobj && num_slot==1)
 	{
 		dyn_map::iterator it=acl->info.obj.find(idobj);
@@ -1232,7 +1232,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 				return;
 			}
 	}
-//деактивируем предмет в слоте брони
+//РґРµР°РєС‚РёРІРёСЂСѓРµРј РїСЂРµРґРјРµС‚ РІ СЃР»РѕС‚Рµ Р±СЂРѕРЅРё
 	if(!idobj && num_slot==2)
 	{
 		acl->info.a_obj_arm->ACC_CRITTER.slot=DOBJ_SLOT_INV;
@@ -1240,7 +1240,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 		SendA_Action(acl,ACT_CHANGE_ARM,0);
 		return;
 	}
-//активируем предмет в слоте брони
+//Р°РєС‚РёРІРёСЂСѓРµРј РїСЂРµРґРјРµС‚ РІ СЃР»РѕС‚Рµ Р±СЂРѕРЅРё
 	if(idobj && num_slot==2)
 	{
 		dyn_map::iterator it=acl->info.obj.find(idobj);
@@ -1253,7 +1253,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 				return;
 			}
 	}
-//кидаем объект на землю
+//РєРёРґР°РµРј РѕР±СЉРµРєС‚ РЅР° Р·РµРјР»СЋ
 	if(idobj && num_slot==3)
 	{
 		dyn_map::iterator it=acl->info.obj.find(idobj);
@@ -1263,8 +1263,8 @@ void CServer::Process_ChangeObject(CCritter* acl)
 			return;
 		}
 	}
-	//здесь надо обновлять игрока при неправильных мессагах
-	//обнуление
+	//Р·РґРµСЃСЊ РЅР°РґРѕ РѕР±РЅРѕРІР»СЏС‚СЊ РёРіСЂРѕРєР° РїСЂРё РЅРµРїСЂР°РІРёР»СЊРЅС‹С… РјРµСЃСЃР°РіР°С…
+	//РѕР±РЅСѓР»РµРЅРёРµ
 	acl->info.a_obj=&acl->info.def_obj1;
 	acl->info.a_obj_arm=&acl->info.def_obj2;
 	MSGTYPE msg=NETMSG_CRITTER_ACTION;
@@ -1293,7 +1293,7 @@ void CServer::Process_UseObject(CCritter* acl)
 	acl->bin >> c_action;
 	acl->bin >> c_rate_object;
 
-//LogExecStr("Цель ID=%d, Тайл Х=%d, Тайл У=%d, Ориентация=%d, Режим использования=%d...",t_id,t_x,t_y,c_ori,t_action);
+//LogExecStr("Р¦РµР»СЊ ID=%d, РўР°Р№Р» РҐ=%d, РўР°Р№Р» РЈ=%d, РћСЂРёРµРЅС‚Р°С†РёСЏ=%d, Р РµР¶РёРј РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ=%d...",t_id,t_x,t_y,c_ori,t_action);
 
 	if(acl->bin.IsError())
 	{
@@ -1312,16 +1312,16 @@ void CServer::Process_UseObject(CCritter* acl)
 
 	if(acl->info.cond!=COND_LIFE)
 	{
-		LogExecStr("!WORNING! - читерство - попытка применить объект мертвым игроком. ид=|%d|\n",acl->info.id);
+		LogExecStr("!WORNING! - С‡РёС‚РµСЂСЃС‚РІРѕ - РїРѕРїС‹С‚РєР° РїСЂРёРјРµРЅРёС‚СЊ РѕР±СЉРµРєС‚ РјРµСЂС‚РІС‹Рј РёРіСЂРѕРєРѕРј. РёРґ=|%d|\n",acl->info.id);
 		return;
 	}
-//Оружие
+//РћСЂСѓР¶РёРµ
 	if(c_type_target==USE_OBJ_ON_CRITTER)
 	{
 		switch(acl->info.a_obj->type)
 		{
 		case OBJ_TYPE_WEAPON:
-		//использование оружия
+		//РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РѕСЂСѓР¶РёСЏ
 			if(c_action==ACT_USE_OBJ)
 				if(acl->info.a_obj->object->p[OBJ_WEAP_TIME_ACTIV])
 				{
@@ -1337,14 +1337,14 @@ void CServer::Process_UseObject(CCritter* acl)
 					Act_Attack(acl,c_rate_object,t_id);
 					return;
 				}
-		//активация оружия
+		//Р°РєС‚РёРІР°С†РёСЏ РѕСЂСѓР¶РёСЏ
 			if(c_action==ACT_ACTIVATE_OBJ && acl->info.a_obj->object->p[OBJ_WEAP_TIME_ACTIV])
 			{
 				acl->info.cond_ext=COND_LIFE_ACTWEAP;
 				SendA_Action(acl,c_action,0);
 				return;
 			}
-		//деактивация оружия
+		//РґРµР°РєС‚РёРІР°С†РёСЏ РѕСЂСѓР¶РёСЏ
 			if(c_action==ACT_DACTIVATE_OBJ)
 			{
 				acl->info.cond_ext=COND_LIFE_NONE;
@@ -1352,9 +1352,9 @@ void CServer::Process_UseObject(CCritter* acl)
 				return;
 			}
 
-		//не выходит ли изза границ режим использования
+		//РЅРµ РІС‹С…РѕРґРёС‚ Р»Рё РёР·Р·Р° РіСЂР°РЅРёС† СЂРµР¶РёРј РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
 		//	if(c_action>acl->info.a_obj->object->p[129])
-		//		{ LogExecStr("ОШИБКА - режим использования выходит изза границ\n"); return; }
+		//		{ LogExecStr("РћРЁРР‘РљРђ - СЂРµР¶РёРј РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РІС‹С…РѕРґРёС‚ РёР·Р·Р° РіСЂР°РЅРёС†\n"); return; }
 
 			break;
 		case OBJ_TYPE_DRUG:
@@ -1415,7 +1415,7 @@ void CServer::Process_PickObject(CCritter* acl)
 
 	if(cur_dir>5)
 	{
-		SetCheat(acl,"Попытка пикнуть предмет с дистанции не равной 1");
+		SetCheat(acl,"РџРѕРїС‹С‚РєР° РїРёРєРЅСѓС‚СЊ РїСЂРµРґРјРµС‚ СЃ РґРёСЃС‚Р°РЅС†РёРё РЅРµ СЂР°РІРЅРѕР№ 1");
 		return;
 	}
 
@@ -1423,7 +1423,7 @@ void CServer::Process_PickObject(CCritter* acl)
 
 	if(!pick_obj)
 	{
-		//???? ченить сообщить игроку
+		//???? С‡РµРЅРёС‚СЊ СЃРѕРѕР±С‰РёС‚СЊ РёРіСЂРѕРєСѓ
 		return;
 	}
 
@@ -1484,33 +1484,33 @@ void CServer::Process_UseSkill(CCritter* acl)
 
 	switch(skill)
 	{
-	case SK_FIRST_AID: //{Помощь}
+	case SK_FIRST_AID: //{РџРѕРјРѕС‰СЊ}
 		break;
-	case SK_DOCTOR: //{Врач}
+	case SK_DOCTOR: //{Р’СЂР°С‡}
 		break;
-	case SK_SNEAK: //{Крадучесть}
+	case SK_SNEAK: //{РљСЂР°РґСѓС‡РµСЃС‚СЊ}
 		if(acl->info.cond==COND_LIFE && acl->info.cond_ext==COND_LIFE_NONE)
 			Skill_Sneak_Change(acl);
 		else
 			Skill_Sneak_UnSet(acl);
 		break;
-	case SK_LOCKPICK: //{Взломщик}
+	case SK_LOCKPICK: //{Р’Р·Р»РѕРјС‰РёРє}
 		break;
-	case SK_STEAL: //{Красть}
+	case SK_STEAL: //{РљСЂР°СЃС‚СЊ}
 		break;
-	case SK_TRAPS: //{Ловушки}
+	case SK_TRAPS: //{Р›РѕРІСѓС€РєРё}
 		break;
-	case SK_SCIENCE: //{Наука}
+	case SK_SCIENCE: //{РќР°СѓРєР°}
 		break;
-	case SK_REPAIR: //{Ремонт}
+	case SK_REPAIR: //{Р РµРјРѕРЅС‚}
 		break;
 	default:
-		SetCheat(acl,"Process_UseSkill - неверный номер скилла на использование");
+		SetCheat(acl,"Process_UseSkill - РЅРµРІРµСЂРЅС‹Р№ РЅРѕРјРµСЂ СЃРєРёР»Р»Р° РЅР° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ");
 		break;
 	}
 }
 
-void CServer::Process_Dir(CCritter* acl) //!Cvet переделал
+void CServer::Process_Dir(CCritter* acl) //!Cvet РїРµСЂРµРґРµР»Р°Р»
 {
 	BYTE new_dir;
 	acl->bin >> new_dir;
@@ -1549,7 +1549,7 @@ void CServer::Process_Dir(CCritter* acl) //!Cvet переделал
 			c->bout << acl->info.id;
 			c->bout << new_dir;
 
-//LogExecStr("Посылаю данные id=%d о действии id=%d\n", c->info.id, acl->info.id);
+//LogExecStr("РџРѕСЃС‹Р»Р°СЋ РґР°РЅРЅС‹Рµ id=%d Рѕ РґРµР№СЃС‚РІРёРё id=%d\n", c->info.id, acl->info.id);
 		}
 	}
 }

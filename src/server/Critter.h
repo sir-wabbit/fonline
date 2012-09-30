@@ -20,12 +20,12 @@
 const BYTE NOT_ANSWER_CLOSE_DIALOG	=0;
 const BYTE NOT_ANSWER_BEGIN_BATTLE	=1;
 
-//Выборка
+//Р’С‹Р±РѕСЂРєР°
 const char CHOOSE_PLAYER		=0;
 const char CHOOSE_ALL			=1;
 const char CHOOSE_ALL_NOT_PLAYER=2;
 
-//Условие
+//РЈСЃР»РѕРІРёРµ
 const BYTE DEMAND_NONE		=0;
 const BYTE DEMAND_STAT		=1;
 const BYTE DEMAND_SKILL		=2;
@@ -50,7 +50,7 @@ struct demand
 
 typedef vector<demand*> demand_list;
 
-//Результат
+//Р РµР·СѓР»СЊС‚Р°С‚
 const BYTE RESULT_NONE		=0;
 const BYTE RESULT_STAT		=1;
 const BYTE RESULT_SKILL		=2;
@@ -101,19 +101,19 @@ struct npc_dialog
 	DWORD id_text;
 	answers_list answers;
 
-	UINT time_break; //время на прочтение диалога игроком
-	BYTE not_answer; //что делать если нет ответа
+	UINT time_break; //РІСЂРµРјСЏ РЅР° РїСЂРѕС‡С‚РµРЅРёРµ РґРёР°Р»РѕРіР° РёРіСЂРѕРєРѕРј
+	BYTE not_answer; //С‡С‚Рѕ РґРµР»Р°С‚СЊ РµСЃР»Рё РЅРµС‚ РѕС‚РІРµС‚Р°
 };
 
 typedef map<DWORD, npc_dialog*, less<DWORD> > dialogs_map;
 
 struct npc_info
 {
-//ид игрока с которым он сейчас разговаривает
+//РёРґ РёРіСЂРѕРєР° СЃ РєРѕС‚РѕСЂС‹Рј РѕРЅ СЃРµР№С‡Р°СЃ СЂР°Р·РіРѕРІР°СЂРёРІР°РµС‚
 	CrID talking;
-//диалоги
+//РґРёР°Р»РѕРіРё
 	dialogs_map dialogs;
-//текущий скампонованный диалог
+//С‚РµРєСѓС‰РёР№ СЃРєР°РјРїРѕРЅРѕРІР°РЅРЅС‹Р№ РґРёР°Р»РѕРі
 	npc_dialog compiled_dialog;
 
 	npc_info():talking(0){};
@@ -201,20 +201,20 @@ public:
 	SOCKET s; // Socket id
 	SOCKADDR_IN from;
 
-  fonline::Buffer bin; // буфер входящий
-	fonline::Buffer bout; // буфер исходящий
+  fonline::Buffer bin; // Р±СѓС„РµСЂ РІС…РѕРґСЏС‰РёР№
+	fonline::Buffer bout; // Р±СѓС„РµСЂ РёСЃС…РѕРґСЏС‰РёР№
 
-	WORD state; // состояние
-	z_stream zstrm; // поток
+	WORD state; // СЃРѕСЃС‚РѕСЏРЅРёРµ
+	z_stream zstrm; // РїРѕС‚РѕРє
 
-	crit_info info; //Общая инфа криттера
-	npc_info* i_npc; //инфа НПЦ
-	mob_info* i_mob; //инфа моба
+	crit_info info; //РћР±С‰Р°СЏ РёРЅС„Р° РєСЂРёС‚С‚РµСЂР°
+	npc_info* i_npc; //РёРЅС„Р° РќРџР¦
+	mob_info* i_mob; //РёРЅС„Р° РјРѕР±Р°
 
-	cl_map vis_cl; //клиенты ктором мы отпровляем наши действия
+	cl_map vis_cl; //РєР»РёРµРЅС‚С‹ РєС‚РѕСЂРѕРј РјС‹ РѕС‚РїСЂРѕРІР»СЏРµРј РЅР°С€Рё РґРµР№СЃС‚РІРёСЏ
 
-	gmap_group group; //группа клиента
-	gmap_group* group_move; //текущая группа на гм
+	gmap_group group; //РіСЂСѓРїРїР° РєР»РёРµРЅС‚Р°
+	gmap_group* group_move; //С‚РµРєСѓС‰Р°СЏ РіСЂСѓРїРїР° РЅР° РіРј
 	word_set known_cities;
 
 	CCritter* target;
@@ -225,7 +225,7 @@ public:
 	int CheckKnownCity(WORD city_num){if(known_cities.count(city_num)) return 1; return 0;};
 	int AddKnownCity(WORD city_num){if(known_cities.count(city_num)) return 0; known_cities.insert(city_num); return 1;};
 	int DelKnownCity(WORD city_num){if(!known_cities.count(city_num)) return 0; known_cities.erase(city_num); return 1;};
-	//int LoadAllKnownCitySQL(); //при старте сервера
+	//int LoadAllKnownCitySQL(); //РїСЂРё СЃС‚Р°СЂС‚Рµ СЃРµСЂРІРµСЂР°
 	//int SaveKnownCitySQL(WORD city_num);
 	//int EraseKnownCitySQL(WORD city_num);
 

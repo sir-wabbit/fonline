@@ -23,19 +23,19 @@ void zlib_free(void *opaque, void *address);
 
 CrID busy[MAX_CCritterS];
 
-//!Cvet изменил концепцию ++++
-//команда без префикса ~
+//!Cvet РёР·РјРµРЅРёР» РєРѕРЅС†РµРїС†РёСЋ ++++
+//РєРѕРјР°РЅРґР° Р±РµР· РїСЂРµС„РёРєСЃР° ~
 #define CMD_SAY			0
 
-//команды имеют префикс ~
-#define CMD_EXIT		1 //выход ~exit
-#define CMD_CRITID		2 //узнать ИД криттера по его имени ~id name -> crid/"false"
-#define CMD_MOVECRIT	3 //двигать криттера ~move id x y -> "ok"/"false"
-#define CMD_KILLCRIT	4 //убить криттера ~kill id -> "ok"/"false"
-#define CMD_DISCONCRIT	5 //отсоединить криттера ~disconnect id -> "ok"/"false"
-#define CMD_TOGLOBAL	6 //выход на глобал ~toglobal -> toglobal/"false"
+//РєРѕРјР°РЅРґС‹ РёРјРµСЋС‚ РїСЂРµС„РёРєСЃ ~
+#define CMD_EXIT		1 //РІС‹С…РѕРґ ~exit
+#define CMD_CRITID		2 //СѓР·РЅР°С‚СЊ РР” РєСЂРёС‚С‚РµСЂР° РїРѕ РµРіРѕ РёРјРµРЅРё ~id name -> crid/"false"
+#define CMD_MOVECRIT	3 //РґРІРёРіР°С‚СЊ РєСЂРёС‚С‚РµСЂР° ~move id x y -> "ok"/"false"
+#define CMD_KILLCRIT	4 //СѓР±РёС‚СЊ РєСЂРёС‚С‚РµСЂР° ~kill id -> "ok"/"false"
+#define CMD_DISCONCRIT	5 //РѕС‚СЃРѕРµРґРёРЅРёС‚СЊ РєСЂРёС‚С‚РµСЂР° ~disconnect id -> "ok"/"false"
+#define CMD_TOGLOBAL	6 //РІС‹С…РѕРґ РЅР° РіР»РѕР±Р°Р» ~toglobal -> toglobal/"false"
 
-//уровни доступа
+//СѓСЂРѕРІРЅРё РґРѕСЃС‚СѓРїР°
 #define ACCESS_ALL		0
 #define ACCESS_MODER	1
 #define ACCESS_ADMIN	2
@@ -43,7 +43,7 @@ CrID busy[MAX_CCritterS];
 
 struct cmdlist_def
 {
-	char cmd[15];
+	char cmd[30];
 	int id;
 	BYTE access;
 };
@@ -51,22 +51,22 @@ struct cmdlist_def
 const int CMN_LIST_COUNT=12;
 const cmdlist_def cmdlist[]=
 {
-	{"конец",CMD_EXIT,ACCESS_ALL},
+	{"РєРѕРЅРµС†",CMD_EXIT,ACCESS_ALL},
 	{"exit",CMD_EXIT,ACCESS_ALL},
 
-	{"ид",CMD_CRITID,ACCESS_MODER},
+	{"РёРґ",CMD_CRITID,ACCESS_MODER},
 	{"id",CMD_CRITID,ACCESS_MODER},
 
-	{"двигать",CMD_MOVECRIT,ACCESS_MODER},
+	{"РґРІРёРіР°С‚СЊ",CMD_MOVECRIT,ACCESS_MODER},
 	{"move",CMD_MOVECRIT,ACCESS_MODER},
 
-	{"убить",CMD_KILLCRIT,ACCESS_ADMIN},
+	{"СѓР±РёС‚СЊ",CMD_KILLCRIT,ACCESS_ADMIN},
 	{"kill",CMD_KILLCRIT,ACCESS_ADMIN},
 
-	{"отсоединить",CMD_DISCONCRIT,ACCESS_MODER},
+	{"РѕС‚СЃРѕРµРґРёРЅРёС‚СЊ",CMD_DISCONCRIT,ACCESS_MODER},
 	{"disconnect",CMD_DISCONCRIT,ACCESS_MODER},
 
-	{"наглобал",CMD_TOGLOBAL,ACCESS_ALL},
+	{"РЅР°РіР»РѕР±Р°Р»",CMD_TOGLOBAL,ACCESS_ALL},
 	{"toglobal",CMD_TOGLOBAL,ACCESS_ALL},
 };
 //!Cvet ----
@@ -81,7 +81,7 @@ CServer::CServer()
 	sql.mySQL=NULL;
 	outLEN=4096;
 	outBUF=new char[outLEN];
-	last_id=0; // Никто не присоединился
+	last_id=0; // РќРёРєС‚Рѕ РЅРµ РїСЂРёСЃРѕРµРґРёРЅРёР»СЃСЏ
 	for(int i=0;i<MAX_CCritterS;i++) busy[i]=0;
 
 	cur_obj_id=1;
@@ -100,20 +100,20 @@ CServer::~CServer()
 
 void CServer::ClearClients() //!Cvet edit
 {
-	//!Cvet сохраняем данные объектов !!!!!!!!!!!!!!!!!!!dest
+	//!Cvet СЃРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ РѕР±СЉРµРєС‚РѕРІ !!!!!!!!!!!!!!!!!!!dest
 	SaveAllObj();
 
-	//!Cvet сохраняем данные клиентов !!!!!!!!!!!!!!!!dest
+	//!Cvet СЃРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ РєР»РёРµРЅС‚РѕРІ !!!!!!!!!!!!!!!!dest
 	SaveAllDataPlayers();
 	
-	//!Cvet удаляем объекты
+	//!Cvet СѓРґР°Р»СЏРµРј РѕР±СЉРµРєС‚С‹
 	for(dyn_map::iterator it2=all_obj.begin();it2!=all_obj.end();it2++)
 	{
 		delete (*it2).second;
 	}
 	all_obj.clear();
 
-	//!Cvet удаляем клиентов
+	//!Cvet СѓРґР°Р»СЏРµРј РєР»РёРµРЅС‚РѕРІ
 	cl_map::iterator it;
 	for(it=cl.begin();it!=cl.end();it++)
 	{
@@ -126,7 +126,7 @@ void CServer::ClearClients() //!Cvet edit
 	}
 	cl.clear();
 
-	//!Cvet удаляем НПЦ !!!!!!!!!!!!!!!!!!!!
+	//!Cvet СѓРґР°Р»СЏРµРј РќРџР¦ !!!!!!!!!!!!!!!!!!!!
 	for(it=pc.begin();it!=pc.end();it++)
 	{
 //		delete (*it).second;
@@ -139,17 +139,17 @@ void CServer::ClearClients() //!Cvet edit
 #endif
 }
 
-//!Cvet ++++ изменил много чего
+//!Cvet ++++ РёР·РјРµРЅРёР» РјРЅРѕРіРѕ С‡РµРіРѕ
 int CServer::ConnectClient(SOCKET serv)
 {
-	LogExecStr("Попытка соеденить нового клиента...");
+	LogExecStr("РџРѕРїС‹С‚РєР° СЃРѕРµРґРµРЅРёС‚СЊ РЅРѕРІРѕРіРѕ РєР»РёРµРЅС‚Р°...");
 
     SOCKADDR_IN from;
 	int addrsize=sizeof(from);
 	
 	SOCKET NewCl=accept(serv,(sockaddr*)&from,&addrsize);
 
-	if(NewCl==INVALID_SOCKET) { LogExecStr("INVALID_SOCKET №%d\n",NewCl); return 0; }
+	if(NewCl==INVALID_SOCKET) { LogExecStr("INVALID_SOCKET в„–%d\n",NewCl); return 0; }
 
 	CCritter* ncl=new CCritter;
 	ncl->s=NewCl;
@@ -167,11 +167,11 @@ int CServer::ConnectClient(SOCKET serv)
 	}
 
 	int free_place=-1;
-	for(int i=0;i<MAX_CCritterS;i++) //проверяем есть ли свободный канал Для Игрока
+	for(int i=0;i<MAX_CCritterS;i++) //РїСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё СЃРІРѕР±РѕРґРЅС‹Р№ РєР°РЅР°Р» Р”Р»СЏ РРіСЂРѕРєР°
 	{
 		if(!busy[i])
 		{
-			free_place=i; //опре-ся не занятый номер канала
+			free_place=i; //РѕРїСЂРµ-СЃСЏ РЅРµ Р·Р°РЅСЏС‚С‹Р№ РЅРѕРјРµСЂ РєР°РЅР°Р»Р°
 			ncl->info.idchannel=i;
 			busy[ncl->info.idchannel]=1;
 			break;
@@ -180,7 +180,7 @@ int CServer::ConnectClient(SOCKET serv)
 
 	if(free_place==-1)
 	{
-		LogExecStr("Нет свободного канала\n",NewCl);
+		LogExecStr("РќРµС‚ СЃРІРѕР±РѕРґРЅРѕРіРѕ РєР°РЅР°Р»Р°\n",NewCl);
 		ncl->state=STATE_DISCONNECT;
 		return 0;
 	}
@@ -189,9 +189,9 @@ int CServer::ConnectClient(SOCKET serv)
 	
 	cl.insert(cl_map::value_type(ncl->info.idchannel,ncl));
 
-   	NumClients++; //инкремент кол-ва подключенных клиентов
+   	NumClients++; //РёРЅРєСЂРµРјРµРЅС‚ РєРѕР»-РІР° РїРѕРґРєР»СЋС‡РµРЅРЅС‹С… РєР»РёРµРЅС‚РѕРІ
 
-	LogExecStr("OK. Канал=%d. Всего клиентов в игре: %d\n",ncl->info.idchannel,NumClients);
+	LogExecStr("OK. РљР°РЅР°Р»=%d. Р’СЃРµРіРѕ РєР»РёРµРЅС‚РѕРІ РІ РёРіСЂРµ: %d\n",ncl->info.idchannel,NumClients);
 
 #ifndef FOSERVICE_VERSION
 	SetEvent(hUpdateEvent);
@@ -202,19 +202,19 @@ int CServer::ConnectClient(SOCKET serv)
 
 void CServer::DisconnectClient(CrID idchannel)
 {
-	LogExecStr("Отсоединяется клиент. Номер канала %d...", idchannel);
+	LogExecStr("РћС‚СЃРѕРµРґРёРЅСЏРµС‚СЃСЏ РєР»РёРµРЅС‚. РќРѕРјРµСЂ РєР°РЅР°Р»Р° %d...", idchannel);
 
 	cl_map::iterator it_ds=cl.find(idchannel);
 	if(it_ds==cl.end())
 	{
-		LogExecStr("!!!WORNING!!! Клиент не найден\n");
+		LogExecStr("!!!WORNING!!! РљР»РёРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ\n");
 		return;
 	}
 
 	closesocket((*it_ds).second->s);
 	deflateEnd(&(*it_ds).second->zstrm);
 
-	//Освобождение канала
+	//РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ РєР°РЅР°Р»Р°
 	busy[idchannel]=0;
 
 	if((*it_ds).second->info.cond!=COND_NOT_IN_GAME)
@@ -231,28 +231,28 @@ void CServer::DisconnectClient(CrID idchannel)
 	else
 	{
 		LogExecStr(".1.");
-		SAFEDEL((*it_ds).second); //!!!!!!!!BUG??? ВАЙ???!!!!
+		SAFEDEL((*it_ds).second); //!!!!!!!!BUG??? Р’РђР™???!!!!
 		LogExecStr(".2.");
 	}
 
-	//Удаление клиента из списка
+	//РЈРґР°Р»РµРЅРёРµ РєР»РёРµРЅС‚Р° РёР· СЃРїРёСЃРєР°
 	cl.erase(it_ds);
 
 	NumClients--;
 
-	LogExecStr("Отсоединение завершено. Всего клиентов в игре: %d\n",NumClients);
+	LogExecStr("РћС‚СЃРѕРµРґРёРЅРµРЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ. Р’СЃРµРіРѕ РєР»РёРµРЅС‚РѕРІ РІ РёРіСЂРµ: %d\n",NumClients);
 }
 
 void CServer::RemoveCritter(CrID id)
 {
-	LogExecStr("Удаляем криттера id=%d\n",id);
+	LogExecStr("РЈРґР°Р»СЏРµРј РєСЂРёС‚С‚РµСЂР° id=%d\n",id);
 
 	cl_map::iterator it=cr.find(id);
-	if(it==cr.end()) { LogExecStr("!!!WORNING!!! RemoveCritter - клиент не найден id=%d\n",id); return; } // Значит не нашел обьекта на карте
+	if(it==cr.end()) { LogExecStr("!!!WORNING!!! RemoveCritter - РєР»РёРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ id=%d\n",id); return; } // Р—РЅР°С‡РёС‚ РЅРµ РЅР°С€РµР» РѕР±СЊРµРєС‚Р° РЅР° РєР°СЂС‚Рµ
 
 	if((*it).second->info.map)
 	{
-		//Удаляем с тайла
+		//РЈРґР°Р»СЏРµРј СЃ С‚Р°Р№Р»Р°
 		EraseCrFromMap((*it).second,(*it).second->info.map,(*it).second->info.x,(*it).second->info.y);
 	}
 
@@ -261,7 +261,7 @@ void CServer::RemoveCritter(CrID id)
 
 //	NumCritters--;
 
-	LogExecStr("Криттер удален\n");
+	LogExecStr("РљСЂРёС‚С‚РµСЂ СѓРґР°Р»РµРЅ\n");
 
 #ifndef FOSERVICE_VERSION
 	SetEvent(hUpdateEvent);
@@ -284,7 +284,7 @@ void CServer::RunGameLoop()
 
 	LogExecStr("***   Starting Game loop   ***\n");
 
-//!Cvet сбор статистики +++
+//!Cvet СЃР±РѕСЂ СЃС‚Р°С‚РёСЃС‚РёРєРё +++
 	loop_time=0;
 	loop_cycles=0;
 	loop_min=100;
@@ -336,7 +336,7 @@ void CServer::RunGameLoop()
 		lt_ticks=GetTickCount();
 		lt_FDsel+=lt_ticks-(ticks-100);
 
-	//Новое подключение клиента
+	//РќРѕРІРѕРµ РїРѕРґРєР»СЋС‡РµРЅРёРµ РєР»РёРµРЅС‚Р°
 		if(FD_ISSET(s,&read_set))
 		{
 			ConnectClient(s);
@@ -346,7 +346,7 @@ void CServer::RunGameLoop()
 		lt_ticks=GetTickCount();
 		lt_conn+=lt_ticks-lt_ticks2;
 
-	//!Cvet Прием данных от клиентов
+	//!Cvet РџСЂРёРµРј РґР°РЅРЅС‹С… РѕС‚ РєР»РёРµРЅС‚РѕРІ
 		for(cl_map::iterator it=cl.begin();it!=cl.end();)
 		{
 			c=(*it).second;
@@ -359,7 +359,7 @@ void CServer::RunGameLoop()
 		lt_ticks=GetTickCount();
 		lt_input+=lt_ticks-lt_ticks2;
 
-	//Обработка данных клиентов
+	//РћР±СЂР°Р±РѕС‚РєР° РґР°РЅРЅС‹С… РєР»РёРµРЅС‚РѕРІ
 		for(cl_map::iterator it=cl.begin();it!=cl.end();it++)
 		{
 			c=(*it).second;
@@ -372,7 +372,7 @@ void CServer::RunGameLoop()
 		lt_ticks=GetTickCount();
 		lt_proc_cl+=lt_ticks-lt_ticks2;
 
-	//Обработка НПЦ
+	//РћР±СЂР°Р±РѕС‚РєР° РќРџР¦
 		for(cl_map::iterator it=pc.begin();it!=pc.end();it++)
 		{
 			c=(*it).second;
@@ -383,14 +383,14 @@ void CServer::RunGameLoop()
 		lt_ticks=GetTickCount();
 		lt_proc_pc+=lt_ticks-lt_ticks2;
 
-	//Обработка Мобов
+	//РћР±СЂР°Р±РѕС‚РєР° РњРѕР±РѕРІ
 		MOBs_Proccess();
 
 	//	lt_ticks2=lt_ticks;
 	//	lt_ticks=GetTickCount();
 	//	lt_proc_pc+=lt_ticks-lt_ticks2;
 
-	//Посылка данных клиентов
+	//РџРѕСЃС‹Р»РєР° РґР°РЅРЅС‹С… РєР»РёРµРЅС‚РѕРІ
 		for(cl_map::iterator it=cl.begin();it!=cl.end();it++)
 		{
 			c=(*it).second;
@@ -401,7 +401,7 @@ void CServer::RunGameLoop()
 		lt_ticks=GetTickCount();
 		lt_output+=lt_ticks-lt_ticks2;
 
-	//Убирание отключенных клиентов 
+	//РЈР±РёСЂР°РЅРёРµ РѕС‚РєР»СЋС‡РµРЅРЅС‹С… РєР»РёРµРЅС‚РѕРІ 
 		for(cl_map::iterator it=cl.begin();it!=cl.end();)
 		{
 			c=(*it).second;
@@ -417,14 +417,14 @@ void CServer::RunGameLoop()
 
 		lt_discon+=GetTickCount()-lt_ticks;
 
-	//!Cvet сбор статистики
+	//!Cvet СЃР±РѕСЂ СЃС‚Р°С‚РёСЃС‚РёРєРё
 		DWORD loop_cur=GetTickCount()-(ticks-100);
 		loop_time+=loop_cur;
 		loop_cycles++;
 		if(loop_cur > loop_max) loop_max=loop_cur;
 		if(loop_cur < loop_min) loop_min=loop_cur;
 
-	//если быстро справились, то спим
+	//РµСЃР»Рё Р±С‹СЃС‚СЂРѕ СЃРїСЂР°РІРёР»РёСЃСЊ, С‚Рѕ СЃРїРёРј
 		delta=ticks-GetTickCount();
 		if(delta>0)
 		{
@@ -439,7 +439,7 @@ void CServer::RunGameLoop()
 int CServer::Input(CCritter* acl)
 {
 	UINT len=recv(acl->s,inBUF,2048,0);
-	if(len==SOCKET_ERROR || !len) // если клиент отвалился
+	if(len==SOCKET_ERROR || !len) // РµСЃР»Рё РєР»РёРµРЅС‚ РѕС‚РІР°Р»РёР»СЃСЏ
 	{
 		LogExecStr("SOCKET_ERROR forSockID=%d\n",acl->s);
 		return 0;
@@ -448,7 +448,7 @@ int CServer::Input(CCritter* acl)
 	if(len==2048 || (acl->bin.writePosition+len>=acl->bin.capacity))
 	{
 		LogExecStr("FLOOD_CONTROL forSockID=%d\n",acl->s);
-		return 0; // если флудит игрок
+		return 0; // РµСЃР»Рё С„Р»СѓРґРёС‚ РёРіСЂРѕРє
 	}
 
 	acl->bin.Write(inBUF,len);
@@ -456,7 +456,7 @@ int CServer::Input(CCritter* acl)
 	return 1;
 }
 
-void CServer::Process(CCritter* acl) // Лист Событий
+void CServer::Process(CCritter* acl) // Р›РёСЃС‚ РЎРѕР±С‹С‚РёР№
 {
 	MSGTYPE msg;
 
@@ -475,10 +475,10 @@ void CServer::Process(CCritter* acl) // Лист Событий
 				Process_CreateClient(acl);
 				break;
 			default:
-				LogExecStr("Неправильное MSG: %d от SockID %d при приеме LOGIN или CREATE_CCritter!\n",msg,acl->s);
+				LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅРѕРµ MSG: %d РѕС‚ SockID %d РїСЂРё РїСЂРёРµРјРµ LOGIN РёР»Рё CREATE_CCritter!\n",msg,acl->s);
 				acl->state=STATE_DISCONNECT;
 				Send_LoginMsg(acl,8);
-				acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
+				acl->bin.Reset(); //!Cvet РїСЂРё РЅРµРїСЂР°РІРёР»СЊРЅРѕРј РїР°РєРµС‚Рµ РґР°РЅРЅС‹С…  - СѓРґР°Р»СЏРµС‚СЊСЃСЏ РІРµСЃСЊ СЃРїРёСЃРѕРє
 				return;
 			}
 		}
@@ -501,10 +501,10 @@ void CServer::Process(CCritter* acl) // Лист Событий
 				Process_MapLoaded(acl);
 				break;
 			default:
-				LogExecStr("Неправильное MSG: %d от SockID %d при STATE_LOGINOK!\n",msg,acl->s);
+				LogExecStr("РќРµРїСЂР°РІРёР»СЊРЅРѕРµ MSG: %d РѕС‚ SockID %d РїСЂРё STATE_LOGINOK!\n",msg,acl->s);
 		//		acl->state=STATE_DISCONNECT;
 		//		Send_LoginMsg(acl,8);
-		//		acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
+		//		acl->bin.Reset(); //!Cvet РїСЂРё РЅРµРїСЂР°РІРёР»СЊРЅРѕРј РїР°РєРµС‚Рµ РґР°РЅРЅС‹С…  - СѓРґР°Р»СЏРµС‚СЊСЃСЏ РІРµСЃСЊ СЃРїРёСЃРѕРє
 				continue;
 			}
 		}
@@ -512,7 +512,7 @@ void CServer::Process(CCritter* acl) // Лист Событий
 		return;
 	} //!Cvet ----
 
-	//!Cvet если игрок мертв
+	//!Cvet РµСЃР»Рё РёРіСЂРѕРє РјРµСЂС‚РІ
 	if(acl->info.cond!=COND_LIFE)
 	{
 		acl->bin.Reset();
@@ -565,9 +565,9 @@ void CServer::Process(CCritter* acl) // Лист Событий
 			Process_RuleGlobal(acl);
 			break;
 		default:
-			LogExecStr("Wrong MSG: %d from SockID %d при приеме игровых сообщений!\n",msg,acl->s);
+			LogExecStr("Wrong MSG: %d from SockID %d РїСЂРё РїСЂРёРµРјРµ РёРіСЂРѕРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№!\n",msg,acl->s);
 			//acl->state=STATE_DISCONNECT;
-			acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
+			acl->bin.Reset(); //!Cvet РїСЂРё РЅРµРїСЂР°РІРёР»СЊРЅРѕРј РїР°РєРµС‚Рµ РґР°РЅРЅС‹С…  - СѓРґР°Р»СЏРµС‚СЊСЃСЏ РІРµСЃСЊ СЃРїРёСЃРѕРє
 			return;
 		}
 	}
@@ -610,7 +610,7 @@ void CServer::Process_GetText(CCritter* acl)
 	char o_str[MAX_TEXT+255+1]="";
 	char mname[MAX_NAME+1];
 
-//!Cvet переделал концепцию +++++++++++++++++++++++++
+//!Cvet РїРµСЂРµРґРµР»Р°Р» РєРѕРЅС†РµРїС†РёСЋ +++++++++++++++++++++++++
 	WORD cmd=CMD_SAY;
 	BYTE say_param=SAY_NORM;
 
@@ -639,15 +639,15 @@ void CServer::Process_GetText(CCritter* acl)
 			next++;
 			if(!next)
 			{
-				strcpy(self_str, "эээ?!");
+				strcpy(self_str, "СЌСЌСЌ?!");
 				break;
 			}
 
-			if(next[0]=='к' || next[0]=='К' || next[0]=='s' || next[0]=='S') say_param=SAY_SHOUT;
-//			else if(next[0]=='о' || next[0]=='О' || next[0]=='m' || next[0]=='M') say_param=SAY_MSHOUT;
-			else if(next[0]=='э' || next[0]=='Э' || next[0]=='e' || next[0]=='E') say_param=SAY_EMOTE;
-			else if(next[0]=='ш' || next[0]=='Ш' || next[0]=='w' || next[0]=='W') say_param=SAY_WHISP;
-			else if(next[0]=='с' || next[0]=='С' || next[0]=='$') say_param=SAY_SOCIAL;
+			if(next[0]=='Рє' || next[0]=='Рљ' || next[0]=='s' || next[0]=='S') say_param=SAY_SHOUT;
+//			else if(next[0]=='Рѕ' || next[0]=='Рћ' || next[0]=='m' || next[0]=='M') say_param=SAY_MSHOUT;
+			else if(next[0]=='СЌ' || next[0]=='Р­' || next[0]=='e' || next[0]=='E') say_param=SAY_EMOTE;
+			else if(next[0]=='С€' || next[0]=='РЁ' || next[0]=='w' || next[0]=='W') say_param=SAY_WHISP;
+			else if(next[0]=='СЃ' || next[0]=='РЎ' || next[0]=='$') say_param=SAY_SOCIAL;
 		}
 
 		if(say_param!=SAY_NORM)
@@ -660,10 +660,10 @@ void CServer::Process_GetText(CCritter* acl)
 		{
 		case SAY_NORM:
 			if(!next)
-				strcpy(self_str, "А чего сказать то?!");
+				strcpy(self_str, "Рђ С‡РµРіРѕ СЃРєР°Р·Р°С‚СЊ С‚Рѕ?!");
 			else
 			{
-				sprintf(self_str, "Вы: %s",next);
+				sprintf(self_str, "Р’С‹: %s",next);
 				sprintf(o_str, "%s: %s",MakeName(acl->info.name,mname),next);
 			//	sprintf(o_str, "%s",next);
 			}
@@ -675,11 +675,11 @@ void CServer::Process_GetText(CCritter* acl)
 			break;
 		case SAY_SHOUT:
 			if(!next)
-				strcpy(self_str, "Покричу, только скажи что?!");
+				strcpy(self_str, "РџРѕРєСЂРёС‡Сѓ, С‚РѕР»СЊРєРѕ СЃРєР°Р¶Рё С‡С‚Рѕ?!");
 			else
 			{
-				sprintf(self_str, "Вы закричали: !!!%s!!!",my_strupr(next));
-				sprintf(o_str, "%s закричал%s: !!!%s!!!",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"а",my_strupr(next));
+				sprintf(self_str, "Р’С‹ Р·Р°РєСЂРёС‡Р°Р»Рё: !!!%s!!!",my_strupr(next));
+				sprintf(o_str, "%s Р·Р°РєСЂРёС‡Р°Р»%s: !!!%s!!!",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"Р°",my_strupr(next));
 			//	sprintf(self_str, "!!!%s!!!",my_strupr(next));
 			//	sprintf(o_str, "!!!%s!!!",next);
 			}
@@ -691,16 +691,16 @@ void CServer::Process_GetText(CCritter* acl)
 			break;
 //		case SAY_MSHOUT:
 //			if(!next)
-//				strcpy(self_str, "Что орем?!");
+//				strcpy(self_str, "Р§С‚Рѕ РѕСЂРµРј?!");
 //			else
 //			{
-//				sprintf(self_str, "Вы заорали: !!!%s!!!",my_strupr(next));							//!Cvet изм. .gender=='m'
-//				sprintf(o_str, "%s заорал%s: !!!%s!!!",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"а",next);
+//				sprintf(self_str, "Р’С‹ Р·Р°РѕСЂР°Р»Рё: !!!%s!!!",my_strupr(next));							//!Cvet РёР·Рј. .gender=='m'
+//				sprintf(o_str, "%s Р·Р°РѕСЂР°Р»%s: !!!%s!!!",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"Р°",next);
 //			}
 //			break;
 		case SAY_EMOTE:
 			if(!next)
-				strcpy(self_str, "Никаких эмоций!");
+				strcpy(self_str, "РќРёРєР°РєРёС… СЌРјРѕС†РёР№!");
 			else
 			{
 				sprintf(self_str, "**%s %s**",MakeName(acl->info.name,mname),next);
@@ -712,13 +712,13 @@ void CServer::Process_GetText(CCritter* acl)
 			else
 				SendA_Text(acl,&acl->group_move->crit_move,self_str,o_str,say_param);
 			break;
-		case SAY_WHISP: //добавил шепет
+		case SAY_WHISP: //РґРѕР±Р°РІРёР» С€РµРїРµС‚
 			if(!next)
-				strcpy(self_str, "Че шептать будем?...");
+				strcpy(self_str, "Р§Рµ С€РµРїС‚Р°С‚СЊ Р±СѓРґРµРј?...");
 			else
 			{
-				sprintf(self_str, "Вы прошептали: ...%s...",my_strlwr(next));							//!Cvet изм. .gender=='m'
-				sprintf(o_str, "%s прошептал%s: ...%s...",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"а",my_strlwr(next));
+				sprintf(self_str, "Р’С‹ РїСЂРѕС€РµРїС‚Р°Р»Рё: ...%s...",my_strlwr(next));							//!Cvet РёР·Рј. .gender=='m'
+				sprintf(o_str, "%s РїСЂРѕС€РµРїС‚Р°Р»%s: ...%s...",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"Р°",my_strlwr(next));
 			//	sprintf(self_str, "...%s...",my_strlwr(next));
 			//	sprintf(o_str, "...%s...",next);
 			}
@@ -736,7 +736,7 @@ void CServer::Process_GetText(CCritter* acl)
 				return;
 			}
 			else
-				strcpy(self_str, "Хмм?!");
+				strcpy(self_str, "РҐРјРј?!");
 
 			if(acl->info.map)
 				SendA_Text(acl,&acl->vis_cl,self_str,o_str,say_param);
@@ -745,24 +745,24 @@ void CServer::Process_GetText(CCritter* acl)
 			break;
 		}
 		break;
-	case CMD_EXIT: //выход ~exit
+	case CMD_EXIT: //РІС‹С…РѕРґ ~exit
 		LogExecStr("CMD_EXIT for %s\n",acl->info.name);
 		acl->state=STATE_DISCONNECT;
 		break;
-	case CMD_CRITID: //узнать ИД криттера по его имени ~id name -> crid/"false"
-		//эту функцию надо перенести в клиента!
+	case CMD_CRITID: //СѓР·РЅР°С‚СЊ РР” РєСЂРёС‚С‚РµСЂР° РїРѕ РµРіРѕ РёРјРµРЅРё ~id name -> crid/"false"
+		//СЌС‚Сѓ С„СѓРЅРєС†РёСЋ РЅР°РґРѕ РїРµСЂРµРЅРµСЃС‚Рё РІ РєР»РёРµРЅС‚Р°!
 		if(next) strcpy(self_str,next);
 		break;
-	case CMD_MOVECRIT: //двигать криттера ~move id x y -> "ok"/"false"
+	case CMD_MOVECRIT: //РґРІРёРіР°С‚СЊ РєСЂРёС‚С‚РµСЂР° ~move id x y -> "ok"/"false"
 		if(next) strcpy(self_str,next);
 		break;
-	case CMD_KILLCRIT: //убить криттера ~kill id -> "ok"/"false"
+	case CMD_KILLCRIT: //СѓР±РёС‚СЊ РєСЂРёС‚С‚РµСЂР° ~kill id -> "ok"/"false"
 		if(next) strcpy(self_str,next);
 		break;
-	case CMD_DISCONCRIT: //отсоединить криттера ~disconnect id -> "ok"/"false"
+	case CMD_DISCONCRIT: //РѕС‚СЃРѕРµРґРёРЅРёС‚СЊ РєСЂРёС‚С‚РµСЂР° ~disconnect id -> "ok"/"false"
 		if(next) strcpy(self_str,next);
 		break;
-	case CMD_TOGLOBAL: //отсоединить криттера ~disconnect id -> "ok"/"false"
+	case CMD_TOGLOBAL: //РѕС‚СЃРѕРµРґРёРЅРёС‚СЊ РєСЂРёС‚С‚РµСЂР° ~disconnect id -> "ok"/"false"
 		if(TransitCr(acl,0,0,0,0)==TR_OK)
 		{
 			GM_GroupStartMove(acl);
@@ -804,7 +804,7 @@ void CServer::ProcessSocial(CCritter* sender,WORD socid,char* aparam)
 	if(param && param[0] && GetPossParams(socid)!=SOC_NOPARAMS)
 	{
 		my_strlwr(param);
-		if(!strcmp(param,"я") && GetPossParams(socid)!=SOC_NOSELF)
+		if(!strcmp(param,"СЏ") && GetPossParams(socid)!=SOC_NOSELF)
 		{
 			GetSocSelfStr(socid,SelfStr,AllStr,&sender->info);
 		}
@@ -983,47 +983,47 @@ int CServer::Init()
 
 	CreateParamsMaps();
 
-	//шаблоны варов игроков
+	//С€Р°Р±Р»РѕРЅС‹ РІР°СЂРѕРІ РёРіСЂРѕРєРѕРІ
 	if(UpdateVarsTemplate()) goto SockEND;
 
-	//файл-менеджер
+	//С„Р°Р№Р»-РјРµРЅРµРґР¶РµСЂ
 	if(!fm.Init()) goto SockEND;
 
-	//карты
+	//РєР°СЂС‚С‹
 	if(!LoadAllMaps()) goto SockEND;
 
-	//загрузка объектов
+	//Р·Р°РіСЂСѓР·РєР° РѕР±СЉРµРєС‚РѕРІ
 	if(!LoadAllStaticObjects())
 	{
-		LogExecStr("Загрузка статических объектов прошла со сбоями!!!\n");
+		LogExecStr("Р—Р°РіСЂСѓР·РєР° СЃС‚Р°С‚РёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РїСЂРѕС€Р»Р° СЃРѕ СЃР±РѕСЏРјРё!!!\n");
 		goto SockEND;
 	}
-	//создаем всех клиентов
+	//СЃРѕР·РґР°РµРј РІСЃРµС… РєР»РёРµРЅС‚РѕРІ
 	if(!LoadAllPlayers())
 	{
-		LogExecStr("Создание игроков прошли со сбоями!!!\n");
+		LogExecStr("РЎРѕР·РґР°РЅРёРµ РёРіСЂРѕРєРѕРІ РїСЂРѕС€Р»Рё СЃРѕ СЃР±РѕСЏРјРё!!!\n");
 		goto SockEND;
 	}
-	//создаем всю динамику
+	//СЃРѕР·РґР°РµРј РІСЃСЋ РґРёРЅР°РјРёРєСѓ
 	if(!LoadAllObj())
 	{
-		LogExecStr("Создание динамических объектов прошла со сбоями!!!\n");
+		LogExecStr("РЎРѕР·РґР°РЅРёРµ РґРёРЅР°РјРёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РїСЂРѕС€Р»Р° СЃРѕ СЃР±РѕСЏРјРё!!!\n");
 		goto SockEND;
 	}
-	//загружаем НПЦ
+	//Р·Р°РіСЂСѓР¶Р°РµРј РќРџР¦
 	if(!NPC_LoadAll())
 	{
-		LogExecStr("Загрузка НПЦ прошла со сбоями!!!\n");
+		LogExecStr("Р—Р°РіСЂСѓР·РєР° РќРџР¦ РїСЂРѕС€Р»Р° СЃРѕ СЃР±РѕСЏРјРё!!!\n");
 		goto SockEND;
 	}
-	//загружаем мобов
+	//Р·Р°РіСЂСѓР¶Р°РµРј РјРѕР±РѕРІ
 	if(!MOBs_LoadAllGroups())
 	{
-		LogExecStr("Загрузка Мобов прошла со сбоями!!!\n");
+		LogExecStr("Р—Р°РіСЂСѓР·РєР° РњРѕР±РѕРІ РїСЂРѕС€Р»Р° СЃРѕ СЃР±РѕСЏРјРё!!!\n");
 		goto SockEND;
 	}
 
-//	LogExecStr("Создаем объекты\n");
+//	LogExecStr("РЎРѕР·РґР°РµРј РѕР±СЉРµРєС‚С‹\n");
 	
 //	CreateObjToPl(101,1200);
 //	CreateObjToPl(102,1100);
@@ -1115,7 +1115,7 @@ char* CServer::GetParam(char* cmdstr,char** next)
 	int i;
 	for(i=0;cmdstr[i];i++)
 		if(cmdstr[i]!=' ') break;
-	if(!cmdstr[i]) //нет первого параметра
+	if(!cmdstr[i]) //РЅРµС‚ РїРµСЂРІРѕРіРѕ РїР°СЂР°РјРµС‚СЂР°
 	{
 		*next=NULL;
 		return ret;
@@ -1124,7 +1124,7 @@ char* CServer::GetParam(char* cmdstr,char** next)
 	stop=i+1;
 	for(i=stop;cmdstr[i];i++)
 		if(cmdstr[i]==' ') break;
-	if(!cmdstr[i]) //нет следующего параметра
+	if(!cmdstr[i]) //РЅРµС‚ СЃР»РµРґСѓСЋС‰РµРіРѕ РїР°СЂР°РјРµС‚СЂР°
 	{
 		*next=NULL;
 		return ret;
@@ -1142,7 +1142,7 @@ char* CServer::my_strlwr(char* str)
 {
 	strlwr(str);
 	for(int i=0;str[i];i++)
-		if(str[i]>='А' && str[i]<='Я') str[i]+=0x20;
+		if(str[i]>='Рђ' && str[i]<='РЇ') str[i]+=0x20;
 	return str;
 }
 
@@ -1150,7 +1150,7 @@ char* CServer::my_strupr(char* str)
 {
 	strupr(str);
 	for(int i=0;str[i];i++)
-		if(str[i]>='а' && str[i]<='я') str[i]-=0x20;
+		if(str[i]>='Р°' && str[i]<='СЏ') str[i]-=0x20;
 	return str;
 }
 

@@ -26,7 +26,7 @@ void CServer::Send_AddCritter(CCritter* acl, crit_info* pinfo) //Oleg + Cvet edi
 	for(int i=0;i<5;i++)
 		acl->bout.Write(pinfo->cases[i],MAX_NAME);
 
-//	LogExecStr("Посылаю данные id=%d о обноружении id=%d\n", acl->info.id, pinfo->id);
+//	LogExecStr("РџРѕСЃС‹Р»Р°СЋ РґР°РЅРЅС‹Рµ id=%d Рѕ РѕР±РЅРѕСЂСѓР¶РµРЅРёРё id=%d\n", acl->info.id, pinfo->id);
 }
 
 void CServer::Send_RemoveCritter(CCritter* acl, CrID remid) //Oleg
@@ -35,7 +35,7 @@ void CServer::Send_RemoveCritter(CCritter* acl, CrID remid) //Oleg
 
 	acl->bout << msg;
 	acl->bout << remid;
-//LogExecStr("Посылаю данные id=%d о скрывании id=%d\n", acl->info.id, remid);
+//LogExecStr("РџРѕСЃС‹Р»Р°СЋ РґР°РЅРЅС‹Рµ id=%d Рѕ СЃРєСЂС‹РІР°РЅРёРё id=%d\n", acl->info.id, remid);
 }
 
 void CServer::Send_LoadMap(CCritter* acl)
@@ -59,7 +59,7 @@ void CServer::SendA_Move(CCritter* acl, WORD move_params)
 {
 	acl->info.ori=FLAG(move_params,BIN8(00000111));
 
-	if(FLAG(move_params,0x38)==0x38) //проверка по окончании пути
+	if(FLAG(move_params,0x38)==0x38) //РїСЂРѕРІРµСЂРєР° РїРѕ РѕРєРѕРЅС‡Р°РЅРёРё РїСѓС‚Рё
 		if(FLAG(acl->info.flags,FCRIT_PLAYER)) Send_XY(acl);
 
 	if(!acl->vis_cl.empty())
@@ -85,7 +85,7 @@ void CServer::SendA_Move(CCritter* acl, WORD move_params)
 			c->bout << acl->info.x;
 			c->bout << acl->info.y;
 
-//LogExecStr("Посылаю данные id=%d о ходе игроком id=%d\n",c->info.id, acl->info.id);
+//LogExecStr("РџРѕСЃС‹Р»Р°СЋ РґР°РЅРЅС‹Рµ id=%d Рѕ С…РѕРґРµ РёРіСЂРѕРєРѕРј id=%d\n",c->info.id, acl->info.id);
 		}
 	}
 }
@@ -117,7 +117,7 @@ void CServer::SendA_Action(CCritter* acl, BYTE num_action, BYTE rate_action)
 			c->bout << rate_action;
 			c->bout << acl->info.ori;
 
-//LogExecStr("Посылаю данные id=%d о действии id=%d\n", c->info.id, acl->info.id);
+//LogExecStr("РџРѕСЃС‹Р»Р°СЋ РґР°РЅРЅС‹Рµ id=%d Рѕ РґРµР№СЃС‚РІРёРё id=%d\n", c->info.id, acl->info.id);
 		}
 	}
 //LogExecStr("Send_Action - END\n");
@@ -239,33 +239,33 @@ void CServer::SendA_RemObjFromMap(CCritter* acl, dyn_obj* o)
 
 void CServer::Send_AddObject(CCritter* acl, dyn_obj* send_obj)
 {
-	//отсылаем объект игроку
+	//РѕС‚СЃС‹Р»Р°РµРј РѕР±СЉРµРєС‚ РёРіСЂРѕРєСѓ
 	MSGTYPE msg=NETMSG_ADD_OBJECT;
 
 	acl->bout << msg;
-	//ид динамического и статического объекта
+	//РёРґ РґРёРЅР°РјРёС‡РµСЃРєРѕРіРѕ Рё СЃС‚Р°С‚РёС‡РµСЃРєРѕРіРѕ РѕР±СЉРµРєС‚Р°
 	acl->bout << send_obj->id;
 	acl->bout << send_obj->object->id;
-	//активный или в инвентаре
+	//Р°РєС‚РёРІРЅС‹Р№ РёР»Рё РІ РёРЅРІРµРЅС‚Р°СЂРµ
 	acl->bout << send_obj->ACC_CRITTER.slot;
-	//динамические показатели
+	//РґРёРЅР°РјРёС‡РµСЃРєРёРµ РїРѕРєР°Р·Р°С‚РµР»Рё
 	acl->bout << send_obj->time_wear;
 	acl->bout << send_obj->broken_info;
 }
 
 void CServer::Send_RemObject(CCritter* acl, dyn_obj* send_obj)
 {
-	//отсылаем запрос игроку на удаление объекта
+	//РѕС‚СЃС‹Р»Р°РµРј Р·Р°РїСЂРѕСЃ РёРіСЂРѕРєСѓ РЅР° СѓРґР°Р»РµРЅРёРµ РѕР±СЉРµРєС‚Р°
 	MSGTYPE msg=NETMSG_REMOVE_OBJECT;
 
 	acl->bout << msg;
-	//ид динамического
+	//РёРґ РґРёРЅР°РјРёС‡РµСЃРєРѕРіРѕ
 	acl->bout << send_obj->id;
 }
 
 void CServer::Send_WearObject(CCritter* acl, dyn_obj* send_obj)
 {
-	//извещаем игрока о износе объекта
+	//РёР·РІРµС‰Р°РµРј РёРіСЂРѕРєР° Рѕ РёР·РЅРѕСЃРµ РѕР±СЉРµРєС‚Р°
 	MSGTYPE msg=NETMSG_WEAR_OBJECT;
 
 	acl->bout << msg;
@@ -276,7 +276,7 @@ void CServer::Send_WearObject(CCritter* acl, dyn_obj* send_obj)
 
 void CServer::Send_Map(CCritter* acl, WORD map_num)
 {
-	LogExecStr("Отправка карты №%d игроку ID №%d...",map_num,acl->info.id);
+	LogExecStr("РћС‚РїСЂР°РІРєР° РєР°СЂС‚С‹ в„–%d РёРіСЂРѕРєСѓ ID в„–%d...",map_num,acl->info.id);
 
 	//acl->bout << map_size;
 	//acl->bout.Write(
@@ -297,7 +297,7 @@ void CServer::Send_XY(CCritter* acl)
 
 void CServer::Send_AllParams(CCritter* acl, BYTE type_param)
 {
-	//отсылаем ствты которые не равны 0
+	//РѕС‚СЃС‹Р»Р°РµРј СЃС‚РІС‚С‹ РєРѕС‚РѕСЂС‹Рµ РЅРµ СЂР°РІРЅС‹ 0
 	BYTE all_send_params=0;
 	BYTE param=0;
 
@@ -385,20 +385,20 @@ void CServer::Send_Talk(CCritter* acl, npc_dialog* send_dialog)
 		acl->bout << zero_byte;
 		return;
 	}
-//всего вариантов ответа
+//РІСЃРµРіРѕ РІР°СЂРёР°РЅС‚РѕРІ РѕС‚РІРµС‚Р°
 	BYTE all_answers=send_dialog->answers.size();
 	acl->bout << all_answers;
 	if(!all_answers) return;
-//основной текст
+//РѕСЃРЅРѕРІРЅРѕР№ С‚РµРєСЃС‚
 	acl->bout << send_dialog->id_text;
-//варианты ответов
+//РІР°СЂРёР°РЅС‚С‹ РѕС‚РІРµС‚РѕРІ
 	for(answers_list::iterator it_a=send_dialog->answers.begin(); it_a!=send_dialog->answers.end(); it_a++)
 		acl->bout << (*it_a)->id_text;
 }
 
 void CServer::Send_GlobalInfo(CCritter* acl, BYTE info_flags)
 {
-	LogExecStr("Посылаю данные о глобале...");
+	LogExecStr("РџРѕСЃС‹Р»Р°СЋ РґР°РЅРЅС‹Рµ Рѕ РіР»РѕР±Р°Р»Рµ...");
 
 	MSGTYPE msg=NETMSG_GLOBAL_INFO;
 

@@ -13,7 +13,7 @@
 #include "netproto.h"
 #include "Critter.h"
 
-//Переменные НПЦ
+//РџРµСЂРµРјРµРЅРЅС‹Рµ РќРџР¦
 const BYTE NPC_VAR_LOCAL	=0;
 const BYTE NPC_VAR_GLOBAL	=1;
 
@@ -47,44 +47,44 @@ public:
 	int CountRows(char* table, char* column, char* count_vol);
 	int CountRows(char* table, char* column, int count_vol);
 
-//игроки
+//РёРіСЂРѕРєРё
 	int NewPlayer(crit_info* info);
 	int SaveDataPlayer(crit_info* info);
 	int LoadDataPlayer(crit_info* info);
 	void DeleteDataPlayer(crit_info* info);
 
-//нпц
+//РЅРїС†
 	int NewNPC(crit_info* info);
 	int SaveDataNPC(crit_info* info);
 	int LoadDataNPC(crit_info* info);
 	void DeleteDataNPC(crit_info* info);
 
-//переменные нпц
+//РїРµСЂРµРјРµРЅРЅС‹Рµ РЅРїС†
 	int CheckVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, int count);
 	void ChangeVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, int count);
 
-//переменные игроков
+//РїРµСЂРµРјРµРЅРЅС‹Рµ РёРіСЂРѕРєРѕРІ
 	int CheckVar(CrID crid, WORD var_num, char oper, int count);
 	void ChangeVar(CrID crid, WORD var_num, char oper, int count);
 
-//квесты
+//РєРІРµСЃС‚С‹
 	int CheckQuest(CrID crid, WORD quest_num, char choose, int count);
 	void ChangeQuest(CrID crid, WORD quest_num, char choose, int count);
 
-//гвары
+//РіРІР°СЂС‹
 //	int CheckGVar(WORD num_gvar, char oper, int value);
 //	void ChangeGVar(WORD num_gvar, char oper, int value);
 
-//объекты
+//РѕР±СЉРµРєС‚С‹
 	int NewObject(dyn_obj* obj, DWORD obj_id);
 	void SaveDataObject(dyn_obj* obj);
 	int LoadDataObject(dyn_obj* obj, BYTE obj_type);
 	void DeleteDataObject(dyn_obj* obj);
 
-//работа с таблицей читов
+//СЂР°Р±РѕС‚Р° СЃ С‚Р°Р±Р»РёС†РµР№ С‡РёС‚РѕРІ
 	void AddCheat(CrID user_id, char* text_cheat);
 
-//сервис
+//СЃРµСЂРІРёСЃ
 	void WriteLog(char* str);
 
 

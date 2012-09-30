@@ -7,7 +7,7 @@
 
 int CServer::RefreshZoneMasks()
 {
-	LogExecStr("Обновление карт зон...");
+	LogExecStr("РћР±РЅРѕРІР»РµРЅРёРµ РєР°СЂС‚ Р·РѕРЅ...");
 	int zx,zy;
 	bool not_all=false;
 
@@ -79,7 +79,7 @@ int CServer::RefreshZoneMasks()
 
 	if(not_all==true)
 	{
-		LogExecStr("прошло со сбоями\n");
+		LogExecStr("РїСЂРѕС€Р»Рѕ СЃРѕ СЃР±РѕСЏРјРё\n");
 		return 0;
 	}
 
@@ -101,17 +101,17 @@ int CServer::LoadAllMaps()
 {
 	if(!RefreshZoneMasks()) return 0;
 
-	LogExecStr("Загрузка карт\n");
+	LogExecStr("Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚\n");
 
 	FILE *cf;
 
 	if(!(cf=fopen("maps\\data_maps.txt","rt")))
 	{
-		LogExecStr("\tФайл data_maps не найден\n");
+		LogExecStr("\tР¤Р°Р№Р» data_maps РЅРµ РЅР°Р№РґРµРЅ\n");
 		return 0;
 	}
 
-	LogExecStr("\tГлобальная карта...");
+	LogExecStr("\tР“Р»РѕР±Р°Р»СЊРЅР°СЏ РєР°СЂС‚Р°...");
 
 	char ch;
 
@@ -126,19 +126,19 @@ int CServer::LoadAllMaps()
 		if(ch=='@')
 		{
 			fscanf(cf,"%d",&city_num); //citynum
-			if(city_num<0 || city_num>=MAX_CITIES) { LogExecStr("error - неверный номер города\n"); return 0; }
+			if(city_num<0 || city_num>=MAX_CITIES) { LogExecStr("error - РЅРµРІРµСЂРЅС‹Р№ РЅРѕРјРµСЂ РіРѕСЂРѕРґР°\n"); return 0; }
 			city[city_num].num=city_num;
 
 			fscanf(cf,"%d",&tmp_int); //x
-			if(tmp_int<0 || tmp_int>=GM_MAXX) { LogExecStr("error - неверная координата Х города\n"); return 0; }
+			if(tmp_int<0 || tmp_int>=GM_MAXX) { LogExecStr("error - РЅРµРІРµСЂРЅР°СЏ РєРѕРѕСЂРґРёРЅР°С‚Р° РҐ РіРѕСЂРѕРґР°\n"); return 0; }
 			city[city_num].wx=tmp_int;
 
 			fscanf(cf,"%d",&tmp_int); //y
-			if(tmp_int<0 || tmp_int>=GM_MAXY) { LogExecStr("error - неверная координата Y города\n"); return 0; }
+			if(tmp_int<0 || tmp_int>=GM_MAXY) { LogExecStr("error - РЅРµРІРµСЂРЅР°СЏ РєРѕРѕСЂРґРёРЅР°С‚Р° Y РіРѕСЂРѕРґР°\n"); return 0; }
 			city[city_num].wy=tmp_int;
 
 			fscanf(cf,"%d",&tmp_int); //radius
-			if(tmp_int<=0 || tmp_int>=GM_ZONE_LEN) { LogExecStr("error - неверный радиус города\n"); return 0; }
+			if(tmp_int<=0 || tmp_int>=GM_ZONE_LEN) { LogExecStr("error - РЅРµРІРµСЂРЅС‹Р№ СЂР°РґРёСѓСЃ РіРѕСЂРѕРґР°\n"); return 0; }
 			city[city_num].radius=tmp_int;
 
 			while(!feof(cf))
@@ -148,29 +148,29 @@ int CServer::LoadAllMaps()
 				if(ch!='#') continue;
 
 				fscanf(cf,"%d%s",&tmp_wrd,&tmp_str);
-				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { LogExecStr("error - данные о локальной карте неверны. номер карты.\n"); return 0; }
+				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { LogExecStr("error - РґР°РЅРЅС‹Рµ Рѕ Р»РѕРєР°Р»СЊРЅРѕР№ РєР°СЂС‚Рµ РЅРµРІРµСЂРЅС‹. РЅРѕРјРµСЂ РєР°СЂС‚С‹.\n"); return 0; }
 				map[tmp_wrd].num=tmp_wrd;
 				map_info* cur_map=&map[tmp_wrd];
 
 				map_str.insert(map_str_map::value_type(tmp_wrd,string(tmp_str)));
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=MAXHEXX) { LogExecStr("error - данные о локальной карте неверны. старт Х.\n"); return 0; }
+				if(tmp_wrd>=MAXHEXX) { LogExecStr("error - РґР°РЅРЅС‹Рµ Рѕ Р»РѕРєР°Р»СЊРЅРѕР№ РєР°СЂС‚Рµ РЅРµРІРµСЂРЅС‹. СЃС‚Р°СЂС‚ РҐ.\n"); return 0; }
 				cur_map->start_hex_x=tmp_wrd;
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=MAXHEXY) { LogExecStr("error - данные о локальной карте неверны. старт Y.\n"); return 0; }
+				if(tmp_wrd>=MAXHEXY) { LogExecStr("error - РґР°РЅРЅС‹Рµ Рѕ Р»РѕРєР°Р»СЊРЅРѕР№ РєР°СЂС‚Рµ РЅРµРІРµСЂРЅС‹. СЃС‚Р°СЂС‚ Y.\n"); return 0; }
 				cur_map->start_hex_y=tmp_wrd;
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=6) { LogExecStr("error - данные о локальной карте неверны. старт Ori.\n"); return 0; }
+				if(tmp_wrd>=6) { LogExecStr("error - РґР°РЅРЅС‹Рµ Рѕ Р»РѕРєР°Р»СЊРЅРѕР№ РєР°СЂС‚Рµ РЅРµРІРµСЂРЅС‹. СЃС‚Р°СЂС‚ Ori.\n"); return 0; }
 				cur_map->start_ori=tmp_wrd;
 
 				cur_map->city=&city[city_num];
 
 				city[city_num].maps.push_back(cur_map);
 			}
-			if(feof(cf)) { LogExecStr("error - неожиданный конец файла\n"); return 0; }
+			if(feof(cf)) { LogExecStr("error - РЅРµРѕР¶РёРґР°РЅРЅС‹Р№ РєРѕРЅРµС† С„Р°Р№Р»Р°\n"); return 0; }
 
 			gm_zone[GM_ZONE(city[city_num].wx)][GM_ZONE(city[city_num].wy)].cities.push_back(&city[city_num]);
 		}
@@ -178,21 +178,21 @@ int CServer::LoadAllMaps()
 		{
 			fscanf(cf,"%d",&encaunter_num); //encaunter num
 			if(encaunter_num<0 || encaunter_num>=MAX_ENCAUNTERS)
-				{ LogExecStr("error - неверный номер энкаунтера\n"); return 0; }
+				{ LogExecStr("error - РЅРµРІРµСЂРЅС‹Р№ РЅРѕРјРµСЂ СЌРЅРєР°СѓРЅС‚РµСЂР°\n"); return 0; }
 			encaunter[encaunter_num].num=encaunter_num;
 
 			fscanf(cf,"%d",&tmp_wrd); //district
 			if(tmp_wrd==0 || tmp_wrd>(DISTRICT_WESTLAND|DISTRICT_MOUNTAINS|DISTRICT_FOREST|DISTRICT_OCEAN))
-				{ LogExecStr("error - неверная местность энкаунтера\n"); return 0; }
+				{ LogExecStr("error - РЅРµРІРµСЂРЅР°СЏ РјРµСЃС‚РЅРѕСЃС‚СЊ СЌРЅРєР°СѓРЅС‚РµСЂР°\n"); return 0; }
 			encaunter[encaunter_num].district=tmp_wrd;
 
 			fscanf(cf,"%d",&tmp_wrd); //max_groups
 			if(tmp_wrd==0 || tmp_wrd>=ENCAUNTERS_MAX_GROUPS)
-				{ LogExecStr("error - неверные данные по максимальныйм группам в энкаунтере.\n"); return 0; }
+				{ LogExecStr("error - РЅРµРІРµСЂРЅС‹Рµ РґР°РЅРЅС‹Рµ РїРѕ РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№Рј РіСЂСѓРїРїР°Рј РІ СЌРЅРєР°СѓРЅС‚РµСЂРµ.\n"); return 0; }
 			encaunter[encaunter_num].max_groups=tmp_wrd;
 
 			fscanf(cf,"%d%s",&tmp_wrd,&tmp_str);
-				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { LogExecStr("error - данные о локальной карте неверны. номер карты.\n"); return 0; }
+				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { LogExecStr("error - РґР°РЅРЅС‹Рµ Рѕ Р»РѕРєР°Р»СЊРЅРѕР№ РєР°СЂС‚Рµ РЅРµРІРµСЂРЅС‹. РЅРѕРјРµСЂ РєР°СЂС‚С‹.\n"); return 0; }
 
 			map_str.insert(map_str_map::value_type(tmp_wrd,string(tmp_str)));
 			map[tmp_wrd].num=tmp_wrd;
@@ -203,15 +203,15 @@ int CServer::LoadAllMaps()
 			for(int i=0;i<encaunter[encaunter_num].max_groups;++i)
 			{
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=MAXHEXX) { LogExecStr("error - данные о энкаунтере неверны. старт Х.\n"); return 0; }
+				if(tmp_wrd>=MAXHEXX) { LogExecStr("error - РґР°РЅРЅС‹Рµ Рѕ СЌРЅРєР°СѓРЅС‚РµСЂРµ РЅРµРІРµСЂРЅС‹. СЃС‚Р°СЂС‚ РҐ.\n"); return 0; }
 				encaunter[encaunter_num].start_hx[i]=tmp_wrd;
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=MAXHEXY) { LogExecStr("error - данные о энкаунтере неверны. старт Y.\n"); return 0; }
+				if(tmp_wrd>=MAXHEXY) { LogExecStr("error - РґР°РЅРЅС‹Рµ Рѕ СЌРЅРєР°СѓРЅС‚РµСЂРµ РЅРµРІРµСЂРЅС‹. СЃС‚Р°СЂС‚ Y.\n"); return 0; }
 				encaunter[encaunter_num].start_hy[i]=tmp_wrd;
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=6) { LogExecStr("error - данные о энкаунтере неверны. старт Ori.\n"); return 0; }
+				if(tmp_wrd>=6) { LogExecStr("error - РґР°РЅРЅС‹Рµ Рѕ СЌРЅРєР°СѓРЅС‚РµСЂРµ РЅРµРІРµСЂРЅС‹. СЃС‚Р°СЂС‚ Ori.\n"); return 0; }
 				encaunter[encaunter_num].start_ori[i]=tmp_wrd;
 			}
 
@@ -223,12 +223,12 @@ int CServer::LoadAllMaps()
 
 			encaunters_free.insert(encaunter_num);
 
-			if(ch!='%') { LogExecStr("error - неожиданный конец файла2\n"); return 0; }
+			if(ch!='%') { LogExecStr("error - РЅРµРѕР¶РёРґР°РЅРЅС‹Р№ РєРѕРЅРµС† С„Р°Р№Р»Р°2\n"); return 0; }
 		}
 	}
 
-	LogExecStr("ОК\n");
-	LogExecStr("\tЛокальные:\n");
+	LogExecStr("РћРљ\n");
+	LogExecStr("\tР›РѕРєР°Р»СЊРЅС‹Рµ:\n");
 
 	char fnam[32];
 
@@ -250,7 +250,7 @@ int CServer::LoadAllMaps()
 		LogExecStr("OK\n");
 	}
 
-	LogExecStr("Загрузка карт прошла успешно\n");
+	LogExecStr("Р—Р°РіСЂСѓР·РєР° РєР°СЂС‚ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ\n");
 
 	/*
 	transit_map[11][0x10006D]=0x0C01008C0057;
@@ -594,7 +594,7 @@ void CServer::LMapGarbager(WORD num_map)
 		{
 			//GM_EncaunterFree(map[num_map].encaunter);
 			MOBs_EraseFromMap(num_map);
-			if(!map_cr[num_map].empty()) LogExecStr("Ошибка - Локация не очистилась после энкаунтера!!!\n");
+			if(!map_cr[num_map].empty()) LogExecStr("РћС€РёР±РєР° - Р›РѕРєР°С†РёСЏ РЅРµ РѕС‡РёСЃС‚РёР»Р°СЃСЊ РїРѕСЃР»Рµ СЌРЅРєР°СѓРЅС‚РµСЂР°!!!\n");
 
 			map[num_map].encaunter->count_groups=0;
 			encaunters_busy.erase(map[num_map].encaunter->num);
@@ -627,7 +627,7 @@ void CServer::SetVisCr(CCritter* acl)
 		//dist=DISTANCE(acl,c);
 		dist=DistFast(acl->info.x-c->info.x,acl->info.y-c->info.y);
 
-	//для себя
+	//РґР»СЏ СЃРµР±СЏ
 		BREAK_BEGIN
 
 			if(!FLAG(acl->info.flags,FCRIT_PLAYER)) break;
@@ -652,7 +652,7 @@ void CServer::SetVisCr(CCritter* acl)
 
 		BREAK_END;
 
-	//для оппонента
+	//РґР»СЏ РѕРїРїРѕРЅРµРЅС‚Р°
 		if(!FLAG(c->info.flags,FCRIT_PLAYER)) continue;
 
 		c->GenLook();
@@ -892,7 +892,7 @@ void CServer::Process_RuleGlobal(CCritter* acl)
 
 //	if(!acl->group_move || acl->info.map)
 //	{
-//		SetCheat(acl,"Попытка управлять группой, когда ее нет или с локальной карты");
+//		SetCheat(acl,"РџРѕРїС‹С‚РєР° СѓРїСЂР°РІР»СЏС‚СЊ РіСЂСѓРїРїРѕР№, РєРѕРіРґР° РµРµ РЅРµС‚ РёР»Рё СЃ Р»РѕРєР°Р»СЊРЅРѕР№ РєР°СЂС‚С‹");
 //		return;
 //	}
 
@@ -927,7 +927,7 @@ void CServer::Process_RuleGlobal(CCritter* acl)
 		GM_GroupSetSpeed(acl,param1);
 		break;
 	default:
-		SetCheat(acl,"Неизвестная команда упровлением группой");
+		SetCheat(acl,"РќРµРёР·РІРµСЃС‚РЅР°СЏ РєРѕРјР°РЅРґР° СѓРїСЂРѕРІР»РµРЅРёРµРј РіСЂСѓРїРїРѕР№");
 		break;
 	}
 }
@@ -1001,28 +1001,28 @@ int CServer::GM_GroupAddPrepCrit(CCritter* rule_acl, CrID id)
 
 	rule_acl->group.prep_crit.insert(id);
 
-	//различные расчеты над параметрами группы !!!!
+	//СЂР°Р·Р»РёС‡РЅС‹Рµ СЂР°СЃС‡РµС‚С‹ РЅР°Рґ РїР°СЂР°РјРµС‚СЂР°РјРё РіСЂСѓРїРїС‹ !!!!
 //SaveGroup
 	return 1;
 }
 
 int CServer::GM_GroupDelPrepCrit(CCritter* rule_acl, CrID id)
 {
-	if(rule_acl->info.id==id) return 0; //нельзя удалять проводника
+	if(rule_acl->info.id==id) return 0; //РЅРµР»СЊР·СЏ СѓРґР°Р»СЏС‚СЊ РїСЂРѕРІРѕРґРЅРёРєР°
 
-	if(rule_acl->group.prep_crit.empty()) return 1; //группы нет
+	if(rule_acl->group.prep_crit.empty()) return 1; //РіСЂСѓРїРїС‹ РЅРµС‚
 
 	if(!rule_acl->group.prep_crit.count(id)) return 1;
 
 	rule_acl->group.prep_crit.erase(id);
-//различные расчеты над параметрами группы !!!!
+//СЂР°Р·Р»РёС‡РЅС‹Рµ СЂР°СЃС‡РµС‚С‹ РЅР°Рґ РїР°СЂР°РјРµС‚СЂР°РјРё РіСЂСѓРїРїС‹ !!!!
 //SaveGroup
 	return 1;
 }
 
 int CServer::GM_GroupMove(gmap_group* group, DWORD time)
 {
-	if(group->rule->info.map) return 0; //разрулить!!!
+	if(group->rule->info.map) return 0; //СЂР°Р·СЂСѓР»РёС‚СЊ!!!
 
 	if(group->speedx || group->speedy)
 	{
@@ -1187,7 +1187,7 @@ void CServer::GM_GroupStartMove(CCritter* rule_acl)
 
 	GM_GroupAddToZone(rule_acl->group_move,GM_ZONE(rule_acl->group_move->xi),GM_ZONE(rule_acl->group_move->yi));
 
-	//если нпц, то выбираем точку прибытия
+	//РµСЃР»Рё РЅРїС†, С‚Рѕ РІС‹Р±РёСЂР°РµРј С‚РѕС‡РєСѓ РїСЂРёР±С‹С‚РёСЏ
 }
 
 int CServer::GM_GroupToMap(CCritter* rule_acl, WORD map_num, HexTYPE shx, HexTYPE shy, BYTE sori)
@@ -1259,7 +1259,7 @@ int CServer::GM_GroupToCity(CCritter* rule_acl, WORD city_num, WORD map_count)
 
 	if(rule_acl!=rule_acl->group_move->rule)
 	{
-		SetCheat(rule_acl,"Попытка управления группой не рулевым. Проникновение в город.");
+		SetCheat(rule_acl,"РџРѕРїС‹С‚РєР° СѓРїСЂР°РІР»РµРЅРёСЏ РіСЂСѓРїРїРѕР№ РЅРµ СЂСѓР»РµРІС‹Рј. РџСЂРѕРЅРёРєРЅРѕРІРµРЅРёРµ РІ РіРѕСЂРѕРґ.");
 		return 0;
 	}
 
@@ -1273,7 +1273,7 @@ int CServer::GM_GroupToCity(CCritter* rule_acl, WORD city_num, WORD map_count)
 
 	if(!rule_acl->CheckKnownCity(city_num))
 	{
-		SetCheat(rule_acl,"Попытка проникновения в город, о котором не известно");
+		SetCheat(rule_acl,"РџРѕРїС‹С‚РєР° РїСЂРѕРЅРёРєРЅРѕРІРµРЅРёСЏ РІ РіРѕСЂРѕРґ, Рѕ РєРѕС‚РѕСЂРѕРј РЅРµ РёР·РІРµСЃС‚РЅРѕ");
 		return 0;
 	}
 
@@ -1281,7 +1281,7 @@ int CServer::GM_GroupToCity(CCritter* rule_acl, WORD city_num, WORD map_count)
 
 	if(DistSqrt(rule_acl->group.xi-cinf->wx,rule_acl->group.yi-cinf->wy)>cinf->radius)
 	{
-		SetCheat(rule_acl,"Попытка проникновения в город, который дальше группы");
+		SetCheat(rule_acl,"РџРѕРїС‹С‚РєР° РїСЂРѕРЅРёРєРЅРѕРІРµРЅРёСЏ РІ РіРѕСЂРѕРґ, РєРѕС‚РѕСЂС‹Р№ РґР°Р»СЊС€Рµ РіСЂСѓРїРїС‹");
 		return 0;
 	}
 
@@ -1292,7 +1292,7 @@ int CServer::GM_GroupToCity(CCritter* rule_acl, WORD city_num, WORD map_count)
 	if(!mapi->num) return 0;
 //	if(!(minf=))
 //	{
-//		SetCheat(rule_acl,"Попытка проникновения в город, на неизвестную карту");
+//		SetCheat(rule_acl,"РџРѕРїС‹С‚РєР° РїСЂРѕРЅРёРєРЅРѕРІРµРЅРёСЏ РІ РіРѕСЂРѕРґ, РЅР° РЅРµРёР·РІРµСЃС‚РЅСѓСЋ РєР°СЂС‚Сѓ");
 //		return 0;
 //	}
 
@@ -1308,13 +1308,13 @@ int CServer::GM_GroupToEncaunter(CCritter* rule_acl, WORD num_encaunter)
 
 	if(rule_acl!=rule_acl->group_move->rule)
 	{
-		SetCheat(rule_acl,"Попытка управления группой не рулевым. Проникновение в энкаунтер.");
+		SetCheat(rule_acl,"РџРѕРїС‹С‚РєР° СѓРїСЂР°РІР»РµРЅРёСЏ РіСЂСѓРїРїРѕР№ РЅРµ СЂСѓР»РµРІС‹Рј. РџСЂРѕРЅРёРєРЅРѕРІРµРЅРёРµ РІ СЌРЅРєР°СѓРЅС‚РµСЂ.");
 		return 0;
 	}
 
 	if(rule_acl->state!=STATE_GAME) return 0;
 
-//создаем новый
+//СЃРѕР·РґР°РµРј РЅРѕРІС‹Р№
 	if(!num_encaunter)
 	{
 		if(encaunters_free.empty()) return 0;
@@ -1346,7 +1346,7 @@ int CServer::GM_GroupToEncaunter(CCritter* rule_acl, WORD num_encaunter)
 		return num_encaunter;
 	}
 
-//присоединяемся
+//РїСЂРёСЃРѕРµРґРёРЅСЏРµРјСЃСЏ
 	if(!encaunters_busy.count(num_encaunter)) return 0;
 	encaunter_info* cur_encaunter=&encaunter[num_encaunter];
 

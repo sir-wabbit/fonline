@@ -8,7 +8,7 @@
 int CServer::MOBs_LoadAllGroups()
 {
 
-	LogExecStr("Загрузка групп мобов\n");
+	LogExecStr("Р—Р°РіСЂСѓР·РєР° РіСЂСѓРїРї РјРѕР±РѕРІ\n");
 
 	char ch1;
 	int num_group=0;
@@ -24,7 +24,7 @@ int CServer::MOBs_LoadAllGroups()
 
 	if(!(cf1=fopen(data_name, "rt")))
 	{
-		LogExecStr("Файл не найден |%s|\n",data_name);
+		LogExecStr("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ |%s|\n",data_name);
 		return 0;
 	}
 
@@ -36,12 +36,12 @@ int CServer::MOBs_LoadAllGroups()
 
 		if(ch1!='@') continue;
 
-		LogExecStr("\tНайдена группа, номер:");
+		LogExecStr("\tРќР°Р№РґРµРЅР° РіСЂСѓРїРїР°, РЅРѕРјРµСЂ:");
 
 		fscanf(cf1,"%d",&num_group);
 		if(num_group<=0 || num_group>=MOBS_MAX_GROUPS)
 		{
-			LogExecStr("неправильный номер группы\n");
+			LogExecStr("РЅРµРїСЂР°РІРёР»СЊРЅС‹Р№ РЅРѕРјРµСЂ РіСЂСѓРїРїС‹\n");
 			return 0;
 		}
 		LogExecStr("%d...",num_group);
@@ -49,7 +49,7 @@ int CServer::MOBs_LoadAllGroups()
 		cur_group=&mobs_gr[num_group];
 		if(cur_group->num)
 		{
-			LogExecStr("дублирование группы\n");
+			LogExecStr("РґСѓР±Р»РёСЂРѕРІР°РЅРёРµ РіСЂСѓРїРїС‹\n");
 			return 0;
 		}
 		cur_group->num=num_group;
@@ -67,7 +67,7 @@ int CServer::MOBs_LoadAllGroups()
 			fscanf(cf1,"%s",&mob_name[0]);
 			if(!mob_name[0])
 			{
-				LogExecStr("не удалось прочитать имя моба\n");
+				LogExecStr("РЅРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕС‡РёС‚Р°С‚СЊ РёРјСЏ РјРѕР±Р°\n");
 				return 0;
 			}
 
@@ -80,7 +80,7 @@ int CServer::MOBs_LoadAllGroups()
 	
 	if(!(cf=fopen(mob_path, "rt")))
 	{
-		LogExecStr("Файл не найден |%s|\n",mob_path);
+		LogExecStr("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ |%s|\n",mob_path);
 		return 0;
 	}
 
@@ -90,7 +90,7 @@ int CServer::MOBs_LoadAllGroups()
 			prep_mob_map::iterator it_fm=prep_mob.find(string(mob_name));
 			if(it_fm==prep_mob.end())
 			{
-				LogExecStr("Загрузка прототипа...");
+				LogExecStr("Р—Р°РіСЂСѓР·РєР° РїСЂРѕС‚РѕС‚РёРїР°...");
 
 				CCritter* pmob=new CCritter;
 				pmob->i_mob=new mob_info;
@@ -100,7 +100,7 @@ int CServer::MOBs_LoadAllGroups()
 
 				bool Err_load=false;
 
-				//основные параметры
+				//РѕСЃРЅРѕРІРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
 				pmob->info.map=0;
 				pmob->info.x=0;
 				pmob->info.y=0;
@@ -125,11 +125,11 @@ int CServer::MOBs_LoadAllGroups()
 				GetPrivateProfileString("info","cases4"	,"e",pmob->info.cases[4]	,MAX_NAME,mob_path);
 				if(pmob->info.cases[4][0]	=='e') Err_load=true;
 
-			//объекты
+			//РѕР±СЉРµРєС‚С‹
 				UseDefObj(pmob,DOBJ_SLOT_HAND1);
 				UseDefObj(pmob,DOBJ_SLOT_ARMOR);
 
-			//статы, скиллы, перки
+			//СЃС‚Р°С‚С‹, СЃРєРёР»Р»С‹, РїРµСЂРєРё
 				int go=0;
 				for(go=0; go<ALL_STATS ; go++) pmob->info.st[go]=5;
 				for(go=0; go<ALL_SKILLS; go++) pmob->info.sk[go]=5;
@@ -142,7 +142,7 @@ int CServer::MOBs_LoadAllGroups()
 
 				pmob->InitMOB();
 
-			//состояния
+			//СЃРѕСЃС‚РѕСЏРЅРёСЏ
 				pmob->info.cond=COND_LIFE;
 				pmob->info.cond_ext=COND_LIFE_NONE;
 				pmob->info.flags=FCRIT_MOB;
@@ -150,7 +150,7 @@ int CServer::MOBs_LoadAllGroups()
 
 				if(Err_load==true)
 				{
-					LogExecStr("Ошибка при загрузке основных параметров из файла\n");
+					LogExecStr("РћС€РёР±РєР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РёР· С„Р°Р№Р»Р°\n");
 					SAFEDEL(pmob);
 					return 0;
 				}
@@ -163,11 +163,11 @@ int CServer::MOBs_LoadAllGroups()
 			it_fm=prep_mob.find(string(mob_name));
 			if(it_fm==prep_mob.end())
 			{
-				LogExecStr("Ошибка - не найден прототип\n");
+				LogExecStr("РћС€РёР±РєР° - РЅРµ РЅР°Р№РґРµРЅ РїСЂРѕС‚РѕС‚РёРї\n");
 				return 0;
 			}
 
-			LogExecStr("прототип найден...");
+			LogExecStr("РїСЂРѕС‚РѕС‚РёРї РЅР°Р№РґРµРЅ...");
 
 			mob=new CCritter;
 			mob->i_mob=new mob_info;
@@ -191,17 +191,17 @@ int CServer::MOBs_LoadAllGroups()
 
 		if(ch1!='@')
 		{
-			LogExecStr("оибка чтения\n");
+			LogExecStr("РѕРёР±РєР° С‡С‚РµРЅРёСЏ\n");
 			return 0;
 		}
 
 		if(!count_group || count_group>GM_MAX_GROUP)
 		{
-			LogExecStr("нулевая группа или превышает лимит\n");
+			LogExecStr("РЅСѓР»РµРІР°СЏ РіСЂСѓРїРїР° РёР»Рё РїСЂРµРІС‹С€Р°РµС‚ Р»РёРјРёС‚\n");
 			return 0;
 		}
 
-		LogExecStr("группа загружена\n");
+		LogExecStr("РіСЂСѓРїРїР° Р·Р°РіСЂСѓР¶РµРЅР°\n");
 
 		cur_group->mobs_count=count_group;
 		cur_group->mobs_level=0;
@@ -211,7 +211,7 @@ int CServer::MOBs_LoadAllGroups()
 
 	fclose(cf1);
 
-	LogExecStr("Загрузка групп мобов прошла успешно\n");
+	LogExecStr("Р—Р°РіСЂСѓР·РєР° РіСЂСѓРїРї РјРѕР±РѕРІ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ\n");
 
 	return 1;
 }
@@ -266,7 +266,7 @@ void CServer::MOBs_Proccess()
 			}
 
 	
-		//действия моба
+		//РґРµР№СЃС‚РІРёСЏ РјРѕР±Р°
 			//Crit_MoveRandom(mob);
 			// XXX[31.7.2012 alex]: should probably do it with Lua
 			/*asIScriptContext *ctx=NULL;
@@ -310,7 +310,7 @@ void CServer::MOBs_Proccess()
 
 int CServer::MOBs_AddToEncaunter(WORD num_encaunter, BYTE mobs_level)
 {
-LogExecStr("Высаживаем мобов==========================================\n");
+LogExecStr("Р’С‹СЃР°Р¶РёРІР°РµРј РјРѕР±РѕРІ==========================================\n");
 	encaunter_info* cur_encaunter=&encaunter[num_encaunter];
 	WORD num_map=cur_encaunter->emap->num;
 
@@ -338,7 +338,7 @@ LogExecStr("Высаживаем мобов==========================================\n");
 			cur_encaunter->start_hx[cur_encaunter->count_groups],
 			cur_encaunter->start_hx[cur_encaunter->count_groups])!=TR_OK)
 		{
-			LogExecStr("Не удалось высадить моба!!!\n");
+			LogExecStr("РќРµ СѓРґР°Р»РѕСЃСЊ РІС‹СЃР°РґРёС‚СЊ РјРѕР±Р°!!!\n");
 			continue;
 		}
 
@@ -351,7 +351,7 @@ LogExecStr("Высаживаем мобов==========================================\n");
 	mobs_group_free.erase(cur_mobs->num);
 
 LogExecStr("x=%d,y=%d\n",cur_encaunter->start_hx[cur_encaunter->count_groups-1],cur_encaunter->start_hx[cur_encaunter->count_groups-1]);
-LogExecStr("Высадили мобов++++++++++++++++++++++++++++++++++++++++++++\n");
+LogExecStr("Р’С‹СЃР°РґРёР»Рё РјРѕР±РѕРІ++++++++++++++++++++++++++++++++++++++++++++\n");
 	return 1;
 }
 
@@ -359,7 +359,7 @@ void CServer::MOBs_EraseFromMap(WORD num_map)
 {
 	if(!num_map && num_map>=MAX_MAPS)
 	{
-		LogExecStr("Ошибка - Попытка удалить мобов на несуществующей карте |%d|\n",num_map);
+		LogExecStr("РћС€РёР±РєР° - РџРѕРїС‹С‚РєР° СѓРґР°Р»РёС‚СЊ РјРѕР±РѕРІ РЅР° РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ РєР°СЂС‚Рµ |%d|\n",num_map);
 		return;
 	}
 
@@ -387,7 +387,7 @@ void CServer::MOBs_RefreshGroup(WORD num_group)
 {
 	if(!num_group && num_group>=MOBS_MAX_GROUPS)
 	{
-		LogExecStr("Ошибка - Попытка обновить несуществующую группу |%d|\n",num_group);
+		LogExecStr("РћС€РёР±РєР° - РџРѕРїС‹С‚РєР° РѕР±РЅРѕРІРёС‚СЊ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰СѓСЋ РіСЂСѓРїРїСѓ |%d|\n",num_group);
 		return;
 	}
 
@@ -398,7 +398,7 @@ void CServer::MOBs_RefreshGroup(WORD num_group)
 	for(cl_map::iterator it_m=cur_group->mobs.begin();it_m!=cur_group->mobs.end();++it_m)
 	{
 		cur_mob=(*it_m).second;
-		if(cur_mob->info.map) LogExecStr("Ошибка - Не удаленный моб после очистки карты от мобов\n");
+		if(cur_mob->info.map) LogExecStr("РћС€РёР±РєР° - РќРµ СѓРґР°Р»РµРЅРЅС‹Р№ РјРѕР± РїРѕСЃР»Рµ РѕС‡РёСЃС‚РєРё РєР°СЂС‚С‹ РѕС‚ РјРѕР±РѕРІ\n");
 
 		it_pm=prep_mob.find(cur_mob->i_mob->name);
 		if(it_pm==prep_mob.end()) continue;

@@ -44,14 +44,14 @@ using namespace std;
 #define chMSG(desc) message(__FILE__ "(" chSTR(__LINE__) "):" #desc)
 
 //!Cvet ++++
-//äëÿ ðàáîòû ñ äâîè÷íûìè êîíñòàíòàìè
+//Ð´Ð»Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ñ Ð´Ð²Ð¾Ð¸Ñ‡Ð½Ñ‹Ð¼Ð¸ ÐºÐ¾Ð½ÑÑ‚Ð°Ð½Ñ‚Ð°Ð¼Ð¸
 #define BIN__N(x) (x) | x>>3 | x>>6 | x>>9
 #define BIN__B(x) (x) & 0xf | (x)>>12 & 0xf0
 #define BIN8(v) (BIN__B(BIN__N(0x##v)))
 
 #define BIN16(bin16,bin8)	((BIN8(bin16)<<8)|(BIN8(bin8)))
 
-//äëÿ ðàáîòû ñ áèòàìè (ïî èãðå - ôëàãàìè)
+//Ð´Ð»Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ñ Ð±Ð¸Ñ‚Ð°Ð¼Ð¸ (Ð¿Ð¾ Ð¸Ð³Ñ€Ðµ - Ñ„Ð»Ð°Ð³Ð°Ð¼Ð¸)
 #define BITS(x,y) ((x)&(y))
 #define FLAG BITS
 
