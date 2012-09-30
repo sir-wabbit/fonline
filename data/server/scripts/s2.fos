@@ -1,0 +1,9 @@
+void main3()
+{
+	Log("HELLO");
+}
+
+int get_int()
+{
+	return 777;
+}
