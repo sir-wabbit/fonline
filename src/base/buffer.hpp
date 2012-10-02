@@ -1,9 +1,8 @@
 #ifndef FO_BASE_BUFFER_HPP_
 #define FO_BASE_BUFFER_HPP_
 
-#include <Windows.h>
 #include "fo-base.hpp"
-#include "platform.hpp"
+#include <stdint.h>
 
 namespace fonline {
 
