@@ -1,4 +1,6 @@
 #include "buffer.hpp"
+#include <stdlib.h>
+#include <string.h>
 
 namespace fonline {
 
