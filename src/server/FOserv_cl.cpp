@@ -739,6 +739,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 //проверка на наличие созданного по такому логину игрока
 	if(sql.CheckUser(acl->info.login))
 	{
+	  LogExecStr("No such user found.\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,3);
 		return;
@@ -888,12 +889,14 @@ void CServer::Process_GetLogIn(CCritter* acl)
 	//проверка на длинну логина и пасса
 	if(strlen(acl->info.login)<MIN_LOGIN || strlen(acl->info.login)>MAX_LOGIN)
 	{
+	  LogExecStr("Login is either too short or too long.\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,1);
 		return;
 	}
 	if(strlen(acl->info.pass)<MIN_LOGIN || strlen(acl->info.pass)>MAX_LOGIN)
 	{
+	  LogExecStr("Password is either too short or too long.\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,2);
 		return;
@@ -917,6 +920,7 @@ void CServer::Process_GetLogIn(CCritter* acl)
 	int map=0;
 	if((map=sql.GetInt("users","map","id",acl->info.id))==0xFFFFFFFF)
 	{
+	  LogExecStr("Could not read player's map from DB.\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,8);
 		return;
@@ -959,6 +963,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 		} 
 		else if(!sql.LoadDataPlayer(&acl->info))
 		{
+		  LogExecStr("Could not load player's data.\n");
 			acl->state=STATE_DISCONNECT;
 			Send_LoginMsg(acl,8);
 			return;
@@ -971,6 +976,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 
 		if(AddCrToMap(acl,acl->info.map,acl->info.x,acl->info.y)!=TR_OK) //чтоб друг другу на головы не высаживались
 		{
+		  LogExecStr("Could not add critter to map.\n");
 			Send_LoginMsg(acl,11);
 			acl->state=STATE_DISCONNECT;
 			return;
