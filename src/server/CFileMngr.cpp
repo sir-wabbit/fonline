@@ -93,47 +93,47 @@ bool LoadFile(const char* path, void** buf, size_t* size) {
 }; // anonymous namespace
 
 
-bool FileManager::Init()
-{
-	if(initialized) return true;
-
+bool FileManager::Init() {
+  assert(!initialized);
 	LogExecStr("FileManager Initialization...\n");
-  
 	LogExecStr("FileManager Initialization complete\n");
 	initialized = true;
+	
+	foDataPath = "./";
 	return true;
 }
 
-void FileManager::Clear()
-{
+void FileManager::Clear() {
 	LogExecStr("FileManager Clear...\n");
 	UnloadFile();
 	LogExecStr("FileManager Clear complete\n");
 }
 
-void FileManager::UnloadFile()
-{
+void FileManager::UnloadFile() {
 	SAFEDELA(buffer);
 }
 
-int FileManager::LoadFile(char* fname, int PathType)
-{
-		if(!initialized)
-		{
-			LogExecStr("FileMngr LoadFile","FileMngr не был иницилазирован до загрузки файла %s",fname);
-			return 0;
-		}
-		UnloadFile();
+int FileManager::LoadFile(char* fileName, int pathType) {
+  assert(initialized);
 
-    std::string path = "";
-    path += pathlst[PathType];
-    path += fname;
-    
-		if (!::LoadFile((foDataPath + path).c_str(), (void**) &buffer, &fileSize)) {
-		  LogExecStr("FileMngr LoadFile - Файл %s не найден", path);
-		}
-
+	if(!initialized) {
+    LogExecStr("FileManager::LoadFile - FileMngr не был иницилазирован до загрузки файла %s",fileName);
 		return 0;
+	}
+	UnloadFile();
+
+  std::string path = "";
+  path += pathlst[pathType];
+  path += fileName;
+  
+  std::string fullPath = foDataPath + path;
+  
+	if (!::LoadFile(fullPath.c_str(), (void**) &buffer, &fileSize)) {
+	  LogExecStr("FileManager::LoadFile - файл %s не найден\n", fullPath.c_str());
+	  return 0;
+	}
+
+	return 1;
 }
 
 void FileManager::SetCurPos(uint32_t pos)

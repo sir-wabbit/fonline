@@ -202,12 +202,12 @@ int CServer::ConnectClient(SOCKET serv)
 
 void CServer::DisconnectClient(CrID idchannel)
 {
-	LogExecStr("Отсоединяется клиент. Номер канала %d...", idchannel);
+	LogExecStr("Disconnecting a client with the channel id =  %d...", idchannel);
 
 	cl_map::iterator it_ds=cl.find(idchannel);
 	if(it_ds==cl.end())
 	{
-		LogExecStr("!!!WORNING!!! Клиент не найден\n");
+		LogExecStr("WARNING: Could not find the client.\n");
 		return;
 	}
 
@@ -347,12 +347,15 @@ void CServer::RunGameLoop()
 		lt_conn+=lt_ticks-lt_ticks2;
 
 	//!Cvet Прием данных от клиентов
-		for(cl_map::iterator it=cl.begin();it!=cl.end();)
+		for(cl_map::iterator it=cl.begin();it!=cl.end();++it)
 		{
 			c=(*it).second;
-			if((FD_ISSET(c->s,&read_set))&&(c->state!=STATE_DISCONNECT))
-				if(!Input(c)) c->state=STATE_DISCONNECT;
-			it++;
+			if((FD_ISSET(c->s,&read_set))&&(c->state!=STATE_DISCONNECT)) {
+				if(!Input(c)) {
+				  LogExecStr("Could not recieve data from a client.\n");
+				  c->state=STATE_DISCONNECT;
+				}
+		  }
 		}
 
 		lt_ticks2=lt_ticks;

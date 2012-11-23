@@ -2539,6 +2539,7 @@ void CFEngine::Net_OnLoadMap()
 
 	if(hf.LoadMap(name_map)) //local
 	{
+	  WriteLog("Loading local map\n");
 		Net_SendLoadMapOK();
 		SetScreen(SCREEN_MAIN);
 	}
@@ -2753,16 +2754,14 @@ int CFEngine::NetOutput()
 	return 1;
 }
 
-int CFEngine::NetInput()
-{
-
-	UINT len=recv(sock,ComBuf,comlen,0);
-	if(len==SOCKET_ERROR || !len) 
-	{
+int CFEngine::NetInput() {
+	int len = recv(sock,ComBuf,comlen,0);
+	if (len == SOCKET_ERROR || !len) {
 		//ErrMsg("CFEngine::NetInput","Socket error!\r\n");
-		WriteLog("CFEngine::NetInput","Socket error!\r\n");
+		WriteLog("CFEngine::NetInput - Socket error!\r\n");
 		return 0;
 	}
+	
 	bool rebuf=0;
 
 	compos=len;

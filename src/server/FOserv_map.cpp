@@ -103,6 +103,7 @@ int CServer::LoadAllMaps()
 
 	LogExecStr("Загрузка карт\n");
 
+  // FIXME[24.11.2012 alex]: load with FileManager
 	FILE *cf;
 
 	if(!(cf=fopen("maps\\data_maps.txt","rt")))
@@ -115,8 +116,8 @@ int CServer::LoadAllMaps()
 
 	char ch;
 
-	uint16_t tmp_wrd;
-	char tmp_str[32];
+	int tmp_wrd;
+	char tmp_str[64];
 	int tmp_int=0,city_num=0,encaunter_num=0;
 	
 	while(!feof(cf))

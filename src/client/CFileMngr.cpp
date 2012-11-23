@@ -182,87 +182,61 @@ void FileManager::Clear()
 	WriteLog("FileManager Clear complete\n");
 }
 
-void FileManager::UnloadFile()
-{
+void FileManager::UnloadFile() {
 	SAFEDELA(buffer);
 }
 
-int FileManager::LoadFile(char* fname, int PathType)
+int FileManager::LoadFile(char* fileName, int pathType)
 {
-		if(!initialized)
-		{
-			ErrMsg("FileMngr LoadFile","FileMngr не был иницилазирован до загрузки файла %s",fname);
-			return 0;
-		}
-		UnloadFile();
+  assert(fileName != NULL);
+  assert(initialized);
 
-		char path[1024]="";
-		char pfname[1024]="";
-
-		strcpy(pfname,pathlst[PathType]);
-		strcat(pfname,fname);
-
-		strcpy(path,fo_dat);
-		strcat(path,pfname);
+	if(!initialized)
+	{
+		ErrMsg("FileMngr LoadFile","FileMngr не был иницилазирован до загрузки файла %s",fileName);
+		return 0;
+	}
 	
-		//данные fo
-    if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
-      return 1;
-    }
+	UnloadFile();
 
-		if(PathType==PT_ART_CRITTERS)
+	char path[1024]="";
+	char pfname[1024]="";
+
+	strcpy(pfname,pathlst[pathType]);
+	strcat(pfname,fileName);
+
+	strcpy(path,fo_dat);
+	strcat(path,pfname);
+
+	//данные fo
+  if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
+    return 1;
+  }
+
+	if(pathType==PT_ART_CRITTERS)
+	{
+		if(!lpDATcr)
 		{
-			if(!lpDATcr)
-			{
-				//попрбуем загрузить из critter_dat если это каталог
-				strcpy(path,crit_dat);
-				strcat(path,pfname);
-		
-        if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
-          return 1;
-        } else {
-          return 0; //а вот не вышло
-        }
-			}	
-
-			if(lpDATcr->DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
-			{
-			
-				fileSize = lpDATcr->DATGetFileSize();			
-
-				buffer = new uint8_t[fileSize+1];
-				DWORD br;
-			
-				lpDATcr->DATReadFile(buffer,fileSize,&br);
-
-				buffer[fileSize]=0;
-
-				position=0;
-				return 1;
-			}
-
-		}
-		
-		if(!lpDAT)
-		{
-			//попрбуем загрузить из master_dat если это каталог
-			strcpy(path,master_dat);
+			//попрбуем загрузить из critter_dat если это каталог
+			strcpy(path,crit_dat);
 			strcat(path,pfname);
 	
       if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
         return 1;
-      } else return 0; //а вот не вышло
-		}
+      } else {
+        return 0; //а вот не вышло
+      }
+		}	
 
-		if(lpDAT->DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
+		if(lpDATcr->DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
 		{
 		
-			fileSize = lpDAT->DATGetFileSize();
+			fileSize = lpDATcr->DATGetFileSize();			
 
 			buffer = new uint8_t[fileSize+1];
 			DWORD br;
-			
-			lpDAT->DATReadFile(buffer,fileSize,&br);
+		
+			lpDATcr->DATReadFile(buffer,fileSize,&br);
 
 			buffer[fileSize]=0;
 
@@ -270,8 +244,37 @@ int FileManager::LoadFile(char* fname, int PathType)
 			return 1;
 		}
 
-		WriteLog("FileMngr - Файл %s не найден\n",pfname);//!Cvet
-		return 0;
+	}
+	
+	if(!lpDAT)
+	{
+		//попрбуем загрузить из master_dat если это каталог
+		strcpy(path,master_dat);
+		strcat(path,pfname);
+
+    if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
+      return 1;
+    } else return 0; //а вот не вышло
+	}
+
+	if(lpDAT->DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
+	{
+	
+		fileSize = lpDAT->DATGetFileSize();
+
+		buffer = new uint8_t[fileSize+1];
+		DWORD br;
+		
+		lpDAT->DATReadFile(buffer,fileSize,&br);
+
+		buffer[fileSize]=0;
+
+		position=0;
+		return 1;
+	}
+
+	WriteLog("FileMngr - Файл %s не найден\n",pfname);//!Cvet
+	return 0;
 }
 
 void FileManager::SetCurPos(uint32_t pos)
