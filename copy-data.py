@@ -19,7 +19,7 @@ def copy_file(src, dst, always):
   if not always and not needs_update(src, dst):
     return
     
-  print "Copying %s to %s" % (src, dst)
+  print ("Copying %s to %s" % (src, dst))
   shutil.copyfile(src, dst)
   
 def copy_path (src, dst, always):
@@ -41,7 +41,7 @@ def copy_dir (src, dst, always):
         copy_path(src_name, dst_name, always)
 
 if len(sys.argv) != 5:
-  print "invalid action args"
+  print ("invalid action args")
   os.exit(-1)
 
 cwd = sys.argv[1]
