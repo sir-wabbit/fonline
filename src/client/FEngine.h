@@ -159,7 +159,7 @@ private:
 	CSpriteManager sm;
 	CHexField hf;
 	CFOFont fnt;
-	CSoundMngr sdm;
+	SoundManager sdm;
 
 	uint16_t cur_def,cur_move,cur_move_block,cur_hand,cur_use_o,cur_use_s,cur_wait; //!Cvet указатели
 

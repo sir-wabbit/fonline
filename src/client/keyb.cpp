@@ -23,7 +23,7 @@ typedef std::map<uint8_t, keyb_data> keyb_data_map;
 
 keyb_data_map data;
 
-void InitKeyb()
+void InitKeyboard()
 {
 	data[DIK_1]=		keyb_data('1','!','1','!');
 	data[DIK_2]=		keyb_data('2','"','2','@');

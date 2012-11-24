@@ -64,7 +64,7 @@ private:
 	uint32_t position;
 	uint8_t* buffer;
 
-	TDatFile *lpDAT,*lpDATcr;
+	DatArchive *lpDAT,*lpDATcr;
 
 	char master_dat[1024];
 	char crit_dat[1024];

@@ -70,7 +70,7 @@ int CFEngine::Init(HWND _hWnd)
 
 	hWnd=_hWnd;
 
-	InitKeyb();
+	InitKeyboard();
 
 	WriteLog("Создаю Direct3D.....");
 	lpD3D=Direct3DCreate8(D3D_SDK_VERSION);
@@ -468,9 +468,9 @@ int CFEngine::Console()
 
 	wsprintf(str,"R=%d,G=%d,B=%d---Время:%d:%d",dayR,dayG,dayB,Game_Hours,Game_Mins);
 
-	fnt.MyDrawText(r4,str1,FT_CENTERX,D3DCOLOR_XRGB(255,240,0));
-	fnt.MyDrawText(r5,str2,FT_CENTERX,D3DCOLOR_XRGB(255,240,0));
-	fnt.MyDrawText(r6,str,FT_CENTERX,D3DCOLOR_XRGB(255,240,0));
+	fnt.RenderText(r4,str1,FT_CENTERX,D3DCOLOR_XRGB(255,240,0));
+	fnt.RenderText(r5,str2,FT_CENTERX,D3DCOLOR_XRGB(255,240,0));
+	fnt.RenderText(r6,str,FT_CENTERX,D3DCOLOR_XRGB(255,240,0));
 	return 1;
 }
 
@@ -575,7 +575,7 @@ int CFEngine::Render()
 		wsprintf(verstr,"|2130771712 by |4278255615 Gamers |2130771712 from |4294967040 FOdev\n\n"
 			"|4278190335 version %s\n\n"
 			"|4294901760 fps: %d",FULLVERSTR,Game_FPS);
-		fnt.MyDrawText(r2,verstr,FT_COLORIZE,D3DCOLOR_XRGB(255,248,0));
+		fnt.RenderText(r2,verstr,FT_COLORIZE,D3DCOLOR_XRGB(255,248,0));
 	}
 
 	if(newplayer) if((GetTickCount()-LastCall)>=1000) newplayer=0;

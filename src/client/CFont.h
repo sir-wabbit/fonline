@@ -23,9 +23,9 @@ struct Letter
 //!Cvet +++++++++++++
 struct Font
 {
-	LPDIRECT3DTEXTURE8 font_surf;
+	LPDIRECT3DTEXTURE8 fontSurface;
 
-	Letter let[256];
+	Letter letters[256];
 	int eth;
 	int etw;
 	int *maxx;
@@ -61,10 +61,9 @@ public:
 	void PreRestore();
 	void PostRestore(LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB);
 
-	void MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col=NULL, int num_font=FONT_DEF);
-  
+	void RenderText(RECT rect, char* astr, uint32_t flags, uint32_t col=NULL, int num_font=FONT_DEF);
 	
-     CFOFont();
+  CFOFont();
 	~CFOFont();
 private:
 

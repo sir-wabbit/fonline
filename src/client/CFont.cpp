@@ -16,7 +16,7 @@ CFOFont::CFOFont(): crtd(0),lpVB(NULL),lpIB(NULL),lpDevice(NULL),lpWaitBuf(NULL)
 {
 	for(int cur_f=0;cur_f<MAX_FONT;++cur_f)
 	{
-		fonts[cur_f].font_surf=NULL;
+		fonts[cur_f].fontSurface=NULL;
 		fonts[cur_f].max_cnt=16;
 		fonts[cur_f].maxx=new int[fonts[cur_f].max_cnt];
 	}
@@ -52,7 +52,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 		strcat(path,".bmp");
 
 		HRESULT hr=D3DXCreateTextureFromFileEx(lpDevice,path,D3DX_DEFAULT,D3DX_DEFAULT,1,0,
-			D3DFMT_UNKNOWN,D3DPOOL_MANAGED,D3DX_DEFAULT,D3DX_DEFAULT,D3DCOLOR_ARGB(255,0,0,0),NULL,NULL,&fonts[cur_f].font_surf);
+			D3DFMT_UNKNOWN,D3DPOOL_MANAGED,D3DX_DEFAULT,D3DX_DEFAULT,D3DCOLOR_ARGB(255,0,0,0),NULL,NULL,&fonts[cur_f].fontSurface);
 		if(hr!=D3D_OK)
 		{
 			ErrMsg("CFont CreateFontSurf","Не могу создать текстуру %s",path);
@@ -77,25 +77,25 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 			return 0;
 		}
 
-		ReadFile(hFile,fonts[cur_f].let,sizeof(Letter)*256,&ByteWritten,NULL);
+		ReadFile(hFile,fonts[cur_f].letters,sizeof(Letter)*256,&ByteWritten,NULL);
 
 		CloseHandle(hFile);
 
-		fonts[cur_f].eth=fonts[cur_f].let[(uint8_t)'а'].h;
-		fonts[cur_f].etw=fonts[cur_f].let[(uint8_t)'а'].w;
+		fonts[cur_f].eth=fonts[cur_f].letters[(uint8_t)'а'].h;
+		fonts[cur_f].etw=fonts[cur_f].letters[(uint8_t)'а'].w;
 
 		D3DSURFACE_DESC sd;
-		fonts[cur_f].font_surf->GetLevelDesc(0,&sd);
+		fonts[cur_f].fontSurface->GetLevelDesc(0,&sd);
 		UINT wd=sd.Width;
 
 		for(int i=0;i<256;i++)
 		{
-			int w=fonts[cur_f].let[i].w;
-			int h=fonts[cur_f].let[i].h;
-			fonts[cur_f].xyarr[i][0]=(FLOAT)fonts[cur_f].let[i].dx/wd;
-			fonts[cur_f].xyarr[i][1]=(FLOAT)fonts[cur_f].let[i].dy/wd;
-			fonts[cur_f].xyarr[i][2]=(FLOAT)(fonts[cur_f].let[i].dx+w)/wd;
-			fonts[cur_f].xyarr[i][3]=(FLOAT)(fonts[cur_f].let[i].dy+h)/wd;
+			int w=fonts[cur_f].letters[i].w;
+			int h=fonts[cur_f].letters[i].h;
+			fonts[cur_f].xyarr[i][0]=(FLOAT)fonts[cur_f].letters[i].dx/wd;
+			fonts[cur_f].xyarr[i][1]=(FLOAT)fonts[cur_f].letters[i].dy/wd;
+			fonts[cur_f].xyarr[i][2]=(FLOAT)(fonts[cur_f].letters[i].dx+w)/wd;
+			fonts[cur_f].xyarr[i][3]=(FLOAT)(fonts[cur_f].letters[i].dy+h)/wd;
 		}
 
 		WriteLog("OK\n");
@@ -110,7 +110,7 @@ void CFOFont::Clear()
 {
 	WriteLog("CFont Clear...\n");
 
-	for(int cur_f=0;cur_f<MAX_FONT;++cur_f) SAFEREL(fonts[cur_f].font_surf);
+	for(int cur_f=0;cur_f<MAX_FONT;++cur_f) SAFEREL(fonts[cur_f].fontSurface);
 
 	SAFEDELA(lpWaitBuf);
 
@@ -128,7 +128,7 @@ void CFOFont::PostRestore(LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB
 	lpVB=aVB;
 }
 
-void CFOFont::MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col, int num_font)
+void CFOFont::RenderText(RECT r,char* astr,uint32_t flags, uint32_t col, int num_font)
 {
 	if(!astr) return;
 
@@ -226,7 +226,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col, int num
 		case '\r':
 			continue;
 		default:
-			curx+=font->let[(uint8_t)str[i]].w+offs_x;
+			curx+=font->letters[(uint8_t)str[i]].w+offs_x;
 		}
 
 		if(!str[i]) break;
@@ -276,7 +276,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col, int num
 		case '\r':
 			continue;
 		default:
-			curx+=font->let[(uint8_t)str[i]].w+offs_x;
+			curx+=font->letters[(uint8_t)str[i]].w+offs_x;
 			if(curx>font->maxx[curstr]) font->maxx[curstr]=curx;
 		}
 	}
@@ -294,7 +294,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col, int num
 			cury=r.top+4;
 
 	font->cur_pos=0;
-	lpDevice->SetTexture(0,font->font_surf);
+	lpDevice->SetTexture(0,font->fontSurface);
 
 	uint32_t colorize=col;
 	for(int i=0;str[i];i++)
@@ -331,9 +331,9 @@ void CFOFont::MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col, int num
 
 			int mulpos=font->cur_pos*4;
 			int x=curx;
-			int y=cury-font->let[(uint8_t)str[i]].y_offs;
-			int w=font->let[(uint8_t)str[i]].w;
-			int h=font->let[(uint8_t)str[i]].h;
+			int y=cury-font->letters[(uint8_t)str[i]].y_offs;
+			int w=font->letters[(uint8_t)str[i]].w;
+			int h=font->letters[(uint8_t)str[i]].h;
 
 			FLOAT x1=font->xyarr[(uint8_t)str[i]][0];
 			FLOAT y1=font->xyarr[(uint8_t)str[i]][1];
@@ -367,7 +367,7 @@ void CFOFont::MyDrawText(RECT r,char* astr,uint32_t flags, uint32_t col, int num
 			font->cur_pos++;
 		
 			if(font->cur_pos==spr_cnt) Flush(&font->cur_pos);
-			curx+=font->let[(uint8_t)str[i]].w+offs_x;
+			curx+=font->letters[(uint8_t)str[i]].w+offs_x;
 		}
 	}
 

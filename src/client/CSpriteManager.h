@@ -165,7 +165,7 @@ public:
 	int Flush();
 
 	int DrawSprite(uint16_t id, int x, int y, uint32_t color, uint32_t alpha=NULL); //!Cvet uint32_t color uint32_t alpha
-    int DrawSpriteSize(uint16_t id, int x, int y,double size, uint32_t color); // Динамически масштабирует //!Cvet uint32_t color
+  int DrawSpriteSize(uint16_t id, int x, int y,double size, uint32_t color); // Динамически масштабирует //!Cvet uint32_t color
 	void DrawTreeCntr(dtree_map* lpdtree);
 	void DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lpsvec, uint16_t cnt);
 
