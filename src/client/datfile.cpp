@@ -29,7 +29,7 @@ DatArchive::DatArchive(char* fileName)
 
    reader = NULL; // Initially empty reader. We don't know its type at this point
 
-   strcpy(Datname,fileName);
+   datFileName = fileName;
 
    hFile = CreateFile(fileName,  //В hFile находится HANDLE на DAT файл
 		GENERIC_READ,
@@ -77,7 +77,6 @@ DatArchive::~DatArchive()
 		{
 		   IndexMap* nmap=(*it).second;
 		   for(index_map::iterator ii=nmap->index.begin();ii!=nmap->index.end();ii++)
-			delete[] (*ii).first;
 		   nmap->index.clear();
 		   delete nmap;
 		}
@@ -163,19 +162,19 @@ void GetPath(char* res, char* src)
 void DatArchive::IndexingDAT()
 {
    IndexMap* nmap;
-   find_map::iterator it=fmap->find(Datname);
+   find_map::iterator it=fmap->find(datFileName);
    if(it!=fmap->end())
    {
-		WriteLog("%s already indexed\n",Datname);
+		WriteLog("%s already indexed\n", datFileName.c_str());
 		return;
    }
    else
    {
 		nmap=new IndexMap;
-		(*fmap)[Datname]=nmap;
+		(*fmap)[datFileName]=nmap;
    }
    
-   WriteLog("Indexing %s...",Datname);
+   WriteLog("Indexing %s...",datFileName.c_str());
    TICK tc=GetTickCount();
    char path[1024],fname[1024],last_path[1024];
    last_path[0]=0;
@@ -237,7 +236,7 @@ bool DatArchive::FindFile(char* fname)
    strlwr(str);
    GetPath(path,str);
 
-   ptr=(*fmap)[Datname]->index[path];
+   ptr=(*fmap)[datFileName]->index[path];
    if(!ptr) return false;
 
    int difpos=strlen(str)-5;
