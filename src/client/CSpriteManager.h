@@ -7,6 +7,8 @@
 #include <vector>
 #include <map>
 
+#include <assert.h>
+
 //!Cvet ++++
 #define COLOR_DEFAULT		D3DCOLOR_ARGB(255,((opt_gcolor_default >> 16) & 0xFF)+opt_light,\
 							((opt_gcolor_default >> 8) & 0xFF)+opt_light,(opt_gcolor_default & 0xFF)+opt_light)
@@ -90,6 +92,13 @@ typedef std::vector<spr_vec> spr_vec_vec; //!Cvet
 
 struct CritFrames 
 {
+  void __invariant() {
+    assert(this != NULL);
+    assert(ind != NULL);
+    assert(next_x != NULL);
+    assert(next_y != NULL);
+  }
+
 	uint16_t* ind; //индексы кадров анимации
 	uint16_t dir_offs[6]; //смещения в индексах для всех 6-ти направлений.
 	short *next_x;//смещение кадров относительно предыдущих

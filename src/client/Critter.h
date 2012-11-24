@@ -79,7 +79,7 @@ public:
 	void AddObject(uint8_t aslot,uint32_t o_id,uint32_t broken_info,uint32_t time_wear,stat_obj* s_obj);
 	int GetMaxDistance();
 
-	void Initialization(); //инициализация остальных криттеров
+	void Init(); //инициализация остальных криттеров
 
 	void RefreshWeap();
 	void RefreshType();
@@ -93,7 +93,7 @@ public:
 	void ChangeCur_offs(short change_ox, short change_oy);
 	void AccamulateCur_offs();
 
-	uint8_t move_type; //0- 1-бежать
+	uint8_t movementType; //0- 1-бежать
 
 	uint8_t rate_object; //тип использования объекта
 
@@ -131,7 +131,7 @@ private:
 	
 	
 	TICK anim_tkr;//время начала анимации
-	uint16_t cur_afrm;
+	uint16_t currentFrame;
 	TICK change_tkr;//время со смены кадра
 
 	int stay_wait; // для стоячей анимации

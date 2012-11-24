@@ -23,12 +23,15 @@ struct IndexMap {
 	index_map index;
 };
 
-typedef std::map<std::string, IndexMap*> find_map;
+typedef std::map<std::string, IndexMap> find_map;
 
 class DatArchive {
 public:
-  DatArchive(char* filename);
+  DatArchive();
   virtual ~DatArchive();
+  
+  bool Init(char* filename);
+  bool IsLoaded();
 
   int ReadTree();
   void IndexingDAT();
@@ -42,14 +45,13 @@ public:
 
   uint32_t DATGetFileSize();
 
-  void RevDw(uint32_t *addr);
   void ShowError();
   
   UINT ErrorType;
   
 private:
   //index_map index;
-  static find_map* fmap;
+  find_map fmap;
 
   std::string datFileName;
 

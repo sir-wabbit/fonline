@@ -23,18 +23,18 @@ int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE hPreviousInst, LPSTR lpCm
 {
 	WNDCLASS wndClass;//Используется для регистрации класса окна
 	MSG msg;//сообщения
-	wndClass.style=CS_HREDRAW|CS_VREDRAW;//определяет свойства окна
-	wndClass.lpfnWndProc=WndProc;//определяет адрес функции окна
-	wndClass.cbClsExtra=0;//число байт, которое необходимо запросить у Windows. Обычно равна 0
-	wndClass.cbWndExtra=0;//число байт, которое необходимо запросить у Windows. Обычно равна 0
-	wndClass.hInstance =hCurrentInst;//сообщает Windows о том, кто создает определение класса
-	wndClass.hIcon =LoadIcon(hCurrentInst,MAKEINTRESOURCE(IDI_ICON));//загружает иконку, в данном случае ее нет
-	wndClass.hCursor =LoadCursor(NULL,IDC_ARROW);//стандартный курсор
-	wndClass.hbrBackground=(HBRUSH)GetStockObject(LTGRAY_BRUSH);//фон приложения
-	wndClass.lpszMenuName=NULL;//определяет меню. В данной ситуации меню отсутствует
-	wndClass.lpszClassName="FOnline";//указатель на строку, содержащую имя класса
+	wndClass.style = CS_HREDRAW|CS_VREDRAW;//определяет свойства окна
+	wndClass.lpfnWndProc = WndProc;//определяет адрес функции окна
+	wndClass.cbClsExtra = 0;//число байт, которое необходимо запросить у Windows. Обычно равна 0
+	wndClass.cbWndExtra = 0;//число байт, которое необходимо запросить у Windows. Обычно равна 0
+	wndClass.hInstance = hCurrentInst;//сообщает Windows о том, кто создает определение класса
+	wndClass.hIcon = LoadIcon(hCurrentInst,MAKEINTRESOURCE(IDI_ICON));//загружает иконку, в данном случае ее нет
+	wndClass.hCursor = LoadCursor(NULL,IDC_ARROW);//стандартный курсор
+	wndClass.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);//фон приложения
+	wndClass.lpszMenuName = NULL;//определяет меню. В данной ситуации меню отсутствует
+	wndClass.lpszClassName = "FOnline";//указатель на строку, содержащую имя класса
 	RegisterClass(&wndClass);//регистрация окна
-	hInstance=hCurrentInst;
+	hInstance = hCurrentInst;
 
 	if(!StartLogFile())
 	{

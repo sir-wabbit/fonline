@@ -13,14 +13,14 @@
 *********************************************************************/
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ переделано и добавлено практически всё
-void CCritter::Initialization()
+void CCritter::Init()
 {
 	for(int ts=0; ts<ALL_STATS ; ts++) st[ts]=0;
 	for(int ts=0; ts<ALL_SKILLS; ts++) sk[ts]=0;
 	for(int ts=0; ts<ALL_PERKS ; ts++) pe[ts]=0;
 
-	cur_afrm=0;
-	move_type=MOVE_WALK; 
+	currentFrame=0;
+	movementType=MOVE_WALK; 
 	cur_ox=0; 
 	cur_oy=0;
 	rate_object=1;
@@ -99,31 +99,33 @@ int CCritter::Move(uint8_t dir)
 	if(dir>5 && dir<0) return MOVE_ERROR;
 
 	//если не находим анимацию на бег, то криттер идет пешком
-	if(move_type==MOVE_RUN)
+	if(movementType==MOVE_RUN)
 		if(!lpSM->CrAnim[type][1][20]) 
-			if(!lpSM->LoadAnimCr(type,1,20)) move_type=MOVE_WALK;
+			if(!lpSM->LoadAnimCr(type,1,20)) movementType=MOVE_WALK;
 
-	if(move_type==MOVE_WALK)
+	if(movementType==MOVE_WALK)
 		if(!lpSM->CrAnim[type][weapon][2]) 
 			if(!lpSM->LoadAnimCr(type,weapon,2)) return MOVE_ERROR;
 
-	if(move_type==MOVE_WALK)
+	if(movementType==MOVE_WALK)
 	{
 		cur_anim=lpSM->CrAnim[type][weapon][2];
+		cur_anim->__invariant();
 		cnt_per_turn=4;
 		ticks_per_turn=cur_anim->ticks/2;
 		Tick_Start(ticks_per_turn);
 
-//		cur_id=cur_anim->ind[cur_anim->dir_offs[cur_dir]+cur_afrm];
+//		cur_id=cur_anim->ind[cur_anim->dir_offs[cur_dir]+currentFrame];
 	}
-	else if(move_type==MOVE_RUN)
+	else if(movementType==MOVE_RUN)
 	{
 		cur_anim=lpSM->CrAnim[type][1][20];
+		cur_anim->__invariant();
 		cnt_per_turn=3;
 		ticks_per_turn=cur_anim->ticks/3;
 		Tick_Start(ticks_per_turn);
 
-//		cur_id=cur_anim->ind[cur_anim->dir_offs[cur_dir]+cur_afrm];
+//		cur_id=cur_anim->ind[cur_anim->dir_offs[cur_dir]+currentFrame];
 	}
 	else return MOVE_ERROR;
 
@@ -132,7 +134,7 @@ int CCritter::Move(uint8_t dir)
 	anim_tkr=GetTickCount();
 	change_tkr=GetTickCount();
 
-	return move_type;
+	return movementType;
 }
 
 void CCritter::Action(Byte action, uint32_t action_tick)
@@ -145,6 +147,7 @@ void CCritter::Action(Byte action, uint32_t action_tick)
 		if(!lpSM->LoadAnimCr(type,weapon,action)) return;
 
 	cur_anim=lpSM->CrAnim[type][weapon][action];
+	cur_anim->__invariant();
 
 	ticks_per_turn=cur_anim->ticks;
 	cnt_per_turn=cur_anim->cnt_frames;
@@ -156,22 +159,25 @@ void CCritter::Action(Byte action, uint32_t action_tick)
 
 	anim_tkr=GetTickCount(); //начало анимации
 	change_tkr=GetTickCount();//смена кадра
-	cur_afrm=0;
+	currentFrame=0;
 }
 
 void CCritter::Animate(uint8_t action, uint8_t num_frame)
 {
 	if(!lpSM->CrAnim[type][weapon][action])
 		if(!lpSM->LoadAnimCr(type,weapon,action)) return;
+		
+  CritFrames* anim = lpSM->CrAnim[type][weapon][action];
+  anim->__invariant();
 
-	if(num_frame==LAST_FRAME) num_frame=lpSM->CrAnim[type][weapon][action]->cnt_frames-1;
+	if(num_frame==LAST_FRAME) num_frame=anim->cnt_frames-1;
 
-	cur_id=lpSM->CrAnim[type][weapon][action]->ind[lpSM->CrAnim[type][weapon][action]->dir_offs[cur_dir]+num_frame];
+	cur_id = anim->ind[anim->dir_offs[cur_dir]+num_frame];
 
-	SetCur_offs(lpSM->CrAnim[type][weapon][action]->next_x[lpSM->CrAnim[type][weapon][action]->dir_offs[cur_dir]+num_frame],
-		lpSM->CrAnim[type][weapon][action]->next_y[lpSM->CrAnim[type][weapon][action]->dir_offs[cur_dir]+num_frame]);
+	SetCur_offs(anim->next_x[anim->dir_offs[cur_dir]+num_frame],
+		          anim->next_y[anim->dir_offs[cur_dir]+num_frame]);
 
-	cur_afrm=0;
+	currentFrame=0;
 }
 
 void CCritter::RefreshWeap()
@@ -357,13 +363,13 @@ void CCritter::Process()
 			change_tkr=GetTickCount();
 
 			uint16_t or_offs=cur_anim->dir_offs[cur_dir];
-			cur_id=cur_anim->ind[or_offs+cur_afrm];
+			cur_id=cur_anim->ind[or_offs+currentFrame];
 
-			ChangeCur_offs(cur_anim->next_x[or_offs+cur_afrm],cur_anim->next_y[or_offs+cur_afrm]);
+			ChangeCur_offs(cur_anim->next_x[or_offs+currentFrame],cur_anim->next_y[or_offs+currentFrame]);
 
-			cur_afrm++;
+			currentFrame++;
 
-			if(cur_afrm>=cur_anim->cnt_frames) cur_afrm=0;
+			if(currentFrame>=cur_anim->cnt_frames) currentFrame=0;
 		}
 	}
 	else
@@ -433,13 +439,13 @@ void CCritter::SetCur_offs(short set_ox, short set_oy)
 void CCritter::AccamulateCur_offs()
 {
 //	if(!cur_anim) return;
-//	if(cur_afrm<cnt_per_turn) return;
+//	if(currentFrame<cnt_per_turn) return;
 
-//	for(int i=cur_afrm-cnt_per_turn;i<=cur_afrm;i++)
+//	for(int i=currentFrame-cnt_per_turn;i<=currentFrame;i++)
 //	{
 //		if(i<0) i=0;
-	//	SetCur_offs(cur_anim->next_x[cur_anim->dir_offs[cur_dir]+cur_afrm],
-	//		cur_anim->next_y[cur_anim->dir_offs[cur_dir]+cur_afrm]);
+	//	SetCur_offs(cur_anim->next_x[cur_anim->dir_offs[cur_dir]+currentFrame],
+	//		cur_anim->next_y[cur_anim->dir_offs[cur_dir]+currentFrame]);
 //	}
 }
 
