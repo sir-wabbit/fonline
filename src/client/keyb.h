@@ -16,7 +16,7 @@
 #define LANG_RUS 0
 #define LANG_ENG 1
 
-void InitKeyb();
+void InitKeyboard();
 void ClearKeyb();
 int GetChar(uint8_t DIK,char* str,int* position,uint16_t max,int lang,int shift); //!Cvet int* position
 

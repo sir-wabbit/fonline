@@ -125,7 +125,7 @@ int FileManager::Init()
 	strcat(master_dat,opt_masterpath.c_str());
 	if(strstr(master_dat,".dat"))
 	{
-		lpDAT=new TDatFile(master_dat);	
+		lpDAT=new DatArchive(master_dat);	
 		if(lpDAT->ErrorType==ERR_CANNOT_OPEN_FILE)
 		{
 			ErrMsg("FileManager Init>","файл %s не найден",master_dat);
@@ -148,7 +148,7 @@ int FileManager::Init()
 	strcat(crit_dat,opt_critterpath.c_str());
 	if(strstr(crit_dat,".dat"))
 	{
-		lpDATcr=new TDatFile(crit_dat);		
+		lpDATcr=new DatArchive(crit_dat);		
 		if(lpDATcr->ErrorType==ERR_CANNOT_OPEN_FILE)
 		{
 			ErrMsg("FileManager Init>","файл %s не найден",crit_dat);

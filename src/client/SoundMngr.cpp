@@ -11,7 +11,7 @@
 #include "SoundMngr.h"
 #include "CFileMngr.h"
 
-int CSoundMngr::Init()
+int SoundManager::Init()
 {
 	if(active==true) return 1;
 
@@ -40,7 +40,7 @@ int CSoundMngr::Init()
 	return 1;
 }
 
-void CSoundMngr::Clear()
+void SoundManager::Clear()
 {
 	if(active==false) return;
 
@@ -63,7 +63,7 @@ void CSoundMngr::Clear()
 	WriteLog("OK\n");
 }
 
-void CSoundMngr::LPESound(char* fname, int TypePath)
+void SoundManager::LPESound(char* fname, int TypePath)
 {
 	uint16_t lpe=0;
 
@@ -72,7 +72,7 @@ void CSoundMngr::LPESound(char* fname, int TypePath)
 	PlaySound(lpe);
 }
 
-int CSoundMngr::LoadSound(char* fname, int TypePath)
+int SoundManager::LoadSound(char* fname, int TypePath)
 {
 	if (!fm.LoadFile(fname,TypePath))
 	{
@@ -159,7 +159,7 @@ int CSoundMngr::LoadSound(char* fname, int TypePath)
 	return cur_snd;
 }
 
-int CSoundMngr::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
+int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
 {
 	uint32_t dw_buf=fm.GetRDWord();
 
@@ -209,7 +209,7 @@ int CSoundMngr::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, uint
 	return 1;
 }
 
-int CSoundMngr::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
+int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
 {
 	int channel;
 	int freq;
@@ -256,7 +256,7 @@ int CSoundMngr::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, uint
 	return 1;
 }
 
-int CSoundMngr::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data, char* ogg_path)
+int SoundManager::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data, char* ogg_path)
 {
 	FILE *fs;
 	if(!(fs=fopen(ogg_path,"rb"))) return 0;
@@ -292,7 +292,7 @@ int CSoundMngr::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, uint
 	return 1;
 }
 
-void CSoundMngr::PlaySound(uint16_t id)
+void SoundManager::PlaySound(uint16_t id)
 {
 	if(!id)
 	{
@@ -311,7 +311,7 @@ void CSoundMngr::PlaySound(uint16_t id)
 	(*it).second->buf->Play(0,0,0);
 }
 
-void CSoundMngr::StopSound(uint16_t id)
+void SoundManager::StopSound(uint16_t id)
 {
 	if(!id)
 	{
@@ -331,7 +331,7 @@ void CSoundMngr::StopSound(uint16_t id)
 	(*it).second->buf->SetCurrentPosition(0);
 }
 
-void CSoundMngr::PauseSound(uint16_t id)
+void SoundManager::PauseSound(uint16_t id)
 {
 	if(!id)
 	{
@@ -350,7 +350,7 @@ void CSoundMngr::PauseSound(uint16_t id)
 	(*it).second->buf->Stop();
 }
 
-void CSoundMngr::EraseSound(uint16_t id)
+void SoundManager::EraseSound(uint16_t id)
 {
 	if(!id)
 	{

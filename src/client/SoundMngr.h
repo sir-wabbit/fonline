@@ -25,11 +25,11 @@ struct Sound
 
 typedef std::map<uint16_t, Sound*> sound_map;
 
-class CSoundMngr
+class SoundManager
 {
 public:
 
-	CSoundMngr():lpDS(NULL),active(false){};
+	SoundManager():lpDS(NULL),active(false){};
 
 	int Init();
 	void Clear();

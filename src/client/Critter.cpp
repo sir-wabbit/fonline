@@ -464,7 +464,7 @@ void CCritter::DrawText(CFOFont* lpfnt)
 		int y=drect.t-73+cmn_scr_oy;
 	
 		RECT r={x,y,x+200,y+70};
-		lpfnt->MyDrawText(r,text_str?text_str:name,FT_CENTERX|FT_BOTTOM,text_color);
+		lpfnt->RenderText(r,text_str?text_str:name,FT_CENTERX|FT_BOTTOM,text_color);
 	}
 
 	if(GetTickCount()-SetTime>=text_delay)

@@ -19,9 +19,9 @@ char *error_types[] = {
 };
 //------------------------------------------------------------------------------
 
-find_map* TDatFile::fmap=NULL;
+find_map* DatArchive::fmap=NULL;
 
-TDatFile::TDatFile(char* filename)
+DatArchive::DatArchive(char* fileName)
 {
    lError = true;
    buff = NULL;
@@ -29,9 +29,9 @@ TDatFile::TDatFile(char* filename)
 
    reader = NULL; // Initially empty reader. We don't know its type at this point
 
-   strcpy(Datname,filename);
+   strcpy(Datname,fileName);
 
-   h_in = CreateFile(filename,  //В h_in находится HANDLE на DAT файл
+   hFile = CreateFile(fileName,  //В hFile находится HANDLE на DAT файл
 		GENERIC_READ,
 		FILE_SHARE_READ,
 		NULL,
@@ -39,7 +39,7 @@ TDatFile::TDatFile(char* filename)
 		FILE_ATTRIBUTE_NORMAL,
 		NULL);
 
-   if(h_in == INVALID_HANDLE_VALUE)
+   if(hFile == INVALID_HANDLE_VALUE)
    {
       ErrorType = ERR_CANNOT_OPEN_FILE;
       return;
@@ -60,10 +60,10 @@ TDatFile::TDatFile(char* filename)
    lError = false;
 }
 //------------------------------------------------------------------------------
-TDatFile::~TDatFile()
+DatArchive::~DatArchive()
 {
-   if(h_in != INVALID_HANDLE_VALUE)
-      CloseHandle(h_in);
+   if(hFile != INVALID_HANDLE_VALUE)
+      CloseHandle(hFile);
    if(m_pInBuf != NULL)
       free(m_pInBuf);
    if(buff != NULL)
@@ -86,31 +86,31 @@ TDatFile::~TDatFile()
 	}
 }
 //------------------------------------------------------------------------------
-int TDatFile::ReadTree()
+int DatArchive::ReadTree()
 {
 	DWORD i,F1DirCount;
 	bool Fallout1=false;
 
 	
    //Проверка на то, что файл не менее 8 байт
-   i = SetFilePointer(h_in, -8, NULL, FILE_END);
+   i = SetFilePointer(hFile, -8, NULL, FILE_END);
    if(i == 0xFFFFFFFF)
        return ERR_FILE_TRUNCATED;
 	
    //Чтение информации из DAT файла
-   ReadFile(h_in, &TreeSize, 4, &i, NULL);
-   ReadFile(h_in, &FileSizeFromDat, 4, &i, NULL);
+   ReadFile(hFile, &TreeSize, 4, &i, NULL);
+   ReadFile(hFile, &FileSizeFromDat, 4, &i, NULL);
 
-   i = SetFilePointer(h_in, 0, NULL, FILE_BEGIN); //Added for Fallout1
-   ReadFile(h_in, &F1DirCount, 4, &i, NULL); //Added for Fallout1
+   i = SetFilePointer(hFile, 0, NULL, FILE_BEGIN); //Added for Fallout1
+   ReadFile(hFile, &F1DirCount, 4, &i, NULL); //Added for Fallout1
    RevDw((uint32_t*) &F1DirCount); //Added for Fallout1
    if(F1DirCount == 0x01 || F1DirCount == 0x33) Fallout1 = true; //Added for Fallout1
-   if(GetFileSize(h_in, NULL) != FileSizeFromDat && Fallout1 == false)
+   if(GetFileSize(hFile, NULL) != FileSizeFromDat && Fallout1 == false)
       return ERR_FILE_NOT_SUPPORTED;
    if(!Fallout1)
    {
-      i = SetFilePointer (h_in, -(TreeSize + 8), NULL, FILE_END);
-      ReadFile(h_in, &FilesTotal, 4, &i, NULL);
+      i = SetFilePointer (hFile, -(TreeSize + 8), NULL, FILE_END);
+      ReadFile(hFile, &FilesTotal, 4, &i, NULL);
    }
    else //FALLOUT 1 !!!
 	return ERR_FILE_NOT_SUPPORTED2;
@@ -122,7 +122,7 @@ int TDatFile::ReadTree()
       return ERR_ALLOC_MEMORY;
    ZeroMemory(buff, TreeSize);
 
-   ReadFile(h_in, buff, TreeSize - 4, &i, NULL);
+   ReadFile(hFile, buff, TreeSize - 4, &i, NULL);
    ptr_end = buff + TreeSize;
 
    IndexingDAT();
@@ -130,7 +130,7 @@ int TDatFile::ReadTree()
    return RES_OK;
 }
 //------------------------------------------------------------------------------
-void TDatFile::RevDw(uint32_t *addr)
+void DatArchive::RevDw(uint32_t *addr)
 {
    uint8_t *b, tmp;
    b = (uint8_t*)addr;
@@ -142,7 +142,7 @@ void TDatFile::RevDw(uint32_t *addr)
    *(b + 1) = tmp;
 }
 //------------------------------------------------------------------------------
-void TDatFile::ShowError(void)
+void DatArchive::ShowError(void)
 {
    if(lError)
       MessageBox(NULL, *(error_types + ErrorType), "Error", MB_OK);
@@ -160,7 +160,7 @@ void GetPath(char* res, char* src)
 	strlwr(res);
 }
 
-void TDatFile::IndexingDAT()
+void DatArchive::IndexingDAT()
 {
    IndexMap* nmap;
    find_map::iterator it=fmap->find(Datname);
@@ -209,7 +209,7 @@ void TDatFile::IndexingDAT()
 
 
 //------------------------------------------------------------------------------
-HANDLE TDatFile::DATOpenFile(char* fname)
+HANDLE DatArchive::DATOpenFile(char* fname)
 {
    // ifwe still have old non-closed reader - we kill it
    if(reader) {
@@ -217,19 +217,19 @@ HANDLE TDatFile::DATOpenFile(char* fname)
       reader = NULL;
    }
 
-   if(h_in != INVALID_HANDLE_VALUE)
+   if(hFile != INVALID_HANDLE_VALUE)
    {
 	  if(FindFile(fname))
       {
-		  if(!FileType) reader = new CPlainFile (h_in, Offset, RealSize);
-			else reader = new C_Z_PackedFile (h_in, Offset, RealSize, PackedSize);
-         return h_in;
+		  if(!FileType) reader = new CPlainFile (hFile, Offset, RealSize);
+			else reader = new C_Z_PackedFile (hFile, Offset, RealSize, PackedSize);
+         return hFile;
       }
    }
    return INVALID_HANDLE_VALUE;
 }
 //------------------------------------------------------------------------------
-bool TDatFile::FindFile(char* fname)
+bool DatArchive::FindFile(char* fname)
 {
 	
    char str[1024], fnd[1024], path[1024];
@@ -272,23 +272,23 @@ bool TDatFile::FindFile(char* fname)
    return false;
 }
 //------------------------------------------------------------------------------
-bool TDatFile::DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod)
+bool DatArchive::DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod)
 {
-   if(h_in == INVALID_HANDLE_VALUE) return false;
+   if(hFile == INVALID_HANDLE_VALUE) return false;
    reader->seek (lDistanceToMove, dwMoveMethod);
    return true;
 }
 //------------------------------------------------------------------------------
-uint32_t TDatFile::DATGetFileSize(void)
+uint32_t DatArchive::DATGetFileSize(void)
 {
-   if(h_in == INVALID_HANDLE_VALUE) return 0;
+   if(hFile == INVALID_HANDLE_VALUE) return 0;
    return RealSize;
 }
 //------------------------------------------------------------------------------
-bool TDatFile::DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
+bool DatArchive::DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
                                                     LPDWORD lpNumberOfBytesRead)
 {
-   if(h_in == INVALID_HANDLE_VALUE) return false;
+   if(hFile == INVALID_HANDLE_VALUE) return false;
    if(!lpBuffer) return false;
    if(!nNumberOfBytesToRead) {
       lpNumberOfBytesRead = 0;

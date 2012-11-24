@@ -55,6 +55,8 @@ int CFEngine::Init_Iface()
 	GetPrivateProfileString("LOGIN","login","",opt_login,MAX_LOGIN,CFG_FILE);
 	GetPrivateProfileString("LOGIN","pass","",opt_pass,MAX_LOGIN,CFG_FILE);
 
+  LogMsg = 0;
+
 //============================================================================================
 	char key1[255];
 	char key2[255];
@@ -817,7 +819,7 @@ void CFEngine::InvDraw()
 	lpChosen->st[ST_LUCK		],
 	name_obj[lpChosen->a_obj->object->id].c_str());
 
-	fnt.MyDrawText(r1,playstr,0);
+	fnt.RenderText(r1,playstr,0);
 }
 
 int CFEngine::InvMouseDown()
@@ -1087,7 +1089,7 @@ void CFEngine::IntDraw()
 		rcm.top=IntMessY+IntMessStepY*cur_chosen_mess;
 		rcm.bottom=IntMessY+IntMessStepY*cur_chosen_mess+IntMess[3];
 		cur_chosen_mess++;
-		fnt.MyDrawText(rcm,"Скрытен",FT_CENTERX|FT_CENTERY);
+		fnt.RenderText(rcm,"Скрытен",FT_CENTERX|FT_CENTERY);
 	}
 
 	//HP, AC
@@ -1100,10 +1102,10 @@ void CFEngine::IntDraw()
 		StrChangeValue(&bin_str[0],0x20);
 	else if((lpChosen->st[ST_CURRENT_HP]*100)/lpChosen->st[ST_MAX_LIFE]<=40)
 		StrChangeValue(&bin_str[0],0x10);
-	fnt.MyDrawText(rhp,bin_str,0,COLOR_DEFAULT,FONT_NUM);
+	fnt.RenderText(rhp,bin_str,0,COLOR_DEFAULT,FONT_NUM);
 
 	sprintf(bin_str,"%03d",lpChosen->st[ST_ARMOR_CLASS]);
-	fnt.MyDrawText(rac,bin_str,0,COLOR_DEFAULT,FONT_NUM);
+	fnt.RenderText(rac,bin_str,0,COLOR_DEFAULT,FONT_NUM);
 
 	//мессбох
 	MessBoxDrawText();
@@ -1130,7 +1132,7 @@ void CFEngine::IntDraw()
 
 		str_to_edit[cur_edit+1]=0;
 		strcat(str_to_edit,&ed_str[cur_edit]);
-		fnt.MyDrawText(r3,str_to_edit,FT_NOBREAK|FT_BOTTOM);
+		fnt.RenderText(r3,str_to_edit,FT_NOBREAK|FT_BOTTOM);
 	}
 }
 
@@ -1341,7 +1343,7 @@ void CFEngine::MessBoxDrawText()
 		}
 		str[strlen(str)-1]=0;
 
-		fnt.MyDrawText(r0,str,FT_COLORIZE);
+		fnt.RenderText(r0,str,FT_COLORIZE);
 	}
 	else
 	{
@@ -1354,7 +1356,7 @@ void CFEngine::MessBoxDrawText()
 		}
 		str[strlen(str)-1]=0;
 
-		fnt.MyDrawText(r0,str,FT_UPPER|FT_BOTTOM|FT_COLORIZE);
+		fnt.RenderText(r0,str,FT_UPPER|FT_BOTTOM|FT_COLORIZE);
 	}
 }
 
@@ -1375,27 +1377,27 @@ void CFEngine::ShowLogIn()
 	RECT rpass	={LogWPass[0] ,LogWPass[1] ,LogWPass[2] ,LogWPass[3] };
 
 	if(LogFocus==1)
-		fnt.MyDrawText(rlogin,opt_login	,FT_CENTERX|FT_NOBREAK,D3DCOLOR_XRGB(0,255,0));
+		fnt.RenderText(rlogin,opt_login	,FT_CENTERX|FT_NOBREAK,D3DCOLOR_XRGB(0,255,0));
 	else
-		fnt.MyDrawText(rlogin,opt_login	,FT_CENTERX|FT_NOBREAK,D3DCOLOR_XRGB(0,100,0));
+		fnt.RenderText(rlogin,opt_login	,FT_CENTERX|FT_NOBREAK,D3DCOLOR_XRGB(0,100,0));
 	if(LogFocus==2)
-		fnt.MyDrawText(rpass,opt_pass	,FT_CENTERX|FT_NOBREAK,D3DCOLOR_XRGB(0,255,0));
+		fnt.RenderText(rpass,opt_pass	,FT_CENTERX|FT_NOBREAK,D3DCOLOR_XRGB(0,255,0));
 	else
-		fnt.MyDrawText(rpass,opt_pass	,FT_CENTERX|FT_NOBREAK,D3DCOLOR_XRGB(0,100,0));
+		fnt.RenderText(rpass,opt_pass	,FT_CENTERX|FT_NOBREAK,D3DCOLOR_XRGB(0,100,0));
 
 	RECT rlogmess={0,0,MODE_WIDTH,15};
 	// TODO[30.9.2012 alex]: fix it
-	//fnt.MyDrawText(rlogmess,LoginMess[LogMsg],0,D3DCOLOR_XRGB(255,0,0));
+	//fnt.RenderText(rlogmess,LoginMess[LogMsg],0,D3DCOLOR_XRGB(255,0,0));
 
 	RECT rlogconn={0,15,MODE_WIDTH,30};
 	switch (state)
 	{
-	case STATE_CONN:		fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: СОЕДИНЕНИЕ"				,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_DROPLINK:	fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: ОБРЫВ СВЯЗИ"			,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_DISCONNECT:	fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: ОТСОЕДИНЕН"				,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_GAME:		fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: В ИГРЕ"					,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_LOGINOK:		fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: АУНТЕФИКАЦИЯ ПРОЙДЕНА"	,0,D3DCOLOR_XRGB(0,0,255)); break;
-	case STATE_INIT_NET:	fnt.MyDrawText(rlogconn,"СОСТОЯНИЕ: ИНИЦИАЛИЗАЦИЯ СЕТИ"		,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_CONN:		fnt.RenderText(rlogconn,"СОСТОЯНИЕ: СОЕДИНЕНИЕ"				,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_DROPLINK:	fnt.RenderText(rlogconn,"СОСТОЯНИЕ: ОБРЫВ СВЯЗИ"			,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_DISCONNECT:	fnt.RenderText(rlogconn,"СОСТОЯНИЕ: ОТСОЕДИНЕН"				,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_GAME:		fnt.RenderText(rlogconn,"СОСТОЯНИЕ: В ИГРЕ"					,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_LOGINOK:		fnt.RenderText(rlogconn,"СОСТОЯНИЕ: АУНТЕФИКАЦИЯ ПРОЙДЕНА"	,0,D3DCOLOR_XRGB(0,0,255)); break;
+	case STATE_INIT_NET:	fnt.RenderText(rlogconn,"СОСТОЯНИЕ: ИНИЦИАЛИЗАЦИЯ СЕТИ"		,0,D3DCOLOR_XRGB(0,0,255)); break;
 	}
 	//курсор
 	SpriteInfo* si=sm.GetSpriteInfo(cur);
@@ -1524,48 +1526,48 @@ void CFEngine::ShowRegistration()
 	RECT rwgender={RegWGender[0],RegWGender[1],RegWGender[2],RegWGender[3]};
 	RECT rwage={RegWAge[0],RegWAge[1],RegWAge[2],RegWAge[3]};
 
-	if(RegFocus==1) fnt.MyDrawText(rwlogin,New_cr.login,0,D3DCOLOR_XRGB(0,0,255));
-		else fnt.MyDrawText(rwlogin,New_cr.login,0,D3DCOLOR_XRGB(0,255,0));
-	if(RegFocus==2) fnt.MyDrawText(rwpass,New_cr.pass,0,D3DCOLOR_XRGB(0,0,255));
-		else fnt.MyDrawText(rwpass,New_cr.pass,0,D3DCOLOR_XRGB(0,255,0));
-	if(RegFocus==3) fnt.MyDrawText(rwname,New_cr.name,0,D3DCOLOR_XRGB(0,0,255));
-		else fnt.MyDrawText(rwname,New_cr.name,0,D3DCOLOR_XRGB(0,255,0));
-	if(RegFocus==4) fnt.MyDrawText(rwcases0,New_cr.cases[0],0,D3DCOLOR_XRGB(0,0,255));
-		else fnt.MyDrawText(rwcases0,New_cr.cases[0],0,D3DCOLOR_XRGB(0,255,0));
-	if(RegFocus==5) fnt.MyDrawText(rwcases1,New_cr.cases[1],0,D3DCOLOR_XRGB(0,0,255));
-		else fnt.MyDrawText(rwcases1,New_cr.cases[1],0,D3DCOLOR_XRGB(0,255,0));
-	if(RegFocus==6) fnt.MyDrawText(rwcases2,New_cr.cases[2],0,D3DCOLOR_XRGB(0,0,255));
-		else fnt.MyDrawText(rwcases2,New_cr.cases[2],0,D3DCOLOR_XRGB(0,255,0));
-	if(RegFocus==7) fnt.MyDrawText(rwcases3,New_cr.cases[3],0,D3DCOLOR_XRGB(0,0,255));
-		else fnt.MyDrawText(rwcases3,New_cr.cases[3],0,D3DCOLOR_XRGB(0,255,0));
-	if(RegFocus==8) fnt.MyDrawText(rwcases4,New_cr.cases[4],0,D3DCOLOR_XRGB(0,0,255));
-		else fnt.MyDrawText(rwcases4,New_cr.cases[4],0,D3DCOLOR_XRGB(0,255,0));
+	if(RegFocus==1) fnt.RenderText(rwlogin,New_cr.login,0,D3DCOLOR_XRGB(0,0,255));
+		else fnt.RenderText(rwlogin,New_cr.login,0,D3DCOLOR_XRGB(0,255,0));
+	if(RegFocus==2) fnt.RenderText(rwpass,New_cr.pass,0,D3DCOLOR_XRGB(0,0,255));
+		else fnt.RenderText(rwpass,New_cr.pass,0,D3DCOLOR_XRGB(0,255,0));
+	if(RegFocus==3) fnt.RenderText(rwname,New_cr.name,0,D3DCOLOR_XRGB(0,0,255));
+		else fnt.RenderText(rwname,New_cr.name,0,D3DCOLOR_XRGB(0,255,0));
+	if(RegFocus==4) fnt.RenderText(rwcases0,New_cr.cases[0],0,D3DCOLOR_XRGB(0,0,255));
+		else fnt.RenderText(rwcases0,New_cr.cases[0],0,D3DCOLOR_XRGB(0,255,0));
+	if(RegFocus==5) fnt.RenderText(rwcases1,New_cr.cases[1],0,D3DCOLOR_XRGB(0,0,255));
+		else fnt.RenderText(rwcases1,New_cr.cases[1],0,D3DCOLOR_XRGB(0,255,0));
+	if(RegFocus==6) fnt.RenderText(rwcases2,New_cr.cases[2],0,D3DCOLOR_XRGB(0,0,255));
+		else fnt.RenderText(rwcases2,New_cr.cases[2],0,D3DCOLOR_XRGB(0,255,0));
+	if(RegFocus==7) fnt.RenderText(rwcases3,New_cr.cases[3],0,D3DCOLOR_XRGB(0,0,255));
+		else fnt.RenderText(rwcases3,New_cr.cases[3],0,D3DCOLOR_XRGB(0,255,0));
+	if(RegFocus==8) fnt.RenderText(rwcases4,New_cr.cases[4],0,D3DCOLOR_XRGB(0,0,255));
+		else fnt.RenderText(rwcases4,New_cr.cases[4],0,D3DCOLOR_XRGB(0,255,0));
 
 	char stradd[20];
 	sprintf(stradd,"%d",New_cr.st[ST_STRENGHT	]);
-	fnt.MyDrawText(rws,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rws,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.st[ST_PERCEPTION	]);
-	fnt.MyDrawText(rwp,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwp,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.st[ST_ENDURANCE	]);
-	fnt.MyDrawText(rwe,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwe,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.st[ST_CHARISMA	]);
-	fnt.MyDrawText(rwc,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwc,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.st[ST_INTELLECT	]);
-	fnt.MyDrawText(rwi,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwi,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.st[ST_AGILITY	]);
-	fnt.MyDrawText(rwa,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwa,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.st[ST_LUCK		]);
-	fnt.MyDrawText(rwl,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwl,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.base_type);
-	fnt.MyDrawText(rwbtype,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwbtype,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.st[ST_GENDER		]);
-	fnt.MyDrawText(rwgender,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwgender,stradd,0,D3DCOLOR_XRGB(0,255,0));
 	sprintf(stradd,"%d",New_cr.st[ST_AGE		]);
-	fnt.MyDrawText(rwage,stradd,0,D3DCOLOR_XRGB(0,255,0));
+	fnt.RenderText(rwage,stradd,0,D3DCOLOR_XRGB(0,255,0));
 
 	RECT rlogmess={0,0,MODE_WIDTH,15};
 	// TODO[30.9.2012 alex]: fix it
-	//fnt.MyDrawText(rlogmess,LoginMess[LogMsg],0,D3DCOLOR_XRGB(255,0,0));
+	fnt.RenderText(rlogmess,LoginMess[LogMsg],0,D3DCOLOR_XRGB(255,0,0));
 	//курсор
 	CurDraw();
 
@@ -1734,7 +1736,7 @@ void CFEngine::DlgDraw()
 	sm.Flush();
 
 	RECT rmt={DlgText[0]+DlgX,DlgText[1]+DlgY,DlgText[2]+DlgX,DlgText[3]+DlgY};
-	fnt.MyDrawText(rmt,text_dialog,0,D3DCOLOR_XRGB(0,200,200)); //текст нпц
+	fnt.RenderText(rmt,text_dialog,0,D3DCOLOR_XRGB(0,200,200)); //текст нпц
 
 	RECT rat={0,0,0,0};
 	for(int ddt=0; ddt<all_answers; ddt++)
@@ -1748,19 +1750,19 @@ void CFEngine::DlgDraw()
 		{
 			if(ddt==DlgCurAnsw)
 			{
-				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,0,220)); //выбор
+				fnt.RenderText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,0,220)); //выбор
 			}
 			else
-				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,150,0)); //обычный
+				fnt.RenderText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,150,0)); //обычный
 		}
 		else
 		{
 			if(ddt==DlgCurAnsw)
 			{
-				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,240,0)); //подсветка
+				fnt.RenderText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,240,0)); //подсветка
 			}
 			else
-				fnt.MyDrawText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,150,0)); //обычный
+				fnt.RenderText(rat,text_answer[ddt],0,D3DCOLOR_XRGB(0,150,0)); //обычный
 		}
 	}
 }
@@ -2692,7 +2694,7 @@ void CFEngine::LmapDraw()
 	RECT r0={LmapWMap[0]+LmapX,LmapWMap[1]+LmapY,LmapWMap[0]+LmapX+100,LmapWMap[1]+LmapY+15};
 	char str1[128];
 	sprintf(str1,"ZOOM: %d",lmap_zoom-1);
-	fnt.MyDrawText(r0,str1,0);
+	fnt.RenderText(r0,str1,0);
 
 	if(LmapHold==1) sm.DrawSprite(lmap_bok_on,LmapBOk[0]+LmapX,LmapBOk[1]+LmapY,COLOR_DEFAULT);
 	if(LmapHold==2) sm.DrawSprite(lmap_bscan_on,LmapBScan[0]+LmapX,LmapBScan[1]+LmapY,COLOR_DEFAULT);
@@ -3026,7 +3028,7 @@ void CFEngine::GmapDraw()
 					gm_count_group,
 					Game_FPS,opt_sleep);
 
-		fnt.MyDrawText(r0,gmstr,0);
+		fnt.RenderText(r0,gmstr,0);
 
 		//crits
 		RECT r1={0,0,0,0};
@@ -3040,7 +3042,7 @@ void CFEngine::GmapDraw()
 			r1.right=cur_crit*GmapWNameStepX+GmapWName[2];
 			r1.bottom=cur_crit*GmapWNameStepY+GmapWName[3];
 
-			fnt.MyDrawText(r1,crit->name,FT_NOBREAK);
+			fnt.RenderText(r1,crit->name,FT_NOBREAK);
 
 			cur_crit++;
 		}
@@ -3055,7 +3057,7 @@ void CFEngine::GmapDraw()
 				"Zone: %d : %d",
 				cur_x-GmapMapScrX,cur_y-GmapMapScrY,
 				GM_ZONE(cur_x-GmapMapScrX),GM_ZONE(cur_y-GmapMapScrY));
-			fnt.MyDrawText(rmc,gmstr,0);
+			fnt.RenderText(rmc,gmstr,0);
 		}
 
 		//panel
@@ -3080,7 +3082,7 @@ void CFEngine::GmapDraw()
 		str_to_edit[cur_edit+1]=0;
 		strcat(str_to_edit,&ed_str[cur_edit]);
 
-		fnt.MyDrawText(r3,str_to_edit,FT_NOBREAK|FT_BOTTOM);
+		fnt.RenderText(r3,str_to_edit,FT_NOBREAK|FT_BOTTOM);
 
 		MessBoxDrawText();
 
@@ -3368,21 +3370,21 @@ void CFEngine::SboxDraw()
 	char bin_str[5];
 
 	sprintf(bin_str,"%03d",lpChosen->sk[SK_SNEAK]);
-	fnt.MyDrawText(rsneak,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
+	fnt.RenderText(rsneak,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 	sprintf(bin_str,"%03d",lpChosen->sk[SK_LOCKPICK]);
-	fnt.MyDrawText(rlockpick,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
+	fnt.RenderText(rlockpick,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 	sprintf(bin_str,"%03d",lpChosen->sk[SK_STEAL]);
-	fnt.MyDrawText(rsteal,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
+	fnt.RenderText(rsteal,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 	sprintf(bin_str,"%03d",lpChosen->sk[SK_TRAPS]);
-	fnt.MyDrawText(rtraps,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
+	fnt.RenderText(rtraps,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 	sprintf(bin_str,"%03d",lpChosen->sk[SK_FIRST_AID]);
-	fnt.MyDrawText(rfirstaid,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
+	fnt.RenderText(rfirstaid,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 	sprintf(bin_str,"%03d",lpChosen->sk[SK_DOCTOR]);
-	fnt.MyDrawText(rdoctor,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
+	fnt.RenderText(rdoctor,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 	sprintf(bin_str,"%03d",lpChosen->sk[SK_SCIENCE]);
-	fnt.MyDrawText(rscience,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
+	fnt.RenderText(rscience,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 	sprintf(bin_str,"%03d",lpChosen->sk[SK_REPAIR]);
-	fnt.MyDrawText(rrepair,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
+	fnt.RenderText(rrepair,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 }
 
 void CFEngine::SboxMouseDown()

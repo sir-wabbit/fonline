@@ -35,53 +35,51 @@ struct IndexMap
 
 typedef std::map<char*, IndexMap*, compare> find_map;
 
-class TDatFile
-{
+class DatArchive {
 public:
+  //index_map index;
+  static find_map* fmap;
 
-   //index_map index;
-   static find_map* fmap;
+  char Datname[1024];
 
-   char Datname[1024];
+  uint8_t  FileType; //если там 1, то файл считается компрессированым(не всегда).
+  uint32_t RealSize; //Размер файла без декомпрессии
+  uint32_t PackedSize; //Размер сжатого файла
+  uint32_t Offset; //Адрес файла в виде смещения от начала DAT-файла.
 
-   uint8_t  FileType; //если там 1, то файл считается компрессированым(не всегда).
-   uint32_t RealSize; //Размер файла без декомпрессии
-   uint32_t PackedSize; //Размер сжатого файла
-   uint32_t Offset; //Адрес файла в виде смещения от начала DAT-файла.
+  bool lError;
+  UINT ErrorType;
 
-   bool lError;
-   UINT ErrorType;
+  HANDLE hFile; //Handles: (DAT) files
 
-   HANDLE h_in; //Handles: (DAT) files
+  uint8_t *m_pInBuf;
 
-   uint8_t *m_pInBuf;
+  ULONG FileSizeFromDat;
+  ULONG TreeSize;
+  ULONG FilesTotal;
 
-   ULONG FileSizeFromDat;
-   ULONG TreeSize;
-   ULONG FilesTotal;
+  uint8_t* ptr, *buff,*ptr_end;
+  //in buff - DATtree, ptr - pointer
 
-   uint8_t* ptr, *buff,*ptr_end;
-   //in buff - DATtree, ptr - pointer
+  CFile* reader; // reader for current file in DAT-archive
 
-   CFile* reader; // reader for current file in DAT-archive
+  int ReadTree();
+  void IndexingDAT();
 
-   int ReadTree();
-   void IndexingDAT();
+  HANDLE DATOpenFile(char* fname);
+  bool FindFile(char* fname);
 
-   HANDLE DATOpenFile(char* fname);
-   bool FindFile(char* fname);
+  bool DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
+                                                 LPDWORD lpNumberOfBytesRead);
+  bool DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod);
 
-   bool DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
-                                                   LPDWORD lpNumberOfBytesRead);
-   bool DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod);
-   
-   uint32_t DATGetFileSize();
+  uint32_t DATGetFileSize();
 
-   void RevDw(uint32_t *addr);
-   void ShowError();
+  void RevDw(uint32_t *addr);
+  void ShowError();
 
-   TDatFile(char* filename);
-   virtual ~TDatFile();
+  DatArchive(char* filename);
+  virtual ~DatArchive();
 };
 
 
