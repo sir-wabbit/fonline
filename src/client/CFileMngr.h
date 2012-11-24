@@ -55,7 +55,7 @@ public:
 	uint32_t GetFsize(){ return fileSize; }; //!Cvet
 
 
-	FileManager(): initialized(0),file(NULL),fileSize(0),position(0),buffer(NULL),lpDAT(NULL),lpDATcr(NULL){};
+	FileManager(): initialized(0),file(NULL),fileSize(0),position(0),buffer(NULL){};
 private:
 	bool initialized;
 
@@ -64,7 +64,8 @@ private:
 	uint32_t position;
 	uint8_t* buffer;
 
-	DatArchive *lpDAT,*lpDATcr;
+	DatArchive lpDAT;
+	DatArchive lpDATcr;
 
 	char master_dat[1024];
 	char crit_dat[1024];

@@ -3,6 +3,8 @@
 #include "datfile.h"
 #include "common.h"
 
+#include <assert.h>
+
 #define VER_FALLOUT1 0x00000013
 #define VER_FALLOUT2 0x10000014
 
@@ -17,48 +19,94 @@ char *error_types[] = {
    "Not enough memory to allocate buffer.",   // ERR_ALLOC_MEMORY
    "Fallout1 dat files are not supported.",   // ERR_FILE_NOT_SUPPORTED2
 };
+
+namespace {
+
+void SwapBytes(void* ptr, size_t size) {
+  assert(ptr != NULL);
+
+  char* bytePtr = (char*) ptr;
+
+  for (size_t i = 0; i < size / 2; i++) {
+    char temp;
+    temp = bytePtr[i];
+    bytePtr[i] = bytePtr[size - 1 - i];
+    bytePtr[size - 1 - i] = temp;    
+  }
+}
+
+} // namespace anonymous
+
 //------------------------------------------------------------------------------
 
-find_map* DatArchive::fmap=NULL;
+DatArchive::DatArchive() {
+  ErrorType = 0;
 
-DatArchive::DatArchive(char* fileName)
-{
-   lError = true;
-   buff = NULL;
-   m_pInBuf = NULL;
+  FileType = 0; //если там 1, то файл считается компрессированым(не всегда).
+  RealSize = 0; //Размер файла без декомпрессии
+  PackedSize = 0; //Размер сжатого файла
+  Offset = 0; //Адрес файла в виде смещения от начала DAT-файла.
 
-   reader = NULL; // Initially empty reader. We don't know its type at this point
+  lError = 0;
 
-   datFileName = fileName;
+  hFile = 0; //Handles: (DAT) files
 
-   hFile = CreateFile(fileName,  //В hFile находится HANDLE на DAT файл
-		GENERIC_READ,
-		FILE_SHARE_READ,
-		NULL,
-		OPEN_EXISTING,
-		FILE_ATTRIBUTE_NORMAL,
-		NULL);
+  m_pInBuf = 0;
 
-   if(hFile == INVALID_HANDLE_VALUE)
-   {
-      ErrorType = ERR_CANNOT_OPEN_FILE;
-      return;
-   }
+  FileSizeFromDat = 0;
+  TreeSize = 0;
+  FilesTotal = 0;
 
-	if(!fmap) fmap=new find_map;
+  ptr = 0;
+  buff = 0;
+  ptr_end = 0;
+  //in buff - DATtree, ptr - pointer
 
-   if(ReadTree() != RES_OK)
-   {
-      return;
-   }
-   m_pInBuf = (uint8_t *) malloc(ZLIB_BUFF_SIZE);
-   if(m_pInBuf == NULL)
-   {
-      ErrorType = ERR_ALLOC_MEMORY;
-      return;
-   }
-   lError = false;
+  reader = 0; // reader for current file in DAT-archive
+
 }
+
+bool DatArchive::Init(char* fileName) {
+  lError = true;
+  buff = NULL;
+  m_pInBuf = NULL;
+
+  reader = NULL; // Initially empty reader. We don't know its type at this point
+
+  datFileName = fileName;
+
+  hFile = CreateFile(fileName,  //В hFile находится HANDLE на DAT файл
+    GENERIC_READ,
+    FILE_SHARE_READ,
+    NULL,
+    OPEN_EXISTING,
+    FILE_ATTRIBUTE_NORMAL,
+    NULL);
+
+  if (hFile == INVALID_HANDLE_VALUE) {
+    ErrorType = ERR_CANNOT_OPEN_FILE;
+    return false;
+  }
+
+  if (ReadTree() != RES_OK) {
+    return false;
+  }
+
+  m_pInBuf = (uint8_t*) malloc(ZLIB_BUFF_SIZE);
+
+  if (m_pInBuf == NULL) {
+    ErrorType = ERR_ALLOC_MEMORY;
+    return false;
+  }
+
+  lError = false;
+  return true;
+}
+
+bool DatArchive::IsLoaded() {
+  return hFile != INVALID_HANDLE_VALUE;
+}
+
 //------------------------------------------------------------------------------
 DatArchive::~DatArchive()
 {
@@ -70,19 +118,7 @@ DatArchive::~DatArchive()
       delete[] buff;
 
 	SAFEDEL(reader);
-
-	if(fmap)
-	{
-		for(find_map::iterator it=fmap->begin();it!=fmap->end();it++)
-		{
-		   IndexMap* nmap=(*it).second;
-		   for(index_map::iterator ii=nmap->index.begin();ii!=nmap->index.end();ii++)
-		   nmap->index.clear();
-		   delete nmap;
-		}
-		fmap->clear();
-		SAFEDEL(fmap);
-	}
+	fmap.clear();
 }
 //------------------------------------------------------------------------------
 int DatArchive::ReadTree()
@@ -102,7 +138,7 @@ int DatArchive::ReadTree()
 
    i = SetFilePointer(hFile, 0, NULL, FILE_BEGIN); //Added for Fallout1
    ReadFile(hFile, &F1DirCount, 4, &i, NULL); //Added for Fallout1
-   RevDw((uint32_t*) &F1DirCount); //Added for Fallout1
+   SwapBytes(&F1DirCount, 4); //Added for Fallout1
    if(F1DirCount == 0x01 || F1DirCount == 0x33) Fallout1 = true; //Added for Fallout1
    if(GetFileSize(hFile, NULL) != FileSizeFromDat && Fallout1 == false)
       return ERR_FILE_NOT_SUPPORTED;
@@ -129,18 +165,6 @@ int DatArchive::ReadTree()
    return RES_OK;
 }
 //------------------------------------------------------------------------------
-void DatArchive::RevDw(uint32_t *addr)
-{
-   uint8_t *b, tmp;
-   b = (uint8_t*)addr;
-   tmp = *(b + 3);
-   *(b + 3) = *b;
-   *b = tmp;
-   tmp = *(b + 2);
-   *(b + 2) = *(b + 1);
-   *(b + 1) = tmp;
-}
-//------------------------------------------------------------------------------
 void DatArchive::ShowError(void)
 {
    if(lError)
@@ -159,51 +183,45 @@ void GetPath(char* res, char* src)
 	strlwr(res);
 }
 
-void DatArchive::IndexingDAT()
-{
-   IndexMap* nmap;
-   find_map::iterator it=fmap->find(datFileName);
-   if(it!=fmap->end())
-   {
-		WriteLog("%s already indexed\n", datFileName.c_str());
-		return;
-   }
-   else
-   {
-		nmap=new IndexMap;
-		(*fmap)[datFileName]=nmap;
-   }
-   
-   WriteLog("Indexing %s...",datFileName.c_str());
-   TICK tc=GetTickCount();
-   char path[1024],fname[1024],last_path[1024];
-   last_path[0]=0;
-   ptr = buff;
-   while (true)
-   {
-      uint32_t fnsz = *(ULONG *)ptr;
-      memcpy(fname, ptr + 4, fnsz);
-      fname[fnsz] = 0;
-	  GetPath(path,fname);
-      if(path[0] && strcmp(path, last_path))
-      {
-         char* str=new char[strlen(path)+1];
-		 strcpy(str,path);
-		 uint32_t sz=nmap->index.size();
-		 nmap->index[str]=ptr;
-		 if(sz==nmap->index.size())
-		 {
-			delete[] str;
-		 }
-		 else strcpy(last_path,path);
-      }
-      if((ptr + fnsz + 17) >= ptr_end)
-         break;
-      else
-         ptr += fnsz + 17;
-   }
-   ptr = buff;
-   WriteLog("for %d ms\n",GetTickCount()-tc);
+void DatArchive::IndexingDAT() {
+  find_map::iterator it = fmap.find(datFileName);
+  
+  if(it != fmap.end()) {
+    WriteLog("%s already indexed\n", datFileName.c_str());
+    return;
+  } else {
+    fmap[datFileName] = IndexMap();
+  }
+  IndexMap& nmap = fmap[datFileName];
+
+  WriteLog("Indexing %s...",datFileName.c_str());
+  TICK tc=GetTickCount();
+  char path[1024],fname[1024],last_path[1024];
+  last_path[0]=0;
+  ptr = buff;
+  while (true)
+  {
+    uint32_t fnsz = *(ULONG *)ptr;
+    memcpy(fname, ptr + 4, fnsz);
+    fname[fnsz] = 0;
+    GetPath(path,fname);
+    if(path[0] && strcmp(path, last_path))
+    {
+      char* str=new char[strlen(path)+1];
+      strcpy(str,path);
+      uint32_t sz=nmap.index.size();
+      nmap.index[str]=ptr;
+      if(sz==nmap.index.size()) {
+        delete[] str;
+      } else strcpy(last_path,path);
+    }
+    if((ptr + fnsz + 17) >= ptr_end)
+      break;
+    else
+      ptr += fnsz + 17;
+  }
+  ptr = buff;
+  WriteLog("for %d ms\n",GetTickCount()-tc);
 }
 
 
@@ -236,8 +254,10 @@ bool DatArchive::FindFile(char* fname)
    strlwr(str);
    GetPath(path,str);
 
-   ptr=(*fmap)[datFileName]->index[path];
-   if(!ptr) return false;
+  index_map& index = fmap[datFileName].index; 
+
+   ptr = index[path];
+   if (!ptr) return false;
 
    int difpos=strlen(str)-5;
    char difchar=str[difpos];

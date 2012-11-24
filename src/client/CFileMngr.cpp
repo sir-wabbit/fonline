@@ -10,76 +10,76 @@
 
 namespace {
 
-  // Returns size of a file.
-  long FileSize(FILE* file) {
-    assert(file != NULL);
+// Returns size of a file.
+long FileSize(FILE* file) {
+  assert(file != NULL);
 
-    long pos = ftell(file);
-    fseek(file, 0, SEEK_END);
-    long result = ftell(file);
-    fseek(file, pos, SEEK_SET);
-    return result;
+  long pos = ftell(file);
+  fseek(file, 0, SEEK_END);
+  long result = ftell(file);
+  fseek(file, pos, SEEK_SET);
+  return result;
+}
+
+// Reads exactly given number of bytes from the file. 
+// Returns -1 if there was some IO error.
+int ReadExactly(FILE* file, void* buf, size_t size) {
+  assert(file != NULL);
+  assert(buf != NULL);
+
+  size_t read = 0;
+  while (read != size) {
+    int err = ::fread(buf, 1, size - read, file);
+    if (err <= 0) {
+      return false;
+    }
+    read += err;
   }
 
-  // Reads exactly given number of bytes from the file. 
-  // Returns -1 if there was some IO error.
-  int ReadExactly(FILE* file, void* buf, size_t size) {
-    assert(file != NULL);
-    assert(buf != NULL);
+  return true;
+}
 
-    size_t read = 0;
-    while (read != size) {
-      int err = ::fread(buf, 1, size - read, file);
-      if (err <= 0) {
-        return false;
-      }
-      read += err;
-    }
+// Loads contents of a file. If the file does not exist or
+// there is some other IO error, returns false. 
+bool LoadFile(const char* path, void** buf, size_t* size) {
+  assert(path != NULL);
+  assert(buf != NULL);
+  assert(size != NULL);
 
-    return true;
+  FILE* file = ::fopen(path, "rb");
+  if (file == NULL) {
+    return false;
   }
 
-  // Loads contents of a file. If the file does not exist or
-  // there is some other IO error, returns false. 
-  bool LoadFile(const char* path, void** buf, size_t* size) {
-    assert(path != NULL);
-    assert(buf != NULL);
-    assert(size != NULL);
-
-    FILE* file = ::fopen(path, "rb");
-    if (file == NULL) {
-      return false;
-    }
-
-    long fsize = FileSize(file);
-    if (fsize < 0) {
-      ::fclose(file);
-      return false;
-    }
-
-    *size = fsize;
-
-    // Allocate the memory. Note this one additional byte,
-    // we will later set it to 0.
-    *buf = ::malloc(*size + 1);
-    if (*buf == NULL) {
-      ::fclose(file);
-      return false;
-    }
-
-    if (ReadExactly(file, *buf, *size) == false) {
-      ::free(*buf);
-      ::fclose(file);
-      return false;
-    }
-
-    // Set the last allocated byte to zero.
-    (*(char**)buf)[*size] = 0;
-
+  long fsize = FileSize(file);
+  if (fsize < 0) {
     ::fclose(file);
-
-    return true;
+    return false;
   }
+
+  *size = fsize;
+
+  // Allocate the memory. Note this one additional byte,
+  // we will later set it to 0.
+  *buf = ::malloc(*size + 1);
+  if (*buf == NULL) {
+    ::fclose(file);
+    return false;
+  }
+
+  if (ReadExactly(file, *buf, *size) == false) {
+    ::free(*buf);
+    ::fclose(file);
+    return false;
+  }
+
+  // Set the last allocated byte to zero.
+  (*(char**)buf)[*size] = 0;
+
+  ::fclose(file);
+
+  return true;
+}
 
 }; // anonymous namespace
 
@@ -112,29 +112,30 @@ char pathlst[][50]=
 
 
 int FileManager::Init()
-{
+{  
 	WriteLog("FileManager Initialization...\n");
+	
 	master_dat[0]=0;
-	if(!opt_masterpath[0])
-	{
+	
+	if(!opt_masterpath[0]) {
 		ErrMsg("FileManager Init","Не найден файл %s или в нем нет раздела master_dat",CFG_FILE);
 		return 0;
 	}
+	
 	if(opt_masterpath[0]=='.') strcat(master_dat,".");
-		else if(opt_masterpath[1]!=':') strcat(master_dat,"..\\");
+	else if(opt_masterpath[1]!=':') strcat(master_dat,"..\\");
+	
 	strcat(master_dat,opt_masterpath.c_str());
-	if(strstr(master_dat,".dat"))
-	{
-		lpDAT=new DatArchive(master_dat);	
-		if(lpDAT->ErrorType==ERR_CANNOT_OPEN_FILE)
-		{
+	
+	if(strstr(master_dat, ".dat")) {
+		lpDAT.Init(master_dat);
+		
+		if(lpDAT.ErrorType == ERR_CANNOT_OPEN_FILE) {
 			ErrMsg("FileManager Init>","файл %s не найден",master_dat);
 			return 0;
 		}
-	}
-	else
-	{
-		if(master_dat[strlen(master_dat)-1]!='\\') strcat(master_dat,"\\");
+	} else {
+		if (master_dat[strlen(master_dat)-1]!='\\') strcat(master_dat,"\\");
 	}
 
 	crit_dat[0]=0;
@@ -143,13 +144,14 @@ int FileManager::Init()
 		ErrMsg("FileManager Init","Не найден файл %s или в нем нет раздела critter_dat",CFG_FILE);
 		return 0;
 	}
+	
 	if(opt_critterpath[0]=='.') strcat(crit_dat,".");
 		else if(opt_critterpath[1]!=':') strcat(crit_dat,"..\\");
 	strcat(crit_dat,opt_critterpath.c_str());
 	if(strstr(crit_dat,".dat"))
 	{
-		lpDATcr=new DatArchive(crit_dat);		
-		if(lpDATcr->ErrorType==ERR_CANNOT_OPEN_FILE)
+		lpDATcr.Init(crit_dat);		
+		if(lpDATcr.ErrorType==ERR_CANNOT_OPEN_FILE)
 		{
 			ErrMsg("FileManager Init>","файл %s не найден",crit_dat);
 			return 0;
@@ -177,8 +179,6 @@ void FileManager::Clear()
 {
 	WriteLog("FileManager Clear...\n");
 	UnloadFile();
-	SAFEDEL(lpDAT);
-	SAFEDEL(lpDATcr);
 	WriteLog("FileManager Clear complete\n");
 }
 
@@ -213,10 +213,9 @@ int FileManager::LoadFile(char* fileName, int pathType)
     return 1;
   }
 
-	if(pathType==PT_ART_CRITTERS)
-	{
-		if(!lpDATcr)
-		{
+	if(pathType==PT_ART_CRITTERS) {
+		if (!lpDATcr.IsLoaded()) {
+		  WriteLog("Loading from normal FS.\n");
 			//попрбуем загрузить из critter_dat если это каталог
 			strcpy(path,crit_dat);
 			strcat(path,pfname);
@@ -228,15 +227,14 @@ int FileManager::LoadFile(char* fileName, int pathType)
       }
 		}	
 
-		if(lpDATcr->DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
+		if(lpDATcr.DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
 		{
-		
-			fileSize = lpDATcr->DATGetFileSize();			
+			fileSize = lpDATcr.DATGetFileSize();			
 
 			buffer = new uint8_t[fileSize+1];
 			DWORD br;
 		
-			lpDATcr->DATReadFile(buffer,fileSize,&br);
+			lpDATcr.DATReadFile(buffer,fileSize,&br);
 
 			buffer[fileSize]=0;
 
@@ -246,8 +244,9 @@ int FileManager::LoadFile(char* fileName, int pathType)
 
 	}
 	
-	if(!lpDAT)
+	if(!lpDAT.IsLoaded())
 	{
+	  WriteLog("Loading from normal FS.\n");
 		//попрбуем загрузить из master_dat если это каталог
 		strcpy(path,master_dat);
 		strcat(path,pfname);
@@ -257,15 +256,14 @@ int FileManager::LoadFile(char* fileName, int pathType)
     } else return 0; //а вот не вышло
 	}
 
-	if(lpDAT->DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
-	{
-	
-		fileSize = lpDAT->DATGetFileSize();
+	if(lpDAT.DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
+	{	
+		fileSize = lpDAT.DATGetFileSize();
 
 		buffer = new uint8_t[fileSize+1];
 		DWORD br;
 		
-		lpDAT->DATReadFile(buffer,fileSize,&br);
+		lpDAT.DATReadFile(buffer,fileSize,&br);
 
 		buffer[fileSize]=0;
 

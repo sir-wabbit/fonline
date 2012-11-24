@@ -877,9 +877,9 @@ void CFEngine::ParseInput()
 							if(GetMouseTile(cur_x,cur_y))
 							{
 								if(PathMoveX==TargetX && PathMoveY==TargetY)
-									lpChosen->move_type=MOVE_RUN;
+									lpChosen->movementType=MOVE_RUN;
 								else
-									lpChosen->move_type=MOVE_WALK;
+									lpChosen->movementType=MOVE_WALK;
 
 								PathMoveX=TargetX;
 								PathMoveY=TargetY;
@@ -1843,7 +1843,7 @@ void CFEngine::Net_OnCritterMove()
 //	if(dir>5) return;
 
 	WriteLog("%d...", crid);
-//	WriteLog("%d dir=%d move_type=%d...", crid, dir, how_move);
+//	WriteLog("%d dir=%d movementType=%d...", crid, dir, how_move);
 
 	LstMoveId=crid; // для отладки движения
 
@@ -1852,7 +1852,7 @@ void CFEngine::Net_OnCritterMove()
 	if(it==critters.end()) return;
 	pcrit=(*it).second;
 
-	pcrit->move_type=how_move;
+	pcrit->movementType=how_move;
 
 	if(pcrit->cur_step && pcrit->cur_step<4 && (pcrit->next_step[0]==FLAG(move_params,0x7)))
 	{
@@ -2904,7 +2904,7 @@ CCritter* CFEngine::AddCritter(crit_info* pinfo)
 			strcat(pcrit->cases[in],"_off");
 	}
 
-	pcrit->Initialization();
+	pcrit->Init();
 
 	if(!lpChosen && FLAG(pcrit->flags,FCRIT_CHOSEN))
 	{
@@ -3287,7 +3287,7 @@ void CFEngine::ChosenProcess()
 				break;
 			}
 
-			lpChosen->move_type=MOVE_WALK;
+			lpChosen->movementType=MOVE_WALK;
 			SetChosenAction(ACTION_MOVE);
 			AddChosenAction(ACTION_TALK_NPC);
 			return;
@@ -3327,7 +3327,7 @@ void CFEngine::ChosenProcess()
 				break;
 			}
 
-			lpChosen->move_type=MOVE_WALK;
+			lpChosen->movementType=MOVE_WALK;
 			SetChosenAction(ACTION_MOVE);
 			AddChosenAction(ACTION_PICK_OBJ);
 			return;

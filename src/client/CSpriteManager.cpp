@@ -23,6 +23,8 @@ CSpriteManager::CSpriteManager(): crtd(0),spr_cnt(0),cur_pos(0),
 	lpDevice(NULL),lpVB(NULL),lpIB(NULL),lpWaitBuf(NULL),last_surf(NULL),next_id(1),cur_surf(NULL)
 {
 	col=D3DCOLOR_ARGB(255,128,128,128);
+	
+	memset(this->CrAnim, 0, sizeof(CrAnim));
 }
 
 int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
