@@ -31,7 +31,6 @@
 #include <set> //!Cvet
 #include <list> //!Cvet
 #include <vector>
-using namespace std;
 
 
 #define SAFEREL(x) {if(x) (x)->Release();(x)=NULL;}

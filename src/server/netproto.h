@@ -156,8 +156,8 @@ const uint8_t ALL_SKILLS		=18;
 const uint8_t ALL_PERKS		=140;
 
 //карта параметров
-typedef map<string, uint8_t, less<string> > params_map;
-typedef map<uint8_t, string, less<uint8_t> > params_str_map;
+typedef std::map<std::string, uint8_t> params_map;
+typedef std::map<uint8_t, std::string> params_str_map;
 
 //Статы. Stats
 const uint8_t ST_STRENGHT				=0;//{Сила}
@@ -607,14 +607,13 @@ const uint8_t OBJ_USE_ON_SCENERY	=0;
 #define MIN_LOGIN	4 //!Cvet
 #define MAX_TEXT	1024
 
-#define MSGTYPE		uint8_t
-#define CrID		uint32_t
-#define CrTYPE		uint8_t
-#define HexTYPE		uint16_t //!Cvet
-#define DHexTYPE	uint32_t //!Cvet
-#define MapTYPE		uint16_t //!Cvet
-//!Cvet +++++++++++++++++++++++++++++++
-#define TICK		uint32_t
+typedef uint8_t MessageType;
+typedef uint8_t CritterID;
+typedef uint8_t CritterType;
+typedef uint16_t HexTYPE;
+typedef uint32_t DHexTYPE;
+typedef uint16_t MapTYPE;
+typedef uint32_t TICK;
 
 #define MAX_SCENERY 5000
 
@@ -693,7 +692,7 @@ struct dyn_obj
 
 		struct
 		{
-			CrID id;
+			CritterID id;
 			uint8_t slot;
 //			uint8_t active;
 		} ACC_CRITTER;
@@ -765,10 +764,10 @@ struct dyn_obj
 	};
 };
 
-typedef map<uint32_t, dyn_obj*, less<uint32_t> > dyn_map;
-typedef map<uint16_t, stat_obj*, less<uint16_t> > stat_map;
+typedef std::map<uint32_t, dyn_obj*, std::less<uint32_t> > dyn_map;
+typedef std::map<uint16_t, stat_obj*, std::less<uint16_t> > stat_map;
 
-typedef set<uint16_t> list_ind;
+typedef std::set<uint16_t> list_ind;
 
 //!Cvet -------------------------------
 
@@ -778,7 +777,7 @@ struct crit_info
 		start_bt(0),break_time(0),id(0),idchannel(0),cond(COND_NOT_IN_GAME),cond_ext(0),flags(0),
 		access(0),world_x(100),world_y(100){};
 
-	CrTYPE base_type; //базовый тип криттера
+	CritterType base_type; //базовый тип криттера
 
 	MapTYPE map; //номер карты
 	HexTYPE x; //позиция в хексах
@@ -797,8 +796,8 @@ struct crit_info
 	uint32_t start_bt; //!Cvet
 	int break_time; //!Cvet
 
-	CrID id; //!Cvet Идентификатор
-	CrID idchannel; //!Cvet Идентификатор канала к которому подключен игрок
+	CritterID id; //!Cvet Идентификатор
+	CritterID idchannel; //!Cvet Идентификатор канала к которому подключен игрок
 	char login[MAX_LOGIN+1]; //!Cvet логин
 	char pass[MAX_LOGIN+1]; //!Cvet пароль
 	uint16_t st[ALL_STATS ]; //!Cvet статы 4-х значный XXXX
@@ -843,7 +842,7 @@ struct crit_info
 // char pass[MAX_LOGIN]; //!Cvet пароль
 // char name[MAX_NAME]; // имя
 // char cases[5][MAX_NAME]; // имя склоняемые варианты
-// CrTYPE base_type
+// CritterType base_type
 // uint16_t s[MAX_STATS] //статы
 //////////////////////////////////////////////////////////////////////////
 #define NETMSG_LOGMSG 4
@@ -863,8 +862,8 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 // добавить криттер
 // params:
-// CrID id
-// CrTYPE base_type
+// CritterID id
+// CritterType base_type
 // uint16_t id_stat
 // uint16_t id_stat_arm
 // HexTYPE x
@@ -879,7 +878,7 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
-#define MSG_ADDCRITTER_LEN (sizeof(CrID)+sizeof(CrTYPE)+5+MAX_NAME)
+#define MSG_ADDCRITTER_LEN (sizeof(CritterID)+sizeof(CritterType)+5+MAX_NAME)
 //////////////////////////////////////////////////////////////////////////
 // Сообщение длины добавленного криттера
 
@@ -887,13 +886,13 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 // убрать криттер
 // params:
-// CrID id
+// CritterID id
 
 #define NETMSG_TEXT 8
 //////////////////////////////////////////////////////////////////////////
 // текстовое сообщение
 // params:
-// CrID crid
+// CritterID crid
 // uint8_t how_say
 // uint16_t len
 // char[len] str
@@ -902,7 +901,7 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 // текст который надо нарисовать над криттером
 // params:
-// CrID id
+// CritterID id
 // uint16_t len
 // char[len] str
 
@@ -916,7 +915,7 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 // направление криттера
 // params:
-// CrID id
+// CritterID id
 // uint8_t dir
 
 #define NETMSG_SEND_MOVE 12
@@ -929,7 +928,7 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 // передача направления для других криттеров
 // params:
-// CrID id
+// CritterID id
 // uint8_t move_params - dir,how_move,stop&go
 // HexTYPE x
 // HexTYPE y
@@ -937,7 +936,7 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 // сигнал о санкционированном выходе клиента
 // params:
-// CrID id
+// CritterID id
 
 #define NETMSG_XY 15 //!Cvet
 //////////////////////////////////////////////////////////////////////////
@@ -1040,7 +1039,7 @@ struct crit_info
 //////////////////////////////////////////////////////////////////////////
 // сигнал о том что криттер производит какоето действие
 // params:
-// CrID crid; -ид криттера
+// CritterID crid; -ид криттера
 // uint8_t ori; -направление действия
 // uint8_t type_action; -номер действия -последняя буква
 // uint8_t type; -тип криттера -название криттера
@@ -1050,7 +1049,7 @@ struct crit_info
 #define NETMSG_SEND_TALK_NPC 29 //!Cvet
 //////////////////////////////////////////////////////////////////////////
 // сигнал игрока о беседе
-// CrID id_talk - ид нпц с которым разговариваешь
+// CritterID id_talk - ид нпц с которым разговариваешь
 // uint8_t variant - вариант ответа
 #define NETMSG_TALK_NPC 30 //!Cvet
 //////////////////////////////////////////////////////////////////////////
@@ -1122,7 +1121,7 @@ const uint8_t GM_INFO_ALL		=BIN8(00000111);
 // info_flag & GM_INFO_CRITS || info_flag & GM_INFO_ALL
 //		uint8_t count_group;
 //			for count_group
-//			CrID id_crit;
+//			CritterID id_crit;
 //			char[MAX_NAME] name;
 //			uint16_t flags_crit;
 // info_flag & GM_INFO_PARAM || info_flag & GM_INFO_ALL

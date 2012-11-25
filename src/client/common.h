@@ -1,6 +1,25 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#define PP_STRING(a) #a
+#define PP_CONCAT2(a,b)  a##b
+#define PP_CONCAT3(a, b, c) a##b##c
+#define PP_UNIQUE_LABEL_(prefix, suffix) PP_CONCAT2(prefix, suffix)
+#define PP_UNIQUE_LABEL(prefix) PP_UNIQUE_LABEL_(prefix, __LINE__)
+
+void LoadSettings();
+
+int OpenLogFile();
+void CloseLogFile();
+void WriteLog(char* fmt, ...);
+
+void ReportErrorMessage(char* hdr, char* fmt, ...);
+
+char* FormatStdCError(errno_t errorCode);
+char* FormatDirectXError(HRESULT errorCode);
+char* FormatWin32Error(DWORD errCode);
+char* FormatLastWin32Error();
+
 #define CFG_FILE ".\\data\\FOnline.cfg"
 /********************************************************************
 	created:	2005   22:04
@@ -113,22 +132,6 @@ extern uint32_t opt_tcolor_social;
 
 
 extern uint32_t opt_roof_alpha;
-//!Cvet ------------------------------
-
-void GetOptions();
-
-//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-
-int StartLogFile();
-void CloseLogFile();
-void WriteLog(char* frmt, ...);
-
-//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-
-void ErrMsg(char* hdr, char* frmt, ...); //Вывод сообщения об ошибке
-void InfoMsg(char* frmt, ...);
-
-//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
 #define OBJ_ITEM  0
 #define OBJ_CRIT  1

@@ -95,13 +95,13 @@ struct AnyAnimData
 
 typedef std::map<uint16_t, std::string> string_map; //!Cvet
 
-class CFEngine
+class FOnlineEngine
 {
 public:
 	int Init(HWND _hWnd);
 	void Clear();
 	void ClearCritters(); //!Cvet
-	void RemoveCritter(CrID remid); //!Cvet
+	void RemoveCritter(CritterID remid); //!Cvet
 	void Restore();
 	void RestoreDI();
 
@@ -116,7 +116,7 @@ public:
 	void NetDiscon();
 	uint16_t state;
 
-	CFEngine();
+	FOnlineEngine();
 private:
 	bool crtd;
 	bool islost;
@@ -202,7 +202,7 @@ private:
 	void Net_SendUseObject(uint8_t type_target, uint32_t targ_id, uint8_t crit_ori, uint8_t crit_num_action, uint8_t crit_rate_object);
 	void Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, uint16_t id_sobj);
 	void Net_SendChangeObject(uint32_t idobj, uint8_t num_slot);
-	void Net_SendTalk(CrID id_to_talk, uint8_t answer);
+	void Net_SendTalk(CritterID id_to_talk, uint8_t answer);
 	void Net_SendGetTime();
 	void Net_SendGiveGlobalInfo(uint8_t info_flags);
 	void Net_SendRuleGlobal(uint8_t command, uint32_t param1=0, uint32_t param2=0);
@@ -434,7 +434,7 @@ private:
 	void DlgMouseDown();
 	void DlgMouseUp();
 
-	int LoadDialogFromFile(CrID id_npc, uint32_t id_dialog, char* dialog);
+	int LoadDialogFromFile(CritterID id_npc, uint32_t id_dialog, char* dialog);
 
 //Мини-карта=====================================================================
 	uint16_t lmap_main,lmap_bok_on,lmap_bscan_on,lmap_blohi_on,lmap_pix;
@@ -503,7 +503,7 @@ private:
 
 	struct GM_crit
 	{
-		CrID crid;
+		CritterID crid;
 		char name[MAX_NAME+1];
 
 		bool chosen;
@@ -603,10 +603,10 @@ private:
 	CCritter* lpChosen;
 
 	// для отладки
-	CrID LstMoveId;
-    CrID LstAddCritId;
-	CrID LstDelCritId;
-	CrID LstSayCritId;
+	CritterID LstMoveId;
+    CritterID LstAddCritId;
+	CritterID LstDelCritId;
+	CritterID LstSayCritId;
 	char newbie[31];
 
 //!Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++

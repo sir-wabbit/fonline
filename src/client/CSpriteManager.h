@@ -24,7 +24,7 @@
 //#define COLOR_TEXT_AST	D3DCOLOR_ARGB(255,255,0,0)
 //!Cvet ----
 
-typedef std::map<CrTYPE, char*> ctypes_map; //!Cvet перенес сюда
+typedef std::map<CritterType, char*> ctypes_map; //!Cvet перенес сюда
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 struct MYVERTEX
@@ -197,8 +197,8 @@ public:
 	ctypes_map crit_types;
 	CritFrames* CrAnim[150][27][27];
 	int LoadCritTypes();
-	int LoadAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
-	int EraseAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
+	int LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
+	int EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
 
 	int CheckPixTransp();
 

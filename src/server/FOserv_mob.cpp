@@ -87,7 +87,7 @@ int CServer::MOBs_LoadAllGroups()
 	fclose(cf);
 */
 
-			prep_mob_map::iterator it_fm=prep_mob.find(string(mob_name));
+			prep_mob_map::iterator it_fm=prep_mob.find(std::string(mob_name));
 			if(it_fm==prep_mob.end())
 			{
 				LogExecStr("Загрузка прототипа...");
@@ -110,7 +110,7 @@ int CServer::MOBs_LoadAllGroups()
 
 				if((pmob->i_mob->base_cond=GetPrivateProfileInt("info","mob_info",-1,mob_path))==-1) Err_load=true;
 				pmob->i_mob->cond=pmob->i_mob->base_cond;
-				pmob->i_mob->name=string(mob_name);
+				pmob->i_mob->name=std::string(mob_name);
 
 				GetPrivateProfileString("info","name"	,"e",pmob->info.name		,MAX_NAME,mob_path);
 				if(pmob->info.name[0]		=='e') Err_load=true;
@@ -155,12 +155,12 @@ int CServer::MOBs_LoadAllGroups()
 					return 0;
 				}
 
-				prep_mob.insert(prep_mob_map::value_type(string(mob_name),pmob));
+				prep_mob.insert(prep_mob_map::value_type(std::string(mob_name),pmob));
 
 				LogExecStr("OK...");
 			}
 
-			it_fm=prep_mob.find(string(mob_name));
+			it_fm=prep_mob.find(std::string(mob_name));
 			if(it_fm==prep_mob.end())
 			{
 				LogExecStr("Ошибка - не найден прототип\n");

@@ -7,7 +7,7 @@
 
 void CServer::Send_AddCritter(CCritter* acl, crit_info* pinfo) //Oleg + Cvet edit
 {
-    MSGTYPE msg=NETMSG_ADDCRITTER;
+    MessageType msg=NETMSG_ADDCRITTER;
 //	char mname[MAX_NAME+1];
 	acl->bout << msg;
 	acl->bout << pinfo->id;
@@ -29,9 +29,9 @@ void CServer::Send_AddCritter(CCritter* acl, crit_info* pinfo) //Oleg + Cvet edi
 //	LogExecStr("Посылаю данные id=%d о обноружении id=%d\n", acl->info.id, pinfo->id);
 }
 
-void CServer::Send_RemoveCritter(CCritter* acl, CrID remid) //Oleg
+void CServer::Send_RemoveCritter(CCritter* acl, CritterID remid) //Oleg
 {
-	MSGTYPE msg=NETMSG_REMOVECRITTER;
+	MessageType msg=NETMSG_REMOVECRITTER;
 
 	acl->bout << msg;
 	acl->bout << remid;
@@ -40,7 +40,7 @@ void CServer::Send_RemoveCritter(CCritter* acl, CrID remid) //Oleg
 
 void CServer::Send_LoadMap(CCritter* acl)
 {
-	MSGTYPE msg=NETMSG_LOADMAP;
+	MessageType msg=NETMSG_LOADMAP;
 
 	acl->state=STATE_LOGINOK;
 
@@ -50,7 +50,7 @@ void CServer::Send_LoadMap(CCritter* acl)
 
 void CServer::Send_LoginMsg(CCritter* acl, uint8_t LogMsg)
 {
-	MSGTYPE msg=NETMSG_LOGMSG;
+	MessageType msg=NETMSG_LOGMSG;
 	acl->bout << msg;
 	acl->bout << LogMsg;
 }
@@ -64,7 +64,7 @@ void CServer::SendA_Move(CCritter* acl, uint16_t move_params)
 
 	if(!acl->vis_cl.empty())
 	{
-		MSGTYPE msg=NETMSG_CRITTER_MOVE;
+		MessageType msg=NETMSG_CRITTER_MOVE;
 		CCritter* c=NULL;
 
 		for(cl_map::iterator it_cl=acl->vis_cl.begin();it_cl!=acl->vis_cl.end();)
@@ -95,7 +95,7 @@ void CServer::SendA_Action(CCritter* acl, uint8_t num_action, uint8_t rate_actio
 //LogExecStr("Send_Action - BEGIN %d\n",acl->info.id);
 	if(!acl->vis_cl.empty())
 	{
-		MSGTYPE msg=NETMSG_CRITTER_ACTION;
+		MessageType msg=NETMSG_CRITTER_ACTION;
 		CCritter* c=NULL;
 
 		for(cl_map::iterator it_cl=acl->vis_cl.begin();it_cl!=acl->vis_cl.end();)
@@ -125,7 +125,7 @@ void CServer::SendA_Action(CCritter* acl, uint8_t num_action, uint8_t rate_actio
 
 void CServer::Send_AddObjOnMap(CCritter* acl, dyn_obj* o)
 {
-	MSGTYPE msg=NETMSG_ADD_OBJECT_ON_MAP;
+	MessageType msg=NETMSG_ADD_OBJECT_ON_MAP;
 
 	acl->bout << msg;
 	acl->bout << o->ACC_HEX.x;
@@ -138,7 +138,7 @@ void CServer::SendA_AddObjOnMap(CCritter* acl, dyn_obj* o)
 {
 	if(!acl->vis_cl.empty())
 	{
-		MSGTYPE msg=NETMSG_ADD_OBJECT_ON_MAP;
+		MessageType msg=NETMSG_ADD_OBJECT_ON_MAP;
 		uint16_t tile_flags=GetTileFlags(o->ACC_HEX.map,o->ACC_HEX.x,o->ACC_HEX.y);
 		CCritter* c=NULL;
 
@@ -164,7 +164,7 @@ void CServer::SendA_AddObjOnMap(CCritter* acl, dyn_obj* o)
 
 void CServer::Send_ChangeObjOnMap(CCritter* acl, dyn_obj* o)
 {
-	MSGTYPE msg=NETMSG_CHANGE_OBJECT_ON_MAP;
+	MessageType msg=NETMSG_CHANGE_OBJECT_ON_MAP;
 
 	acl->bout << msg;
 	acl->bout << o->ACC_HEX.x;
@@ -177,7 +177,7 @@ void CServer::SendA_ChangeObjOnMap(CCritter* acl, dyn_obj* o)
 {
 	if(!acl->vis_cl.empty())
 	{
-		MSGTYPE msg=NETMSG_CHANGE_OBJECT_ON_MAP;
+		MessageType msg=NETMSG_CHANGE_OBJECT_ON_MAP;
 		uint16_t tile_flags=GetTileFlags(o->ACC_HEX.map,o->ACC_HEX.x,o->ACC_HEX.y);
 		CCritter* c=NULL;
 
@@ -203,7 +203,7 @@ void CServer::SendA_ChangeObjOnMap(CCritter* acl, dyn_obj* o)
 
 void CServer::Send_RemObjFromMap(CCritter* acl, dyn_obj* o)
 {
-	MSGTYPE msg=NETMSG_REMOVE_OBJECT_FROM_MAP;
+	MessageType msg=NETMSG_REMOVE_OBJECT_FROM_MAP;
 
 	acl->bout << msg;
 	acl->bout << o->ACC_HEX.x;
@@ -215,7 +215,7 @@ void CServer::SendA_RemObjFromMap(CCritter* acl, dyn_obj* o)
 {
 	if(!acl->vis_cl.empty())
 	{
-		MSGTYPE msg=NETMSG_REMOVE_OBJECT_FROM_MAP;
+		MessageType msg=NETMSG_REMOVE_OBJECT_FROM_MAP;
 		CCritter* c=NULL;
 
 		for(cl_map::iterator it_cl=acl->vis_cl.begin();it_cl!=acl->vis_cl.end();)
@@ -240,7 +240,7 @@ void CServer::SendA_RemObjFromMap(CCritter* acl, dyn_obj* o)
 void CServer::Send_AddObject(CCritter* acl, dyn_obj* send_obj)
 {
 	//отсылаем объект игроку
-	MSGTYPE msg=NETMSG_ADD_OBJECT;
+	MessageType msg=NETMSG_ADD_OBJECT;
 
 	acl->bout << msg;
 	//ид динамического и статического объекта
@@ -256,7 +256,7 @@ void CServer::Send_AddObject(CCritter* acl, dyn_obj* send_obj)
 void CServer::Send_RemObject(CCritter* acl, dyn_obj* send_obj)
 {
 	//отсылаем запрос игроку на удаление объекта
-	MSGTYPE msg=NETMSG_REMOVE_OBJECT;
+	MessageType msg=NETMSG_REMOVE_OBJECT;
 
 	acl->bout << msg;
 	//ид динамического
@@ -266,7 +266,7 @@ void CServer::Send_RemObject(CCritter* acl, dyn_obj* send_obj)
 void CServer::Send_WearObject(CCritter* acl, dyn_obj* send_obj)
 {
 	//извещаем игрока о износе объекта
-	MSGTYPE msg=NETMSG_WEAR_OBJECT;
+	MessageType msg=NETMSG_WEAR_OBJECT;
 
 	acl->bout << msg;
 	acl->bout << send_obj->id;
@@ -286,7 +286,7 @@ void CServer::Send_Map(CCritter* acl, uint16_t map_num)
 
 void CServer::Send_XY(CCritter* acl)
 {
-    MSGTYPE msg=NETMSG_XY;
+    MessageType msg=NETMSG_XY;
 
 	acl->bout << msg;
 	acl->bout << acl->info.x;
@@ -319,7 +319,7 @@ void CServer::Send_AllParams(CCritter* acl, uint8_t type_param)
 
 	if(all_send_params)
 	{
-		MSGTYPE msg=NETMSG_ALL_PARAMS;
+		MessageType msg=NETMSG_ALL_PARAMS;
 		acl->bout << msg;
 		acl->bout << type_param;
 		acl->bout << all_send_params;
@@ -356,7 +356,7 @@ void CServer::Send_AllParams(CCritter* acl, uint8_t type_param)
 
 void CServer::Send_Param(CCritter* acl, uint8_t type_param, uint8_t num_param)
 {
-	MSGTYPE msg=NETMSG_PARAM;
+	MessageType msg=NETMSG_PARAM;
 	acl->bout << msg;
 	acl->bout << type_param;
 	acl->bout << num_param;
@@ -377,7 +377,7 @@ void CServer::Send_Param(CCritter* acl, uint8_t type_param, uint8_t num_param)
 
 void CServer::Send_Talk(CCritter* acl, npc_dialog* send_dialog)
 {
-	MSGTYPE msg=NETMSG_TALK_NPC;
+	MessageType msg=NETMSG_TALK_NPC;
 	acl->bout << msg;
 	if(send_dialog==NULL)
 	{
@@ -400,7 +400,7 @@ void CServer::Send_GlobalInfo(CCritter* acl, uint8_t info_flags)
 {
 	LogExecStr("Посылаю данные о глобале...");
 
-	MSGTYPE msg=NETMSG_GLOBAL_INFO;
+	MessageType msg=NETMSG_GLOBAL_INFO;
 
 	if(acl->info.map || !acl->group_move)
 	{
@@ -485,7 +485,7 @@ void CServer::SendA_GlobalInfo(gmap_group* group, uint8_t info_flags)
 
 void CServer::Send_GameTime(CCritter* acl)
 {
-	MSGTYPE msg=NETMSG_GAME_TIME;
+	MessageType msg=NETMSG_GAME_TIME;
 
 	GetSystemTime(&sys_time);
 	Game_Time=(sys_time.wHour*60+sys_time.wMinute)*TIME_MULTIPLER;
@@ -505,7 +505,7 @@ void CServer::Send_Text(CCritter* to_acl, char* s_str, uint8_t say_param)
 {
 	if(!s_str) return;
 
-	MSGTYPE msg=NETMSG_CRITTERTEXT;
+	MessageType msg=NETMSG_CRITTERTEXT;
 
 	uint16_t s_len=strlen(s_str);
 
@@ -520,7 +520,7 @@ void CServer::SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o
 {
 	if(!to_cr->empty())
 	{
-		MSGTYPE msg=NETMSG_CRITTERTEXT;
+		MessageType msg=NETMSG_CRITTERTEXT;
 		uint16_t o_len=strlen(o_str);
 
 		CCritter* c=NULL;

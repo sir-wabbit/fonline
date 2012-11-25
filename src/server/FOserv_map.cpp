@@ -153,7 +153,7 @@ int CServer::LoadAllMaps()
 				map[tmp_wrd].num=tmp_wrd;
 				map_info* cur_map=&map[tmp_wrd];
 
-				map_str.insert(map_str_map::value_type(tmp_wrd,string(tmp_str)));
+				map_str.insert(map_str_map::value_type(tmp_wrd,std::string(tmp_str)));
 
 				fscanf(cf,"%d",&tmp_wrd);
 				if(tmp_wrd>=MAXHEXX) { LogExecStr("error - данные о локальной карте неверны. старт Х.\n"); return 0; }
@@ -195,7 +195,7 @@ int CServer::LoadAllMaps()
 			fscanf(cf,"%d%s",&tmp_wrd,&tmp_str);
 				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { LogExecStr("error - данные о локальной карте неверны. номер карты.\n"); return 0; }
 
-			map_str.insert(map_str_map::value_type(tmp_wrd,string(tmp_str)));
+			map_str.insert(map_str_map::value_type(tmp_wrd,std::string(tmp_str)));
 			map[tmp_wrd].num=tmp_wrd;
 			map_info* cur_map=&map[tmp_wrd];
 			cur_map->encaunter=&encaunter[encaunter_num];
@@ -994,7 +994,7 @@ void CServer::GM_Process(int max_time)
 	}
 }
 
-int CServer::GM_GroupAddPrepCrit(CCritter* rule_acl, CrID id)
+int CServer::GM_GroupAddPrepCrit(CCritter* rule_acl, CritterID id)
 {
 	if(rule_acl->info.id==id) return 0;
 
@@ -1007,7 +1007,7 @@ int CServer::GM_GroupAddPrepCrit(CCritter* rule_acl, CrID id)
 	return 1;
 }
 
-int CServer::GM_GroupDelPrepCrit(CCritter* rule_acl, CrID id)
+int CServer::GM_GroupDelPrepCrit(CCritter* rule_acl, CritterID id)
 {
 	if(rule_acl->info.id==id) return 0; //нельзя удалять проводника
 

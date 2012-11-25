@@ -12,84 +12,84 @@
 	purpose:	
 *********************************************************************/
 
-LRESULT APIENTRY WndProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam);
-HINSTANCE hInstance=NULL;//дескриптор
-HWND hWnd=NULL;//Окно
+LRESULT APIENTRY WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-CFEngine* engine;
+FOnlineEngine* engine;
 
 
-int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE hPreviousInst, LPSTR lpCmdLine, int nCmdShow)
-{
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInst, LPSTR lpCmdLine, int nCmdShow) {
 	WNDCLASS wndClass;//Используется для регистрации класса окна
-	MSG msg;//сообщения
-	wndClass.style = CS_HREDRAW|CS_VREDRAW;//определяет свойства окна
-	wndClass.lpfnWndProc = WndProc;//определяет адрес функции окна
-	wndClass.cbClsExtra = 0;//число байт, которое необходимо запросить у Windows. Обычно равна 0
-	wndClass.cbWndExtra = 0;//число байт, которое необходимо запросить у Windows. Обычно равна 0
-	wndClass.hInstance = hCurrentInst;//сообщает Windows о том, кто создает определение класса
-	wndClass.hIcon = LoadIcon(hCurrentInst,MAKEINTRESOURCE(IDI_ICON));//загружает иконку, в данном случае ее нет
-	wndClass.hCursor = LoadCursor(NULL,IDC_ARROW);//стандартный курсор
-	wndClass.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);//фон приложения
-	wndClass.lpszMenuName = NULL;//определяет меню. В данной ситуации меню отсутствует
-	wndClass.lpszClassName = "FOnline";//указатель на строку, содержащую имя класса
-	RegisterClass(&wndClass);//регистрация окна
-	hInstance = hCurrentInst;
-
-	if(!StartLogFile())
-	{
-		DestroyWindow(hWnd);
-		return 0;
+	
+	wndClass.style = CS_HREDRAW | CS_VREDRAW;
+	wndClass.lpfnWndProc = WndProc;
+	wndClass.cbClsExtra = 0;
+	wndClass.cbWndExtra = 0;
+	wndClass.hInstance = hInstance;
+	wndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON));
+	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndClass.hbrBackground = (HBRUSH) GetStockObject(LTGRAY_BRUSH);
+	wndClass.lpszMenuName = NULL;
+	wndClass.lpszClassName = "FOnline";
+	
+	if (!RegisterClass(&wndClass)) {
+	  char* msg = FormatLastWin32Error();
+	  ReportErrorMessage("Win32 error.", "Could not register window class: %s", msg);
+	  free(msg);
+	  return -1;
+	}
+	
+	if (!OpenLogFile()) {
+		return -1;
 	}
 
-	GetOptions();
+	LoadSettings();
 
-	hWnd= CreateWindow( //создание окна
+	HWND hWnd = CreateWindow(
 		"FOnline",
 		"Fallout Online",
-		WS_OVERLAPPEDWINDOW & (~WS_MAXIMIZEBOX) & (~WS_SIZEBOX) & (~WS_SYSMENU), //!Cvet (~WS_SYSMENU)
+		WS_OVERLAPPEDWINDOW & (~WS_MAXIMIZEBOX) & (~WS_SIZEBOX) & (~WS_SYSMENU),
 		0,0,MODE_WIDTH+5,MODE_HEIGHT+25,
 		NULL,
 		NULL,
-		hCurrentInst,
-		NULL);
+		hInstance,
+		NULL
+  );
+	
+	if (hWnd == NULL) {
+    char* msg = FormatLastWin32Error();
+    ReportErrorMessage("Win32 error.", "Could not create window: %s", msg);
+    free(msg);
+    return -1;
+  }
 
-	ShowWindow(hWnd,SW_SHOWNORMAL);
+	ShowWindow(hWnd, SW_SHOWNORMAL);
 	UpdateWindow(hWnd);
 
 	WriteLog("Starting FOnline...\n");
 
 	srand(GetTickCount());
 
-	engine=new CFEngine;
+	engine = new FOnlineEngine;
 
-	if(!engine->Init(hWnd))
-	{
-		WriteLog("Fengine not init\n");
+	if (!engine->Init(hWnd)) {
+		WriteLog("Could not initialize the engine.\n");
 		DestroyWindow(hWnd);
 		return 0;
 	}
 	
-    //организация цикла обработки сообщений
-	while(!cmn_Quit)
-	{
-		if(!cmn_lost)
-		{
-			if(PeekMessage(&msg,NULL,NULL,NULL,PM_REMOVE))
-			{
+	MSG msg;
+	while(!cmn_Quit) {
+		if(!cmn_lost) {
+			if(PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE)) {
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
-			}
-			else
-			{
+			} else {
 				engine->Render();
 
-				if(opt_sleep) Sleep(opt_sleep);
+				if (opt_sleep) Sleep(opt_sleep);
 			}
-		}
-		else 
-		{
-			GetMessage(&msg,NULL,NULL,NULL);
+		} else {
+			GetMessage(&msg, NULL, NULL, NULL);
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
@@ -104,41 +104,34 @@ int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE hPreviousInst, LPSTR lpCm
 }
 
 LRESULT APIENTRY WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
-	switch(message)
-	{
+	switch(message) {
 	case WM_DESTROY://Вызывается при разрушении окна
 		if(engine) engine->Clear();
 		cmn_Quit=1;
 		return 0;
 	case WM_KEYDOWN:
-		switch(wParam)
-		{
+		switch(wParam) {
 		case VK_ESCAPE: //!Cvet переделал
 			engine->TryExit();
 			break;
 		case VK_F12: //!Cvet сворачивание
-			ShowWindow(hWnd,SW_MINIMIZE);
+			ShowWindow(hWnd, SW_MINIMIZE);
 			engine->DoLost();
 			break;
 		}
 		return 0;
-	case WM_ACTIVATE: //!Cvet переделал +++
-		if(LOWORD(wParam)==WA_INACTIVE)// && HIWORD(wParam))
+	case WM_ACTIVATE:
+		if(LOWORD(wParam) == WA_INACTIVE)// && HIWORD(wParam))
 		{
-			//engine->DoLost();
-			//ShowWindow(hWnd,SW_MINIMIZE);
+			engine->DoLost();
 		}
-		if(LOWORD(wParam)==WA_ACTIVE || LOWORD(wParam)==WA_CLICKACTIVE)
-		{
-			if(engine) engine->Restore();
-			if(engine) engine->RestoreDI();
+		if(LOWORD(wParam) == WA_ACTIVE || LOWORD(wParam) == WA_CLICKACTIVE) {
+			if(engine) {
+			  engine->Restore();
+			  engine->RestoreDI();
+			}
 		}
-		break; //!Cvet ---
-/*	case WM_SETCURSOR:
-		// Turn off window cursor 
-	    SetCursor( NULL );
-	    return TRUE; // prevent Windows from setting cursor to window class cursor
-	break;*/
+		break;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }

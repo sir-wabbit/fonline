@@ -42,7 +42,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	HRESULT hr=lpDevice->CreateVertexBuffer(spr_cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
-		ErrMsg("SM::CreateVertexBuffer",(char*)DXGetErrorString8(hr));
+		ReportErrorMessage("SM::CreateVertexBuffer",(char*)DXGetErrorString8(hr));
 		return 0;
 	}
 
@@ -50,7 +50,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(uint16_t),D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 	if(hr!=D3D_OK){
-		ErrMsg("SM::CreateIndexBuffer",(char*)DXGetErrorString8(hr));
+		ReportErrorMessage("SM::CreateIndexBuffer",(char*)DXGetErrorString8(hr));
 		return 0;
 	}
 	
@@ -197,7 +197,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	//HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 	HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
 		return 0;
 	}  
 
@@ -205,7 +205,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
 		return 0;
 	} 
 			
@@ -214,7 +214,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 
 	lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
 		return 0;
 	}  
 
@@ -335,7 +335,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	//HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 	HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
 		return 0;
 	}  
 
@@ -343,7 +343,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
 		return 0;
 	} 
 			
@@ -352,7 +352,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 
 	lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
 		return 0;
 	}  
 
@@ -461,7 +461,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	//HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 	HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
 		return 0;
 	}
 
@@ -472,7 +472,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 	hr=D3DXLoadSurfaceFromFile(lpsurf,NULL,NULL,full_path,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,255),NULL);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Не могу загрузить Surface для файла %s",fname);
 		return 0;
 	}
 			
@@ -481,7 +481,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 	lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
 		return 0;
 	}
 
@@ -616,7 +616,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 //			HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 			HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Anim Не могу создать Surface для файла %s",fname);
+				ReportErrorMessage("CSpriteManager LoadSprite","Anim Не могу создать Surface для файла %s",fname);
 				return 0;
 			}  
 
@@ -624,7 +624,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 
 			hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+				ReportErrorMessage("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
 				return 0;
 			} 
 			
@@ -634,7 +634,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			//с которой уже скопируем спрайт в нужное место
 			lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+				ReportErrorMessage("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
 				return 0;
 			}  
 
@@ -746,7 +746,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	//HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 	HRESULT hr=lpDevice->CreateImageSurface(MODE_WIDTH,MODE_HEIGHT,TEX_FRMT,&lpsurf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadRix","Не могу создать Surface для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadRix","Не могу создать Surface для файла %s",fname);
 		return 0;
 	}  
 
@@ -754,7 +754,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_LINEAR,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadRix","Не могу загрузить Surface из памяти для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadRix","Не могу загрузить Surface из памяти для файла %s",fname);
 		return 0;
 	} 
 			
@@ -763,7 +763,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 
 	lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager LoadRix","Ошибка при копировании поверхностей для файла %s",fname);
+		ReportErrorMessage("CSpriteManager LoadRix","Ошибка при копировании поверхностей для файла %s",fname);
 		return 0;
 	}  
 
@@ -913,7 +913,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 //			HRESULT hr=lpDevice->CreateImageSurface(w,h,D3DFMT_A8R8G8B8,&lpsurf);
 			HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Anim Не могу создать Surface для файла %s",fname);
+				ReportErrorMessage("CSpriteManager LoadSprite","Anim Не могу создать Surface для файла %s",fname);
 				return 0;
 			}  
 
@@ -921,7 +921,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 
 			hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+				ReportErrorMessage("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
 				return 0;
 			} 
 			
@@ -931,7 +931,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			//с которой уже скопируем спрайт в нужное место
 			lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 			if(hr!=D3D_OK){
-				ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+				ReportErrorMessage("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
 				return 0;
 			}  
 
@@ -1085,7 +1085,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		HRESULT hr=lpDevice->CreateImageSurface(w,h,TEX_FRMT,&lpsurf);
 		if(hr!=D3D_OK)
 		{
-			ErrMsg("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
+			ReportErrorMessage("CSpriteManager LoadSprite","Не могу создать Surface для файла %s",fname);
 			return 0;
 		}  
 
@@ -1094,7 +1094,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 		if(hr!=D3D_OK)
 		{
-			ErrMsg("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
+			ReportErrorMessage("CSpriteManager LoadSprite","Не могу загрузить Surface из памяти для файла %s",fname);
 			return 0;
 		} 
 		
@@ -1104,7 +1104,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		lpDevice->CopyRects(lpsurf,&r,1,lptexsurf,&p);
 		if(hr!=D3D_OK)
 		{
-			ErrMsg("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
+			ReportErrorMessage("CSpriteManager LoadSprite","Ошибка при копировании поверхностей для файла %s",fname);
 			return 0;
 		}  
 
@@ -1152,7 +1152,7 @@ LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(uint16_t w, uint16_t h)
 	HRESULT hr=lpDevice->CreateTexture(last_w,last_h,1,0,TEX_FRMT,D3DPOOL_MANAGED,&lpSurf);
 
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteManager CreateNewSurf","Не могу создать новую текстуру");
+		ReportErrorMessage("CSpriteManager CreateNewSurf","Не могу создать новую текстуру");
 		return NULL;
 	} 
 	surf_list.push_back(lpSurf);
@@ -1375,7 +1375,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 	HRESULT hr=lpDevice->CreateVertexBuffer(cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,lplpBuf);
 	if(hr!=D3D_OK){
-		ErrMsg("CSpriteMngr PrepareBuffer","Ошибка при создании буфера: %s",DXGetErrorString8(hr));
+		ReportErrorMessage("CSpriteMngr PrepareBuffer","Ошибка при создании буфера: %s",DXGetErrorString8(hr));
 		return 0;
 	}
 
@@ -1391,7 +1391,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 		hr=lpDevice->CreateIndexBuffer(need_size,D3DUSAGE_WRITEONLY,
 			D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 		if(hr!=D3D_OK){
-		ErrMsg("CSpriteMngr PrepareBuffer","Ошибка при создании буфера: %s",DXGetErrorString8(hr));
+		ReportErrorMessage("CSpriteMngr PrepareBuffer","Ошибка при создании буфера: %s",DXGetErrorString8(hr));
 			return 0;
 		}
 
@@ -1612,7 +1612,7 @@ void CSpriteManager::PostRestore()
 	HRESULT hr=lpDevice->CreateVertexBuffer(spr_cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
-		ErrMsg("SM::CreateVertexBuffer",(char*)DXGetErrorString8(hr));
+		ReportErrorMessage("SM::CreateVertexBuffer",(char*)DXGetErrorString8(hr));
 		return;
 	}
 
@@ -1620,7 +1620,7 @@ void CSpriteManager::PostRestore()
 	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(uint16_t),D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 	if(hr!=D3D_OK){
-		ErrMsg("SM::CreateIndexBuffer",(char*)DXGetErrorString8(hr));
+		ReportErrorMessage("SM::CreateIndexBuffer",(char*)DXGetErrorString8(hr));
 		return;
 	}
 	
@@ -1655,8 +1655,8 @@ int CSpriteManager::LoadCritTypes()
 	//загружаем список криттеров
 	char str[1024];
 	char key[64];
-	CrTYPE cur=0;
-	CrTYPE cnt=GetPrivateProfileInt("critters","id_cnt",0,opt_crfol.c_str());
+	CritterType cur=0;
+	CritterType cnt=GetPrivateProfileInt("critters","id_cnt",0,opt_crfol.c_str());
 	if(!cnt) return 0;
 
 	for(cur=0;cur<cnt;cur++)
@@ -1671,7 +1671,7 @@ int CSpriteManager::LoadCritTypes()
 	return 1;
 }
 
-int CSpriteManager::LoadAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
+int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
 {
 	if(CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 
@@ -1700,7 +1700,7 @@ int CSpriteManager::LoadAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim
 	return 1;
 }
 
-int CSpriteManager::EraseAnimCr(CrTYPE anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
+int CSpriteManager::EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
 {
 	if(!CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 	TICK loadA=GetTickCount();
