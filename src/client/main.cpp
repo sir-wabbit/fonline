@@ -2,6 +2,9 @@
 
 #include "common.h"
 #include "FEngine.h"
+
+#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+
 /********************************************************************
 	created:	2005   22:04
 	edit:		2007   15:15
@@ -98,6 +101,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInst, LPSTR lpCmdLi
 	CloseLogFile();
 
 	delete engine;
+	
+  SimpleLeakDetector::PrintAllLeaks();
 
 	_CrtDumpMemoryLeaks();
 	return 0;

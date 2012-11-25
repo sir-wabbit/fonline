@@ -5,6 +5,8 @@
 
 #include <assert.h>
 
+#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+
 #define VER_FALLOUT1 0x00000013
 #define VER_FALLOUT2 0x10000014
 
@@ -207,6 +209,7 @@ void DatArchive::IndexingDAT() {
     GetPath(path,fname);
     if(path[0] && strcmp(path, last_path))
     {
+      // FIXME[26.11.2012 alex]: leak + unbearably awful code
       char* str=new char[strlen(path)+1];
       strcpy(str,path);
       uint32_t sz=nmap.index.size();

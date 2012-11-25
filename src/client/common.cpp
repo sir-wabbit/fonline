@@ -6,6 +6,8 @@
 #include <dxerr8.h>
 #include <tchar.h>
 #include <assert.h>
+#include <IniFile/IniFile.hpp>
+#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 VOID ToUTF16(LPCSTR lpText, LPWSTR lpWText, SIZE_T szWText) {
   size_t szText = lstrlenA(lpText);
@@ -178,8 +180,6 @@ int view_height[]={55,68,90};
 int view_cx[]={14,16,20};
 int view_cy[]={26,34,46};
 //!Cvet --------------
-
-#include <IniFile/IniFile.hpp>
 
 void LoadSettings()
 {
