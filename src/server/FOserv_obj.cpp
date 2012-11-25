@@ -249,7 +249,7 @@ void CServer::CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, uint16_t 
 LogExecStr("Item Create to TL =%d\n",cur_obj_id);
 }
 
-void CServer::CreateObjToPl(CrID c_pl_idchannel, uint16_t num_st_obj)
+void CServer::CreateObjToPl(CritterID c_pl_idchannel, uint16_t num_st_obj)
 {
 	dyn_obj* new_obj=new dyn_obj;
 

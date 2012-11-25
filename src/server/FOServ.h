@@ -100,7 +100,7 @@ struct map_info
 //		{for(int i=0;i<MAXHEXX;++i)for(int i2=0;i2<MAXHEXY;++i2)flags[i][i2]=0;};
 };
 
-typedef vector<map_info*> map_vec;
+typedef std::vector<map_info*> map_vec;
 
 struct gmap_zone;
 
@@ -124,7 +124,7 @@ struct city_info
 	~city_info(){maps.clear();};//!!!del for maps
 };
 
-typedef vector<city_info*> city_vec;
+typedef std::vector<city_info*> city_vec;
 
 struct gmap_zone
 {
@@ -169,11 +169,11 @@ struct gmap_dot
 	gmap_dot():relief(100){};
 };
 
-typedef map<uint16_t, string, less<uint16_t> > map_str_map;
+typedef std::map<uint16_t, std::string> map_str_map;
 
-typedef map<DHexTYPE, LONGLONG, less<DHexTYPE> > longlong_map;
+typedef std::map<DHexTYPE, LONGLONG> longlong_map;
 
-typedef map<DHexTYPE, dyn_map*, less<DHexTYPE> > dyn_map_map; //контейнер контейнеров
+typedef std::map<DHexTYPE, dyn_map*> dyn_map_map; //контейнер контейнеров
 
 //==============================================================================================================================
 //*****  MAPS DATA by Cvet  *** end ********************************************************************************************
@@ -265,7 +265,7 @@ class CServer
 	void Skill_Sneak_UnSet(CCritter* acl);
 
 //Действия
-	int Act_Attack(CCritter* acl, uint8_t rate_object, CrID target_id);
+	int Act_Attack(CCritter* acl, uint8_t rate_object, CritterID target_id);
 
 	void UseDefObj(CCritter* acl, uint8_t slot);
 
@@ -305,7 +305,7 @@ class CServer
 	void SaveAllObj(); //запись динамических объектов в mySQL
 
 	void DeleteObj(uint32_t id_obj); //удаление объекта
-	void CreateObjToPl(CrID c_pl_idchannel, uint16_t num_st_obj); //создание объекта на тайле
+	void CreateObjToPl(CritterID c_pl_idchannel, uint16_t num_st_obj); //создание объекта на тайле
 	void CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, uint16_t num_st_obj); //создание объекта у игрока
 
 	void SetVisibleObj(CCritter* acl);
@@ -322,7 +322,7 @@ class CServer
 //==============================================================================================================================
 
 	void Send_AddCritter(CCritter* acl, crit_info* pinfo); //Oleg + Cvet edit
-	void Send_RemoveCritter(CCritter* acl, CrID id); //Oleg
+	void Send_RemoveCritter(CCritter* acl, CritterID id); //Oleg
 
 	void Send_LoadMap(CCritter* acl);
 	void Send_LoginMsg(CCritter* acl, uint8_t LogMsg);
@@ -389,7 +389,7 @@ class CServer
 	word_set mobs_group_free;
 	word_set mobs_group_busy;
 
-	typedef map<string, CCritter*, less<string> > prep_mob_map;
+	typedef std::map<std::string, CCritter*> prep_mob_map;
 	prep_mob_map prep_mob;
 
 	void MOB_Update(CCritter* prep_mob, CCritter* mob);
@@ -422,8 +422,8 @@ class CServer
 	int  GM_GroupToMap(CCritter* rule_acl, uint16_t map_num, HexTYPE shx, HexTYPE shy, uint8_t sori);
 	int  GM_GroupToCity(CCritter* rule_acl, uint16_t city_num, uint16_t map_count);
 	int  GM_GroupToEncaunter(CCritter* rule_acl, uint16_t num_encaunter);
-	int  GM_GroupAddPrepCrit(CCritter* rule_acl, CrID id);
-	int  GM_GroupDelPrepCrit(CCritter* rule_acl, CrID id);
+	int  GM_GroupAddPrepCrit(CCritter* rule_acl, CritterID id);
+	int  GM_GroupDelPrepCrit(CCritter* rule_acl, CritterID id);
 	void GM_GroupSetMove(CCritter* rule_acl, int gx, int gy);
 	void GM_GroupStopMove(CCritter* rule_acl);
 	void GM_GroupSetSpeed(CCritter* rule_acl, uint8_t speed);
@@ -497,10 +497,10 @@ class CServer
 	fd_set read_set,write_set,exc_set;
 
 	void ClearClients(); //Del all
-//	void RemoveCCritter(CrID id); //Del by id
+//	void RemoveCCritter(CritterID id); //Del by id
 
-	void RemoveCritter(CrID id);
-	void DisconnectClient(CrID idchannel); //!Cvet Disconnect Client by id
+	void RemoveCritter(CritterID id);
+	void DisconnectClient(CritterID idchannel); //!Cvet Disconnect Client by id
 	int ConnectClient(SOCKET serv); //add new Client
 	
 	int Input(CCritter* acl);
@@ -528,7 +528,7 @@ class CServer
 
 	// Для того чтобы исключить повторный сигнал о подключение уже
 	// присутствующего игрока на сервере, ид посл-го подключенного.
-	CrID last_id;
+	CritterID last_id;
 
 //!Cvet ++++++++++++++++++++++++
 	int DistFast(int dx, int dy); //Accuracy:95%  Speed:2.5x

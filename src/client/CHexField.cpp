@@ -55,7 +55,7 @@ int CHexField::Init(CSpriteManager* lpsm)
 
 	if(!lpsm)
 	{
-		ErrMsg("CHexField Init","lpsm=NULL");
+		ReportErrorMessage("CHexField Init","lpsm=NULL");
 		return 0;
 	}
 	lpSM=lpsm;
@@ -352,7 +352,7 @@ int CHexField::DropScript()
 
 			if(check!=cnt)
 			{
-				ErrMsg("CHexField DropScript","Ошибка при прохождении секции скриптов");
+				ReportErrorMessage("CHexField DropScript","Ошибка при прохождении секции скриптов");
 				return 0;
 			}
 
@@ -1543,7 +1543,10 @@ void CHexField::TransitCritter(CCritter* pcrit, int dir, int x, int y, bool null
 	pcrit->hex_y=y;
 	pcrit->cur_dir=dir;
 
-	if(pcrit->rit!=NULL) 
+  // FIXME[24.11.2012 alex]: by commenting these lines out I might
+  //   have caused memory leakage.
+  
+	/*if(pcrit->rit!=NULL) 
 	{ //!Cvet исправил. был баг
 		dtree_map::iterator it=dtree.find((*pcrit->rit).first);
 
@@ -1556,7 +1559,7 @@ void CHexField::TransitCritter(CCritter* pcrit, int dir, int x, int y, bool null
 		}
 
 		pcrit->rit=NULL;
-	}
+	}*/
 		
 	if(!IsVisible(x, y, hex_field[y][x].lpcrit->cur_id))
 	{

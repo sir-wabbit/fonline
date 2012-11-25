@@ -512,7 +512,7 @@ void CServer::Skill_Sneak_UnSet(CCritter* acl)
 	SetVisCr(acl);
 }
 
-int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CrID target_id)
+int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CritterID target_id)
 {
 //LogExecStr("Выполняется действие №1: АТАКА...");
 	//находим атакуемого
@@ -604,7 +604,7 @@ int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CrID target_id)
 //	t_acl->info.ori=new_ori;
 
 	//рассылаем всем итоги стычки
-	MSGTYPE msg;
+	MessageType msg;
 	//отсылает наподавший инфу о атаке
 	SendA_Action(acl,ACT_USE_OBJ,rate_object);
 	if(!t_acl->info.st[ST_CURRENT_HP]) //отыгрываем смерть
@@ -927,7 +927,7 @@ void CServer::Process_GetLogIn(CCritter* acl)
 	}
 	acl->info.map=map;
 
-	MSGTYPE msg=NETMSG_LOGINOK;
+	MessageType msg=NETMSG_LOGINOK;
 	acl->bout << msg;
 
 //	acl->state=STATE_LOGINOK;
@@ -1273,7 +1273,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 	//обнуление
 	acl->info.a_obj=&acl->info.def_obj1;
 	acl->info.a_obj_arm=&acl->info.def_obj2;
-	MSGTYPE msg=NETMSG_CRITTER_ACTION;
+	MessageType msg=NETMSG_CRITTER_ACTION;
 	acl->bout << msg;
 	acl->bout << acl->info.id;
 	acl->bout << ACT_NULL;
@@ -1537,7 +1537,7 @@ void CServer::Process_Dir(CCritter* acl) //!Cvet переделал
 
 	if(!acl->vis_cl.empty())
 	{
-		MSGTYPE msg=NETMSG_CRITTER_DIR;
+		MessageType msg=NETMSG_CRITTER_DIR;
 		CCritter* c=NULL;
 
 		for(cl_map::iterator it_cl=acl->vis_cl.begin();it_cl!=acl->vis_cl.end();)

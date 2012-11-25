@@ -43,12 +43,12 @@ struct demand
 
 	uint8_t param;
 	uint16_t var_num; //quest_num
-	string var_name;
+	std::string var_name;
 	char oper; //choose
 	int count;
 };
 
-typedef vector<demand*> demand_list;
+typedef std::vector<demand*> demand_list;
 
 //Результат
 const uint8_t RESULT_NONE		=0;
@@ -69,12 +69,12 @@ struct result
 
 	uint8_t param;
 	uint16_t var_num;
-	string var_name;
+	std::string var_name;
 	char oper;
 	int count;
 };
 
-typedef vector<result*> result_list;
+typedef std::vector<result*> result_list;
 
 struct answer
 {
@@ -89,7 +89,7 @@ struct answer
 	result_list results;
 };
 
-typedef vector<answer*> answers_list;
+typedef std::vector<answer*> answers_list;
 
 struct npc_dialog
 {
@@ -105,12 +105,12 @@ struct npc_dialog
 	uint8_t not_answer; //что делать если нет ответа
 };
 
-typedef map<uint32_t, npc_dialog*, less<uint32_t> > dialogs_map;
+typedef std::map<uint32_t, npc_dialog*, std::less<uint32_t> > dialogs_map;
 
 struct npc_info
 {
 //ид игрока с которым он сейчас разговаривает
-	CrID talking;
+	CritterID talking;
 //диалоги
 	dialogs_map dialogs;
 //текущий скампонованный диалог
@@ -126,7 +126,7 @@ const uint8_t MOB_COND_DEFENCE			=2;
 
 struct mob_info
 {
-	string name;
+  std::string name;
 	uint16_t num_group;
 	uint8_t base_cond;
 	uint8_t cond;
@@ -136,11 +136,11 @@ struct mob_info
 
 class CCritter;
 //typedef vector<CCritter*> cl_vec;
-typedef map<CrID, CCritter*, less<CrID> > cl_map;
+typedef std::map<CritterID, CCritter*, std::less<CritterID> > cl_map;
 //typedef list<CCritter*> cl_list;
 
-typedef set<CrID> crid_set;
-typedef set<uint16_t> word_set;
+typedef std::set<CritterID> crid_set;
+typedef std::set<uint16_t> word_set;
 
 struct mobs_group
 {
@@ -154,7 +154,7 @@ struct mobs_group
 	mobs_group():num(0),mobs_level(0),mobs_count(0){};
 };
 
-typedef list<mobs_group*> mobs_group_list;
+typedef std::list<mobs_group*> mobs_group_list;
 
 struct gmap_group
 {
@@ -189,7 +189,7 @@ struct gmap_group
 };
 
 struct gmap_group;
-typedef vector<gmap_group*> gmap_group_vec;
+typedef std::vector<gmap_group*> gmap_group_vec;
 
 class CCritter
 {

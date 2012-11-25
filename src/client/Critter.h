@@ -49,7 +49,7 @@ public:
 	HexTYPE hex_y;
 	uint8_t cur_dir; // направление
 
-	CrID id;
+	CritterID id;
 // Перенес из привата
 	uint8_t weapon; // Тип оружия в руках для анимаций Den Baster !Cvet (предпоследняя буква)
 
@@ -65,9 +65,9 @@ public:
 	uint8_t cond_ext; //!Cvet
 	uint16_t flags; //!Cvet
 
-	CrTYPE base_type; //!Cvet
-	CrTYPE type;
-	CrTYPE type_ext; //!Cvet
+	CritterType base_type; //!Cvet
+	CritterType type;
+	CritterType type_ext; //!Cvet
 
 //!Cvet ++++++++++++++++++++++++++++++++++  Инвентарь
 	dyn_map obj; //все объекты у игрока
@@ -148,6 +148,6 @@ private:
 };
 
 //список critters, которые присутствуют
-typedef std::map<CrID, CCritter*> crit_map;
+typedef std::map<CritterID, CCritter*> crit_map;
 
 #endif//__CRITTER_H__

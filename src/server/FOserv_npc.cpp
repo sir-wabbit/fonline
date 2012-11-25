@@ -755,7 +755,7 @@ void CServer::NPC_Use_result(CCritter* npc, CCritter* acl, answer* use_answ)
 
 void CServer::Process_Talk_NPC(CCritter* acl)
 {
-	CrID id_npc_talk;
+	CritterID id_npc_talk;
 	uint8_t num_answer;
 
 	acl->bin >> id_npc_talk;

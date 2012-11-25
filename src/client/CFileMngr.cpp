@@ -118,7 +118,7 @@ int FileManager::Init()
 	master_dat[0]=0;
 	
 	if(!opt_masterpath[0]) {
-		ErrMsg("FileManager Init","Не найден файл %s или в нем нет раздела master_dat",CFG_FILE);
+		ReportErrorMessage("FileManager Init","Не найден файл %s или в нем нет раздела master_dat",CFG_FILE);
 		return 0;
 	}
 	
@@ -131,7 +131,7 @@ int FileManager::Init()
 		lpDAT.Init(master_dat);
 		
 		if(lpDAT.ErrorType == ERR_CANNOT_OPEN_FILE) {
-			ErrMsg("FileManager Init>","файл %s не найден",master_dat);
+			ReportErrorMessage("FileManager Init>","файл %s не найден",master_dat);
 			return 0;
 		}
 	} else {
@@ -141,7 +141,7 @@ int FileManager::Init()
 	crit_dat[0]=0;
 	if(!opt_critterpath[0])
 	{
-		ErrMsg("FileManager Init","Не найден файл %s или в нем нет раздела critter_dat",CFG_FILE);
+		ReportErrorMessage("FileManager Init","Не найден файл %s или в нем нет раздела critter_dat",CFG_FILE);
 		return 0;
 	}
 	
@@ -153,7 +153,7 @@ int FileManager::Init()
 		lpDATcr.Init(crit_dat);		
 		if(lpDATcr.ErrorType==ERR_CANNOT_OPEN_FILE)
 		{
-			ErrMsg("FileManager Init>","файл %s не найден",crit_dat);
+			ReportErrorMessage("FileManager Init>","файл %s не найден",crit_dat);
 			return 0;
 		}
 	}
@@ -164,7 +164,7 @@ int FileManager::Init()
 
 	if(!opt_fopath[0])
 	{
-		ErrMsg("FileManager Init","Не найден файл %s или в нем нет раздела fonline_dat",CFG_FILE);
+		ReportErrorMessage("FileManager Init","Не найден файл %s или в нем нет раздела fonline_dat",CFG_FILE);
 		return 0;
 	}
 	strcpy(fo_dat,opt_fopath.c_str());
@@ -193,7 +193,7 @@ int FileManager::LoadFile(char* fileName, int pathType)
 
 	if(!initialized)
 	{
-		ErrMsg("FileMngr LoadFile","FileMngr не был иницилазирован до загрузки файла %s",fileName);
+		ReportErrorMessage("FileMngr LoadFile","FileMngr не был иницилазирован до загрузки файла %s",fileName);
 		return 0;
 	}
 	

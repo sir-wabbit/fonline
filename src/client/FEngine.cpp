@@ -24,7 +24,7 @@ void zlib_free(void *opaque, void *address)
     free(address);
 }
 
-CFEngine::CFEngine(): crtd(0),hWnd(NULL),lpD3D(NULL),lpDevice(NULL),islost(0),lpDInput(NULL),lpKeyboard(NULL),lpMouse(NULL)
+FOnlineEngine::FOnlineEngine(): crtd(0),hWnd(NULL),lpD3D(NULL),lpDevice(NULL),islost(0),lpDInput(NULL),lpKeyboard(NULL),lpMouse(NULL)
 {
 	dilost=0;
 	
@@ -62,7 +62,7 @@ CFEngine::CFEngine(): crtd(0),hWnd(NULL),lpD3D(NULL),lpDevice(NULL),islost(0),lp
 	Game_FPS=0;
 }
 
-int CFEngine::Init(HWND _hWnd)
+int FOnlineEngine::Init(HWND _hWnd)
 {
 	WriteLog("\nFEngine Initialization...\n");
 	
@@ -75,7 +75,7 @@ int CFEngine::Init(HWND _hWnd)
 	WriteLog("Создаю Direct3D.....");
 	lpD3D=Direct3DCreate8(D3D_SDK_VERSION);
 	if(!lpD3D){
-		ErrMsg("Engine Init","Не могу создать Direct3D.\nУбедитесь, что установлен DirectX версии 8.1 и выше");
+		ReportErrorMessage("Engine Init","Не могу создать Direct3D.\nУбедитесь, что установлен DirectX версии 8.1 и выше");
 		return 0;
 	}
 	WriteLog("OK\n");
@@ -84,7 +84,7 @@ int CFEngine::Init(HWND _hWnd)
 	D3DDISPLAYMODE d3ddm;
 	hr=lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm);
 	if(hr!=D3D_OK){
-		ErrMsg("GetAdapterDisplayMode",(char*)DXGetErrorString8(hr));
+		ReportErrorMessage("GetAdapterDisplayMode",(char*)DXGetErrorString8(hr));
 		return 0;
 	}
 	WriteLog("OK\n");
@@ -109,7 +109,7 @@ int CFEngine::Init(HWND _hWnd)
 	hr=lpD3D->CreateDevice(D3DADAPTER_DEFAULT,D3DDEVTYPE_HAL,hWnd,
 		D3DCREATE_SOFTWARE_VERTEXPROCESSING,&d3dpp,&lpDevice);
 	if(hr!=D3D_OK){
-		ErrMsg("CreateDevice",(char*)DXGetErrorString8(hr));
+		ReportErrorMessage("CreateDevice",(char*)DXGetErrorString8(hr));
 		return 0;
 	}
 	WriteLog("OK\n");
@@ -305,13 +305,13 @@ int CFEngine::Init(HWND _hWnd)
 	return 1;
 }
 
-int CFEngine::InitDInput()
+int FOnlineEngine::InitDInput()
 {
 	WriteLog("DInput init...\n");
     HRESULT hr = DirectInput8Create(GetModuleHandle(NULL),DIRECTINPUT_VERSION,IID_IDirectInput8,(void**)&lpDInput,NULL);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу создать DirectInput");
+		ReportErrorMessage("FOnlineEngine InitDInput","Не могу создать DirectInput");
 		return 0;
 	}
 
@@ -319,14 +319,14 @@ int CFEngine::InitDInput()
     hr = lpDInput->CreateDevice(GUID_SysKeyboard,&lpKeyboard,NULL);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу создать GUID_SysKeyboard");
+		ReportErrorMessage("FOnlineEngine InitDInput","Не могу создать GUID_SysKeyboard");
 		return 0;
 	}
 
     hr = lpDInput->CreateDevice(GUID_SysMouse,&lpMouse,NULL);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу создать GUID_SysMouse");
+		ReportErrorMessage("FOnlineEngine InitDInput","Не могу создать GUID_SysMouse");
 		return 0;
 	}
     // Set the data format to "keyboard format" - a predefined data format 
@@ -335,14 +335,14 @@ int CFEngine::InitDInput()
     hr = lpKeyboard->SetDataFormat(&c_dfDIKeyboard);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу установить формат данных для клавиатуры");
+		ReportErrorMessage("FOnlineEngine InitDInput","Не могу установить формат данных для клавиатуры");
 		return 0;
 	}
 
     hr = lpMouse->SetDataFormat(&c_dfDIMouse2);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Не могу установить формат данных для мышки");
+		ReportErrorMessage("FOnlineEngine InitDInput","Не могу установить формат данных для мышки");
 		return 0;
 	}
 
@@ -350,7 +350,7 @@ int CFEngine::InitDInput()
     hr = lpKeyboard->SetCooperativeLevel( hWnd,DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Ошибка SetCooperativeLevel для клавиатуры");
+		ReportErrorMessage("FOnlineEngine InitDInput","Ошибка SetCooperativeLevel для клавиатуры");
 		return 0;
 	}
 
@@ -358,7 +358,7 @@ int CFEngine::InitDInput()
 	hr = lpMouse->SetCooperativeLevel( hWnd,DISCL_FOREGROUND | DISCL_EXCLUSIVE);//!Cvet сделал эксклюзив для всего
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Ошибка SetCooperativeLevel для мышки");
+		ReportErrorMessage("FOnlineEngine InitDInput","Ошибка SetCooperativeLevel для мышки");
 		return 0;
 	}
 
@@ -374,14 +374,14 @@ int CFEngine::InitDInput()
     hr = lpKeyboard->SetProperty(DIPROP_BUFFERSIZE,&dipdw.diph);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Ошибка настройки буфера приема для клавиатуры");
+		ReportErrorMessage("FOnlineEngine InitDInput","Ошибка настройки буфера приема для клавиатуры");
 		return 0;
 	}
 
     hr = lpMouse->SetProperty(DIPROP_BUFFERSIZE,&dipdw.diph);
 	if(hr!=DI_OK)
 	{
-		ErrMsg("CFEngine InitDInput","Ошибка настройки буфера приема для мышки");
+		ReportErrorMessage("FOnlineEngine InitDInput","Ошибка настройки буфера приема для мышки");
 		return 0;
 	}
 
@@ -394,7 +394,7 @@ int CFEngine::InitDInput()
 	return 1;
 }
 
-void CFEngine::Clear()
+void FOnlineEngine::Clear()
 {
 	WriteLog("\nFEngine Clear...\n");
 
@@ -423,7 +423,7 @@ void CFEngine::Clear()
 	WriteLog("FEngine Clear complete\n");
 }
 
-void CFEngine::ClearCritters() //!Cvet
+void FOnlineEngine::ClearCritters() //!Cvet
 {
 	for(crit_map::iterator it=critters.begin();it!=critters.end();it++)
 	{
@@ -435,7 +435,7 @@ void CFEngine::ClearCritters() //!Cvet
 	lpChosen=NULL;
 }
 
-void CFEngine::RemoveCritter(CrID remid) //!Cvet
+void FOnlineEngine::RemoveCritter(CritterID remid) //!Cvet
 {
 	crit_map::iterator it=critters.find(remid);
 	if(it==critters.end()) return;
@@ -448,7 +448,7 @@ void CFEngine::RemoveCritter(CrID remid) //!Cvet
 }
 
 // карта игрока
-int CFEngine::Console()
+int FOnlineEngine::Console()
 {
 	// 1100
 	RECT r4={0,50,200,300};
@@ -474,7 +474,7 @@ int CFEngine::Console()
 	return 1;
 }
 
-int CFEngine::Render()
+int FOnlineEngine::Render()
 {
 //PROCESS
 	static TICK LastCall=GetTickCount();
@@ -596,7 +596,7 @@ int CFEngine::Render()
 	return 1;
 }
 
-void CFEngine::ParseInput()
+void FOnlineEngine::ParseInput()
 {
 	if(dilost) RestoreDI();
 	if(dilost) return;
@@ -1024,7 +1024,7 @@ void CFEngine::ParseInput()
 //!Cvet --------
 }
 
-void CFEngine::Restore()
+void FOnlineEngine::Restore()
 {
 	if(!crtd || !islost) return;
 	WriteLog("Restoring...\n");
@@ -1032,7 +1032,7 @@ void CFEngine::Restore()
 	D3DDISPLAYMODE d3ddm;
 	HRESULT hr=lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm);
 	if(hr!=D3D_OK){
-		ErrMsg("GetAdapterDisplayMode",(char*)DXGetErrorString8(hr));
+		ReportErrorMessage("GetAdapterDisplayMode",(char*)DXGetErrorString8(hr));
 		return;
 	}
 	WriteLog("OK\n");
@@ -1058,7 +1058,7 @@ void CFEngine::Restore()
 	hr=lpDevice->Reset(&d3dpp);
 	if(hr!=D3D_OK)
 	{
-		//ErrMsg("Device Reset","Не могу перезапустить устройство");
+		//ReportErrorMessage("Device Reset","Не могу перезапустить устройство");
 		WriteLog("Не могу перезапустить устройство\n");
 		return;
 	}
@@ -1101,7 +1101,7 @@ void CFEngine::Restore()
 	cmn_lost=0;
 }
 
-void CFEngine::RestoreDI()
+void FOnlineEngine::RestoreDI()
 {
 	if(!crtd || !lpKeyboard) return;
 //	WriteLog("Restoring DI...\n");
@@ -1124,7 +1124,7 @@ void CFEngine::RestoreDI()
 	dilost=0;
 }
 
-int CFEngine::InitNet()
+int FOnlineEngine::InitNet()
 {
 	WriteLog("Network init...\n");
 
@@ -1133,7 +1133,7 @@ int CFEngine::InitNet()
 	WSADATA WsaData;
 	if(WSAStartup(0x0101,&WsaData))
 	{
-		ErrMsg("CFEngine::InitNet","WSAStartup error!");
+		ReportErrorMessage("FOnlineEngine::InitNet","WSAStartup error!");
 		return 0;
 	}
 
@@ -1145,7 +1145,7 @@ int CFEngine::InitNet()
 
 		if(!h)
 		{
-			ErrMsg("CFEngine::InitNet","cannot resolve remote host %s!",opt_rhost);
+			ReportErrorMessage("FOnlineEngine::InitNet","cannot resolve remote host %s!",opt_rhost);
 			return 0;
 		}
 
@@ -1162,13 +1162,13 @@ int CFEngine::InitNet()
 	return 1;
 }
 
-int CFEngine::NetCon()
+int FOnlineEngine::NetCon()
 {
 	WriteLog("Connecting to server %s:%d\n",opt_rhost,opt_rport);
 	sock=socket(AF_INET,SOCK_STREAM,0);
 	if(connect(sock,(sockaddr*)&remote,sizeof(SOCKADDR_IN)))
 	{
-		ErrMsg("CFEngine::NetCon","Не могу подключиться к серверу игры!\r\n");
+		ReportErrorMessage("FOnlineEngine::NetCon","Не могу подключиться к серверу игры!\r\n");
 		return 0;
 	}
 	WriteLog("Connecting OK\n");
@@ -1179,7 +1179,7 @@ int CFEngine::NetCon()
 
 	if(inflateInit(&zstrm)!=Z_OK)
 	{
-		ErrMsg("CFEngine::NetCon","InflateInit error!\r\n");
+		ReportErrorMessage("FOnlineEngine::NetCon","InflateInit error!\r\n");
 		return 0;
 	}
 	zstrmok=1;
@@ -1189,7 +1189,7 @@ int CFEngine::NetCon()
     WriteLog("Net_Con");
 }
 
-void CFEngine::NetDiscon()
+void FOnlineEngine::NetDiscon()
 {
 	WriteLog("Отсоединение ");
 
@@ -1203,7 +1203,7 @@ void CFEngine::NetDiscon()
 	hf.UnLoadMap(); //!Cvet
 }
 
-void CFEngine::ParseSocket(uint16_t wait)
+void FOnlineEngine::ParseSocket(uint16_t wait)
 {
 	timeval tv;
 	tv.tv_sec=wait;
@@ -1225,8 +1225,8 @@ void CFEngine::ParseSocket(uint16_t wait)
 	{
 		if(!NetInput())
 		{
-		//	ErrMsg("CFEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
-			WriteLog("CFEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
+		//	ReportErrorMessage("FOnlineEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
+			WriteLog("FOnlineEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
 			sock=-1;
 			state=STATE_DISCONNECT;
 			return;
@@ -1238,11 +1238,11 @@ void CFEngine::ParseSocket(uint16_t wait)
 	NetOutput();
 }
 
-void CFEngine::NetProcess()
+void FOnlineEngine::NetProcess()
 {
 	if(!bin.writePosition) return;
 
-	MSGTYPE msg;
+	MessageType msg;
 
 	while(bin.NeedProcess())
 	{
@@ -1334,11 +1334,11 @@ void CFEngine::NetProcess()
 	bin.Reset();
 }
 
-/*void CFEngine::Net_SendName(char* name)
+/*void FOnlineEngine::Net_SendName(char* name)
 {
 	WriteLog("Net_SendName...");
 
-	MSGTYPE msg=NETMSG_NAME;
+	MessageType msg=NETMSG_NAME;
 
 	bout << msg;
 	bout.Write(name,MAX_NAME);
@@ -1352,11 +1352,11 @@ void CFEngine::NetProcess()
     WriteLog("OK\n");
 }*/
 //!Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CFEngine::Net_SendLogIn(char* login, char* pass)
+void FOnlineEngine::Net_SendLogIn(char* login, char* pass)
 {
 	WriteLog("Net_SendLogIn...");
 
-	MSGTYPE msg=NETMSG_LOGIN;
+	MessageType msg=NETMSG_LOGIN;
 
 	bout << msg;
 	bout.Write(login,MAX_LOGIN);
@@ -1367,13 +1367,13 @@ void CFEngine::Net_SendLogIn(char* login, char* pass)
     WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendCreatePlayer(crit_info* newcr)
+void FOnlineEngine::Net_SendCreatePlayer(crit_info* newcr)
 {
 	int bi;
 	WriteLog("Посылаем данные на сервер...\n");
 
 //ФОРМИРОВАНИЕ ЗАПРОСА
-	MSGTYPE msg=NETMSG_CREATE_CLIENT;
+	MessageType msg=NETMSG_CREATE_CLIENT;
 	bout << msg;
 	bout.Write(newcr->login,MAX_LOGIN);
 	bout.Write(newcr->pass,MAX_LOGIN);
@@ -1398,13 +1398,13 @@ void CFEngine::Net_SendCreatePlayer(crit_info* newcr)
 	WriteLog("OK\n");
 }
 //!Cvet ----------------------------------------------------------------
-void CFEngine::Net_SendText(char* str)
+void FOnlineEngine::Net_SendText(char* str)
 {
 	WriteLog("Net_SendText...");
 
 	uint16_t len=strlen(str);
 	if(len>=MAX_TEXT) len=MAX_TEXT;
-	MSGTYPE msg=NETMSG_TEXT;
+	MessageType msg=NETMSG_TEXT;
 
 	bout << msg;
 	bout << len;
@@ -1413,11 +1413,11 @@ void CFEngine::Net_SendText(char* str)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendDir()
+void FOnlineEngine::Net_SendDir()
 {
 	WriteLog("Net_SendDir...");
 
-	MSGTYPE msg=NETMSG_DIR;
+	MessageType msg=NETMSG_DIR;
 
 	bout << msg;
 	bout << lpChosen->cur_dir;
@@ -1426,7 +1426,7 @@ void CFEngine::Net_SendDir()
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CFEngine::Net_SendMove(uint8_t* dir) //переделал
+void FOnlineEngine::Net_SendMove(uint8_t* dir) //переделал
 {
 	WriteLog("Net_SendMove...");
 
@@ -1461,7 +1461,7 @@ void CFEngine::Net_SendMove(uint8_t* dir) //переделал
 //	if(lpChosen->hex_x!=PathMoveX || lpChosen->hex_y!=PathMoveY)
 //		SETFLAG(move_params,);
 
-	MSGTYPE msg=NETMSG_SEND_MOVE;
+	MessageType msg=NETMSG_SEND_MOVE;
 
 	bout << msg;
 	bout << move_params;
@@ -1469,11 +1469,11 @@ void CFEngine::Net_SendMove(uint8_t* dir) //переделал
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendUseSkill(uint8_t skill, uint32_t targ_id, uint8_t ori)
+void FOnlineEngine::Net_SendUseSkill(uint8_t skill, uint32_t targ_id, uint8_t ori)
 {
 	WriteLog("Отправка использования скилла...");
 
-	MSGTYPE msg=NETMSG_SEND_USE_SKILL;
+	MessageType msg=NETMSG_SEND_USE_SKILL;
 
 	bout << msg;
 	bout << skill;
@@ -1483,11 +1483,11 @@ void CFEngine::Net_SendUseSkill(uint8_t skill, uint32_t targ_id, uint8_t ori)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendUseObject(uint8_t type_target, uint32_t targ_id, uint8_t crit_ori, uint8_t crit_num_action, uint8_t crit_rate_object)
+void FOnlineEngine::Net_SendUseObject(uint8_t type_target, uint32_t targ_id, uint8_t crit_ori, uint8_t crit_num_action, uint8_t crit_rate_object)
 {
 	WriteLog("Отправка действия над предметом...");
 
-	MSGTYPE msg=NETMSG_SEND_USE_OBJECT;
+	MessageType msg=NETMSG_SEND_USE_OBJECT;
 
 	bout << msg;
 	bout << type_target;
@@ -1499,11 +1499,11 @@ void CFEngine::Net_SendUseObject(uint8_t type_target, uint32_t targ_id, uint8_t 
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, uint16_t id_sobj)
+void FOnlineEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, uint16_t id_sobj)
 {
 	WriteLog("Отправка взаимодействия с предметом на земле...");
 
-	MSGTYPE msg=NETMSG_SEND_PICK_OBJECT;
+	MessageType msg=NETMSG_SEND_PICK_OBJECT;
 
 	bout << msg;
 	bout << targ_x;
@@ -1513,11 +1513,11 @@ void CFEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, uint16_t id_so
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendChangeObject(uint32_t idobj, uint8_t num_slot)
+void FOnlineEngine::Net_SendChangeObject(uint32_t idobj, uint8_t num_slot)
 {
 	WriteLog("Отправка смены предмета id=%d, slot=%d...",idobj, num_slot);
 
-	MSGTYPE msg=NETMSG_SEND_CHANGE_OBJECT;
+	MessageType msg=NETMSG_SEND_CHANGE_OBJECT;
 
 	bout << msg;
 	bout << idobj;
@@ -1526,11 +1526,11 @@ void CFEngine::Net_SendChangeObject(uint32_t idobj, uint8_t num_slot)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendTalk(CrID id_to_talk, uint8_t answer)
+void FOnlineEngine::Net_SendTalk(CritterID id_to_talk, uint8_t answer)
 {
 	WriteLog("Отпрака сообщения по общению с НПЦ id_NPC=%d, ответ=%d...", id_to_talk, answer);
 
-	MSGTYPE msg=NETMSG_SEND_TALK_NPC;
+	MessageType msg=NETMSG_SEND_TALK_NPC;
 
 	bout << msg;
 	bout << id_to_talk;
@@ -1541,22 +1541,22 @@ void CFEngine::Net_SendTalk(CrID id_to_talk, uint8_t answer)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendGetTime()
+void FOnlineEngine::Net_SendGetTime()
 {
 	WriteLog("Отпрака сообщения по запросу игрового времени...");
 
-	MSGTYPE msg=NETMSG_SEND_GET_TIME;
+	MessageType msg=NETMSG_SEND_GET_TIME;
 
 	bout << msg;
 
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendGiveMeMap(uint16_t map_num)
+void FOnlineEngine::Net_SendGiveMeMap(uint16_t map_num)
 {
 	WriteLog("Отпрака сообщения по запросу загрузки карты...");
 
-	MSGTYPE msg=NETMSG_SEND_GIVE_ME_MAP;
+	MessageType msg=NETMSG_SEND_GIVE_ME_MAP;
 
 	bout << msg;
 	bout << map_num;
@@ -1564,22 +1564,22 @@ void CFEngine::Net_SendGiveMeMap(uint16_t map_num)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendLoadMapOK()
+void FOnlineEngine::Net_SendLoadMapOK()
 {
 	WriteLog("Отпрака сообщения по успешной загрузке карты...");
 
-	MSGTYPE msg=NETMSG_SEND_LOAD_MAP_OK;
+	MessageType msg=NETMSG_SEND_LOAD_MAP_OK;
 
 	bout << msg;
 
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendGiveGlobalInfo(uint8_t info_flags)
+void FOnlineEngine::Net_SendGiveGlobalInfo(uint8_t info_flags)
 {
 	WriteLog("Отпрака сообщения запросу инфы о глобале №%d...",info_flags);
 
-	MSGTYPE msg=NETMSG_SEND_GIVE_GLOBAL_INFO;
+	MessageType msg=NETMSG_SEND_GIVE_GLOBAL_INFO;
 
 	bout << msg;
 	bout << info_flags;
@@ -1587,11 +1587,11 @@ void CFEngine::Net_SendGiveGlobalInfo(uint8_t info_flags)
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_SendRuleGlobal(uint8_t command, uint32_t param1, uint32_t param2)
+void FOnlineEngine::Net_SendRuleGlobal(uint8_t command, uint32_t param1, uint32_t param2)
 {
 	WriteLog("Отправка запроса управлением группой...");
 
-	MSGTYPE msg=NETMSG_SEND_RULE_GLOBAL;
+	MessageType msg=NETMSG_SEND_RULE_GLOBAL;
 
 	bout << msg;
 	bout << command;
@@ -1602,7 +1602,7 @@ void CFEngine::Net_SendRuleGlobal(uint8_t command, uint32_t param1, uint32_t par
 }
 //!Cvet -----------------------------------------------------------------------------
 
-void CFEngine::Net_OnAddCritter()
+void FOnlineEngine::Net_OnAddCritter()
 {
 	WriteLog("Присоединился новый игрок...");
 	crit_info info;
@@ -1641,7 +1641,7 @@ WriteLog("Имя:%s\n",info.name);
 
 	if(bin.IsError())
 	{
-		WriteLog("Net_OnAddCritter","Wrong MSG data forNet_OnAddCritter!\n"); //ErrMsg было
+		WriteLog("Net_OnAddCritter","Wrong MSG data forNet_OnAddCritter!\n"); //ReportErrorMessage было
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -1659,15 +1659,15 @@ WriteLog("Имя:%s\n",info.name);
     WriteLog("Загрузка игрока закончена. %s, id=%d.\n",info.name,info.id);
 }
 
-void CFEngine::Net_OnRemoveCritter()
+void FOnlineEngine::Net_OnRemoveCritter()
 {
-	CrID remid;
+	CritterID remid;
 
 	bin >> remid;
 
 	if(bin.IsError())
 	{
-		ErrMsg("Net_OnRemoveCritter","Wrong MSG data forNet_OnRemoveCritter!\n");
+		ReportErrorMessage("Net_OnRemoveCritter","Wrong MSG data forNet_OnRemoveCritter!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -1688,9 +1688,9 @@ void CFEngine::Net_OnRemoveCritter()
     WriteLog("OK\n",remid);
 }
 
-void CFEngine::Net_OnCritterText()
+void FOnlineEngine::Net_OnCritterText()
 {
-	CrID crid;
+	CritterID crid;
 	uint8_t how_say; //!Cvet
 
 	bin >> crid;
@@ -1699,7 +1699,7 @@ void CFEngine::Net_OnCritterText()
 
 	if(bin.IsError())
 	{
-		ErrMsg("Net_OnRemoveCritter","Wrong MSG data forNet_OnRemoveCritter!\n");
+		ReportErrorMessage("Net_OnRemoveCritter","Wrong MSG data forNet_OnRemoveCritter!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -1764,11 +1764,11 @@ void CFEngine::Net_OnCritterText()
 	WriteLog("Net_OnCritterText");
 }
 
-void CFEngine::Net_OnCritterDir()
+void FOnlineEngine::Net_OnCritterDir()
 {
 	WriteLog("Установка игроку ");
 
-	CrID crid;
+	CritterID crid;
 	uint8_t new_dir;
 
 	bin >> crid;
@@ -1806,11 +1806,11 @@ void CFEngine::Net_OnCritterDir()
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CFEngine::Net_OnCritterMove()
+void FOnlineEngine::Net_OnCritterMove()
 {
 	WriteLog("Ходит игрок id=");
 
-	CrID crid=0;
+	CritterID crid=0;
 //	uint8_t dir=0;
 	uint8_t how_move=0;
 	HexTYPE new_x=0;
@@ -1873,11 +1873,11 @@ void CFEngine::Net_OnCritterMove()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_OnCritterAction()
+void FOnlineEngine::Net_OnCritterAction()
 {
 	WriteLog("Пинг: %d\n",GetTickCount()-Ping);
 
-	CrID crid;
+	CritterID crid;
 	uint8_t num_action;
 	uint16_t id_st_obj;
 	uint16_t id_st_obj_arm;
@@ -1895,7 +1895,7 @@ void CFEngine::Net_OnCritterAction()
 
 	if(bin.IsError())
 	{
-		ErrMsg("Net_OnRemoveCritter","Wrong MSG data forNet_OnCritterAction!\n");
+		ReportErrorMessage("Net_OnRemoveCritter","Wrong MSG data forNet_OnCritterAction!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -2113,14 +2113,14 @@ void CFEngine::Net_OnCritterAction()
 	}
 }
 
-void CFEngine::Net_OnChosenLogin()
+void FOnlineEngine::Net_OnChosenLogin()
 {
 	bin >> LogMsg;
 
 	SetCur(CUR_DEFAULT);
 }
 
-void CFEngine::Net_OnChosenXY() // направление надо передавать?!cvet
+void FOnlineEngine::Net_OnChosenXY() // направление надо передавать?!cvet
 {
 	WriteLog("Проверка или установка места...");
 
@@ -2134,7 +2134,7 @@ void CFEngine::Net_OnChosenXY() // направление надо переда�
 	
 	if(bin.IsError())
 	{
-		ErrMsg("Net_OnCritterNewXY","Wrong MSG data forNet_OnCritterNewXY!\n");
+		ReportErrorMessage("Net_OnCritterNewXY","Wrong MSG data forNet_OnCritterNewXY!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -2170,7 +2170,7 @@ void CFEngine::Net_OnChosenXY() // направление надо переда�
     WriteLog("OK\n");
 }
 
-void CFEngine::Net_OnChosenParams()
+void FOnlineEngine::Net_OnChosenParams()
 {
 	WriteLog("Присланны параметры...");
 
@@ -2232,7 +2232,7 @@ void CFEngine::Net_OnChosenParams()
 	WriteLog("Загрузка параметров закончена - всего параметров типа %d прислано %d\n", type_param, all_send_params);
 }
 
-void CFEngine::Net_OnChosenParam()
+void FOnlineEngine::Net_OnChosenParam()
 {
 	WriteLog("Прислан параметр...");
 
@@ -2306,7 +2306,7 @@ void CFEngine::Net_OnChosenParam()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_OnChosenAddObject()
+void FOnlineEngine::Net_OnChosenAddObject()
 {
 	WriteLog("Добавляеться предмет...");
 
@@ -2325,7 +2325,7 @@ void CFEngine::Net_OnChosenAddObject()
 
 	if(bin.IsError())
 	{
-		ErrMsg("Net_OnCritterNewXY","Wrong MSG data for Net_OnChosenAddObject!\n");
+		ReportErrorMessage("Net_OnCritterNewXY","Wrong MSG data for Net_OnChosenAddObject!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -2336,7 +2336,7 @@ void CFEngine::Net_OnChosenAddObject()
 		id_d, id_s, aslot, time_wear, broken_info);
 }
 
-void CFEngine::Net_OnAddObjOnMap()
+void FOnlineEngine::Net_OnAddObjOnMap()
 {
 	WriteLog("Добавляеться предмет на земле...");
 
@@ -2352,7 +2352,7 @@ void CFEngine::Net_OnAddObjOnMap()
 
 	if(bin.IsError())
 	{
-		ErrMsg("Net_OnCritterNewXY","Wrong MSG data for Net_OnAddObjOnMap!\n");
+		ReportErrorMessage("Net_OnCritterNewXY","Wrong MSG data for Net_OnAddObjOnMap!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -2381,7 +2381,7 @@ void CFEngine::Net_OnAddObjOnMap()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_OnChangeObjOnMap()
+void FOnlineEngine::Net_OnChangeObjOnMap()
 {
 	WriteLog("Изменяется предмет на земле...");
 
@@ -2397,7 +2397,7 @@ void CFEngine::Net_OnChangeObjOnMap()
 
 	if(bin.IsError())
 	{
-		ErrMsg("Net_OnCritterNewXY","Wrong MSG data for Net_OnChangeObjOnMap!\n");
+		ReportErrorMessage("Net_OnCritterNewXY","Wrong MSG data for Net_OnChangeObjOnMap!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -2422,7 +2422,7 @@ void CFEngine::Net_OnChangeObjOnMap()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_OnRemObjFromMap()
+void FOnlineEngine::Net_OnRemObjFromMap()
 {
 	WriteLog("Удаляеться предмет с земли...");
 
@@ -2436,7 +2436,7 @@ void CFEngine::Net_OnRemObjFromMap()
 
 	if(bin.IsError())
 	{
-		ErrMsg("Net_OnCritterNewXY","Wrong MSG data for Net_OnRemObjFromMap!\n");
+		ReportErrorMessage("Net_OnCritterNewXY","Wrong MSG data for Net_OnRemObjFromMap!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -2461,7 +2461,7 @@ void CFEngine::Net_OnRemObjFromMap()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_OnChosenTalk()
+void FOnlineEngine::Net_OnChosenTalk()
 {
 	WriteLog("Новая диалоговая ветка...");
 
@@ -2495,7 +2495,7 @@ void CFEngine::Net_OnChosenTalk()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_OnGameTime()
+void FOnlineEngine::Net_OnGameTime()
 {
 	WriteLog("Сведения о игровом времени...");
 
@@ -2512,7 +2512,7 @@ void CFEngine::Net_OnGameTime()
 	WriteLog("OK\n");
 }
 
-void CFEngine::Net_OnLoadMap()
+void FOnlineEngine::Net_OnLoadMap()
 {
 	WriteLog("Приказ смены карты...\n");
 
@@ -2549,12 +2549,12 @@ void CFEngine::Net_OnLoadMap()
 	WriteLog("Local OK\n");
 }
 
-void CFEngine::Net_OnMap()
+void FOnlineEngine::Net_OnMap()
 {
 
 }
 
-void CFEngine::Net_OnGlobalInfo()
+void FOnlineEngine::Net_OnGlobalInfo()
 {
 	WriteLog("Сведения о глобале...");
 
@@ -2604,7 +2604,7 @@ void CFEngine::Net_OnGlobalInfo()
 		gm_crits.clear();
 
 		uint8_t count_group;
-		CrID id_crit;
+		CritterID id_crit;
 		char cur_name[MAX_NAME+1];
 		uint16_t flags_crit;
 
@@ -2728,7 +2728,7 @@ void CFEngine::Net_OnGlobalInfo()
 }
 //!Cvet -----------------------------------------------------------------------------
 
-int CFEngine::NetOutput()
+int FOnlineEngine::NetOutput()
 {
 	if(!bout.writePosition) return 1;
 	int tosend=bout.writePosition;
@@ -2739,7 +2739,7 @@ int CFEngine::NetOutput()
 		sendpos+=bsent;
 		if(bsent==SOCKET_ERROR)
 		{
-			ErrMsg("NetOutput", "SOCKET_ERROR whilesend forserver\n");
+			ReportErrorMessage("NetOutput", "SOCKET_ERROR whilesend forserver\n");
 			state=STATE_DISCONNECT;
 			return 0;
 		}
@@ -2754,11 +2754,11 @@ int CFEngine::NetOutput()
 	return 1;
 }
 
-int CFEngine::NetInput() {
+int FOnlineEngine::NetInput() {
 	int len = recv(sock,ComBuf,comlen,0);
 	if (len == SOCKET_ERROR || !len) {
-		//ErrMsg("CFEngine::NetInput","Socket error!\r\n");
-		WriteLog("CFEngine::NetInput - Socket error!\r\n");
+		//ReportErrorMessage("FOnlineEngine::NetInput","Socket error!\r\n");
+		WriteLog("FOnlineEngine::NetInput - Socket error!\r\n");
 		return 0;
 	}
 	
@@ -2792,7 +2792,7 @@ int CFEngine::NetInput() {
 
 	if(inflate(&zstrm,Z_SYNC_FLUSH)!=Z_OK)
 	{
-		ErrMsg("CFEngine::NetInput","Inflate error!\r\n");
+		ReportErrorMessage("FOnlineEngine::NetInput","Inflate error!\r\n");
 		return 0;
 	}
 
@@ -2808,7 +2808,7 @@ int CFEngine::NetInput() {
 
 		if(inflate(&zstrm,Z_SYNC_FLUSH)!=Z_OK)
 		{
-			ErrMsg("CFEngine::NetInput","Inflate continue error!\r\n");
+			ReportErrorMessage("FOnlineEngine::NetInput","Inflate continue error!\r\n");
 			return 0;
 		}
 		bin.writePosition+=zstrm.next_out-(UCHAR*)bin.data;
@@ -2823,7 +2823,7 @@ int CFEngine::NetInput() {
 
 /*
 // Менеджер загрузки любых анимаций
-int CFEngine::LoadAnyAnims(int atype,AnyAnimData* pany)
+int FOnlineEngine::LoadAnyAnims(int atype,AnyAnimData* pany)
 {
 	if(!pany) return 0;
 
@@ -2845,7 +2845,7 @@ int CFEngine::LoadAnyAnims(int atype,AnyAnimData* pany)
 }
 
 // анимация интерфейса
-void CFEngine::IntAnim()
+void FOnlineEngine::IntAnim()
 {   
     endanim=lpAnyData->eng;
 	endanim->cnt_frames=5; // счетчик
@@ -2855,20 +2855,20 @@ void CFEngine::IntAnim()
 }
 */
 
-void CFEngine::SetColor(uint8_t r,uint8_t g,uint8_t b)
+void FOnlineEngine::SetColor(uint8_t r,uint8_t g,uint8_t b)
 {
 	sm.SetColor(D3DCOLOR_ARGB(255,r+opt_light,g+opt_light,b+opt_light));
 	hf.OnChangeCol();
 }
 
 // !Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void CFEngine::SetColor(uint32_t color)
+void FOnlineEngine::SetColor(uint32_t color)
 {
 	sm.SetColor(color);
 	hf.OnChangeCol();
 }
 
-CCritter* CFEngine::AddCritter(crit_info* pinfo)
+CCritter* FOnlineEngine::AddCritter(crit_info* pinfo)
 {
 	CCritter* pcrit=new CCritter(&sm);
 
@@ -2928,7 +2928,7 @@ CCritter* CFEngine::AddCritter(crit_info* pinfo)
 	return pcrit;
 }
 
-int CFEngine::GetMouseTile(int cursor_x, int cursor_y)
+int FOnlineEngine::GetMouseTile(int cursor_x, int cursor_y)
 {
 	TargetX=0;
 	TargetY=0;
@@ -2938,7 +2938,7 @@ int CFEngine::GetMouseTile(int cursor_x, int cursor_y)
 	return hf.GetTilePixel(cursor_x,cursor_y,&TargetX,&TargetY);
 }
 
-CCritter* CFEngine::GetMouseCritter(int cursor_x, int cursor_y)
+CCritter* FOnlineEngine::GetMouseCritter(int cursor_x, int cursor_y)
 {
 	CCritter* cr;
 
@@ -2954,18 +2954,18 @@ CCritter* CFEngine::GetMouseCritter(int cursor_x, int cursor_y)
 	return NULL;
 }
 
-int CFEngine::GetMouseScenery(int cursor_x, int cursor_y)
+int FOnlineEngine::GetMouseScenery(int cursor_x, int cursor_y)
 {
 	
 	return 0;
 }
 
-ItemObj* CFEngine::GetMouseItem(int cursor_x, int cursor_y)
+ItemObj* FOnlineEngine::GetMouseItem(int cursor_x, int cursor_y)
 {
 	return hf.GetItemPixel(cursor_x,cursor_y);
 }
 
-int CFEngine::CheckRegData(crit_info* newcr)
+int FOnlineEngine::CheckRegData(crit_info* newcr)
 {
 //ПРОВЕРКА ДАННЫХ
 	WriteLog("Проверка данных регистрации... ");
@@ -3046,7 +3046,7 @@ int CFEngine::CheckRegData(crit_info* newcr)
 	return 1;
 }
 
-void CFEngine::ProccessDayTime()
+void FOnlineEngine::ProccessDayTime()
 {
 	if(GetTickCount()-Game_TimeTick<1000) return;
 
@@ -3056,7 +3056,7 @@ void CFEngine::ProccessDayTime()
 	SetDayTime(Game_CurTime);
 }
 
-void CFEngine::SetDayTime(uint32_t time_ms)
+void FOnlineEngine::SetDayTime(uint32_t time_ms)
 {
 	static const uint16_t DAY_MIN=24*60;
 
@@ -3105,7 +3105,7 @@ void CFEngine::SetDayTime(uint32_t time_ms)
 	}
 }
 
-void CFEngine::ChosenProcess()
+void FOnlineEngine::ChosenProcess()
 {
 	if(!lpChosen) return;
 
@@ -3350,7 +3350,7 @@ void CFEngine::ChosenProcess()
 	EraseFrontChosenAction();
 }
 
-void CFEngine::CreateParamsMaps()
+void FOnlineEngine::CreateParamsMaps()
 {
 	stats_map.insert(params_map::value_type("ST_STRENGHT",				ST_STRENGHT));
 	stats_map.insert(params_map::value_type("ST_PERCEPTION",			ST_PERCEPTION));
@@ -3681,7 +3681,7 @@ void CFEngine::CreateParamsMaps()
 	object_map.insert(params_map::value_type("OBJ_AMMO_DD",				OBJ_AMMO_DD));
 }
 
-void CFEngine::DoLost()
+void FOnlineEngine::DoLost()
 {
 	cmn_lost=1;
 	islost=1;
@@ -3698,7 +3698,7 @@ void CFEngine::DoLost()
 	}
 }
 
-void CFEngine::TryExit()
+void FOnlineEngine::TryExit()
 {
 	if(state==STATE_DISCONNECT)
 	{
@@ -3708,7 +3708,7 @@ void CFEngine::TryExit()
 	NetDiscon();
 }
 
-void CFEngine::GetRandomSplash(char* splash_name)
+void FOnlineEngine::GetRandomSplash(char* splash_name)
 {
 	char path_splash[128];
 	strcpy(path_splash,".\\data\\");

@@ -55,7 +55,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 			D3DFMT_UNKNOWN,D3DPOOL_MANAGED,D3DX_DEFAULT,D3DX_DEFAULT,D3DCOLOR_ARGB(255,0,0,0),NULL,NULL,&fonts[cur_f].fontSurface);
 		if(hr!=D3D_OK)
 		{
-			ErrMsg("CFont CreateFontSurf","Не могу создать текстуру %s",path);
+			ReportErrorMessage("CFont CreateFontSurf","Не могу создать текстуру %s",path);
 			return 0;
 		} 
 
@@ -73,7 +73,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 
 		if(hFile==INVALID_HANDLE_VALUE)
 		{
-			ErrMsg("CFont LoadLetters","Не могу найти %s",path);
+			ReportErrorMessage("CFont LoadLetters","Не могу найти %s",path);
 			return 0;
 		}
 

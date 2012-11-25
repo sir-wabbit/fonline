@@ -46,7 +46,7 @@ char* LoginMess[50]=
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-int CFEngine::Init_Iface()
+int FOnlineEngine::Init_Iface()
 {
 	WriteLog("Инициализация интерфейса...\n");
 
@@ -720,7 +720,7 @@ WriteLog("time load sound:%d\n",GetTickCount()-gtime);
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::InvDraw() 
+void FOnlineEngine::InvDraw() 
 {
 	sm.DrawSprite(invbox,InvX,InvY,COLOR_DEFAULT); //инвентарь
 
@@ -822,7 +822,7 @@ void CFEngine::InvDraw()
 	fnt.RenderText(r1,playstr,0);
 }
 
-int CFEngine::InvMouseDown()
+int FOnlineEngine::InvMouseDown()
 {
 	//hold 0-нигде 1-scrup 2-scrdown 3-ОК 4-main
 	//основной инвентарь 
@@ -909,7 +909,7 @@ int CFEngine::InvMouseDown()
 return 0;
 }
 
-int CFEngine::InvMouseUp()
+int FOnlineEngine::InvMouseUp()
 {
 	if(lpChosen->m_obj)
 	{
@@ -994,7 +994,7 @@ int CFEngine::InvMouseUp()
 	return 1;
 }
 
-void CFEngine::InvMouseMove()
+void FOnlineEngine::InvMouseMove()
 {
 	if(InvHold!=4) return;
 
@@ -1011,7 +1011,7 @@ void CFEngine::InvMouseMove()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::IntDraw()
+void FOnlineEngine::IntDraw()
 {
 	if(edit_mode) sm.DrawSprite(panel,IntX+5,IntY-40,COLOR_DEFAULT);
 
@@ -1136,7 +1136,7 @@ void CFEngine::IntDraw()
 	}
 }
 
-int CFEngine::IntMouseDown()
+int FOnlineEngine::IntMouseDown()
 {
 	IntHold=0;
 
@@ -1174,7 +1174,7 @@ int CFEngine::IntMouseDown()
 	return 0;
 }
 
-int CFEngine::IntMouseUp()
+int FOnlineEngine::IntMouseUp()
 {
 	if(cur_x>=IntBScrUp[0] && cur_y>=IntBScrUp[1] && cur_x<=IntBScrUp[2] && cur_y<=IntBScrUp[3] && IntHold==1 )
 	{
@@ -1251,7 +1251,7 @@ int CFEngine::IntMouseUp()
 	return 1;
 }
 
-void CFEngine::IntMouseMove()
+void FOnlineEngine::IntMouseMove()
 {
 	static uint32_t mouse_stay=GetTickCount();
 	static int x_stay=cur_x;
@@ -1291,7 +1291,7 @@ void CFEngine::IntMouseMove()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::AddMess(uint32_t text_color,char* message_text, ...)
+void FOnlineEngine::AddMess(uint32_t text_color,char* message_text, ...)
 {
 	if(++max_mess>=MAX_MESS)
 	{
@@ -1309,7 +1309,7 @@ void CFEngine::AddMess(uint32_t text_color,char* message_text, ...)
 	sprintf(all_mess[max_mess],"|%d - %s\n",text_color,temp_str);
 }
 
-void CFEngine::MessBoxDrawText()
+void FOnlineEngine::MessBoxDrawText()
 {
 	if(!max_mess) return;
 
@@ -1364,7 +1364,7 @@ void CFEngine::MessBoxDrawText()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::ShowLogIn()
+void FOnlineEngine::ShowLogIn()
 {
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 	lpDevice->BeginScene();
@@ -1410,7 +1410,7 @@ void CFEngine::ShowLogIn()
 	lpDevice->Present(NULL,NULL,NULL,NULL);
 }
 
-void CFEngine::LogInput()
+void FOnlineEngine::LogInput()
 {
 	DIDEVICEOBJECTDATA didod[DI_BUF_SIZE];
 	DWORD dwElements;
@@ -1497,7 +1497,7 @@ void CFEngine::LogInput()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::ShowRegistration()
+void FOnlineEngine::ShowRegistration()
 {
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 	lpDevice->BeginScene();
@@ -1576,7 +1576,7 @@ void CFEngine::ShowRegistration()
 	lpDevice->Present(NULL,NULL,NULL,NULL);
 }
 
-void CFEngine::RegInput()
+void FOnlineEngine::RegInput()
 {
 	DIDEVICEOBJECTDATA didod[DI_BUF_SIZE];
 	DWORD dwElements;
@@ -1721,7 +1721,7 @@ void CFEngine::RegInput()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::DlgDraw()
+void FOnlineEngine::DlgDraw()
 {
 	SpriteInfo* spr_inf=sm.GetSpriteInfo(dialog_begin);
 	if(!spr_inf) return;
@@ -1767,7 +1767,7 @@ void CFEngine::DlgDraw()
 	}
 }
 
-void CFEngine::DlgMouseMove()
+void FOnlineEngine::DlgMouseMove()
 {
 	int dmm=0;
 
@@ -1800,7 +1800,7 @@ void CFEngine::DlgMouseMove()
 	}
 }
 
-void CFEngine::DlgMouseDown()
+void FOnlineEngine::DlgMouseDown()
 {
 	DlgHold=DLG_HOLD_NONE;
 
@@ -1822,7 +1822,7 @@ void CFEngine::DlgMouseDown()
 	return;
 }
 
-void CFEngine::DlgMouseUp()
+void FOnlineEngine::DlgMouseUp()
 {
 	if(DlgHold==DLG_HOLD_ANSW)
 		if((DlgCurAnsw>=0)&&(DlgCurAnsw<all_answers))
@@ -1834,7 +1834,7 @@ void CFEngine::DlgMouseUp()
 	DlgHold=DLG_HOLD_NONE;
 }
 
-int CFEngine::LoadDialogFromFile(CrID id_npc, uint32_t id_dialog, char* dialog)
+int FOnlineEngine::LoadDialogFromFile(CritterID id_npc, uint32_t id_dialog, char* dialog)
 {
 //определяем путь
 	char path_text[64];
@@ -1918,7 +1918,7 @@ int CFEngine::LoadDialogFromFile(CrID id_npc, uint32_t id_dialog, char* dialog)
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::LMenuTryCreate()
+void FOnlineEngine::LMenuTryCreate()
 {
 	if(GetTickCount()-LMenu_start_time < LMENU_SHOW_TIME) return;
 	if(IsLMenu()) return;
@@ -1964,7 +1964,7 @@ void CFEngine::LMenuTryCreate()
 	LMenu_try_activated=false;	
 }
 
-void CFEngine::LMenuDraw()
+void FOnlineEngine::LMenuDraw()
 {
 	if(!IsLMenu()) return;
 	if(!LMenu_nodes) { WriteLog("!!!WARNING!!! Отрисовка ЛМеню - пустой указатель\n"); return; }
@@ -2019,7 +2019,7 @@ void CFEngine::LMenuDraw()
 	}
 }
 
-void CFEngine::LMenuMouseMove()
+void FOnlineEngine::LMenuMouseMove()
 {
 	if(!LMenu_nodes) { WriteLog("!!!WARNING!!! Движение ЛМеню - невалидный указатель\n"); return; }
 
@@ -2028,7 +2028,7 @@ void CFEngine::LMenuMouseMove()
 	if(LMenu_cur_node>LMenu_nodes->size()-1) LMenu_cur_node=LMenu_nodes->size()-1;
 }
 
-void CFEngine::LMenuMouseUp()
+void FOnlineEngine::LMenuMouseUp()
 {
 	LMenu_list::iterator it_l=LMenu_nodes->begin();
 	it_l+=LMenu_cur_node;
@@ -2118,7 +2118,7 @@ void CFEngine::LMenuMouseUp()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::SetScreen(uint8_t new_screen)
+void FOnlineEngine::SetScreen(uint8_t new_screen)
 {
 	screen_mode=new_screen;
 
@@ -2151,7 +2151,7 @@ void CFEngine::SetScreen(uint8_t new_screen)
 	}
 }
 
-void CFEngine::SetCur(uint8_t new_cur)
+void FOnlineEngine::SetCur(uint8_t new_cur)
 {
 	cur_mode=new_cur;
 
@@ -2179,7 +2179,7 @@ void CFEngine::SetCur(uint8_t new_cur)
 	}
 }
 
-void CFEngine::SetLMenu(uint8_t set_lmenu)
+void FOnlineEngine::SetLMenu(uint8_t set_lmenu)
 {
 	LMenu_mode=set_lmenu;
 
@@ -2245,7 +2245,7 @@ void CFEngine::SetLMenu(uint8_t set_lmenu)
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::CreateStringsParamsMaps()
+void FOnlineEngine::CreateStringsParamsMaps()
 {
 	stats_str_map.insert(params_str_map::value_type(ST_STRENGHT,			"Сила"));
 	stats_str_map.insert(params_str_map::value_type(ST_PERCEPTION,			"Восприятие"));
@@ -2579,7 +2579,7 @@ void CFEngine::CreateStringsParamsMaps()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::LmapPrepareMap()
+void FOnlineEngine::LmapPrepareMap()
 {
 	int bx,by,ex,ey;
 	bx=lpChosen->hex_x;
@@ -2685,7 +2685,7 @@ void CFEngine::LmapPrepareMap()
 	}
 }
 
-void CFEngine::LmapDraw()
+void FOnlineEngine::LmapDraw()
 {
 	sm.DrawSprite(lmap_main,LmapMain[0]+LmapX,LmapMain[1]+LmapY,COLOR_DEFAULT);
 
@@ -2702,7 +2702,7 @@ void CFEngine::LmapDraw()
 	if(switch_HI==true) sm.DrawSprite(lmap_blohi_on,LmapBLoHi[0]+LmapX,LmapBLoHi[1]+LmapY,COLOR_DEFAULT);
 }
 
-void CFEngine::LmapMouseDown()
+void FOnlineEngine::LmapMouseDown()
 {
 	LmapHold=0;
 	if(cur_x>=LmapBOk[0]+LmapX   && cur_y>=LmapBOk[1]+LmapY   && cur_x<=LmapBOk[2]+LmapX   && cur_y<=LmapBOk[3]+LmapY)
@@ -2715,7 +2715,7 @@ void CFEngine::LmapMouseDown()
 	{ LmapHold=4; lmapvectx=cur_x-LmapX; lmapvecty=cur_y-LmapY; return; }
 }
 
-void CFEngine::LmapMouseMove()
+void FOnlineEngine::LmapMouseMove()
 {
 	if(LmapHold==4)
 	{
@@ -2729,7 +2729,7 @@ void CFEngine::LmapMouseMove()
 	}
 }
 
-void CFEngine::LmapMouseUp()
+void FOnlineEngine::LmapMouseUp()
 {
 	if(cur_x>=LmapBOk[0]+LmapX   && cur_y>=LmapBOk[1]+LmapY   && cur_x<=LmapBOk[2]+LmapX   && cur_y<=LmapBOk[3]+LmapY   && LmapHold==1)
 	{
@@ -2754,7 +2754,7 @@ void CFEngine::LmapMouseUp()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::GmapNullParams()
+void FOnlineEngine::GmapNullParams()
 {
 	GmapGroupXf=0;
 	GmapGroupYf=0;
@@ -2780,7 +2780,7 @@ void CFEngine::GmapNullParams()
 	gm_process=false;
 }
 
-void CFEngine::GmapProcess()
+void FOnlineEngine::GmapProcess()
 {
 	if(gm_process==false)
 	{
@@ -2861,7 +2861,7 @@ void CFEngine::GmapProcess()
 	}
 }
 
-void CFEngine::GmapDraw()
+void FOnlineEngine::GmapDraw()
 {
 //	lpDevice->Clear(0,0,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 	lpDevice->BeginScene();
@@ -3123,7 +3123,7 @@ void CFEngine::GmapDraw()
 	lpDevice->Present(NULL,NULL,NULL,NULL);
 }
 
-void CFEngine::GmapInput()
+void FOnlineEngine::GmapInput()
 {
 	DIDEVICEOBJECTDATA didod[DI_BUF_SIZE];
 	DWORD dwElements;
@@ -3218,7 +3218,7 @@ void CFEngine::GmapInput()
 	}
 }
 
-void CFEngine::GmapMouseDown()
+void FOnlineEngine::GmapMouseDown()
 {
 	GmapHold=0;
 	if(cur_x>=GmapWMap[0] && cur_y>=GmapWMap[1] && cur_x<=GmapWMap[2] && cur_y<=GmapWMap[3])
@@ -3256,7 +3256,7 @@ void CFEngine::GmapMouseDown()
 	{ GmapHold=9; last_scr=GetTickCount(); return; }
 }
 
-void CFEngine::GmapMouseUp()
+void FOnlineEngine::GmapMouseUp()
 {
 	BREAK_BEGIN
 
@@ -3326,7 +3326,7 @@ void CFEngine::GmapMouseUp()
 	GmapHold=0;
 }
 
-void CFEngine::GmapMouseMove()
+void FOnlineEngine::GmapMouseMove()
 {
 	if(GmapMapScrollEnable==true)
 	{
@@ -3343,7 +3343,7 @@ void CFEngine::GmapMouseMove()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::SboxDraw()
+void FOnlineEngine::SboxDraw()
 {
 	sm.DrawSprite(sbox_main,SboxMain[0]+SboxX,SboxMain[1]+SboxY,COLOR_DEFAULT);
 
@@ -3387,7 +3387,7 @@ void CFEngine::SboxDraw()
 	fnt.RenderText(rrepair,bin_str,0,COLOR_DEFAULT,FONT_BIG_NUM);
 }
 
-void CFEngine::SboxMouseDown()
+void FOnlineEngine::SboxMouseDown()
 {
 	SboxHold=0;
 	if(cur_x>=SboxBCancel[0]+SboxX && cur_y>=SboxBCancel[1]+SboxY && cur_x<=SboxBCancel[2]+SboxX && cur_y<=SboxBCancel[3]+SboxY)
@@ -3412,7 +3412,7 @@ void CFEngine::SboxMouseDown()
 	{ SboxHold=10; sboxvectx=cur_x-SboxX; sboxvecty=cur_y-SboxY; return; }
 }
 
-void CFEngine::SboxMouseMove()
+void FOnlineEngine::SboxMouseMove()
 {
 	if(SboxHold==10)
 	{
@@ -3426,7 +3426,7 @@ void CFEngine::SboxMouseMove()
 	}
 }
 
-void CFEngine::SboxMouseUp()
+void FOnlineEngine::SboxMouseUp()
 {
 	BREAK_BEGIN
 		if(!lpChosen->IsFree()) break;
@@ -3467,7 +3467,7 @@ void CFEngine::SboxMouseUp()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::MoptDraw()
+void FOnlineEngine::MoptDraw()
 {
 	sm.DrawSprite(mopt_main,MoptMain[0],MoptMain[1],COLOR_DEFAULT);
 
@@ -3475,7 +3475,7 @@ void CFEngine::MoptDraw()
 	if(MoptHold==2) sm.DrawSprite(mopt_bexit_on,MoptBExit[0],MoptBExit[1],COLOR_DEFAULT);
 }
 
-void CFEngine::MoptMouseDown()
+void FOnlineEngine::MoptMouseDown()
 {
 	MoptHold=0;
 	if(cur_x>=MoptBResume[0] && cur_y>=MoptBResume[1] && cur_x<=MoptBResume[2] && cur_y<=MoptBResume[3])
@@ -3484,7 +3484,7 @@ void CFEngine::MoptMouseDown()
 	{ MoptHold=2; return; }
 }
 
-void CFEngine::MoptMouseUp()
+void FOnlineEngine::MoptMouseUp()
 {
 	if(cur_x>=MoptBResume[0] && cur_y>=MoptBResume[1] && cur_x<=MoptBResume[2] && cur_y<=MoptBResume[3] && MoptHold==1)
 	{ SetScreen(SCREEN_MAIN); }
@@ -3498,7 +3498,7 @@ void CFEngine::MoptMouseUp()
 //******************************************************************************************************************************
 //==============================================================================================================================
 
-void CFEngine::CurDraw()
+void FOnlineEngine::CurDraw()
 {
 	if((IsCur(CUR_DEFAULT) || IsCur(CUR_USE_OBJECT) || IsCur(CUR_USE_SKILL) || IsCur(CUR_WAIT)) && !IsLMenu())
 	{

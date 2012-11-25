@@ -716,7 +716,7 @@ void SQL::DeleteDataNPC(crit_info* info)
 	Query("DELETE FROM npc WHERE id='%d'",info->id);
 }
 
-int SQL::CheckVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, int count)
+int SQL::CheckVarNPC(CritterID npc_id, std::string var_name, CritterID player_id, char oper, int count)
 {
 	char uniq_name[80];
 
@@ -764,7 +764,7 @@ int SQL::CheckVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, in
 	return 0;
 }
 
-void SQL::ChangeVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, int count)
+void SQL::ChangeVarNPC(CritterID npc_id, std::string var_name, CritterID player_id, char oper, int count)
 {
 	char uniq_name[80];
 
@@ -815,7 +815,7 @@ void SQL::ChangeVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, 
 	}
 }
 
-int SQL::CheckVar(CrID crid, uint16_t var_num, char oper, int count)
+int SQL::CheckVar(CritterID crid, uint16_t var_num, char oper, int count)
 {
 	char stradd[256];
 
@@ -880,7 +880,7 @@ int SQL::CheckVar(CrID crid, uint16_t var_num, char oper, int count)
 	return 0;
 }
 
-void SQL::ChangeVar(CrID crid, uint16_t var_num, char oper, int count)
+void SQL::ChangeVar(CritterID crid, uint16_t var_num, char oper, int count)
 {
 	char stradd[256];
 
@@ -955,7 +955,7 @@ void SQL::ChangeVar(CrID crid, uint16_t var_num, char oper, int count)
 	LogExecStr("mySQL ChangeVar error mysql_store_result\n");
 }
 
-int SQL::CheckQuest(CrID crid, uint16_t quest_num, char choose, int count)
+int SQL::CheckQuest(CritterID crid, uint16_t quest_num, char choose, int count)
 {
 	char stradd[256];
 
@@ -986,7 +986,7 @@ int SQL::CheckQuest(CrID crid, uint16_t quest_num, char choose, int count)
 	return 1;
 }
 
-void SQL::ChangeQuest(CrID crid, uint16_t quest_num, char choose, int count)
+void SQL::ChangeQuest(CritterID crid, uint16_t quest_num, char choose, int count)
 {
 	char stradd[256];
 
@@ -1387,7 +1387,7 @@ void SQL::DeleteDataObject(dyn_obj* obj)
 	}
 }
 
-void SQL::AddCheat(CrID user_id, char* text_cheat)
+void SQL::AddCheat(CritterID user_id, char* text_cheat)
 {
 	Query("INSERT INTO `users_cheat` (user_id,text_cheat) VALUES ('%d','%s');",user_id,text_cheat);
 }

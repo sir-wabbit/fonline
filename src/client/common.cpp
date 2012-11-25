@@ -2,6 +2,95 @@
 
 #include "common.h"
 
+#include <Windows.h>
+#include <dxerr8.h>
+#include <tchar.h>
+#include <assert.h>
+
+VOID ToUTF16(LPCSTR lpText, LPWSTR lpWText, SIZE_T szWText) {
+  size_t szText = lstrlenA(lpText);
+  size_t wCaptionLen = MultiByteToWideChar(CP_UTF8, 0, lpText, szText, lpWText, szWText / sizeof(wchar_t) - 1);
+  lpWText[wCaptionLen] = 0;
+}
+
+char* ToUTF8(LPCWSTR lpWText) {
+  int iSize = WideCharToMultiByte(CP_UTF8, 0, lpWText, -1, NULL, 0, NULL, NULL);
+  if (iSize == 0) {
+    return NULL;
+  }
+
+  char* result = (char*) malloc(iSize + 1);
+
+  iSize = WideCharToMultiByte(CP_UTF8, 0, lpWText, -1, result, iSize, NULL, NULL);
+  if (iSize == 0) {
+    return NULL;
+  }
+
+  return result;
+}
+
+int WINAPI MessageBoxU(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType) {
+  wchar_t wCaption[2048];
+  wchar_t wText[2048];
+  ToUTF16(lpCaption, wCaption, sizeof(wCaption));
+  ToUTF16(lpText, wText, sizeof(wText));
+  return MessageBoxW(hWnd, wText, wCaption, uType);
+}
+
+char* FormatStdCError(errno_t errorCode) {
+  return strdup(strerror(errorCode));
+}
+
+char* FormatDirectXError(HRESULT errorCode) {
+  LPCWSTR lpMsgBuf = DXGetErrorString8W(errorCode);
+  
+  char* result = ToUTF8(lpMsgBuf);
+
+  if (result == NULL) {
+    return strdup("Could not convert error message to UTF8.");
+  }
+
+  return result;
+}
+
+char* FormatWin32Error(DWORD errCode) {
+  LPWSTR lpMsgBuf;
+
+  BOOL bOk = FormatMessageW(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+    NULL,
+    errCode,
+    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+    (LPWSTR) &lpMsgBuf,
+    0,
+    NULL
+  );
+  
+  if (!bOk) {
+    return strdup("Could not format error message.");
+  }
+
+  LPWSTR p = wcschr(lpMsgBuf, L'\r');
+  if(p != NULL) {
+    *p = L'\0';
+  }
+
+  char* result = ToUTF8(lpMsgBuf);
+  
+  if (result == NULL) {
+    return strdup("Could not convert error message to UTF8.");
+  }
+
+  return result;
+}
+
+char* FormatLastWin32Error() {
+  DWORD dwError = ::GetLastError();
+  char* result = FormatWin32Error(dwError);
+  ::SetLastError(dwError);
+  return result;
+}
+
 bool cmn_Quit=0;
 bool cmn_lost=0;
 
@@ -92,7 +181,7 @@ int view_cy[]={26,34,46};
 
 #include <IniFile/IniFile.hpp>
 
-void GetOptions()
+void LoadSettings()
 {
   using namespace IniFile;
 
@@ -174,78 +263,54 @@ void GetOptions()
 	opt_crfol += "art\\critters\\critters.fol";
 }
 
+FILE* logFile = NULL;
 
-
-HANDLE hLogFile=NULL;
-
-int StartLogFile()
-{
-	hLogFile=CreateFile("FOnline.log",GENERIC_WRITE,FILE_SHARE_READ,NULL,CREATE_ALWAYS,FILE_FLAG_WRITE_THROUGH,NULL);
-	if(hLogFile==INVALID_HANDLE_VALUE) return 0;
-
+int OpenLogFile() {
+  logFile = fopen("FOnline.log", "w+b");
+  
+  if (logFile == NULL) {
+    return 0;
+  }
+  
 	return 1;
 }
 
-void CloseLogFile()
-{
-	if(hLogFile) CloseHandle(hLogFile);
-}
-
-void WriteLog(char* frmt, ...)
-{
-	if(!hLogFile) return;
-	
-	char str[2048];
-
-  va_list list;
-
-  va_start(list, frmt);
-  vsprintf(str, frmt, list);
-  va_end(list);
-
-	DWORD br;
-	WriteFile(hLogFile,str,strlen(str),&br,NULL);
-}
-
-void ErrMsg(char* hdr, char* frmt, ...)
-{
-	char str[2048];
-
-  va_list list;
-
-  va_start(list, frmt);
-  size_t len = vsprintf(str, frmt, list);
-  va_end(list);
-
-	if(!opt_fullscr) {
-    wchar_t wbuf[2048];
-    size_t wlen = MultiByteToWideChar(CP_UTF8, 0, str, len, wbuf, sizeof(wbuf) / sizeof(wchar_t) - 1);
-    wbuf[wlen] = 0;
-    
-    wchar_t whdr[2048];
-    size_t whdrlen = MultiByteToWideChar(CP_UTF8, 0, hdr, strlen(hdr), whdr, sizeof(whdr) / sizeof(wchar_t) - 1);
-    whdr[whdrlen] = 0;
-    
-	  MessageBoxW(NULL, wbuf, whdr, MB_OK|MB_ICONERROR);
-	
-	} else {
-	  DWORD br;
-		char str2[1024]="\n\nErrMsg> ";
-		strcat(str2,str);
-		strcat(str2,"\n");
-		WriteFile(hLogFile,str2,strlen(str2),&br,NULL);
+void CloseLogFile() {
+	if (logFile != NULL) {
+	  fclose(logFile);
+	  logFile = NULL;
 	}
 }
 
-void InfoMsg(char* frmt, ...)
-{
-	char str[2048];
+void WriteLog(char* fmt, ...) {
+	if (logFile == NULL) {
+	  return;
+	}
+	
+	char buf[2048];
 
-    va_list list;
+  va_list list;
 
-    va_start(list, frmt);
-    wvsprintf(str, frmt, list);
-    va_end(list);
+  va_start(list, fmt);
+  vsnprintf(buf, sizeof(buf) - 1, fmt, list);
+  va_end(list);
 
-	MessageBox(NULL,str,"FOnline Info",MB_OK|MB_ICONINFORMATION);
+  fprintf(logFile, "%s", buf);
+  fflush(logFile);
+}
+
+void ReportErrorMessage(char* hdr, char* fmt, ...) {
+	char buf[2048];
+
+  va_list list;
+
+  va_start(list, fmt);
+  vsnprintf(buf, sizeof(buf) - 1, fmt, list);
+  va_end(list);
+
+	if(!opt_fullscr) {
+	  MessageBoxU(NULL, buf, hdr, MB_OK|MB_ICONERROR);	
+	} else {
+		WriteLog("\n\nErrMsg> %s", buf);
+	}
 }

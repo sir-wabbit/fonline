@@ -21,7 +21,7 @@ void zlib_free(void *opaque, void *address);
 
 #define MAX_CCritterS 100
 
-CrID busy[MAX_CCritterS];
+CritterID busy[MAX_CCritterS];
 
 //!Cvet изменил концепцию ++++
 //команда без префикса ~
@@ -200,7 +200,7 @@ int CServer::ConnectClient(SOCKET serv)
 	return 1;
 }
 
-void CServer::DisconnectClient(CrID idchannel)
+void CServer::DisconnectClient(CritterID idchannel)
 {
 	LogExecStr("Disconnecting a client with the channel id =  %d...", idchannel);
 
@@ -243,7 +243,7 @@ void CServer::DisconnectClient(CrID idchannel)
 	LogExecStr("Отсоединение завершено. Всего клиентов в игре: %d\n",NumClients);
 }
 
-void CServer::RemoveCritter(CrID id)
+void CServer::RemoveCritter(CritterID id)
 {
 	LogExecStr("Удаляем криттера id=%d\n",id);
 
@@ -461,7 +461,7 @@ int CServer::Input(CCritter* acl)
 
 void CServer::Process(CCritter* acl) // Лист Событий
 {
-	MSGTYPE msg;
+	MessageType msg;
 
 	if(acl->state==STATE_CONN) //!Cvet ++++
 	{
@@ -828,7 +828,7 @@ void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
 	vic_len=strlen(VicStr);
 	all_len=strlen(AllStr);
 
-	MSGTYPE msg=NETMSG_CRITTERTEXT;
+	MessageType msg=NETMSG_CRITTERTEXT;
 
 	CCritter* c;
 	for(cl_map::iterator it=cl.begin();it!=cl.end();it++)

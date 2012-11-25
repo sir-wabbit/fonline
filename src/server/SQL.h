@@ -17,7 +17,7 @@
 const uint8_t NPC_VAR_LOCAL	=0;
 const uint8_t NPC_VAR_GLOBAL	=1;
 
-typedef set<char> true_char_set;
+typedef std::set<char> true_char_set;
 
 class SQL  
 {
@@ -60,16 +60,16 @@ public:
 	void DeleteDataNPC(crit_info* info);
 
 //переменные нпц
-	int CheckVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, int count);
-	void ChangeVarNPC(CrID npc_id, string var_name, CrID player_id, char oper, int count);
+	int CheckVarNPC(CritterID npc_id, std::string var_name, CritterID player_id, char oper, int count);
+	void ChangeVarNPC(CritterID npc_id, std::string var_name, CritterID player_id, char oper, int count);
 
 //переменные игроков
-	int CheckVar(CrID crid, uint16_t var_num, char oper, int count);
-	void ChangeVar(CrID crid, uint16_t var_num, char oper, int count);
+	int CheckVar(CritterID crid, uint16_t var_num, char oper, int count);
+	void ChangeVar(CritterID crid, uint16_t var_num, char oper, int count);
 
 //квесты
-	int CheckQuest(CrID crid, uint16_t quest_num, char choose, int count);
-	void ChangeQuest(CrID crid, uint16_t quest_num, char choose, int count);
+	int CheckQuest(CritterID crid, uint16_t quest_num, char choose, int count);
+	void ChangeQuest(CritterID crid, uint16_t quest_num, char choose, int count);
 
 //гвары
 //	int CheckGVar(uint16_t num_gvar, char oper, int value);
@@ -82,7 +82,7 @@ public:
 	void DeleteDataObject(dyn_obj* obj);
 
 //работа с таблицей читов
-	void AddCheat(CrID user_id, char* text_cheat);
+	void AddCheat(CritterID user_id, char* text_cheat);
 
 //сервис
 	void WriteLog(char* str);
