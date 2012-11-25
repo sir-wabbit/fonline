@@ -2,6 +2,8 @@
 
 #include "CHexField.h"
 #include "common.h"
+
+#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 /********************************************************************
 	created:	2005   22:04
 	edit:		2007   15:15

@@ -80,8 +80,9 @@ solution "fonline-open-source"
   configuration "release"
     defines { "NDEBUG" }
     flags { "Optimize" }
-    
+  
   configuration { "windows" }
+    includedirs "inc/win32"
     defines { "WIN32", "_WIN32" }
     defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
     
@@ -97,7 +98,8 @@ solution "fonline-open-source"
     includedirs { "inc", "src" }
     
     links { "fo-base",
-            "IniFile" }
+            "IniFile",
+            "SimpleLeakDetector" }
     
     files { 
       "src/client/**.hpp", 
@@ -193,3 +195,13 @@ solution "fonline-open-source"
     includedirs { "src" }
     files { "src/IniFile/*.cpp",
             "src/IniFile/*.hpp" }
+            
+  project "SimpleLeakDetector"
+    kind "SharedLib"
+    language "C++"
+    
+    defines "SIMPLELEAKDETECTOR_DLL"
+    
+    includedirs { "src" }
+    files { "src/SimpleLeakDetector/*.cpp",
+            "src/SimpleLeakDetector/*.hpp" }

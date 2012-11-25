@@ -4,6 +4,8 @@
 
 #include "common.h"
 
+#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+
 char* list_fnt[4]=
 {
 	{"fnt_def"},

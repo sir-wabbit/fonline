@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
 namespace {
