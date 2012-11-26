@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
@@ -277,7 +277,7 @@ int FileManager::LoadFile(char* fileName, int pathType)
 	return 0;
 }
 
-void FileManager::SetCurPos(uint32_t pos)
+void FileManager::SetCurrentPosition(uint32_t pos)
 {
 	if(pos<fileSize) position=pos;
 }

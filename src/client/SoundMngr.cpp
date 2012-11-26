@@ -10,7 +10,7 @@
 #include "common.h"
 #include "SoundMngr.h"
 #include "CFileMngr.h"
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 int SoundManager::Init()
 {

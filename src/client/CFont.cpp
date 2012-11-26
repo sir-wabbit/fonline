@@ -4,7 +4,7 @@
 
 #include "common.h"
 
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 char* list_fnt[4]=
 {

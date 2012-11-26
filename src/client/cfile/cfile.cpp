@@ -107,7 +107,7 @@ void CPackedFile::skip (long dist) {
 }
 
 
-int C_Z_PackedFile::read (void* buf, long toRead, long* read) {
+int InflatorStream::read (void* buf, long toRead, long* read) {
 	int res = Z_OK;
 
 	if (!buf) return 0;

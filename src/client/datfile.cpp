@@ -3,9 +3,10 @@
 #include "datfile.h"
 #include "common.h"
 
+#include <algorithm>
 #include <assert.h>
 
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 #define VER_FALLOUT1 0x00000013
 #define VER_FALLOUT2 0x10000014
@@ -169,20 +170,23 @@ int DatArchive::ReadTree()
 //------------------------------------------------------------------------------
 void DatArchive::ShowError(void)
 {
-   if(lError)
-      MessageBox(NULL, *(error_types + ErrorType), "Error", MB_OK);
-   lError = false;
+  if(lError) {
+    MessageBox(NULL, *(error_types + ErrorType), "Error", MB_OK);
+  }
+  lError = false;
 }
 //------------------------------------------------------------------------------
 
-void GetPath(char* res, char* src)
-{
-	int pos=-1;
-	for(int i=0;src[i];i++)
-		if(src[i]=='\\') pos=i;
-	memcpy(res,src,pos+1);
-	res[pos+1]=0;
-	strlwr(res);
+bool GetPath(std::string& result, const std::string& path) {
+	size_t pos = path.find_last_of('\\');
+	// FIXME[26.11.2012 alex]: it was assumed in the original code.
+	if (pos == path.npos) {
+	  result = "";
+	}
+	result = path.substr(0, pos + 1);
+  std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+  
+  return true;
 }
 
 void DatArchive::IndexingDAT() {
@@ -197,34 +201,37 @@ void DatArchive::IndexingDAT() {
   IndexMap& nmap = fmap[datFileName];
 
   WriteLog("Indexing %s...",datFileName.c_str());
-  TICK tc=GetTickCount();
-  char path[1024],fname[1024],last_path[1024];
-  last_path[0]=0;
+  TICK tc = GetTickCount();
+  
+  std::string path;
+  std::string fname;
+  std::string last_path;
+  
   ptr = buff;
-  while (true)
-  {
-    uint32_t fnsz = *(ULONG *)ptr;
-    memcpy(fname, ptr + 4, fnsz);
-    fname[fnsz] = 0;
-    GetPath(path,fname);
-    if(path[0] && strcmp(path, last_path))
-    {
-      // FIXME[26.11.2012 alex]: leak + unbearably awful code
-      char* str=new char[strlen(path)+1];
-      strcpy(str,path);
-      uint32_t sz=nmap.index.size();
-      nmap.index[str]=ptr;
-      if(sz==nmap.index.size()) {
-        delete[] str;
-      } else strcpy(last_path,path);
+  
+  while (true) {
+    assert(sizeof(size_t) >= sizeof(uint32_t));
+    size_t szFileName = *(uint32_t *)ptr;
+    ptr += 4;
+    
+    fname.assign((const char*) ptr, szFileName);
+    
+    GetPath(path, fname);
+    
+    if(path != last_path) {
+      std::string str = path;
+      if (nmap.index.find(path) == nmap.index.end()) {
+        nmap.index[path] = ptr - 4;
+      }
     }
-    if((ptr + fnsz + 17) >= ptr_end)
+    
+    if((ptr + szFileName + 13) >= ptr_end)
       break;
     else
-      ptr += fnsz + 17;
+      ptr += szFileName + 13;
   }
   ptr = buff;
-  WriteLog("for %d ms\n",GetTickCount()-tc);
+  WriteLog("for %d ms\n", GetTickCount() - tc);
 }
 
 
@@ -242,54 +249,52 @@ HANDLE DatArchive::DATOpenFile(char* fname)
 	  if(FindFile(fname))
       {
 		  if(!FileType) reader = new CPlainFile (hFile, Offset, RealSize);
-			else reader = new C_Z_PackedFile (hFile, Offset, RealSize, PackedSize);
+			else reader = new InflatorStream (hFile, Offset, RealSize, PackedSize);
          return hFile;
       }
    }
    return INVALID_HANDLE_VALUE;
 }
 //------------------------------------------------------------------------------
-bool DatArchive::FindFile(char* fname)
+bool DatArchive::FindFile(const std::string& fileName)
 {
 	
-   char str[1024], fnd[1024], path[1024];
-   strcpy(str,fname);
-   strlwr(str);
-   GetPath(path,str);
+  std::string str;
+  std::string fnd;
+  std::string path;
+  
+  str = fileName;
+  std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+  GetPath(path, str);
 
   index_map& index = fmap[datFileName].index; 
 
-   ptr = index[path];
-   if (!ptr) return false;
+  ptr = index[path];
+  if (!ptr) return false;
 
-   int difpos=strlen(str)-5;
-   char difchar=str[difpos];
+  int difpos = str.size() - 5;
+  char difchar = str[difpos];
 
-   uint32_t fnsz;
-   while (true)
-   {
-	  fnsz = *(ULONG *)ptr;
-      ptr += 4;
-	  char fdif=ptr[difpos];
-	  if(fdif>=0x41 && fdif<=0x5a) fdif+=0x20;
-	  if(difchar==fdif)
-	  {
-	      memcpy(fnd, ptr, fnsz);
-		  fnd[fnsz] = 0;
-		  strlwr(fnd);
-	      FileType = *(ptr + fnsz);
-	      RealSize = *(uint32_t *)(ptr + fnsz+ 1);
-	      PackedSize = *(uint32_t *)(ptr + fnsz + 5);
-	      Offset = *(uint32_t *)(ptr + fnsz + 9);
-	      if(!strcmp(fnd,str))
-		  {
-	         return true;
-		  }
+  while (true) {
+    assert(sizeof(size_t) >= sizeof(uint32_t));
+	  size_t szFileName = *(uint32_t *)ptr;
+    ptr += 4;
+    
+    fnd.assign((const char*) ptr, szFileName);
+    std::transform(fnd.begin(), fnd.end(), fnd.begin(), ::tolower);
+    
+    if (fnd == str) {
+      FileType = *(ptr + szFileName);
+      RealSize = *(uint32_t *)(ptr + szFileName+ 1);
+      PackedSize = *(uint32_t *)(ptr + szFileName + 5);
+      Offset = *(uint32_t *)(ptr + szFileName + 9);
+	    return true;
 	  }
-      if((ptr + fnsz + 13) >= ptr_end)
-         break;
-      else
-         ptr += fnsz + 13;
+	  
+    if ((ptr + szFileName + 13) >= ptr_end)
+      break;
+    else
+      ptr += szFileName + 13;
    }
    return false;
 }

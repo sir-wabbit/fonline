@@ -3,7 +3,7 @@
 #include "CSpriteManager.h"
 #include "common.h"
 
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 /********************************************************************
 	created:	2005   22:04
 	edit:		2007   15:15
@@ -21,8 +21,8 @@
 #include "frmload.h"
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
-CSpriteManager::CSpriteManager(): crtd(0),spr_cnt(0),cur_pos(0),
-	lpDevice(NULL),lpVB(NULL),lpIB(NULL),lpWaitBuf(NULL),last_surf(NULL),next_id(1),cur_surf(NULL)
+CSpriteManager::CSpriteManager(): crtd(0),maxSpriteCount(0),currentPosition(0),
+	lpDevice(NULL),lpVB(NULL),lpIB(NULL),lpWaitBuf(NULL),lastSurface(NULL),next_id(1),currentSurface(NULL)
 {
 	col=D3DCOLOR_ARGB(255,128,128,128);
 	
@@ -34,14 +34,14 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	if(crtd) return 0; //пересоздание с новыми размерами только через пересоздание класса.
 	WriteLog("CSpriteManager Initialization...\n");
 
-	spr_cnt=opt_flushval;
-	cur_pos=0;
+	maxSpriteCount=opt_flushval;
+	currentPosition=0;
 
 	lpDevice=lpD3Device;
 
 	//Создаем буфер вершин
-	WriteLog("Создаю VB на %d спрайтов\n",spr_cnt);
-	HRESULT hr=lpDevice->CreateVertexBuffer(spr_cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
+	WriteLog("Создаю VB на %d спрайтов\n",maxSpriteCount);
+	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("SM::CreateVertexBuffer",(char*)DXGetErrorString8(hr));
@@ -49,7 +49,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	}
 
 	//и индексов
-	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(uint16_t),D3DUSAGE_WRITEONLY,
+	hr=lpDevice->CreateIndexBuffer(maxSpriteCount*6*sizeof(uint16_t),D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("SM::CreateIndexBuffer",(char*)DXGetErrorString8(hr));
@@ -57,8 +57,8 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	}
 	
 
-	uint16_t* IndexList=new uint16_t[6*spr_cnt];
-	for(int i=0;i<spr_cnt;i++)
+	uint16_t* IndexList=new uint16_t[6*maxSpriteCount];
+	for(int i=0;i<maxSpriteCount;i++)
 	{
 		IndexList[6*i+0]=4*i+0;
 		IndexList[6*i+1]=4*i+1;
@@ -70,7 +70,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	
 	void* pBuffer;
 	lpIB->Lock(0,0,(uint8_t**)&pBuffer,0);
-		memcpy(pBuffer,IndexList,spr_cnt*6*sizeof(uint16_t));
+		memcpy(pBuffer,IndexList,maxSpriteCount*6*sizeof(uint16_t));
 	lpIB->Unlock();
 
 	delete[] IndexList;
@@ -80,7 +80,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
 
 
-	lpWaitBuf=new MYVERTEX[spr_cnt*4];
+	lpWaitBuf=new MYVERTEX[maxSpriteCount*4];
 
 	if(!fm.Init()) return 0;
 
@@ -97,13 +97,13 @@ void CSpriteManager::Clear()
 
 	fm.Clear();
 
-	for(surf_vect::iterator it=surf_list.begin();it!=surf_list.end();it++)
+	for(surf_vect::iterator it=surfaceList.begin();it!=surfaceList.end();it++)
 		(*it)->Release();
-	surf_list.clear();
+	surfaceList.clear();
 	
-	for(sprinfo_map::iterator ii=spr_data.begin();ii!=spr_data.end();ii++)
+	for(sprinfo_map::iterator ii=spriteData.begin();ii!=spriteData.end();ii++)
 		delete (*ii).second;
-	spr_data.clear();
+	spriteData.clear();
 	
 	for(onesurf_vec::iterator iv=call_vec.begin();iv!=call_vec.end();iv++)
 		delete (*iv);
@@ -129,37 +129,37 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	SpriteInfo* lpinf=new SpriteInfo;
 
 	short offs_x, offs_y;
-	fm.SetCurPos(0xA);
+	fm.SetCurrentPosition(0xA);
 	offs_x=fm.GetWord();
-	fm.SetCurPos(0x16);
+	fm.SetCurrentPosition(0x16);
 	offs_y=fm.GetWord();
 
 	lpinf->offs_x=offs_x;
 	lpinf->offs_y=offs_y;
 
 
-	fm.SetCurPos(0x3e);
+	fm.SetCurrentPosition(0x3e);
 	uint16_t w=fm.GetWord();
 	uint16_t h=fm.GetWord();
 	lpinf->w=w;
 	lpinf->h=h;
-	if(!last_surf)
+	if(!lastSurface)
 	{
 		lpinf->lpSurf=CreateNewSurf(w,h);
 		if(!lpinf->lpSurf) return 0;
 		lpinf->spr_rect(0,0,w,h);
-		last_surf=lpinf->lpSurf;
+		lastSurface=lpinf->lpSurf;
 	}
 	else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 	{
-		lpinf->lpSurf=last_surf;
+		lpinf->lpSurf=lastSurface;
 		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else if( last_w>=w && (last_h-busy_h)>=h )
 	{
 		free_x=0;
 		free_y=busy_h;
-		lpinf->lpSurf=last_surf;
+		lpinf->lpSurf=lastSurface;
 		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else
@@ -167,7 +167,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 		lpinf->lpSurf=CreateNewSurf(w,h);
 		if(!lpinf->lpSurf) return 0;
 		lpinf->spr_rect(0,0,w,h);
-		last_surf=lpinf->lpSurf;
+		lastSurface=lpinf->lpSurf;
 	}
 
 	int aligned_width = (4 - w%4)%4;
@@ -181,7 +181,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	uint32_t ptr = 0x4A+w*(h-1);
 	for(int i=0;i < h; i++) 
 	{
-		fm.SetCurPos(ptr);
+		fm.SetCurrentPosition(ptr);
 		fm.CopyMem(res+wpos,w);
 		wpos+=w;
 		memset(res+wpos,0,aligned_width);
@@ -203,7 +203,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 		return 0;
 	}  
 
-	last_surf->GetSurfaceLevel(0,&lptexsurf);
+	lastSurface->GetSurfaceLevel(0,&lptexsurf);
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
@@ -236,7 +236,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
     
 	WriteLog("size %d",size);
 
-	spr_data[next_id++]=lpinf;
+	spriteData[next_id++]=lpinf;
 
 	fm.UnloadFile();
 
@@ -267,37 +267,37 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	SpriteInfo* lpinf=new SpriteInfo;
 
 	short offs_x, offs_y;
-	fm.SetCurPos(0xA);
+	fm.SetCurrentPosition(0xA);
 	offs_x=fm.GetWord();
-	fm.SetCurPos(0x16);
+	fm.SetCurrentPosition(0x16);
 	offs_y=fm.GetWord();
 
 	lpinf->offs_x=offs_x;
 	lpinf->offs_y=offs_y;
 
 
-	fm.SetCurPos(0x3e);
+	fm.SetCurrentPosition(0x3e);
 	uint16_t w=fm.GetWord();
 	uint16_t h=fm.GetWord();
 	lpinf->w=w;
 	lpinf->h=h;
-	if(!last_surf)
+	if(!lastSurface)
 	{
 		lpinf->lpSurf=CreateNewSurf(w,h);
 		if(!lpinf->lpSurf) return 0;
 		lpinf->spr_rect(0,0,w,h);
-		last_surf=lpinf->lpSurf;
+		lastSurface=lpinf->lpSurf;
 	}
 	else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 	{
-		lpinf->lpSurf=last_surf;
+		lpinf->lpSurf=lastSurface;
 		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else if( last_w>=w && (last_h-busy_h)>=h )
 	{
 		free_x=0;
 		free_y=busy_h;
-		lpinf->lpSurf=last_surf;
+		lpinf->lpSurf=lastSurface;
 		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else
@@ -305,7 +305,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 		lpinf->lpSurf=CreateNewSurf(w,h);
 		if(!lpinf->lpSurf) return 0;
 		lpinf->spr_rect(0,0,w,h);
-		last_surf=lpinf->lpSurf;
+		lastSurface=lpinf->lpSurf;
 	}
 
 	int aligned_width = (4 - w%4)%4;
@@ -319,7 +319,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	uint32_t ptr = 0x4A+w*(h-1);
 	for(int i=0;i < h; i++) 
 	{
-		fm.SetCurPos(ptr);
+		fm.SetCurrentPosition(ptr);
 		fm.CopyMem(res+wpos,w);
 		wpos+=w;
 		memset(res+wpos,0,aligned_width);
@@ -341,7 +341,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 		return 0;
 	}  
 
-	last_surf->GetSurfaceLevel(0,&lptexsurf);
+	lastSurface->GetSurfaceLevel(0,&lptexsurf);
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
@@ -370,7 +370,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	lpinf->spr_rect.y1/=last_h;
 	lpinf->spr_rect.y2/=last_h;
 
-	spr_data[next_id++]=lpinf;
+	spriteData[next_id++]=lpinf;
 
 	fm.UnloadFile();
 
@@ -399,19 +399,19 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 	if(!stricmp(ext,".bmp"))
 	{
-		fm.SetCurPos(0x12); //смещение для размеров
+		fm.SetCurrentPosition(0x12); //смещение для размеров
 		w=fm.GetRDWord(); //была написана обратная функция
 		h=fm.GetRDWord();	
 	}
 	else if(!stricmp(ext,".png"))
 	{
-		fm.SetCurPos(0x10);
+		fm.SetCurrentPosition(0x10);
 		w=fm.GetDWord();
 		h=fm.GetDWord();
 	}
 	else if(!stricmp(ext,".jpg") || !stricmp(ext,".jpeg"))
 	{
-		fm.SetCurPos(0xBB);
+		fm.SetCurrentPosition(0xBB);
 		h=fm.GetWord();
 		w=fm.GetWord();
 	}
@@ -431,23 +431,23 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	lpinf->offs_x=0;
 	lpinf->offs_y=0;
 
-	if(!last_surf)
+	if(!lastSurface)
 	{
 		lpinf->lpSurf=CreateNewSurf(w,h);
 		if(!lpinf->lpSurf) return 0;
 		lpinf->spr_rect(0,0,w,h);
-		last_surf=lpinf->lpSurf;
+		lastSurface=lpinf->lpSurf;
 	}
 	else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 	{
-		lpinf->lpSurf=last_surf;
+		lpinf->lpSurf=lastSurface;
 		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else if( last_w>=w && (last_h-busy_h)>=h )
 	{
 		free_x=0;
 		free_y=busy_h;
-		lpinf->lpSurf=last_surf;
+		lpinf->lpSurf=lastSurface;
 		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else
@@ -455,7 +455,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 		lpinf->lpSurf=CreateNewSurf(w,h);
 		if(!lpinf->lpSurf) return 0;
 		lpinf->spr_rect(0,0,w,h);
-		last_surf=lpinf->lpSurf;
+		lastSurface=lpinf->lpSurf;
 	}
 
 	LPDIRECT3DSURFACE8 lpsurf;
@@ -467,7 +467,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 		return 0;
 	}
 
-	last_surf->GetSurfaceLevel(0,&lptexsurf);
+	lastSurface->GetSurfaceLevel(0,&lptexsurf);
 
 	char full_path[1024];
 	if(!fm.GetFullPath(fname,PathType,full_path)) return 0;
@@ -497,7 +497,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	lpinf->spr_rect.y1/=last_h;
 	lpinf->spr_rect.y2/=last_h;
 
-	spr_data[next_id++]=lpinf;
+	spriteData[next_id++]=lpinf;
 
 	if(ppInfo) (*ppInfo)=lpinf;
 
@@ -515,19 +515,19 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 	if(!fm.LoadFile(fname,PathType))
 		return 0;
 
-	fm.SetCurPos(0x4); //!Cvet
+	fm.SetCurrentPosition(0x4); //!Cvet
 	uint16_t frm_fps=fm.GetWord(); //!Cvet
 	if(!frm_fps) frm_fps=10; //!Cvet
 
-	fm.SetCurPos(0x8);
+	fm.SetCurrentPosition(0x8);
 	uint16_t frm_num=fm.GetWord();
 
 	//Получаем общие смещения по всем направлениям
 	short offs_x[6], offs_y[6];
-	fm.SetCurPos(0xA);
+	fm.SetCurrentPosition(0xA);
 	for(int i=0;i<6;i++)
 		offs_x[i]=fm.GetWord();
-	fm.SetCurPos(0x16);
+	fm.SetCurrentPosition(0x16);
 	for(int i=0;i<6;i++)
 		offs_y[i]=fm.GetWord();
 
@@ -547,7 +547,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			lpinf->offs_x=offs_x[or];
 			lpinf->offs_y=offs_y[or];
 		
-			fm.SetCurPos(cur_ptr);
+			fm.SetCurrentPosition(cur_ptr);
 			uint16_t w=fm.GetWord();
 			uint16_t h=fm.GetWord();
 			lpinf->w=w;
@@ -556,18 +556,18 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			pframes->next_x[or*frm_num+frm]=fm.GetWord();
 			pframes->next_y[or*frm_num+frm]=fm.GetWord();
 	
-			if(!last_surf)
+			if(!lastSurface)
 			{
 				//спрайт будет помещен в новую поверхность
 				lpinf->lpSurf=CreateNewSurf(w,h);
 				if(!lpinf->lpSurf) return 0;
 				lpinf->spr_rect(0,0,w,h);
-				last_surf=lpinf->lpSurf;
+				lastSurface=lpinf->lpSurf;
 			}
 			else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 			{
 				//спрайт будет помещен в горизонтальный ряд
-				lpinf->lpSurf=last_surf;
+				lpinf->lpSurf=lastSurface;
 				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else if( last_w>=w && (last_h-busy_h)>=h )
@@ -575,7 +575,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 				//начинаем новый горизонтальный ряд этим спрайтом
 				free_x=0;
 				free_y=busy_h;
-				lpinf->lpSurf=last_surf;
+				lpinf->lpSurf=lastSurface;
 				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else
@@ -584,7 +584,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 				lpinf->lpSurf=CreateNewSurf(w,h);
 				if(!lpinf->lpSurf) return 0;
 				lpinf->spr_rect(0,0,w,h);
-				last_surf=lpinf->lpSurf;
+				lastSurface=lpinf->lpSurf;
 			}
 
 			int aligned_width = (4 - w%4)%4;
@@ -599,7 +599,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			cur_ptr+=w*h+12;
 			for(int i=0;i < h; i++) 
 			{
-				fm.SetCurPos(ptr);
+				fm.SetCurrentPosition(ptr);
 				fm.CopyMem(res+wpos,w);
 				wpos+=w;
 				memset(res+wpos,0,aligned_width);
@@ -622,7 +622,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 				return 0;
 			}  
 
-			last_surf->GetSurfaceLevel(0,&lptexsurf);
+			lastSurface->GetSurfaceLevel(0,&lptexsurf);
 
 			hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 			if(hr!=D3D_OK){
@@ -652,7 +652,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			lpinf->spr_rect.y1/=last_h;
 			lpinf->spr_rect.y2/=last_h;
 
-			spr_data[next_id++]=lpinf;
+			spriteData[next_id++]=lpinf;
 
 			pframes->ind[or*frm_num+frm]=next_id-1;
 		}
@@ -670,30 +670,30 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 		return 0;
 
 	SpriteInfo* lpinf=new SpriteInfo;
-	fm.SetCurPos(0x4);
+	fm.SetCurrentPosition(0x4);
 	uint16_t w;fm.CopyMem(&w,2);
 	uint16_t h;fm.CopyMem(&h,2);
 	if(w!=640 || h!=480) return 0;
 	lpinf->w=MODE_WIDTH;
 	lpinf->h=MODE_HEIGHT;
 	
-	if(!last_surf)
+	if(!lastSurface)
 	{
 		lpinf->lpSurf=CreateNewSurf(MODE_WIDTH,MODE_HEIGHT);
 		if(!lpinf->lpSurf) return 0;
 		lpinf->spr_rect(0,0,MODE_WIDTH,MODE_HEIGHT);
-		last_surf=lpinf->lpSurf;
+		lastSurface=lpinf->lpSurf;
 	}
 	else if( (last_w-free_x)>=MODE_WIDTH && (last_h-free_y)>=MODE_HEIGHT )
 	{
-		lpinf->lpSurf=last_surf;
+		lpinf->lpSurf=lastSurface;
 		lpinf->spr_rect(free_x,free_y,free_x+MODE_WIDTH,free_y+MODE_HEIGHT);
 	}
 	else if( last_w>=MODE_WIDTH && (last_h-busy_h)>=MODE_HEIGHT )
 	{
 		free_x=0;
 		free_y=busy_h;
-		lpinf->lpSurf=last_surf;
+		lpinf->lpSurf=lastSurface;
 		lpinf->spr_rect(free_x,free_y,free_x+MODE_WIDTH,free_y+MODE_HEIGHT);
 	}
 	else
@@ -701,7 +701,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 		lpinf->lpSurf=CreateNewSurf(MODE_WIDTH,MODE_HEIGHT);
 		if(!lpinf->lpSurf) return 0;
 		lpinf->spr_rect(0,0,MODE_WIDTH,MODE_HEIGHT);
-		last_surf=lpinf->lpSurf;
+		lastSurface=lpinf->lpSurf;
 	}
 
 	int aligned_width = (4 - w%4)%4;
@@ -714,7 +714,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	int i;
 
 	//заменим палитру
-	fm.SetCurPos(0xA);
+	fm.SetCurrentPosition(0xA);
 	uint8_t* ppos=res+sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER);
 	for(i=0;i<256;i++)
 	{
@@ -731,7 +731,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	uint32_t ptr = 0xA+256*3+w*(h-1);
 	for(i=0;i < h; i++) 
 	{
-		fm.SetCurPos(ptr);
+		fm.SetCurrentPosition(ptr);
 		fm.CopyMem(res+wpos,w);
 		wpos+=w;
 		memset(res+wpos,0,aligned_width);
@@ -752,7 +752,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 		return 0;
 	}  
 
-	last_surf->GetSurfaceLevel(0,&lptexsurf);
+	lastSurface->GetSurfaceLevel(0,&lptexsurf);
 
 	hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_LINEAR,D3DCOLOR_ARGB(255,0,0,0),NULL);
 	if(hr!=D3D_OK){
@@ -781,7 +781,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	lpinf->spr_rect.y1/=last_h;
 	lpinf->spr_rect.y2/=last_h;
 
-	spr_data[next_id++]=lpinf;
+	spriteData[next_id++]=lpinf;
 
 	fm.UnloadFile();
 	return next_id-1;
@@ -812,17 +812,17 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 		if(!fm.LoadFile(path,PathType)) return 0;
 	//	WriteLog("Loading offsets animation %s\n",path);
 
-		fm.SetCurPos(0x4); //!Cvet
+		fm.SetCurrentPosition(0x4); //!Cvet
 		uint16_t frm_fps=fm.GetWord(); //!Cvet
 		if(!frm_fps) frm_fps=10; //!Cvet
 
-		fm.SetCurPos(0x8);
+		fm.SetCurrentPosition(0x8);
 		frm_num=fm.GetWord();
 
 		//Получаем общие смещения по всем направлениям
-		fm.SetCurPos(0xA);
+		fm.SetCurrentPosition(0xA);
 			offs_x[or]=fm.GetWord();
-		fm.SetCurPos(0x16);
+		fm.SetCurrentPosition(0x16);
 			offs_y[or]=fm.GetWord();
 
 		// Здеся вручную пробуем в 6 направлениях
@@ -844,7 +844,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			lpinf->offs_x=offs_x[or];
 			lpinf->offs_y=offs_y[or];
 		
-			fm.SetCurPos(cur_ptr);
+			fm.SetCurrentPosition(cur_ptr);
 			uint16_t w=fm.GetWord();
 			uint16_t h=fm.GetWord();
 			lpinf->w=w;
@@ -853,18 +853,18 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			pframes->next_x[or*frm_num+frm]=fm.GetWord();
 			pframes->next_y[or*frm_num+frm]=fm.GetWord();
 	
-			if(!last_surf)
+			if(!lastSurface)
 			{
 				//спрайт будет помещен в новую поверхность
 				lpinf->lpSurf=CreateNewSurf(w,h);
 				if(!lpinf->lpSurf) return 0;
 				lpinf->spr_rect(0,0,w,h);
-				last_surf=lpinf->lpSurf;
+				lastSurface=lpinf->lpSurf;
 			}
 			else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 			{
 				//спрайт будет помещен в горизонтальный ряд
-				lpinf->lpSurf=last_surf;
+				lpinf->lpSurf=lastSurface;
 				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else if( last_w>=w && (last_h-busy_h)>=h )
@@ -872,7 +872,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 				//начинаем новый горизонтальный ряд этим спрайтом
 				free_x=0;
 				free_y=busy_h;
-				lpinf->lpSurf=last_surf;
+				lpinf->lpSurf=lastSurface;
 				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else
@@ -881,7 +881,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 				lpinf->lpSurf=CreateNewSurf(w,h);
 				if(!lpinf->lpSurf) return 0;
 				lpinf->spr_rect(0,0,w,h);
-				last_surf=lpinf->lpSurf;
+				lastSurface=lpinf->lpSurf;
 			}
 
 			int aligned_width = (4 - w%4)%4;
@@ -896,7 +896,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			cur_ptr+=w*h+12;
 			for(int i=0;i < h; i++) 
 			{
-				fm.SetCurPos(ptr);
+				fm.SetCurrentPosition(ptr);
 				fm.CopyMem(res+wpos,w);
 				wpos+=w;
 				memset(res+wpos,0,aligned_width);
@@ -919,7 +919,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 				return 0;
 			}  
 
-			last_surf->GetSurfaceLevel(0,&lptexsurf);
+			lastSurface->GetSurfaceLevel(0,&lptexsurf);
 
 			hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 			if(hr!=D3D_OK){
@@ -949,7 +949,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			lpinf->spr_rect.y1/=last_h;
 			lpinf->spr_rect.y2/=last_h;
 
-			spr_data[next_id++]=lpinf;
+			spriteData[next_id++]=lpinf;
 
 			pframes->ind[or*frm_num+frm]=next_id-1;
 		}
@@ -975,17 +975,17 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 	if(!fm.LoadFile(path,PathType)) return 0;
 
 //!Cvet +++++++++
-	fm.SetCurPos(0x4);
+	fm.SetCurrentPosition(0x4);
 	uint16_t frm_fps=fm.GetWord();
 	if(!frm_fps) frm_fps=10;
 
-	fm.SetCurPos(0x8);
+	fm.SetCurrentPosition(0x8);
 	frm_num=fm.GetWord();
 
-	fm.SetCurPos(0xA);
+	fm.SetCurrentPosition(0xA);
 	offs_x=fm.GetWord();
 	aanim->offs_x=offs_x;
-	fm.SetCurPos(0x16);
+	fm.SetCurrentPosition(0x16);
 	offs_y=fm.GetWord();
 	aanim->offs_y=offs_y;
 
@@ -1003,7 +1003,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 	{
 		SpriteInfo* lpinf=new SpriteInfo;
 //!Cvet +++++++++ был сумбур какойто. по всей функции...
-		fm.SetCurPos(cur_ptr);
+		fm.SetCurrentPosition(cur_ptr);
 
 		uint16_t w=fm.GetWord();
 		uint16_t h=fm.GetWord();
@@ -1019,23 +1019,23 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		aanim->next_y[frm]=fm.GetWord();
 //!Cvet ---------
 
-		if(!last_surf)
+		if(!lastSurface)
 		{
 			lpinf->lpSurf=CreateNewSurf(w,h);
 			if(!lpinf->lpSurf) return 0;
 			lpinf->spr_rect(0,0,w,h);
-			last_surf=lpinf->lpSurf;
+			lastSurface=lpinf->lpSurf;
 		}
 		else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 		{
-			lpinf->lpSurf=last_surf;
+			lpinf->lpSurf=lastSurface;
 			lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 		}
 		else if( last_w>=w && (last_h-busy_h)>=h )
 		{
 			free_x=0;
 			free_y=busy_h;
-			lpinf->lpSurf=last_surf;
+			lpinf->lpSurf=lastSurface;
 			lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
 		}
 		else
@@ -1043,7 +1043,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 			lpinf->lpSurf=CreateNewSurf(w,h);
 			if(!lpinf->lpSurf) return 0;
 			lpinf->spr_rect(0,0,w,h);
-			last_surf=lpinf->lpSurf;
+			lastSurface=lpinf->lpSurf;
 		}
 
 		int aligned_width = (4 - w%4)%4;
@@ -1057,7 +1057,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		cur_ptr+=w*h+12;
 		for(int i=0;i < h; i++) 
 		{
-			fm.SetCurPos(ptr);
+			fm.SetCurrentPosition(ptr);
 			fm.CopyMem(res+wpos,w);
 			wpos+=w;
 			memset(res+wpos,0,aligned_width);
@@ -1068,7 +1068,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 	uint32_t ptr = 0x4A+w*(h-1);
 	for(int i=0;i < h; i++) 
 	{
-		fm.SetCurPos(ptr);
+		fm.SetCurrentPosition(ptr);
 		fm.CopyMem(res+wpos,w);
 		wpos+=w;
 		memset(res+wpos,0,aligned_width);
@@ -1091,7 +1091,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 			return 0;
 		}  
 
-		last_surf->GetSurfaceLevel(0,&lptexsurf);
+		lastSurface->GetSurfaceLevel(0,&lptexsurf);
 
 		hr=D3DXLoadSurfaceFromFileInMemory(lpsurf,NULL,NULL,res,wpos,NULL,D3DX_FILTER_NONE,D3DCOLOR_ARGB(255,0,0,0),NULL);
 		if(hr!=D3D_OK)
@@ -1122,7 +1122,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		lpinf->spr_rect.y1/=last_h;
 		lpinf->spr_rect.y2/=last_h;
     
-		spr_data[next_id++]=lpinf;
+		spriteData[next_id++]=lpinf;
 		aanim->ind[frm]=next_id-1;
 //		WriteLog("Loading animation!%d\n",frm);
 	}
@@ -1157,7 +1157,7 @@ LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(uint16_t w, uint16_t h)
 		ReportErrorMessage("CSpriteManager CreateNewSurf","Не могу создать новую текстуру");
 		return NULL;
 	} 
-	surf_list.push_back(lpSurf);
+	surfaceList.push_back(lpSurf);
 	busy_w=busy_h=free_x=free_y=0;
 
 	return lpSurf;
@@ -1165,7 +1165,7 @@ LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(uint16_t w, uint16_t h)
 
 void CSpriteManager::NextSurface()
 {
-	last_surf=NULL;
+	lastSurface=NULL;
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
@@ -1175,7 +1175,7 @@ int CSpriteManager::Flush()
 	//который потом разом сливается в буфер вершин
 	if(!crtd) return 0;
 	void* pBuffer;
-	int mulpos=4*cur_pos;
+	int mulpos=4*currentPosition;
 	lpVB->Lock(0,sizeof(MYVERTEX)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
 		memcpy(pBuffer,lpWaitBuf,sizeof(MYVERTEX)*mulpos);
 	lpVB->Unlock();
@@ -1194,28 +1194,28 @@ int CSpriteManager::Flush()
 
 		call_vec.clear();
 		last_call=NULL;
-		cur_surf=NULL;
+		currentSurface=NULL;
 	}
-	else lpDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,mulpos,0,2*cur_pos);	
+	else lpDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,mulpos,0,2*currentPosition);	
 
-	cur_pos=0;
+	currentPosition=0;
 	return 1;
 }
 
 int CSpriteManager::DrawSprite(uint16_t id, int x, int y, uint32_t color, uint32_t alpha) //!Cvet uint32_t color uint32_t alpha
 {
-	SpriteInfo* lpinf=spr_data[id];
+	SpriteInfo* lpinf=spriteData[id];
 	if(!lpinf) return 0;
 
-	if(cur_surf!=lpinf->lpSurf)
+	if(currentSurface!=lpinf->lpSurf)
 	{
 		last_call=new OneSurface(lpinf->lpSurf);
 		call_vec.push_back(last_call);
-		cur_surf=lpinf->lpSurf;
+		currentSurface=lpinf->lpSurf;
 	}
 	else if(last_call) last_call->cnt++;
 
-	int mulpos=cur_pos*4;
+	int mulpos=currentPosition*4;
 
 	if(!color) color=col; //!Cvet
 	if(alpha) color+=alpha<<24;
@@ -1244,9 +1244,9 @@ int CSpriteManager::DrawSprite(uint16_t id, int x, int y, uint32_t color, uint32
 	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
-	cur_pos++;
+	currentPosition++;
 
-	if(cur_pos==spr_cnt) Flush();
+	if(currentPosition==maxSpriteCount) Flush();
 
 	return 1;
 }
@@ -1314,20 +1314,20 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 
 int CSpriteManager::DrawSpriteSize(uint16_t id, int x, int y,double size, uint32_t color) //!Cvet uint32_t color
 {
-	SpriteInfo* lpinf=spr_data[id];
+	SpriteInfo* lpinf=spriteData[id];
 	if(!lpinf) return 0;
     //lpinf->spr_rect.x1/=size;
     //lpinf->spr_rect.x1/=size;
 
-	if(cur_surf!=lpinf->lpSurf)
+	if(currentSurface!=lpinf->lpSurf)
 	{
 		last_call=new OneSurface(lpinf->lpSurf);
 		call_vec.push_back(last_call);
-		cur_surf=lpinf->lpSurf;
+		currentSurface=lpinf->lpSurf;
 	}
 	else if(last_call) last_call->cnt++;
 
-	int mulpos=cur_pos*4;
+	int mulpos=currentPosition*4;
 
 	if(!color) color=col; //!Cvet
 
@@ -1355,9 +1355,9 @@ int CSpriteManager::DrawSpriteSize(uint16_t id, int x, int y,double size, uint32
 	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
-	cur_pos++;
+	currentPosition++;
 
-	if(cur_pos==spr_cnt) Flush();
+	if(currentPosition==maxSpriteCount) Flush();
 
 	return 1;
 }
@@ -1431,14 +1431,14 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 	spr_vec_vec::iterator it_vec;
 	for(dtree_map::iterator jt=lpdtree->begin();jt!=lpdtree->end();jt++)
 	{
-		SpriteInfo* sinf=spr_data[(*jt).second->spr_id];
+		SpriteInfo* sinf=spriteData[(*jt).second->spr_id];
 		if(!sinf) return 0;
 
 		for(it_vec=spr_vectors.begin();it_vec!=spr_vectors.end();it_vec++)
 		{
 			spr_vec* cur_spr_vec=&(*it_vec);
 			PrepSprite* cur_ps=*cur_spr_vec->begin();
-			SpriteInfo* cur_sinf=spr_data[cur_ps->spr_id];
+			SpriteInfo* cur_sinf=spriteData[cur_ps->spr_id];
 			if(cur_sinf->lpSurf==sinf->lpSurf)
 			{
 				cur_spr_vec->push_back((*jt).second);
@@ -1457,7 +1457,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 	for(it_vec=spr_vectors.begin();it_vec!=spr_vectors.end();it_vec++)
 		for(spr_vec::iterator it_spr=(*it_vec).begin();it_spr!=(*it_vec).end();it_spr++) //Cvet -------------------------
 		{
-			SpriteInfo* lpinf=spr_data[(*it_spr)->spr_id];
+			SpriteInfo* lpinf=spriteData[(*it_spr)->spr_id];
 			int x=(*it_spr)->scr_x+cmn_scr_ox;
 			int y=(*it_spr)->scr_y+cmn_scr_oy;
 
@@ -1529,7 +1529,7 @@ void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, INTRECT* prect)
 	uint16_t id;
 	if(prep->lp_sprid) id=*prep->lp_sprid;
 	else id=prep->spr_id;
-	SpriteInfo* lpinf=spr_data[id];
+	SpriteInfo* lpinf=spriteData[id];
 	if(!lpinf) return;
 	int x=prep->scr_x-(lpinf->w >> 1)+lpinf->offs_x;
 	int y=prep->scr_y-lpinf->h+lpinf->offs_y;
@@ -1550,7 +1550,7 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 		uint16_t id;
 		if((*jt).second->lp_sprid) id=*(*jt).second->lp_sprid;
 		else id=(*jt).second->spr_id;
-		SpriteInfo* lpinf=spr_data[id];
+		SpriteInfo* lpinf=spriteData[id];
 		if(!lpinf) continue;
 		int x=(*jt).second->scr_x-(lpinf->w >> 1)+lpinf->offs_x+cmn_scr_ox;
 		int y=(*jt).second->scr_y-lpinf->h+lpinf->offs_y+cmn_scr_oy;
@@ -1558,15 +1558,15 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 		if((*jt).second->lp_ox) x+=*(*jt).second->lp_ox;
 		if((*jt).second->lp_oy) y+=*(*jt).second->lp_oy;
 
-		if(cur_surf!=lpinf->lpSurf)
+		if(currentSurface!=lpinf->lpSurf)
 		{
 			last_call=new OneSurface(lpinf->lpSurf);
 			call_vec.push_back(last_call);
-			cur_surf=lpinf->lpSurf;
+			currentSurface=lpinf->lpSurf;
 		}
 		else if(last_call) last_call->cnt++;
 
-		int mulpos=cur_pos*4;
+		int mulpos=currentPosition*4;
 
 		uint32_t cur_color=col;
 		if((*jt).second->alpha) cur_color+=((uint32_t)(*(*jt).second->alpha)<<24) & 0xFF000000;
@@ -1595,9 +1595,9 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 		lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
 		lpWaitBuf[mulpos++].Diffuse=cur_color;
 
-		cur_pos++;
+		currentPosition++;
 	
-		if(cur_pos==spr_cnt) Flush();
+		if(currentPosition==maxSpriteCount) Flush();
 	}
 }
 
@@ -1610,8 +1610,8 @@ void CSpriteManager::PreRestore()
 void CSpriteManager::PostRestore()
 {
 	//Создаем буфер вершин
-	WriteLog("Пересоздаю VB на %d спрайтов\n",spr_cnt);
-	HRESULT hr=lpDevice->CreateVertexBuffer(spr_cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
+	WriteLog("Пересоздаю VB на %d спрайтов\n",maxSpriteCount);
+	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("SM::CreateVertexBuffer",(char*)DXGetErrorString8(hr));
@@ -1619,7 +1619,7 @@ void CSpriteManager::PostRestore()
 	}
 
 	//и индексов
-	hr=lpDevice->CreateIndexBuffer(spr_cnt*6*sizeof(uint16_t),D3DUSAGE_WRITEONLY,
+	hr=lpDevice->CreateIndexBuffer(maxSpriteCount*6*sizeof(uint16_t),D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("SM::CreateIndexBuffer",(char*)DXGetErrorString8(hr));
@@ -1627,8 +1627,8 @@ void CSpriteManager::PostRestore()
 	}
 	
 
-	uint16_t* IndexList=new uint16_t[6*spr_cnt];
-	for(int i=0;i<spr_cnt;i++)
+	uint16_t* IndexList=new uint16_t[6*maxSpriteCount];
+	for(int i=0;i<maxSpriteCount;i++)
 	{
 		IndexList[6*i+0]=4*i+0;
 		IndexList[6*i+1]=4*i+1;
@@ -1640,7 +1640,7 @@ void CSpriteManager::PostRestore()
 	
 	void* pBuffer;
 	lpIB->Lock(0,0,(uint8_t**)&pBuffer,0);
-		memcpy(pBuffer,IndexList,spr_cnt*6*sizeof(uint16_t));
+		memcpy(pBuffer,IndexList,maxSpriteCount*6*sizeof(uint16_t));
 	lpIB->Unlock();
 
 	delete[] IndexList;
@@ -1666,9 +1666,7 @@ int CSpriteManager::LoadCritTypes()
 		wsprintf(key,"%d",cur);
 		GetPrivateProfileString("critters",key,"",str,1023,opt_crfol.c_str());
 		if(!str[0]) continue;
-		char* str2=new char[strlen(str)+1];
-		strcpy(str2,str);
-		crit_types[cur]=str2;
+		crit_types[cur]=str;
 	}
 	return 1;
 }
@@ -1684,12 +1682,12 @@ int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t
 	char frm_ind2[]="_ABCDEFGHIJKLMNOPQRST";
 	char path[1024];//12345678901234567890
 
-	sprintf(path,"%s%c%c.frm",crit_types[anim_type],frm_ind1[anim_ind1],frm_ind2[anim_ind2]);
+	sprintf(path,"%s%c%c.frm",crit_types[anim_type].c_str(),frm_ind1[anim_ind1],frm_ind2[anim_ind2]);
 	WriteLog("1 попытка |%s|...",path);
 	CrAnim[anim_type][anim_ind1][anim_ind2]=new CritFrames;
 	if(!LoadAnimation(path,PT_ART_CRITTERS,CrAnim[anim_type][anim_ind1][anim_ind2]))
 	{
-		sprintf(path,"%s%c%c.fr",crit_types[anim_type],frm_ind1[anim_ind1],frm_ind2[anim_ind2]);
+		sprintf(path,"%s%c%c.fr",crit_types[anim_type].c_str(),frm_ind1[anim_ind1],frm_ind2[anim_ind2]);
 		WriteLog("2 попытка |%s|...",path);
 		if(!LoadAnimationD(path,PT_ART_CRITTERS,CrAnim[anim_type][anim_ind1][anim_ind2]))
 		{
@@ -1713,10 +1711,10 @@ int CSpriteManager::EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_
 		for(int frm=0;frm<num_frm;frm++)
 		{
 			uint32_t num_sprite=or*num_frm+frm;
-			it=spr_data.find(CrAnim[anim_type][anim_ind1][anim_ind2]->ind[num_sprite]);
-			if(it==spr_data.end()) return 0;
+			it=spriteData.find(CrAnim[anim_type][anim_ind1][anim_ind2]->ind[num_sprite]);
+			if(it==spriteData.end()) return 0;
 			delete (*it).second;
-			spr_data.erase(it);
+			spriteData.erase(it);
 		}
 	SAFEDEL(CrAnim[anim_type][anim_ind1][anim_ind2]);
 	WriteLog("Время удаления анимации =%d\n",GetTickCount()-loadA);

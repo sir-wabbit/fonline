@@ -61,7 +61,7 @@ public:
    uint8_t* ptr, *buff,*ptr_end;
    //in buff - DATtree, ptr - pointer
 
-   CFile* reader; // reader for current file in DAT-archive
+   IOStream* reader; // reader for current file in DAT-archive
 
    int ReadTree();
    void IndexingDAT();

@@ -3,7 +3,7 @@
 #include "CHexField.h"
 #include "common.h"
 
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 /********************************************************************
 	created:	2005   22:04
 	edit:		2007   15:15
@@ -221,15 +221,15 @@ int CHexField::LoadMap(char* fname)
 
 	if(!fm_map.LoadFile(fname,PT_MAPS)) return 0;
 
-	fm_map.SetCurPos(0x20);
+	fm_map.SetCurrentPosition(0x20);
 	uint32_t nlv=fm_map.GetDWord();//localvars
-	fm_map.SetCurPos(0x30);
+	fm_map.SetCurrentPosition(0x30);
 	uint32_t ngv=fm_map.GetDWord();//global vars
 
-	fm_map.SetCurPos(0x28); //!Cvet размеры карты
+	fm_map.SetCurrentPosition(0x28); //!Cvet размеры карты
 	uint32_t count_tiles_y=fm_map.GetDWord(); //!Cvet
 
-	fm_map.SetCurPos(0xEC+4*(nlv+ngv)); //начало секции тайлов
+	fm_map.SetCurrentPosition(0xEC+4*(nlv+ngv)); //начало секции тайлов
 
 	uint16_t tile; //ground_tile
 	uint16_t rtile; //roof_tile
@@ -505,7 +505,7 @@ int CHexField::ParseItemObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,
 	proto_id&=0xFFFF; //???Cvet 0xFFFFFF
 
 	if(!fm.LoadFile(item_proto[(proto_id)-1],PT_PRO_ITEMS)) return 0;
-	fm.SetCurPos(0x20); //Подтип итемов
+	fm.SetCurrentPosition(0x20); //Подтип итемов
 	sub_type=fm.GetDWord();
 	fm.UnloadFile();
 
@@ -565,9 +565,9 @@ int CHexField::ParseItemObjCont(uint32_t proto_id,uint32_t x,uint32_t y)
 	proto_id&=0xFFFF; //???0xFFFFFF
 
 	if(!fm.LoadFile(item_proto[(proto_id)-1],PT_PRO_ITEMS)) return 0;
-	fm.SetCurPos(0x20); //Подтип итемов
+	fm.SetCurrentPosition(0x20); //Подтип итемов
 	sub_type=fm.GetDWord();
-	fm.SetCurPos(0x34); //Inv FID
+	fm.SetCurrentPosition(0x34); //Inv FID
 	frm_inv=fm.GetDWord();
 	fm.UnloadFile();
 
@@ -827,7 +827,7 @@ int CHexField::ParseScenObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,
 	proto_id&=0xFFFF;
 
 	if(!fm.LoadFile(scen_proto[(proto_id)-1],PT_PRO_SCENERY)) return 0;
-	fm.SetCurPos(0x20); //Scenery Subtype
+	fm.SetCurrentPosition(0x20); //Scenery Subtype
 	sub_type=fm.GetDWord();
 	fm.UnloadFile();
 

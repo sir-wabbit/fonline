@@ -24,7 +24,7 @@
 //#define COLOR_TEXT_AST	D3DCOLOR_ARGB(255,255,0,0)
 //!Cvet ----
 
-typedef std::map<CritterType, char*> ctypes_map; //!Cvet перенес сюда
+typedef std::map<CritterType, std::string> ctypes_map; //!Cvet перенес сюда
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 struct MYVERTEX
@@ -167,7 +167,7 @@ public:
 	int LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,SpriteInfo** ppInfo = NULL);
 
 	void NextSurface();
-	SpriteInfo* GetSpriteInfo(uint16_t id) {return spr_data[id];};
+	SpriteInfo* GetSpriteInfo(uint16_t id) {return spriteData[id];};
 
 	int PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lplpBuf,onesurf_vec* lpsvec, uint32_t color=NULL, uint8_t alpha=NULL); //!Cvet uint32_t color
 
@@ -178,7 +178,7 @@ public:
 	void DrawTreeCntr(dtree_map* lpdtree);
 	void DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lpsvec, uint16_t cnt);
 
-	uint32_t GetLoadedCnt() {return spr_data.size();};
+	uint32_t GetLoadedCnt() {return spriteData.size();};
 
 	void SetColor(uint32_t c){col=c;};
 
@@ -210,22 +210,22 @@ private:
 
 	int LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo=NULL); //!Cvet загрузка альтернативной графики
 
-	surf_vect surf_list;
-	sprinfo_map spr_data;
+	surf_vect surfaceList;
+	sprinfo_map spriteData;
 	
 	onesurf_vec call_vec;
 	OneSurface* last_call;
 
 	uint32_t next_id;
 
-	LPDIRECT3DTEXTURE8 last_surf;
-	LPDIRECT3DTEXTURE8 cur_surf;
+	LPDIRECT3DTEXTURE8 lastSurface;
+	LPDIRECT3DTEXTURE8 currentSurface;
 	uint16_t last_w,last_h;//размеры загружаемой тестуры
 	uint16_t busy_w,busy_h;//размеры занятой области
 	uint16_t free_x,free_y;//размеры занятой области
   
-	int spr_cnt;//на сколько спрайтов рассчитан. при достижении рисуется сам.
-	int cur_pos;//текущая позиция записи.
+	int maxSpriteCount;//на сколько спрайтов рассчитан. при достижении рисуется сам.
+	int currentPosition;//текущая позиция записи.
 
 	LPDIRECT3DDEVICE8 lpDevice;
 

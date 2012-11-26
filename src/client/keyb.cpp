@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "keyb.h"
 #include "common.h"
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 /********************************************************************
 	created:	05:01:2005   22:04

@@ -136,7 +136,7 @@ int FileManager::LoadFile(char* fileName, int pathType) {
 	return 1;
 }
 
-void FileManager::SetCurPos(uint32_t pos)
+void FileManager::SetCurrentPosition(uint32_t pos)
 {
 	if(pos<fileSize) position=pos;
 }

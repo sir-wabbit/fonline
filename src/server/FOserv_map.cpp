@@ -92,7 +92,7 @@ uint32_t CServer::GetZoneColor(FileManager* fmngr, int zx, int zy)
 	static const uint32_t HBMP_LEN=54;
 	static const uint32_t LINE_LEN=(GM_MAXZONEX*3)+((GM_MAXZONEX*3)%4);
 
-	fmngr->SetCurPos(HBMP_LEN+(zx*3)+(GM_MAXZONEY-1-zy)*LINE_LEN);
+	fmngr->SetCurrentPosition(HBMP_LEN+(zx*3)+(GM_MAXZONEY-1-zy)*LINE_LEN);
 
 	return fmngr->GetRDWord();
 }

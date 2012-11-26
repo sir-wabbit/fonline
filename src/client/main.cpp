@@ -3,7 +3,7 @@
 #include "common.h"
 #include "FEngine.h"
 
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 /********************************************************************
 	created:	2005   22:04
@@ -102,7 +102,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInst, LPSTR lpCmdLi
 
 	delete engine;
 	
-  SimpleLeakDetector::PrintAllLeaks();
+  //SimpleLeakDetector::PrintAllLeaks();
 
 	_CrtDumpMemoryLeaks();
 	return 0;
