@@ -7,7 +7,7 @@
 #include <tchar.h>
 #include <assert.h>
 #include <IniFile/IniFile.hpp>
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 VOID ToUTF16(LPCSTR lpText, LPWSTR lpWText, SIZE_T szWText) {
   size_t szText = lstrlenA(lpText);

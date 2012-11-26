@@ -26,21 +26,9 @@
 
 #pragma warning (disable : 4786)
 
-#include <map>
-#include <string> //!Cvet
-#include <set> //!Cvet
-#include <list> //!Cvet
-#include <vector>
-
-
 #define SAFEREL(x) {if(x) (x)->Release();(x)=NULL;}
 #define SAFEDEL(x) {if(x) delete (x);(x)=NULL;}
 #define SAFEDELA(x) {if(x) delete[] (x);(x)=NULL;}
-
-
-#define chSTR2(x) #x
-#define chSTR(x) chSTR2(x)
-#define chMSG(desc) message(__FILE__ "(" chSTR(__LINE__) "):" #desc)
 
 //!Cvet ++++
 //для работы с двоичными константами

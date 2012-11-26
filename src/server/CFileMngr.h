@@ -7,6 +7,7 @@
 
 #include "main.h"
 #include <stdint.h>
+#include <string>
 
 #define PT_MAPS		0
 #define PT_MASKS	1
@@ -23,7 +24,7 @@ public:
 
 	int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet полный путь к файлу
 
-	void SetCurPos(uint32_t pos);
+	void SetCurrentPosition(uint32_t pos);
 	void GoForward(uint32_t offs);
 
 	int GetStr(char* str,uint32_t len);

@@ -562,13 +562,63 @@ int SQL::CountRows(char* table, char* column, int count_vol)
 	return mysql_num_rows(mySQL_res);
 }
 
+int SQLLastInsertId(MYSQL* mySQL) {
+  if (mysql_query(mySQL, "SELECT LAST_INSERT_ID()")) {
+    LogExecStr("Could not query last insert id: %s\n", mysql_error(mySQL));
+    return 0;
+  }
+  
+  MYSQL_RES* result = NULL;
+  if (!(result = mysql_store_result(mySQL))) {
+    LogExecStr("Could not query last insert id: %s\n", mysql_error(mySQL));
+    return 0;
+  }
+
+  if (!mysql_num_rows(result)) {
+    LogExecStr("Could not query last insert id: %s\n", mysql_error(mySQL));
+    return 0;
+  }
+
+  MYSQL_ROW row = mysql_fetch_row(result);
+
+  return atoi(row[0]);
+}
+
+int SQLGetPlayerId(MYSQL* mySQL, std::string login) {
+  char buf[256];
+  _snprintf(buf, sizeof(buf) - 1, "SELECT * FROM `users` WHERE `login`='%s'", login.c_str());
+  
+  if (mysql_query(mySQL, buf)) {
+    LogExecStr("Could not query player id: %s\n", mysql_error(mySQL));
+    return 0;
+  }
+
+  MYSQL_RES* result = NULL;
+  if (!(result = mysql_store_result(mySQL))) {
+    LogExecStr("Could not query player id: %s\n", mysql_error(mySQL));
+    return 0;
+  }
+
+  my_ulonglong numRows = mysql_num_rows(result);
+  if (numRows == 0) {
+    return 0;
+  } else if (numRows > 1) {
+    LogExecStr("Too many players with the same login (%s): %s\n", login.c_str(), mysql_error(mySQL));
+    return 0;
+  }
+
+  MYSQL_ROW row = mysql_fetch_row(result);
+
+  return atoi(row[0]);
+}
+
 int SQL::NewPlayer(crit_info* info)
 {
 	Query("INSERT INTO `users` (login) VALUES ('%s')", info->login);
 
-	if(!(info->id=mysql_insert_id(mySQL))) return 0;
+	if (!(info->id = SQLGetPlayerId(mySQL, info->login))) return 0;
 
-	if(!SaveDataPlayer(info)) return 0;
+	if (!SaveDataPlayer(info)) return 0;
 
 	return 1;
 }
@@ -581,12 +631,14 @@ int SQL::SaveDataPlayer(crit_info* info)
 		return 0;
 	}
 
-	Query("UPDATE users SET login='%s',pass='%s',base_type='%d',map='%d',x='%d',y='%d',ori='%d',"
+	if (!Query("UPDATE users SET login='%s',pass='%s',base_type='%d',map='%d',x='%d',y='%d',ori='%d',"
 	"name='%s',cases0='%s',cases1='%s',cases2='%s',cases3='%s',cases4='%s',"
 	"stats='%s',skills='%s',perks='%s' WHERE id='%d'",
 	info->login,info->pass,info->base_type,info->map,info->x,info->y,info->ori,info->name,
 	info->cases[0],info->cases[1],info->cases[2],info->cases[3],info->cases[4],
-	stats,skills,perks,info->id);
+	stats,skills,perks,info->id)) {
+	  return 0;
+	}
 
 	return 1;
 }

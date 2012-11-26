@@ -610,7 +610,7 @@ const uint8_t OBJ_USE_ON_SCENERY	=0;
 #define MAX_TEXT	1024
 
 typedef uint8_t MessageType;
-typedef uint8_t CritterID;
+typedef uint32_t CritterID;
 typedef uint8_t CritterType;
 typedef uint16_t HexTYPE;
 typedef uint32_t DHexTYPE;

@@ -37,7 +37,7 @@ public:
   void IndexingDAT();
 
   HANDLE DATOpenFile(char* fname);
-  bool FindFile(char* fname);
+  bool FindFile(const std::string& fname);
 
   bool DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
                                                  LPDWORD lpNumberOfBytesRead);
@@ -73,7 +73,7 @@ private:
   uint8_t* ptr, *buff,*ptr_end;
   //in buff - DATtree, ptr - pointer
 
-  CFile* reader; // reader for current file in DAT-archive
+  IOStream* reader; // reader for current file in DAT-archive
 };
 
 

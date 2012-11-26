@@ -17,17 +17,16 @@
 #define BUFF_SIZE 0x40000
 
 // abstract class, parent to different File Handlers
-class CFile {
+class IOStream {
 protected:
 	HANDLE hFile; // archive file descriptor
 	long beginPos, fileSize;
 		// starting position in archive and size of real file image
 public:
-	CFile (HANDLE file, long pos, long size):
-		hFile (file),
-		beginPos (pos),
-		fileSize (size) { SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN); };
-	virtual ~CFile() {};
+	IOStream(HANDLE file, long pos, long size) : hFile(file), beginPos(pos), fileSize(size) { 
+	  SetFilePointer(hFile, beginPos, NULL, FILE_BEGIN);
+	};
+	virtual ~IOStream() {};
 
 	virtual long getSize() { return fileSize; };
 	virtual int eof() { return tell() >= fileSize; };
@@ -36,16 +35,16 @@ public:
 	virtual int read (void* buf, long toRead, long* read) = 0;
 };
 
-class CPlainFile: public CFile {
+class CPlainFile: public IOStream {
 public:
 	CPlainFile (HANDLE file, long pos, long size):
-		CFile (file, pos, size) {};
+		IOStream (file, pos, size) {};
 	virtual long seek (long dist, int from);
 	virtual long tell() { return SetFilePointer(hFile, 0, NULL, FILE_CURRENT) - beginPos; };
 	virtual int read (void* buf, long toRead, long* read);
 };
 
-class CPackedFile: public CFile {
+class CPackedFile: public IOStream {
 protected:
 	uint8_t *skipper,
 		*inBuf;
@@ -55,7 +54,7 @@ protected:
 	virtual void reset() = 0;
 public:
 	CPackedFile (HANDLE file, long pos, long size, long packed):
-		CFile (file, pos, size),
+		IOStream (file, pos, size),
 		packedSize (packed),
 		curPos (0),
 		inBuf (NULL),
@@ -69,11 +68,11 @@ public:
 	virtual long tell() { return curPos; };
 };
 
-class C_Z_PackedFile: public CPackedFile {
+class InflatorStream: public CPackedFile {
 protected:
 	z_stream stream;
 public:
-	C_Z_PackedFile (HANDLE file, long pos, long size, long packed):
+	InflatorStream (HANDLE file, long pos, long size, long packed):
 		CPackedFile (file, pos, size, packed) {
 			stream. zalloc = Z_NULL;
 			stream. zfree = Z_NULL;
@@ -82,7 +81,7 @@ public:
 			stream. avail_in = 0;
 			inflateInit (&stream);
 	}
-	virtual ~C_Z_PackedFile() {
+	virtual ~InflatorStream() {
 		inflateEnd (&stream);
 	};
 

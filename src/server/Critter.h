@@ -9,6 +9,10 @@
 #ifndef __CCRITTER_H__
 #define __CCRITTER_H__
 
+#include <vector>
+#include <list>
+#include <map>
+
 #include "netproto.h"
 #include <zlib/zlib.h>
 #include <base/buffer.hpp>

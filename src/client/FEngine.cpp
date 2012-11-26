@@ -5,7 +5,7 @@
 #include "version.h"
 #include "keyb.h"
 
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
+//#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 /********************************************************************
 	created:	2005   22:04
 	edit:		2007   15:15
@@ -408,6 +408,12 @@ void FOnlineEngine::Clear()
 	sm.Clear();
 	fnt.Clear();
 	sdm.Clear();
+
+  for (stat_map::iterator i = all_s_obj.begin(); i != all_s_obj.end(); ++i) {
+    assert(i->second != NULL);
+    delete i->second;
+  }
+  all_s_obj.clear();
 
 	SAFEREL(lpDevice);
 	SAFEREL(lpD3D);
