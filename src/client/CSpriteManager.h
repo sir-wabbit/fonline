@@ -185,7 +185,7 @@ public:
 	LPDIRECT3DVERTEXBUFFER8 GetVB() {return lpVB;};
 	LPDIRECT3DINDEXBUFFER8 GetIB() {return lpIB;};
 
-	void GetDrawCntrRect(PrepSprite* prep, INTRECT* prect);
+	void GetDrawCntrRect(PrepSprite* prep, IntRect* prect);
 
 	CSpriteManager();
 	~CSpriteManager(){for(int d1=0;d1<100;d1++)

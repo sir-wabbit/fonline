@@ -47,7 +47,7 @@ public:
 
   void ShowError();
   
-  UINT ErrorType;
+  UINT error;
   
 private:
   //index_map index;
@@ -55,10 +55,10 @@ private:
 
   std::string datFileName;
 
-  uint8_t  FileType; //если там 1, то файл считается компрессированым(не всегда).
-  uint32_t RealSize; //Размер файла без декомпрессии
-  uint32_t PackedSize; //Размер сжатого файла
-  uint32_t Offset; //Адрес файла в виде смещения от начала DAT-файла.
+  uint8_t  fileType; //если там 1, то файл считается компрессированым(не всегда).
+  uint32_t realSize; //Размер файла без декомпрессии
+  uint32_t packedSize; //Размер сжатого файла
+  uint32_t offset; //Адрес файла в виде смещения от начала DAT-файла.
 
   bool lError;
 

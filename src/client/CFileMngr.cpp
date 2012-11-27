@@ -132,7 +132,7 @@ int FileManager::Init()
 	if(strstr(master_dat, ".dat")) {
 		lpDAT.Init(master_dat);
 		
-		if(lpDAT.ErrorType == ERR_CANNOT_OPEN_FILE) {
+		if(lpDAT.error == ERR_CANNOT_OPEN_FILE) {
 			ReportErrorMessage("FileManager Init>","файл %s не найден",master_dat);
 			return 0;
 		}
@@ -153,7 +153,7 @@ int FileManager::Init()
 	if(strstr(crit_dat,".dat"))
 	{
 		lpDATcr.Init(crit_dat);		
-		if(lpDATcr.ErrorType==ERR_CANNOT_OPEN_FILE)
+		if(lpDATcr.error==ERR_CANNOT_OPEN_FILE)
 		{
 			ReportErrorMessage("FileManager Init>","файл %s не найден",crit_dat);
 			return 0;
