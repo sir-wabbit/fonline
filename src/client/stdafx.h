@@ -29,14 +29,14 @@
 #define SAFEDEL(x) {if(x) delete (x);(x)=NULL;}
 #define SAFEDELA(x) {if(x) delete[] (x);(x)=NULL;}
 
-struct INTRECT
+struct IntRect
 {
 	int l;
 	int t;
 	int r;
 	int b;
-	INTRECT():l(0),t(0),r(0),b(0){};
-	INTRECT(int al,int at,int ar,int ab):l(al),t(at),r(ar),b(ab){};
+	IntRect():l(0),t(0),r(0),b(0){};
+	IntRect(int al,int at,int ar,int ab):l(al),t(at),r(ar),b(ab){};
 
 	int& operator[](int index) //!Cvet +++
 	{ 

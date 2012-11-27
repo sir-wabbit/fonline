@@ -48,10 +48,13 @@ void CCritter::Init()
 	alpha=0xFF;
 
 	SetAnimation();
+	
+	__invariant();
 }
 
 void CCritter::AddObject(uint8_t aslot,uint32_t o_id,uint32_t broken_info,uint32_t time_wear,stat_obj* s_obj)
 {
+  __invariant();
 	dyn_obj* new_obj=new dyn_obj;
 	new_obj->id=o_id;
 	new_obj->object=s_obj;
@@ -81,6 +84,7 @@ void CCritter::AddObject(uint8_t aslot,uint32_t o_id,uint32_t broken_info,uint32
 
 int CCritter::GetMaxDistance()
 {
+  __invariant();
 	if(a_obj->type==OBJ_TYPE_WEAPON)
 	{
 		switch(rate_object)
@@ -97,6 +101,7 @@ int CCritter::GetMaxDistance()
 
 int CCritter::Move(uint8_t dir)
 {
+  __invariant();
 	//проверяем направление
 	if(dir>5 && dir<0) return MOVE_ERROR;
 
@@ -141,6 +146,7 @@ int CCritter::Move(uint8_t dir)
 
 void CCritter::Action(Byte action, uint32_t action_tick)
 {
+  __invariant();
 	Tick_Start(action_tick);
 
 	if(action==ANIM2_USE || action==ANIM2_SIT) weapon=1;
@@ -166,6 +172,7 @@ void CCritter::Action(Byte action, uint32_t action_tick)
 
 void CCritter::Animate(uint8_t action, uint8_t num_frame)
 {
+  __invariant();
 	if(!lpSM->CrAnim[type][weapon][action])
 		if(!lpSM->LoadAnimCr(type,weapon,action)) return;
 		
@@ -184,6 +191,7 @@ void CCritter::Animate(uint8_t action, uint8_t num_frame)
 
 void CCritter::RefreshWeap()
 {
+  __invariant();
 	if(a_obj->type==OBJ_TYPE_WEAPON)
 		weapon=a_obj->object->p[OBJ_WEAP_ANIM1];
 	else
@@ -192,6 +200,7 @@ void CCritter::RefreshWeap()
 
 void CCritter::RefreshType()
 {
+  __invariant();
 	if(!st[ST_GENDER])
 	{
 		type=a_obj_arm->object->p[OBJ_ARM_ANIM0_MALE];
@@ -206,6 +215,7 @@ void CCritter::RefreshType()
 
 void CCritter::SetAnimation()
 {
+  __invariant();
 	RefreshWeap();
 	RefreshType();
 
@@ -276,6 +286,7 @@ void CCritter::SetAnimation()
 
 void CCritter::SetDir(uint8_t dir)
 {
+  __invariant();
 	if(dir>5 && dir<0) dir=0;
 	cur_dir=dir;
 
@@ -284,6 +295,7 @@ void CCritter::SetDir(uint8_t dir)
 
 void CCritter::RotCW()
 {
+  __invariant();
 	cur_dir++;
 	if(cur_dir==6) cur_dir=0;
 
@@ -292,6 +304,7 @@ void CCritter::RotCW()
 
 void CCritter::RotCCW()
 {
+  __invariant();
 	if(!cur_dir) cur_dir=5;
 	else cur_dir--;
 
@@ -300,6 +313,7 @@ void CCritter::RotCCW()
 
 void CCritter::Process()
 {
+  __invariant();
 	//stay анимация
 	if(!cur_anim)
 	{
@@ -399,6 +413,7 @@ void CCritter::Process()
 
 void CCritter::ChangeCur_offs(short change_ox, short change_oy)
 {
+  __invariant();
 	cur_ox+=change_ox;
 	cur_oy+=change_oy;
 
@@ -417,6 +432,7 @@ void CCritter::ChangeCur_offs(short change_ox, short change_oy)
 
 void CCritter::SetCur_offs(short set_ox, short set_oy)
 {
+  __invariant();
 	int diff_x=set_ox-cur_ox;
 	int diff_y=set_oy-cur_oy;
 
@@ -453,6 +469,7 @@ void CCritter::AccamulateCur_offs()
 
 void CCritter::SetText(char* str, uint32_t color)
 {
+  __invariant();
 	SAFEDELA(text_str);
 	text_str=new char[strlen(str)+1];
 	strcpy(text_str,str);
@@ -465,6 +482,7 @@ void CCritter::SetText(char* str, uint32_t color)
 
 void CCritter::DrawText(CFOFont* lpfnt)
 {
+  __invariant();
 	if(!text_str && FLAG(flags,FCRIT_MOB)) return;
 	if(visible)
 	{

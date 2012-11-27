@@ -1524,7 +1524,7 @@ void CSpriteManager::DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lps
 	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
 }
 
-void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, INTRECT* prect)
+void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, IntRect* prect)
 {
 	uint16_t id;
 	if(prep->lp_sprid) id=*prep->lp_sprid;

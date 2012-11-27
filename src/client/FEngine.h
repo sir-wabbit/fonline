@@ -307,14 +307,14 @@ private:
 
 	int InvX,InvY; //х,у основного меню окна, все остальное будет отталкиваться именно от этих координат
 
-	INTRECT InvMain,InvObl,InvChosen;
+	IntRect InvMain,InvObl,InvChosen;
 	int HeightItem;// = 30; //высота картинки в инвенторе, всего там 10
 	//слот1,2, армор
-	INTRECT InvSlot1,InvSlot2,InvArmor;
+	IntRect InvSlot1,InvSlot2,InvArmor;
 	//кнопки
-	INTRECT InvBtnUp,InvBtnDown,InvBtnOk;
+	IntRect InvBtnUp,InvBtnDown,InvBtnOk;
 	//точки вывода инфы
-	INTRECT txtObject;
+	IntRect txtObject;
 	//это нужно для перетаскивания окна инвентари
 	int invvectx,invvecty;
 
@@ -331,15 +331,15 @@ private:
 	uint8_t IntHold; //номер зажатой кнопки - нмера внизу //0 - кнопка не зажата
 	int IntX,IntY; //х,у основного меню окна, все остальное будет отталкиваться именно от этих координат
 
-	INTRECT IntMain; 
+	IntRect IntMain; 
 	//слоты
-	INTRECT IntObject; //слот объекта
+	IntRect IntObject; //слот объекта
 	//кнопки
-	INTRECT IntBScrUp,IntBScrDown,IntBChangeSlot,IntBInv,IntBMenu,IntBSkill,IntBMap,IntBInfo,IntBPip;
+	IntRect IntBScrUp,IntBScrDown,IntBChangeSlot,IntBInv,IntBMenu,IntBSkill,IntBMap,IntBInfo,IntBPip;
 	//точки вывода инфы
-	INTRECT IntTXT;
+	IntRect IntTXT;
 	//action points //15 зеленых(200мс) 3 желтых(1000мс) 2 красных(10000мс)
-	INTRECT IntAP,IntHP,IntAC;
+	IntRect IntAP,IntHP,IntAC;
 
 	int IntAPstepX,IntAPstepY;
 
@@ -352,7 +352,7 @@ private:
 	uint16_t chosen_mess_pic;
 	int IntMessX,IntMessY;
 	int IntMessStepX,IntMessStepY;
-	INTRECT IntMess;
+	IntRect IntMess;
 
 //Меню левой кнопки (LMenu)=======================================================
 	uint16_t lm_talk_off,lm_talk_on,lm_look_off,lm_look_on,lm_break_off,lm_break_on,
@@ -388,7 +388,7 @@ private:
 
 	int LogX,LogY;
 
-	INTRECT LogMain,LogWLogin,LogWPass,LogBOk,LogBReg,LogBExit;
+	IntRect LogMain,LogWLogin,LogWPass,LogBOk,LogBReg,LogBExit;
 
 	void ShowLogIn();
 	void LogInput();
@@ -402,7 +402,7 @@ private:
 
 	int RegX,RegY;
 
-	INTRECT RegMain,RegWS,RegWP,RegWE,RegWC,RegWI,RegWA,RegWL,RegWLogin,RegWPass,RegWName,
+	IntRect RegMain,RegWS,RegWP,RegWE,RegWC,RegWI,RegWA,RegWL,RegWLogin,RegWPass,RegWName,
 		RegWCases0,RegWCases1,RegWCases2,RegWCases3,RegWCases4,RegWBType,RegWGender,RegWAge,RegBReg,RegBBack;
 	
 	int CheckRegData(crit_info* newcr);
@@ -426,7 +426,7 @@ private:
 
 	int DlgX,DlgY;
 
-	INTRECT DlgMain,DlgBegin,DlgEnd,DlgText,DlgAnsw;
+	IntRect DlgMain,DlgBegin,DlgEnd,DlgText,DlgAnsw;
 
 	void DlgDraw();
 
@@ -441,7 +441,7 @@ private:
 
 	Pix_vec lmap_prep_pix;
 
-	INTRECT LmapMain,LmapWMap,LmapBOk,LmapBScan,LmapBLoHi;
+	IntRect LmapMain,LmapWMap,LmapBOk,LmapBScan,LmapBLoHi;
 
 	short LmapX,LmapY;
 	int lmapvectx,lmapvecty;
@@ -465,7 +465,7 @@ private:
 	int GmapX,GmapY,GmapMapScrX,GmapMapScrY,GmapWNameStepX,GmapWNameStepY,
 		GmapPLockContrX,GmapPLockContrY,GmapHold;
 
-	INTRECT GmapMain,GmapWMap,GmapBToLocal,GmapBStop,GmapBSpeed0,GmapBSpeed1,GmapBSpeed2,
+	IntRect GmapMain,GmapWMap,GmapBToLocal,GmapBStop,GmapBSpeed0,GmapBSpeed1,GmapBSpeed2,
 		GmapWName,GmapWChat,GmapWPanel,GmapWGroupInfo;
 
 	int gmapvectx,gmapvecty;
@@ -526,7 +526,7 @@ private:
 	uint16_t gm_wtab_pic,gm_wblanktab_pic,gm_btabloc_picdn,gm_tabs_scrup_picdn,gm_tabs_scrdn_picdn;
 	uint16_t gm_locpic[10];
 
-	INTRECT GmapWTabs,GmapWTabLoc,GmapBTabLoc,GmapBTabsScrUp,GmapBTabsScrDn;
+	IntRect GmapWTabs,GmapWTabLoc,GmapBTabLoc,GmapBTabsScrUp,GmapBTabsScrDn;
 	int GmapTabW,GmapTabH,GmapTabNextX,GmapTabNextY,GmapCurHoldBLoc;
 
 	int gm_tab_scr_x,gm_tab_scr_y;
@@ -543,10 +543,10 @@ private:
 	uint16_t sbox_main,sbox_bcancel_on,sbox_bsneak_on,sbox_blockpick_on,sbox_bsteal_on,
 		sbox_btrap_on,sbox_bfirstaid_on,sbox_bdoctor_on,sbox_bscience_on,sbox_brepair_on;
 
-	INTRECT SboxMain,SboxBCancel,SboxBSneak,SboxBLockpick,SboxBSteal,
+	IntRect SboxMain,SboxBCancel,SboxBSneak,SboxBLockpick,SboxBSteal,
 		SboxBTrap,SboxBFirstAid,SboxBDoctor,SboxBScience,SboxBRepair;
 
-	INTRECT SboxTSneak,SboxTLockpick,SboxTSteal,SboxTTrap,SboxTFirstAid,
+	IntRect SboxTSneak,SboxTLockpick,SboxTSteal,SboxTTrap,SboxTFirstAid,
 		SboxTDoctor,SboxTScience,SboxTRepair;
 
 	int SboxX,SboxY;
@@ -564,7 +564,7 @@ private:
 	int MoptX,MoptY;
 	int MoptHold;
 
-	INTRECT MoptMain,MoptBResume,MoptBExit;
+	IntRect MoptMain,MoptBResume,MoptBExit;
 
 	void MoptDraw();
 	void MoptMouseDown();

@@ -3515,6 +3515,7 @@ void FOnlineEngine::CurDraw()
 			sm.DrawSprite(cur_def,cur_x,cur_y,COLOR_DEFAULT);
 		else
 		{
+		  // FIXME[27.11.2012 alex]: crashes here
 			if(!FLAG(hf.hex_field[TargetY][TargetX].flags,FT_NOWAY))
 				sm.DrawSprite(cur_move,hf.hex_field[TargetY][TargetX].scr_x+1,
 					hf.hex_field[TargetY][TargetX].scr_y-1,COLOR_DEFAULT);

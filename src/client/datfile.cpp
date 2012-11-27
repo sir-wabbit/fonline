@@ -38,17 +38,31 @@ void SwapBytes(void* ptr, size_t size) {
   }
 }
 
+bool GetPath(std::string& result, const std::string& path) {
+  size_t pos = path.find_last_of('\\');
+  
+  if (pos == path.npos) {
+    result = "";
+  }
+  
+  result = path.substr(0, pos + 1);
+  
+  std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+
+  return true;
+}
+
 } // namespace anonymous
 
 //------------------------------------------------------------------------------
 
 DatArchive::DatArchive() {
-  ErrorType = 0;
+  error = 0;
 
-  FileType = 0; //если там 1, то файл считается компрессированым(не всегда).
-  RealSize = 0; //Размер файла без декомпрессии
-  PackedSize = 0; //Размер сжатого файла
-  Offset = 0; //Адрес файла в виде смещения от начала DAT-файла.
+  fileType = 0; //если там 1, то файл считается компрессированым(не всегда).
+  realSize = 0; //Размер файла без декомпрессии
+  packedSize = 0; //Размер сжатого файла
+  offset = 0; //Адрес файла в виде смещения от начала DAT-файла.
 
   lError = 0;
 
@@ -87,7 +101,7 @@ bool DatArchive::Init(char* fileName) {
     NULL);
 
   if (hFile == INVALID_HANDLE_VALUE) {
-    ErrorType = ERR_CANNOT_OPEN_FILE;
+    error = ERR_CANNOT_OPEN_FILE;
     return false;
   }
 
@@ -98,7 +112,7 @@ bool DatArchive::Init(char* fileName) {
   m_pInBuf = (uint8_t*) malloc(ZLIB_BUFF_SIZE);
 
   if (m_pInBuf == NULL) {
-    ErrorType = ERR_ALLOC_MEMORY;
+    error = ERR_ALLOC_MEMORY;
     return false;
   }
 
@@ -171,23 +185,11 @@ int DatArchive::ReadTree()
 void DatArchive::ShowError(void)
 {
   if(lError) {
-    MessageBox(NULL, *(error_types + ErrorType), "Error", MB_OK);
+    MessageBox(NULL, *(error_types + error), "Error", MB_OK);
   }
   lError = false;
 }
 //------------------------------------------------------------------------------
-
-bool GetPath(std::string& result, const std::string& path) {
-	size_t pos = path.find_last_of('\\');
-	// FIXME[26.11.2012 alex]: it was assumed in the original code.
-	if (pos == path.npos) {
-	  result = "";
-	}
-	result = path.substr(0, pos + 1);
-  std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-  
-  return true;
-}
 
 void DatArchive::IndexingDAT() {
   find_map::iterator it = fmap.find(datFileName);
@@ -248,8 +250,8 @@ HANDLE DatArchive::DATOpenFile(char* fname)
    {
 	  if(FindFile(fname))
       {
-		  if(!FileType) reader = new CPlainFile (hFile, Offset, RealSize);
-			else reader = new InflatorStream (hFile, Offset, RealSize, PackedSize);
+		  if(!fileType) reader = new CPlainFile (hFile, offset, realSize);
+			else reader = new InflatorStream (hFile, offset, realSize, packedSize);
          return hFile;
       }
    }
@@ -284,10 +286,10 @@ bool DatArchive::FindFile(const std::string& fileName)
     std::transform(fnd.begin(), fnd.end(), fnd.begin(), ::tolower);
     
     if (fnd == str) {
-      FileType = *(ptr + szFileName);
-      RealSize = *(uint32_t *)(ptr + szFileName+ 1);
-      PackedSize = *(uint32_t *)(ptr + szFileName + 5);
-      Offset = *(uint32_t *)(ptr + szFileName + 9);
+      fileType = *(ptr + szFileName);
+      realSize = *(uint32_t *)(ptr + szFileName+ 1);
+      packedSize = *(uint32_t *)(ptr + szFileName + 5);
+      offset = *(uint32_t *)(ptr + szFileName + 9);
 	    return true;
 	  }
 	  
@@ -309,7 +311,7 @@ bool DatArchive::DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod)
 uint32_t DatArchive::DATGetFileSize(void)
 {
    if(hFile == INVALID_HANDLE_VALUE) return 0;
-   return RealSize;
+   return realSize;
 }
 //------------------------------------------------------------------------------
 bool DatArchive::DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,

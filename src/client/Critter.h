@@ -103,11 +103,15 @@ public:
 	uint8_t alpha; //прозрачность криттера
 //!Cvet ----------------------------------
 
-	INTRECT drect;
+	IntRect drect;
 	
-	dtree_map::iterator rit; // индекс по которому можно найти любого Перса
+	int rit;
+	//dtree_map::iterator rit; // индекс по которому можно найти любого Перса
 
-	CCritter(CSpriteManager* alpSM):lpSM(alpSM),cur_anim(NULL),cur_dir(0),cur_id(0),stay_wait(0),stay_tkr(0),text_str(NULL),visible(0),weapon(0){strcpy(name,"none");};
+	CCritter(CSpriteManager* alpSM) : lpSM(alpSM), cur_anim(NULL), cur_dir(0), cur_id(0), stay_wait(0), stay_tkr(0),
+	                                  text_str(NULL), visible(0), weapon(0), rit(-1) {
+	  strcpy(name,"none");
+	}
 	~CCritter(){SAFEDELA(text_str);};
 
 //!Cvet ++++++++++++++++++++++++++++
@@ -126,6 +130,10 @@ public:
 	CritFrames* cur_anim; // текущий тип анимации //!Cvet вынес в паблик
 	
 private:
+  void __invariant() {
+    assert(this != NULL);
+    assert(lpSM != NULL);
+  }
 
 	CSpriteManager* lpSM;
 	

@@ -1117,22 +1117,25 @@ void CHexField::SetCenter2(int x, int y)
 						&(*ti)->spr_id,&(*ti)->scr_x,&(*ti)->scr_y)));
 				}
 			
-			if(hex_field[ny][nx].wall_id[0] && cmn_show_walls)
-			{
-					for(int i=0;i<MAX_WALL_CNT;i++)
-					{
-						if(!hex_field[ny][nx].wall_id[i]) break;
-						if(IsVisible(nx, ny, hex_field[ny][nx].wall_id[i]))
+			if(hex_field[ny][nx].wall_id[0] && cmn_show_walls) {
+					for(int i = 0; i < MAX_WALL_CNT; i++) {
+						if (!hex_field[ny][nx].wall_id[i]) break;
+						if (IsVisible(nx, ny, hex_field[ny][nx].wall_id[i])) {
 							dtree.insert(dtree_map::value_type(hex_field[ny][nx].pos+DRAW_ORDER_WALL, new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,hex_field[ny][nx].wall_id[i])));
+						}
 					}
 			}
 
-			if(hex_field[ny][nx].lpcrit && cmn_show_crit)
-			{
-				if(!IsVisible(nx, ny, hex_field[ny][nx].lpcrit->cur_id)) {hex_field[ny][nx].lpcrit->SetVisible(0);hex_field[ny][nx].lpcrit->rit=NULL;continue;} //!Cvet memory leak???!!!!!!!!!!
-					hex_field[ny][nx].lpcrit->SetVisible(1);
+			if(hex_field[ny][nx].lpcrit && cmn_show_crit) {
+				if(!IsVisible(nx, ny, hex_field[ny][nx].lpcrit->cur_id)) {
+				  hex_field[ny][nx].lpcrit->SetVisible(0);
+				  hex_field[ny][nx].lpcrit->rit = -1;
+				  continue;
+				} //!Cvet memory leak???!!!!!!!!!!
+				
+				hex_field[ny][nx].lpcrit->SetVisible(1);
 
-				PrepSprite* prep=new PrepSprite(
+				PrepSprite* prep = new PrepSprite(
 					hex_field[ny][nx].scr_x+16,
 					hex_field[ny][nx].scr_y+6,0,
 					&hex_field[ny][nx].lpcrit->cur_id,
@@ -1140,9 +1143,10 @@ void CHexField::SetCenter2(int x, int y)
 					&hex_field[ny][nx].lpcrit->cur_oy,
 					&hex_field[ny][nx].lpcrit->alpha);
 
-				hex_field[ny][nx].lpcrit->rit=dtree.insert(dtree_map::value_type(hex_field[ny][nx].pos+DRAW_ORDER_CRIT, prep));
+        //dtree.insert(dtree_map::value_type(hex_field[ny][nx].pos+DRAW_ORDER_CRIT, prep));
+				hex_field[ny][nx].lpcrit->rit = hex_field[ny][nx].pos+DRAW_ORDER_CRIT;
 
-					// не ясно что тут? возможна ли ошибка
+				// не ясно что тут? возможна ли ошибка
 				//	hex_field[ny][nx].lpcrit->rx=x;
 				//	hex_field[ny][nx].lpcrit->ry=y;
 				lpSM->GetDrawCntrRect(prep, &hex_field[ny][nx].lpcrit->drect);
@@ -1467,22 +1471,22 @@ void CHexField::SetCrit(int x,int y,CCritter* pcrit)
 	hex_field[y][x].lpcrit=pcrit;
 	SETFLAG(hex_field[y][x].flags,FT_PLAYER);
 
-//	SpriteInfo* ii=lpSM->GetSpriteInfo(hex_field[y][x].lpcrit->cur_id);
+  // SpriteInfo* ii=lpSM->GetSpriteInfo(hex_field[y][x].lpcrit->cur_id);
 	WriteLog("x=%d,y=%d\n",x,y);
 
-	if(!IsVisible(x, y, hex_field[y][x].lpcrit->cur_id))
-	{
-WriteLog("Added not visible!\n");
+	if (!IsVisible(x, y, hex_field[y][x].lpcrit->cur_id)) {
+    WriteLog("Added not visible!\n");
 		hex_field[y][x].lpcrit->SetVisible(0);
-		pcrit->rit=NULL;
+		pcrit->rit = -1;
 		return;
 	}
-WriteLog("Added visible!\n");
+  WriteLog("Added visible!\n");
 
 	hex_field[y][x].lpcrit->SetVisible(1);
 
-	PrepSprite* prep=new PrepSprite(hex_field[y][x].scr_x+16,hex_field[y][x].scr_y+6,0,&hex_field[y][x].lpcrit->cur_id,&hex_field[y][x].lpcrit->cur_ox,&hex_field[y][x].lpcrit->cur_oy,&hex_field[y][x].lpcrit->alpha);
-	pcrit->rit=dtree.insert(dtree_map::value_type(hex_field[y][x].pos+DRAW_ORDER_CRIT, prep));
+	PrepSprite* prep = new PrepSprite(hex_field[y][x].scr_x + 16, hex_field[y][x].scr_y + 6, 0, &hex_field[y][x].lpcrit->cur_id,&hex_field[y][x].lpcrit->cur_ox,&hex_field[y][x].lpcrit->cur_oy,&hex_field[y][x].lpcrit->alpha);
+	dtree.insert(dtree_map::value_type(hex_field[y][x].pos + DRAW_ORDER_CRIT, prep));
+	pcrit->rit = hex_field[y][x].pos + DRAW_ORDER_CRIT;
 
 //	pcrit->hex_x=x; //!Cvet вынес в AddCritter // Текущие координаты Дюда 
 //	pcrit->hex_y=y;
@@ -1495,24 +1499,25 @@ void CHexField::RemoveCrit(CCritter* pcrit)
 	hex_field[pcrit->hex_y][pcrit->hex_x].lpcrit=NULL;
 	UNSETFLAG(hex_field[pcrit->hex_y][pcrit->hex_x].flags,FT_PLAYER); //!Cvet
 
-	if(pcrit->rit!=NULL) 
-	{ //!Cvet исправил. был баг
-		dtree_map::iterator it=dtree.find((*pcrit->rit).first);
+  // FIXME[27.11.2012 alex]: crashes here.
+	if(pcrit->rit != -1) {
+	  //!Cvet исправил. был баг
+		dtree_map::iterator it = dtree.find(pcrit->rit);
 
 		if(it!=dtree.end())
 		{
 
-	WriteLog("R1=");
-			SAFEDEL((*it).second);
-	WriteLog("R2...");
+      WriteLog("R1=");
+			SAFEDEL(it->second);
+      WriteLog("R2...");
 			dtree.erase(it);
 		}
 
-		pcrit->rit=NULL;
+		pcrit->rit = -1;
 
 	}
-    // отладка сетевых сообщений
-    WriteLog("CritRemoved...\n");
+  // отладка сетевых сообщений
+  WriteLog("CritRemoved...\n");
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1572,19 +1577,27 @@ void CHexField::TransitCritter(CCritter* pcrit, int dir, int x, int y, bool null
 	pcrit->SetVisible(1);
 
 	PrepSprite* prep=new PrepSprite(hex_field[y][x].scr_x+16,hex_field[y][x].scr_y+6,0,&hex_field[y][x].lpcrit->cur_id,&hex_field[y][x].lpcrit->cur_ox,&hex_field[y][x].lpcrit->cur_oy,&hex_field[y][x].lpcrit->alpha);
-	if(null_offs==true)
-		pcrit->rit=dtree.insert(dtree_map::value_type(hex_field[y][x].pos+DRAW_ORDER_CRIT, prep));
-	else
-		if((old_x%2) && dir==0)
-			pcrit->rit=dtree.insert(dtree_map::value_type(hex_field[y][x].pos+11+DRAW_ORDER_CRIT, prep));
-		else if(!(old_x%2) && dir==3)
-			pcrit->rit=dtree.insert(dtree_map::value_type(hex_field[old_y][old_x].pos+12+DRAW_ORDER_CRIT, prep));
-		else if((old_x%2) && dir==2)
-			pcrit->rit=dtree.insert(dtree_map::value_type(hex_field[old_y][old_x].pos+DRAW_ORDER_CRIT+1, prep));
-		else if(!(old_x%2) && dir==5)
-			pcrit->rit=dtree.insert(dtree_map::value_type(hex_field[old_y][old_x].pos+DRAW_ORDER_CRIT+2, prep));
-		else
-			pcrit->rit=dtree.insert(dtree_map::value_type(hex_field[y][x].pos+DRAW_ORDER_CRIT, prep));
+	if(null_offs==true) {
+	  dtree.insert(dtree_map::value_type(hex_field[y][x].pos+DRAW_ORDER_CRIT, prep));
+		pcrit->rit = hex_field[y][x].pos + DRAW_ORDER_CRIT;
+	} else {
+		if((old_x%2) && dir==0) {
+		  dtree.insert(dtree_map::value_type(hex_field[y][x].pos+11+DRAW_ORDER_CRIT, prep));
+			pcrit->rit = hex_field[y][x].pos+11+DRAW_ORDER_CRIT;
+		} else if(!(old_x%2) && dir==3) {
+		  dtree.insert(dtree_map::value_type(hex_field[old_y][old_x].pos+12+DRAW_ORDER_CRIT, prep));
+			pcrit->rit = hex_field[old_y][old_x].pos+12+DRAW_ORDER_CRIT;
+		} else if((old_x%2) && dir==2) {
+		  dtree.insert(dtree_map::value_type(hex_field[old_y][old_x].pos+DRAW_ORDER_CRIT+1, prep));
+			pcrit->rit = hex_field[old_y][old_x].pos+DRAW_ORDER_CRIT+1;
+		} else if(!(old_x%2) && dir==5) {
+		  dtree.insert(dtree_map::value_type(hex_field[old_y][old_x].pos+DRAW_ORDER_CRIT+2, prep));
+			pcrit->rit = hex_field[old_y][old_x].pos+DRAW_ORDER_CRIT+2;
+		} else {
+		  dtree.insert(dtree_map::value_type(hex_field[y][x].pos+DRAW_ORDER_CRIT, prep));
+			pcrit->rit = hex_field[y][x].pos+DRAW_ORDER_CRIT;
+	  }
+	}
 
 	lpSM->GetDrawCntrRect(prep, &pcrit->drect);
 }
