@@ -104,7 +104,12 @@ struct ItemObj
 	ItemObj(stat_obj* _sobj, uint16_t _spr_id, int _hex_x, int _hex_y, short _scr_x, short _scr_y, int* _hex_scr_x, int* _hex_scr_y):
 	sobj(_sobj),spr_id(_spr_id),hex_x(_hex_x),hex_y(_hex_y),scr_x(_scr_x),scr_y(_scr_y),hex_scr_x(_hex_scr_x),hex_scr_y(_hex_scr_y),anim(NULL),
 	cur_spr(0),need_spr(0),last_tick(0){};
-	~ItemObj(){SAFEDEL(anim);};
+	~ItemObj() {
+	  if (anim != NULL) {
+	    delete anim;
+	    anim = NULL;
+	  }
+	};
 
 	void SetAnimFromEnd(){cur_spr=anim->cnt_frames-1;need_spr=0;SetAnimSpr(cur_spr);};
 	void SetAnimFixFromEnd(){SetAnimFromEnd();need_spr=cur_spr;};

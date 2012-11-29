@@ -9,6 +9,8 @@
 #include "netproto.h"
 
 #include <base/buffer.hpp>
+#include <base/math/rect.hpp>
+
 /********************************************************************
 	created:	2005   22:04
 	edit:		2007   15:15
@@ -90,7 +92,12 @@ struct AnyAnimData
 {
 		AnyFrames* eng; // Анимация берем оружие в руки
 		AnyAnimData():eng(NULL){};
-		~AnyAnimData(){SAFEDEL(eng)};
+		~AnyAnimData() {
+      if (eng != NULL) {
+        delete eng;
+        eng = NULL;
+      }
+		}
 };
 
 typedef std::map<uint16_t, std::string> string_map; //!Cvet
@@ -156,10 +163,10 @@ private:
 	LPDIRECTINPUTDEVICE8 lpKeyboard;
 	LPDIRECTINPUTDEVICE8 lpMouse;
 
-	CSpriteManager sm;
-	CHexField hf;
+	CSpriteManager spriteManager;
+	CHexField hexField;
 	CFOFont fnt;
-	SoundManager sdm;
+	SoundManager soundManager;
 
 	uint16_t cur_def,cur_move,cur_move_block,cur_hand,cur_use_o,cur_use_s,cur_wait; //!Cvet указатели
 
@@ -307,14 +314,14 @@ private:
 
 	int InvX,InvY; //х,у основного меню окна, все остальное будет отталкиваться именно от этих координат
 
-	IntRect InvMain,InvObl,InvChosen;
+  fonline::math::Rect<int> InvMain,InvObl,InvChosen;
 	int HeightItem;// = 30; //высота картинки в инвенторе, всего там 10
 	//слот1,2, армор
-	IntRect InvSlot1,InvSlot2,InvArmor;
+	fonline::math::Rect<int> InvSlot1,InvSlot2,InvArmor;
 	//кнопки
-	IntRect InvBtnUp,InvBtnDown,InvBtnOk;
+	fonline::math::Rect<int> InvBtnUp,InvBtnDown,InvBtnOk;
 	//точки вывода инфы
-	IntRect txtObject;
+	fonline::math::Rect<int> txtObject;
 	//это нужно для перетаскивания окна инвентари
 	int invvectx,invvecty;
 
@@ -331,15 +338,15 @@ private:
 	uint8_t IntHold; //номер зажатой кнопки - нмера внизу //0 - кнопка не зажата
 	int IntX,IntY; //х,у основного меню окна, все остальное будет отталкиваться именно от этих координат
 
-	IntRect IntMain; 
+	fonline::math::Rect<int> IntMain; 
 	//слоты
-	IntRect IntObject; //слот объекта
+	fonline::math::Rect<int> IntObject; //слот объекта
 	//кнопки
-	IntRect IntBScrUp,IntBScrDown,IntBChangeSlot,IntBInv,IntBMenu,IntBSkill,IntBMap,IntBInfo,IntBPip;
+	fonline::math::Rect<int> IntBScrUp,IntBScrDown,IntBChangeSlot,IntBInv,IntBMenu,IntBSkill,IntBMap,IntBInfo,IntBPip;
 	//точки вывода инфы
-	IntRect IntTXT;
+	fonline::math::Rect<int> IntTXT;
 	//action points //15 зеленых(200мс) 3 желтых(1000мс) 2 красных(10000мс)
-	IntRect IntAP,IntHP,IntAC;
+	fonline::math::Rect<int> IntAP,IntHP,IntAC;
 
 	int IntAPstepX,IntAPstepY;
 
@@ -352,7 +359,7 @@ private:
 	uint16_t chosen_mess_pic;
 	int IntMessX,IntMessY;
 	int IntMessStepX,IntMessStepY;
-	IntRect IntMess;
+	fonline::math::Rect<int> IntMess;
 
 //Меню левой кнопки (LMenu)=======================================================
 	uint16_t lm_talk_off,lm_talk_on,lm_look_off,lm_look_on,lm_break_off,lm_break_on,
@@ -388,7 +395,7 @@ private:
 
 	int LogX,LogY;
 
-	IntRect LogMain,LogWLogin,LogWPass,LogBOk,LogBReg,LogBExit;
+	fonline::math::Rect<int> LogMain,LogWLogin,LogWPass,LogBOk,LogBReg,LogBExit;
 
 	void ShowLogIn();
 	void LogInput();
@@ -402,7 +409,7 @@ private:
 
 	int RegX,RegY;
 
-	IntRect RegMain,RegWS,RegWP,RegWE,RegWC,RegWI,RegWA,RegWL,RegWLogin,RegWPass,RegWName,
+	fonline::math::Rect<int> RegMain,RegWS,RegWP,RegWE,RegWC,RegWI,RegWA,RegWL,RegWLogin,RegWPass,RegWName,
 		RegWCases0,RegWCases1,RegWCases2,RegWCases3,RegWCases4,RegWBType,RegWGender,RegWAge,RegBReg,RegBBack;
 	
 	int CheckRegData(crit_info* newcr);
@@ -426,7 +433,7 @@ private:
 
 	int DlgX,DlgY;
 
-	IntRect DlgMain,DlgBegin,DlgEnd,DlgText,DlgAnsw;
+	fonline::math::Rect<int> DlgMain,DlgBegin,DlgEnd,DlgText,DlgAnsw;
 
 	void DlgDraw();
 
@@ -441,7 +448,7 @@ private:
 
 	Pix_vec lmap_prep_pix;
 
-	IntRect LmapMain,LmapWMap,LmapBOk,LmapBScan,LmapBLoHi;
+	fonline::math::Rect<int> LmapMain,LmapWMap,LmapBOk,LmapBScan,LmapBLoHi;
 
 	short LmapX,LmapY;
 	int lmapvectx,lmapvecty;
@@ -465,7 +472,7 @@ private:
 	int GmapX,GmapY,GmapMapScrX,GmapMapScrY,GmapWNameStepX,GmapWNameStepY,
 		GmapPLockContrX,GmapPLockContrY,GmapHold;
 
-	IntRect GmapMain,GmapWMap,GmapBToLocal,GmapBStop,GmapBSpeed0,GmapBSpeed1,GmapBSpeed2,
+	fonline::math::Rect<int> GmapMain,GmapWMap,GmapBToLocal,GmapBStop,GmapBSpeed0,GmapBSpeed1,GmapBSpeed2,
 		GmapWName,GmapWChat,GmapWPanel,GmapWGroupInfo;
 
 	int gmapvectx,gmapvecty;
@@ -526,7 +533,7 @@ private:
 	uint16_t gm_wtab_pic,gm_wblanktab_pic,gm_btabloc_picdn,gm_tabs_scrup_picdn,gm_tabs_scrdn_picdn;
 	uint16_t gm_locpic[10];
 
-	IntRect GmapWTabs,GmapWTabLoc,GmapBTabLoc,GmapBTabsScrUp,GmapBTabsScrDn;
+	fonline::math::Rect<int> GmapWTabs,GmapWTabLoc,GmapBTabLoc,GmapBTabsScrUp,GmapBTabsScrDn;
 	int GmapTabW,GmapTabH,GmapTabNextX,GmapTabNextY,GmapCurHoldBLoc;
 
 	int gm_tab_scr_x,gm_tab_scr_y;
@@ -543,10 +550,10 @@ private:
 	uint16_t sbox_main,sbox_bcancel_on,sbox_bsneak_on,sbox_blockpick_on,sbox_bsteal_on,
 		sbox_btrap_on,sbox_bfirstaid_on,sbox_bdoctor_on,sbox_bscience_on,sbox_brepair_on;
 
-	IntRect SboxMain,SboxBCancel,SboxBSneak,SboxBLockpick,SboxBSteal,
+	fonline::math::Rect<int> SboxMain,SboxBCancel,SboxBSneak,SboxBLockpick,SboxBSteal,
 		SboxBTrap,SboxBFirstAid,SboxBDoctor,SboxBScience,SboxBRepair;
 
-	IntRect SboxTSneak,SboxTLockpick,SboxTSteal,SboxTTrap,SboxTFirstAid,
+	fonline::math::Rect<int> SboxTSneak,SboxTLockpick,SboxTSteal,SboxTTrap,SboxTFirstAid,
 		SboxTDoctor,SboxTScience,SboxTRepair;
 
 	int SboxX,SboxY;
@@ -564,7 +571,7 @@ private:
 	int MoptX,MoptY;
 	int MoptHold;
 
-	IntRect MoptMain,MoptBResume,MoptBExit;
+	fonline::math::Rect<int> MoptMain,MoptBResume,MoptBExit;
 
 	void MoptDraw();
 	void MoptMouseDown();

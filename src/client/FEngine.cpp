@@ -1,28 +1,23 @@
-#include "stdafx.h"
-
 #include "FEngine.h"
 #include "common.h"
 #include "version.h"
 #include "keyb.h"
 
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
-/********************************************************************
-	created:	2005   22:04
-	edit:		2007   15:15
 
-	author:		Oleg Mareskin
-	edit:		Denis Balikhin, Anton Tsvetinsky
-	
-	purpose:	
-*********************************************************************/
+template<class T> void SetBit(T& bits, unsigned int bit, bool value) {
+  T mask = T(1) << bit;
+  bits = (bits & (~mask)) | (T(value ? 1 : 0) << bit);
+}
+template<class T> bool GetBit(T& bits, unsigned int bit) {
+  return ((bits >> bit) & 0x01) != 0;
+}
 
-void *zlib_alloc(void *opaque, unsigned int items, unsigned int size)
-{
+void *zlib_alloc(void *opaque, unsigned int items, unsigned int size) {
     return calloc(items, size);
 }
 
-void zlib_free(void *opaque, void *address)
-{
+void zlib_free(void *opaque, void *address) {
     free(address);
 }
 
@@ -102,10 +97,10 @@ int FOnlineEngine::Init(HWND _hWnd)
 		d3dpp.BackBufferFormat=d3ddm.Format;
 		else
 		{
-			d3dpp.BackBufferWidth=MODE_WIDTH;
-			d3dpp.BackBufferHeight=MODE_HEIGHT;
-			d3dpp.BackBufferFormat=D3DFMT_A8R8G8B8;
-			if(!opt_vsync) d3dpp.FullScreen_PresentationInterval=D3DPRESENT_INTERVAL_IMMEDIATE;
+			d3dpp.BackBufferWidth = screen_width[opt_screen_mode];
+			d3dpp.BackBufferHeight = screen_height[opt_screen_mode];
+			d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
+			if (!opt_vsync) d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 		}
 
 	hr=lpD3D->CreateDevice(D3DADAPTER_DEFAULT,D3DDEVTYPE_HAL,hWnd,
@@ -159,27 +154,38 @@ int FOnlineEngine::Init(HWND _hWnd)
 
 	if(!InitDInput()) return 0;
 
-	if(!sm.Init(lpDevice)) return 0;
+	if(!spriteManager.Init(lpDevice)) return 0;
 
-	if(!sdm.Init()) return 0;
+	if(!soundManager.Init()) return 0;
 
 	WriteLog("Loading splash...");
 
 	char* name_splash=new char[64];
 	GetRandomSplash(name_splash);
-	if(!(splash=sm.LoadRix(name_splash,PT_ART_SPLASH))) return 0;
-	SAFEDELA(name_splash);
+	if (!(splash = spriteManager.LoadRix(name_splash, PT_ART_SPLASH))) {
+    if (name_splash != NULL) {
+      delete [] name_splash;
+      name_splash = NULL;
+    }
+    
+    return 0;
+	}
+	
+  if (name_splash != NULL) {
+    delete [] name_splash;
+    name_splash = NULL;
+  }
 
-	sm.NextSurface();
+	spriteManager.NextSurface();
 	lpDevice->BeginScene();
-	sm.DrawSprite(splash,0,0,COLOR_DEFAULT);
-	sm.Flush();
+	spriteManager.DrawSprite(splash,0,0,COLOR_DEFAULT);
+	spriteManager.Flush();
 	lpDevice->EndScene();
 	lpDevice->Present(NULL,NULL,NULL,NULL);
 
 	WriteLog("OK\n");
 
-	if(!fnt.Init(lpDevice,sm.GetVB(),sm.GetIB())) return 0;
+	if(!fnt.Init(lpDevice,spriteManager.GetVB(),spriteManager.GetIB())) return 0;
 
 //!Cvet++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	CreateParamsMaps();
@@ -199,14 +205,15 @@ int FOnlineEngine::Init(HWND _hWnd)
 	FILE *o_cf2;
 	params_map::iterator it_o;
 
-	for(stat_map::iterator it=all_s_obj.begin(); it!=all_s_obj.end(); it++)
-	{
-		SAFEDEL((*it).second);
-		all_s_obj.erase(it);
+	for(stat_map::iterator it = all_s_obj.begin(); it != all_s_obj.end(); it++) {
+    if (it->second != NULL) {
+      delete it->second;
+      it->second = NULL;
+    }
 	}
+	all_s_obj.clear();
 
-	if((o_cf=fopen("data\\objects\\all_obj.st","rt"))==NULL)
-	{
+	if ((o_cf = fopen("data\\objects\\all_obj.st","rt")) == NULL) {
 		WriteLog("Файл all_obj.st не найден\n");
 		return 0;
 	}
@@ -280,7 +287,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 	WriteLog("OK (%d объектов)\n",cnt_obj);
 //!Cvet ------------------------------------------------------------------------------------
 
-	if(!hf.Init(&sm)) return 0;
+	if(!hexField.Init(&spriteManager)) return 0;
 
 	state=STATE_DISCONNECT; //!Cvet
 
@@ -299,7 +306,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 	ShowCursor(0);
 	cur_x=320;cur_y=240;
 
-	WriteLog("Всего спрайтов загружено: %d\n",sm.GetLoadedCnt());
+	WriteLog("Всего спрайтов загружено: %d\n",spriteManager.GetLoadedCnt());
 
 	WriteLog("FEngine Initialization complete\n");
 	crtd=1;
@@ -404,10 +411,10 @@ void FOnlineEngine::Clear()
 
 	NetDiscon();
 
-	hf.Clear();
-	sm.Clear();
+	hexField.Clear();
+	spriteManager.Clear();
 	fnt.Clear();
-	sdm.Clear();
+	soundManager.Clear();
 
   for (stat_map::iterator i = all_s_obj.begin(); i != all_s_obj.end(); ++i) {
     assert(i->second != NULL);
@@ -415,17 +422,38 @@ void FOnlineEngine::Clear()
   }
   all_s_obj.clear();
 
-	SAFEREL(lpDevice);
-	SAFEREL(lpD3D);
+	if (lpDevice != NULL) {
+	  lpDevice->Release();
+	  lpDevice = NULL;
+	}
+	
+  if (lpD3D != NULL) {
+    lpD3D->Release();
+    lpD3D = NULL;
+  }
 
-	if(lpKeyboard) lpKeyboard->Unacquire();
-	SAFEREL(lpKeyboard);
-	if(lpMouse) lpMouse->Unacquire();
-	SAFEREL(lpMouse);
-	SAFEREL(lpDInput);
+	if (lpKeyboard != NULL) {
+	  lpKeyboard->Unacquire();
+    lpKeyboard->Release();
+    lpKeyboard = NULL;
+	}
+	
+	if (lpMouse != NULL) {
+	  lpMouse->Unacquire();
+    lpMouse->Release();
+    lpMouse = NULL;
+  }
+  
+  if (lpDInput != NULL) {
+    lpDInput->Release();
+    lpDInput = NULL;
+  }
 
-	SAFEDELA(ComBuf);
-
+  if (ComBuf != NULL) {
+    delete [] ComBuf;
+    ComBuf = NULL;
+  }
+  
 	crtd=0;
 
 	WriteLog("FEngine Clear complete\n");
@@ -435,7 +463,7 @@ void FOnlineEngine::ClearCritters() //!Cvet
 {
 	for(crit_map::iterator it=critters.begin();it!=critters.end();it++)
 	{
-		hf.RemoveCrit((*it).second);
+		hexField.RemoveCrit((*it).second);
 		delete (*it).second;
 	}
 	critters.clear();
@@ -448,7 +476,7 @@ void FOnlineEngine::RemoveCritter(CritterID remid) //!Cvet
 	crit_map::iterator it=critters.find(remid);
 	if(it==critters.end()) return;
 
-	hf.RemoveCrit((*it).second);
+	hexField.RemoveCrit((*it).second);
 	delete (*it).second;
 	critters.erase(it);
 
@@ -472,7 +500,7 @@ int FOnlineEngine::Console()
 //	wsprintf(str,"Сетевые данные игроков: движение:%d, присоединился:%d, сказал:%d, вышел:%d"
 //	,LstMoveId,LstAddCritId,LstSayCritId,LstDelCritId);
 //	wsprintf(str,"Pwleft:%d, Phbegin:%d"
-//	,hf.Pwleft , hf.Phbegin);
+//	,hexField.Pwleft , hexField.Phbegin);
 
 	wsprintf(str,"R=%d,G=%d,B=%d---Время:%d:%d",dayR,dayG,dayB,Game_Hours,Game_Mins);
 
@@ -525,10 +553,10 @@ int FOnlineEngine::Render()
 
 	if(IsScreen(SCREEN_GLOBAL_MAP)) { GmapProcess(); GmapDraw(); return 1; }
 
-	if(!hf.IsMapLoaded()) return 1;
+	if(!hexField.IsMapLoaded()) return 1;
 	if(!lpChosen) return 1;
 
-	hf.Scroll();
+	hexField.Scroll();
 
 	if(opt_dbgclear) lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,255,0),1.0,0);
 
@@ -543,23 +571,23 @@ int FOnlineEngine::Render()
 		{
 			if(crit->cur_anim==NULL && crit->next_step[crit->cur_step]!=0xFF)
 			{
-				hf.MoveCritter(crit,crit->next_step[crit->cur_step]);
+				hexField.MoveCritter(crit,crit->next_step[crit->cur_step]);
 				crit->Move(crit->next_step[crit->cur_step]);
 				crit->cur_step++;
 			}
 		}
 	}
 
-	hf.ProcessObj();
+	hexField.ProcessObj();
 
 //RENDER
 	lpDevice->BeginScene();
 
 	ProccessDayTime(); //!Cvet
 
-	hf.DrawMap2();
+	hexField.DrawMap2();
 
-	sm.Flush();
+	spriteManager.Flush();
 	for(crit_map::iterator it=critters.begin();it!=critters.end();it++)
 		(*it).second->DrawText(&fnt);
 
@@ -573,12 +601,17 @@ int FOnlineEngine::Render()
 	if(IsLMenu()) LMenuDraw(); //отрисовка LMenu
 //!Cvet--------
 
-	sm.Flush();
+	spriteManager.Flush();
 	if(cmn_console) 
 	{
 		Console();
 	
-		RECT r2={10,300,MODE_WIDTH,MODE_HEIGHT};
+		RECT r2 = {
+		  10,
+		  300,
+		  screen_width[opt_screen_mode],
+		  screen_height[opt_screen_mode]
+		};
 		char verstr[256];
 		wsprintf(verstr,"|2130771712 by |4278255615 Gamers |2130771712 from |4294967040 FOdev\n\n"
 			"|4278190335 version %s\n\n"
@@ -591,7 +624,7 @@ int FOnlineEngine::Render()
 //отрисовка курсора
 	CurDraw();
 
-	sm.Flush();
+	spriteManager.Flush();
 
 	lpDevice->EndScene();
 
@@ -669,11 +702,13 @@ void FOnlineEngine::ParseInput()
 			cur_x=p.x-(r.left+2);
 			cur_y=p.y-(r.top+22);
 		}
-*/
-		if(cur_x>MODE_WIDTH) cur_x=MODE_WIDTH;
-		if(cur_x<0) cur_x=0;
-		if(cur_y>MODE_HEIGHT) cur_y=MODE_HEIGHT;
-		if(cur_y<0) cur_y=0;
+*/  
+    size_t modeWidth = screen_width[opt_screen_mode];
+    size_t modeHeight = screen_height[opt_screen_mode];
+		if(cur_x > modeWidth) cur_x = modeWidth;
+		if(cur_x < 0) cur_x = 0;
+		if(cur_y > modeHeight) cur_y = modeHeight;
+		if(cur_y < 0) cur_y = 0;
 
 		return;
 	}
@@ -755,9 +790,9 @@ void FOnlineEngine::ParseInput()
 			DI_ONDOWN( DIK_RIGHT, lpChosen->RotCW(); Net_SendDir() );
 		}
 
-		DI_ONDOWN( DIK_T ,hf.SwitchShowTrack() ); //!Cvet
-		DI_ONDOWN( DIK_G ,hf.SwitchShowHex() );
-		DI_ONDOWN( DIK_R ,hf.SwitchShowRain() ); //!Cvet
+		DI_ONDOWN( DIK_T ,hexField.SwitchShowTrack() ); //!Cvet
+		DI_ONDOWN( DIK_G ,hexField.SwitchShowHex() );
+		DI_ONDOWN( DIK_R ,hexField.SwitchShowRain() ); //!Cvet
 
 //		DI_ONUP( DIK_Q ,opt_scroll_delay-=10;WriteLog("scroll_delay=%d\n",opt_scroll_delay) );
 //		DI_ONUP( DIK_W ,opt_scroll_delay+=10;WriteLog("scroll_delay=%d\n",opt_scroll_delay) );
@@ -968,16 +1003,18 @@ void FOnlineEngine::ParseInput()
 		cur_y=p.y-(r.top+22);
 	}*/
 
-	if(cur_x>MODE_WIDTH) cur_x=MODE_WIDTH;
-	if(cur_x<0) cur_x=0;
-	if(cur_y>MODE_HEIGHT) cur_y=MODE_HEIGHT;
-	if(cur_y<0) cur_y=0;
+  size_t modeWidth = screen_width[opt_screen_mode];
+  size_t modeHeight = screen_height[opt_screen_mode];
+  if(cur_x > modeWidth) cur_x = modeWidth;
+  if(cur_x < 0) cur_x = 0;
+  if(cur_y > modeHeight) cur_y = modeHeight;
+  if(cur_y < 0) cur_y = 0;
 
 	if(IsScreen(SCREEN_MAIN) && !IsLMenu())
 	{
-		if(cur_x>=MODE_WIDTH)
+		if(cur_x >= modeWidth)
 		{
-			cur_x=MODE_WIDTH;
+			cur_x = modeWidth;
 			cmn_di_mright=1;
 			cur=cur_right;
 		}
@@ -991,9 +1028,9 @@ void FOnlineEngine::ParseInput()
 		}
 		else cmn_di_mleft=0;
 
-		if(cur_y>=MODE_HEIGHT)
+		if(cur_y >= modeHeight)
 		{
-			cur_y=MODE_HEIGHT;
+			cur_y = modeHeight;
 			cmn_di_mdown=1;
 			cur=cur_down;
 		}
@@ -1054,14 +1091,16 @@ void FOnlineEngine::Restore()
 		d3dpp.BackBufferFormat=d3ddm.Format;
 		else
 		{
-			d3dpp.BackBufferWidth=MODE_WIDTH;
-			d3dpp.BackBufferHeight=MODE_HEIGHT;
+      size_t modeWidth = screen_width[opt_screen_mode];
+      size_t modeHeight = screen_height[opt_screen_mode];
+			d3dpp.BackBufferWidth=modeWidth;
+			d3dpp.BackBufferHeight=modeHeight;
 			d3dpp.BackBufferFormat=D3DFMT_A8R8G8B8;
 			if(!opt_vsync) d3dpp.FullScreen_PresentationInterval=D3DPRESENT_INTERVAL_IMMEDIATE;
 		}
 
-	hf.PreRestore();
-	sm.PreRestore();
+	hexField.PreRestore();
+	spriteManager.PreRestore();
 	fnt.PreRestore();
 	hr=lpDevice->Reset(&d3dpp);
 	if(hr!=D3D_OK)
@@ -1099,10 +1138,10 @@ void FOnlineEngine::Restore()
 	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
 	WriteLog("OK\n");
 	
-	sm.SetColor((0xFF000000)|((dayR+opt_light)<<16)|((dayG+opt_light)<<8)|(dayB+opt_light)); //!Cvet
-	sm.PostRestore(); //именно в таком порядке. ибо sm раньше должен создать IB
-	hf.PostRestore();
-	fnt.PostRestore(sm.GetVB(),sm.GetIB());
+	spriteManager.SetColor((0xFF000000)|((dayR+opt_light)<<16)|((dayG+opt_light)<<8)|(dayB+opt_light)); //!Cvet
+	spriteManager.PostRestore(); //именно в таком порядке. ибо spriteManager раньше должен создать IB
+	hexField.PostRestore();
+	fnt.PostRestore(spriteManager.GetVB(),spriteManager.GetIB());
 
 	WriteLog("Restoring complete\n");
 	islost=0;
@@ -1208,7 +1247,7 @@ void FOnlineEngine::NetDiscon()
 	WriteLog("--> Итоговая статистика сжатия трафика: %d -> %d\n",stat_com,stat_decom);
 
 	ClearCritters(); //!Cvet
-	hf.UnLoadMap(); //!Cvet
+	hexField.UnLoadMap(); //!Cvet
 }
 
 void FOnlineEngine::ParseSocket(uint16_t wait)
@@ -1445,7 +1484,7 @@ void FOnlineEngine::Net_SendMove(uint8_t* dir) //переделал
 		WriteLog("FALSE\n");
 		return;
 	}
-	hf.MoveCritter(lpChosen,dir[0]);
+	hexField.MoveCritter(lpChosen,dir[0]);
 
 //	lpChosen->AccamulateCur_offs();
 
@@ -1454,17 +1493,17 @@ void FOnlineEngine::Net_SendMove(uint8_t* dir) //переделал
 	for(int p=0;p<5;p++)
 		switch(dir[p])
 		{
-		case 0: SETFLAG(move_params,PMOVE_0<<(3*p)); break;
-		case 1: SETFLAG(move_params,PMOVE_1<<(3*p)); break;
-		case 2: SETFLAG(move_params,PMOVE_2<<(3*p)); break;
-		case 3: SETFLAG(move_params,PMOVE_3<<(3*p)); break;
-		case 4: SETFLAG(move_params,PMOVE_4<<(3*p)); break;
-		case 5: SETFLAG(move_params,PMOVE_5<<(3*p)); break;
-		case 0xFF: SETFLAG(move_params,0x7<<(3*p));  break;
+		case 0: SetBit(move_params, PMOVE_0<<(3 * p), true); break;
+		case 1: SetBit(move_params, PMOVE_1<<(3 * p), true); break;
+		case 2: SetBit(move_params, PMOVE_2<<(3 * p), true); break;
+		case 3: SetBit(move_params, PMOVE_3<<(3 * p), true); break;
+		case 4: SetBit(move_params, PMOVE_4<<(3 * p), true); break;
+		case 5: SetBit(move_params, PMOVE_5<<(3 * p), true); break;
+		case 0xFF: SetBit(move_params, 0x7<<(3 * p), true);  break;
 		default: return;
 		}
 
-	if(how_move==MOVE_RUN) SETFLAG(move_params,PMOVE_RUN);
+	if(how_move==MOVE_RUN) SetBit(move_params, PMOVE_RUN, true);
 
 //	if(lpChosen->hex_x!=PathMoveX || lpChosen->hex_y!=PathMoveY)
 //		SETFLAG(move_params,);
@@ -1662,7 +1701,7 @@ WriteLog("Имя:%s\n",info.name);
 
 //	else AddMess(COLOR_TEXT_DEFAULT,"Вы увидели %s",info.cases[2]);
 
-//	hf.PostRestore();
+//	hexField.PostRestore();
 
     WriteLog("Загрузка игрока закончена. %s, id=%d.\n",info.name,info.id);
 }
@@ -1687,7 +1726,7 @@ void FOnlineEngine::Net_OnRemoveCritter()
 	CCritter* prem=(*it).second;
 
 	WriteLog("убираем с hexfield...");
-	hf.RemoveCrit(prem);
+	hexField.RemoveCrit(prem);
 
 	WriteLog("убираем с critters...");
 	delete (*it).second;
@@ -1840,18 +1879,25 @@ void FOnlineEngine::Net_OnCritterMove()
 		return;
 	}
 
-//	dir=FLAG(move_params,BIN8(00000111));
+  // dir=FLAG(move_params,BIN8(00000111));
 
-	how_move=MOVE_WALK;
-	if(FLAG(move_params,PMOVE_RUN)) how_move=MOVE_RUN;
+	how_move = MOVE_WALK;
+	if ((move_params & PMOVE_RUN) != 0) {
+	  how_move = MOVE_RUN;
+	}
 
-//проверка данных
-	if(new_x>=MAXTILEX || new_y>=MAXTILEY) return;
-	if(!crid) return;
-//	if(dir>5) return;
+  // проверка данных
+	if (new_x >= MAXTILEX || new_y >= MAXTILEY) {
+	  return;
+	}
+	
+	if (!crid) {
+	  return;
+	}
+  // if(dir>5) return;
 
 	WriteLog("%d...", crid);
-//	WriteLog("%d dir=%d movementType=%d...", crid, dir, how_move);
+  //	WriteLog("%d dir=%d movementType=%d...", crid, dir, how_move);
 
 	LstMoveId=crid; // для отладки движения
 
@@ -1862,21 +1908,20 @@ void FOnlineEngine::Net_OnCritterMove()
 
 	pcrit->movementType=how_move;
 
-	if(pcrit->cur_step && pcrit->cur_step<4 && (pcrit->next_step[0]==FLAG(move_params,0x7)))
-	{
+	if(pcrit->cur_step && pcrit->cur_step<4 && (pcrit->next_step[0]== (move_params & 0x7))) {
 		pcrit->cur_step--;
-	}
-	else
-	{
-		hf.MoveCritter(pcrit,new_x,new_y);
-		if(!pcrit->Move(pcrit->cur_dir)) pcrit->SetAnimation();
+	} else {
+		hexField.MoveCritter(pcrit,new_x,new_y);
+		if (!pcrit->Move(pcrit->cur_dir)) {
+		  pcrit->SetAnimation();
+		}
 		pcrit->cur_step=0;
 	}
 
-	if((pcrit->next_step[0]=FLAG(move_params>>0x3,0x7))>PMOVE_5) pcrit->next_step[0]=0xFF;
-	if((pcrit->next_step[1]=FLAG(move_params>>0x6,0x7))>PMOVE_5) pcrit->next_step[1]=0xFF;
-	if((pcrit->next_step[2]=FLAG(move_params>>0x9,0x7))>PMOVE_5) pcrit->next_step[2]=0xFF;
-	if((pcrit->next_step[3]=FLAG(move_params>>0xC,0x7))>PMOVE_5) pcrit->next_step[3]=0xFF;
+	if ((pcrit->next_step[0] = ((move_params>>0x3) & 0x7))>PMOVE_5) pcrit->next_step[0]=0xFF;
+	if ((pcrit->next_step[1] = ((move_params>>0x6) & 0x7))>PMOVE_5) pcrit->next_step[1]=0xFF;
+	if ((pcrit->next_step[2] = ((move_params>>0x9) & 0x7))>PMOVE_5) pcrit->next_step[2]=0xFF;
+	if ((pcrit->next_step[3] = ((move_params>>0xC) & 0x7))>PMOVE_5) pcrit->next_step[3]=0xFF;
 
 	WriteLog("OK\n");
 }
@@ -2167,7 +2212,7 @@ void FOnlineEngine::Net_OnChosenXY() // направление надо пере
 
 	if(lpChosen->hex_x!=Chex_x || lpChosen->hex_y!=Chex_y)
 	{
-		hf.TransitCritter(lpChosen,Cori,Chex_x,Chex_y,true);
+		hexField.TransitCritter(lpChosen,Cori,Chex_x,Chex_y,true);
 		WriteLog("Установлено/Исправлено местоположение...");
 
 		SetChosenAction(ACTION_NONE);
@@ -2378,7 +2423,7 @@ void FOnlineEngine::Net_OnAddObjOnMap()
 		return;
 	}
 
-	if(!hf.AddObj((*so).second,obj_x,obj_y,tile_flags))
+	if(!hexField.AddObj((*so).second,obj_x,obj_y,tile_flags))
 	{
 		WriteLog("ошибка добавления\n");
 		return;
@@ -2423,7 +2468,7 @@ void FOnlineEngine::Net_OnChangeObjOnMap()
 		return;
 	}
 
-	hf.ChangeObj((*so).second,obj_x,obj_y,tile_flags);
+	hexField.ChangeObj((*so).second,obj_x,obj_y,tile_flags);
 
 	//AddMess(0xFFAAAAFF,"Предметик изменился %d",(*so).second->id);
 
@@ -2462,7 +2507,7 @@ void FOnlineEngine::Net_OnRemObjFromMap()
 		return;
 	}
 
-	hf.DelObj((*so).second,obj_x,obj_y);
+	hexField.DelObj((*so).second,obj_x,obj_y);
 
 	//AddMess(0xFFFFAAAA,"Улетел предметик %d",(*so).second->id);
 
@@ -2545,7 +2590,7 @@ void FOnlineEngine::Net_OnLoadMap()
 
 	sprintf(name_map,"%d.map",num_map);
 
-	if(hf.LoadMap(name_map)) //local
+	if(hexField.LoadMap(name_map)) //local
 	{
 	  WriteLog("Loading local map\n");
 		Net_SendLoadMapOK();
@@ -2572,7 +2617,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 
 	if(!info_flags) return;
 
-	if(FLAG(info_flags,GM_INFO_CITIES))
+	if((info_flags & GM_INFO_CITIES) != 0)
 	{
 		WriteLog("локации(");
 
@@ -2603,8 +2648,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 		}
 	}
 
-	if(FLAG(info_flags,GM_INFO_CRITS))
-	{
+	if((info_flags & GM_INFO_CRITS) != 0) {
 		WriteLog("криты(");
 
 		for(std::vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
@@ -2654,12 +2698,12 @@ void FOnlineEngine::Net_OnGlobalInfo()
 
 			add_crit->crid=id_crit;
 			strcpy(add_crit->name,cur_name);
-			if(FLAG(flags_crit,FCRIT_PLAYER		)) add_crit->player=true;
-			if(FLAG(flags_crit,FCRIT_NPC		)) add_crit->npc=true;
-			if(FLAG(flags_crit,FCRIT_MOB		)) add_crit->mob=true;
-			if(FLAG(flags_crit,FCRIT_DISCONNECT	)) add_crit->disconnect=true;
-			if(FLAG(flags_crit,FCRIT_RULEGROUP	)) add_crit->rule=true;
-			if(FLAG(flags_crit,FCRIT_CHOSEN		)) add_crit->chosen=true;
+			if ((flags_crit & FCRIT_PLAYER) != 0) add_crit->player=true;
+			if ((flags_crit & FCRIT_NPC) != 0) add_crit->npc=true;
+			if ((flags_crit & FCRIT_MOB) != 0) add_crit->mob=true;
+			if ((flags_crit & FCRIT_DISCONNECT) != 0) add_crit->disconnect=true;
+			if ((flags_crit & FCRIT_RULEGROUP) != 0) add_crit->rule=true;
+			if ((flags_crit & FCRIT_CHOSEN) != 0) add_crit->chosen=true;
 
 			if(add_crit->chosen==true && add_crit->rule==true) lock_group_contr=false;
 
@@ -2668,8 +2712,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 
 	}
 
-	if(FLAG(info_flags,GM_INFO_PARAM))
-	{
+	if ((info_flags & GM_INFO_PARAM) != 0) {
 		WriteLog("параметры...");
 
 		uint16_t group_x;
@@ -2780,7 +2823,10 @@ int FOnlineEngine::NetInput() {
 		uint32_t newcomlen=comlen<<2;
 		char * NewCOM=new char[newcomlen];
 		memcpy(NewCOM,ComBuf,comlen);
-		SAFEDELA(ComBuf);
+		if (ComBuf != NULL) {
+		  delete [] ComBuf;
+		  ComBuf = NULL;
+		}
 		ComBuf=NewCOM;
 		comlen=newcomlen;
 
@@ -2843,7 +2889,7 @@ int FOnlineEngine::LoadAnyAnims(int atype,AnyAnimData* pany)
 		if(pany->eng) return 1;
 		pany->eng=new AnyFrames;
 		strcpy(path,"endanim.frm");
-		if(!(sm.LoadAnyAnimation(path,PT_ART_INTRFACE,pany->eng))) return 0;
+		if(!(spriteManager.LoadAnyAnimation(path,PT_ART_INTRFACE,pany->eng))) return 0;
 		pany->eng->ticks=800;
 		break;
 	default:
@@ -2865,20 +2911,20 @@ void FOnlineEngine::IntAnim()
 
 void FOnlineEngine::SetColor(uint8_t r,uint8_t g,uint8_t b)
 {
-	sm.SetColor(D3DCOLOR_ARGB(255,r+opt_light,g+opt_light,b+opt_light));
-	hf.OnChangeCol();
+	spriteManager.SetColor(D3DCOLOR_ARGB(255,r+opt_light,g+opt_light,b+opt_light));
+	hexField.OnChangeCol();
 }
 
 // !Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void FOnlineEngine::SetColor(uint32_t color)
 {
-	sm.SetColor(color);
-	hf.OnChangeCol();
+	spriteManager.SetColor(color);
+	hexField.OnChangeCol();
 }
 
 CCritter* FOnlineEngine::AddCritter(crit_info* pinfo)
 {
-	CCritter* pcrit=new CCritter(&sm);
+	CCritter* pcrit=new CCritter(&spriteManager);
 
 	RemoveCritter(pinfo->id);
 
@@ -2905,7 +2951,7 @@ CCritter* FOnlineEngine::AddCritter(crit_info* pinfo)
 	for(int in=0; in<5; in++)
 		strcpy(pcrit->cases[in],pinfo->cases[in]);
 	
-	if(FLAG(pcrit->flags,FCRIT_DISCONNECT))
+	if ((pcrit->flags & FCRIT_DISCONNECT) != 0)
 	{
 		strcat(pcrit->name,"_off");
 		for(int in=0; in<5; in++)
@@ -2914,7 +2960,7 @@ CCritter* FOnlineEngine::AddCritter(crit_info* pinfo)
 
 	pcrit->Init();
 
-	if(!lpChosen && FLAG(pcrit->flags,FCRIT_CHOSEN))
+	if(!lpChosen && (pcrit->flags & FCRIT_CHOSEN) != 0)
 	{
 		lpChosen=pcrit;
 		lpChosen->human=true;
@@ -2924,12 +2970,12 @@ CCritter* FOnlineEngine::AddCritter(crit_info* pinfo)
 
 		if(pcrit->cond==COND_LIFE && pcrit->cond_ext==COND_LIFE_ACTWEAP) SetCur(CUR_USE_OBJECT);
 
-		hf.FindSetCenter(pcrit->hex_x,pcrit->hex_y);
+		hexField.FindSetCenter(pcrit->hex_x,pcrit->hex_y);
 
 		pcrit->SetAnimation();
 	}
 
-	hf.SetCrit(pcrit->hex_x,pcrit->hex_y,pcrit);
+	hexField.SetCrit(pcrit->hex_x,pcrit->hex_y,pcrit);
 
 //WriteLog("x=%d y=%d type=%d, weap=%d\n",pcrit->hex_x,pcrit->hex_y,pcrit->type,pcrit->weapon);
 
@@ -2943,7 +2989,7 @@ int FOnlineEngine::GetMouseTile(int cursor_x, int cursor_y)
 
 	if(cursor_x>=IntMain[0] && cursor_y>=IntMain[1] && cursor_x<=IntMain[2] && cursor_y<=IntMain[3]) return 0;
 
-	return hf.GetTilePixel(cursor_x,cursor_y,&TargetX,&TargetY);
+	return hexField.GetTilePixel(cursor_x,cursor_y,&TargetX,&TargetY);
 }
 
 CCritter* FOnlineEngine::GetMouseCritter(int cursor_x, int cursor_y)
@@ -2970,7 +3016,7 @@ int FOnlineEngine::GetMouseScenery(int cursor_x, int cursor_y)
 
 ItemObj* FOnlineEngine::GetMouseItem(int cursor_x, int cursor_y)
 {
-	return hf.GetItemPixel(cursor_x,cursor_y);
+	return hexField.GetItemPixel(cursor_x,cursor_y);
 }
 
 int FOnlineEngine::CheckRegData(crit_info* newcr)
@@ -3122,13 +3168,13 @@ void FOnlineEngine::ChosenProcess()
 	if(rofx%2) rofx--;
 	if(rofy%2) rofy--;
 
-	if(hf.hex_field[rofy][rofx].roof_id)
+	if(hexField.hex_field[rofy][rofx].roof_id)
 		cmn_show_roof=FALSE;
 	else
 		if(!cmn_show_roof)
 		{
 			cmn_show_roof=TRUE;
-			hf.RebuildTiles();
+			hexField.RebuildTiles();
 		}
 
 	if(lpChosen->pe[PE_HIDE_MODE])
@@ -3153,7 +3199,7 @@ void FOnlineEngine::ChosenProcess()
 //WriteLog("hx=%d,px=%d,hy=%d,py=%d\n",lpChosen->hex_x,PathMoveX,lpChosen->hex_y,PathMoveY);
 
 			uint8_t steps[FINDPATH_MAX_PATH];
-			HRESULT res=hf.FindStep(lpChosen->hex_x,lpChosen->hex_y,PathMoveX,PathMoveY,&steps[0]);
+			HRESULT res=hexField.FindStep(lpChosen->hex_x,lpChosen->hex_y,PathMoveX,PathMoveY,&steps[0]);
 			if(res==FP_OK)
 			{
 				Net_SendMove(&steps[0]);
@@ -3199,9 +3245,9 @@ void FOnlineEngine::ChosenProcess()
 
 		if(lpChosen->a_obj->object->type==OBJ_TYPE_WEAPON && lpChosen==tosendTargetCrit) break;
 
-		uint8_t AttDir=hf.FindTarget(lpChosen->hex_x,lpChosen->hex_y,tosendTargetCrit->hex_x,tosendTargetCrit->hex_y,lpChosen->GetMaxDistance());
+		uint8_t AttDir=hexField.FindTarget(lpChosen->hex_x,lpChosen->hex_y,tosendTargetCrit->hex_x,tosendTargetCrit->hex_y,lpChosen->GetMaxDistance());
 
-		if(hf.IsShowTrack()) hf.PostRestore();
+		if(hexField.IsShowTrack()) hexField.PostRestore();
 
 		if(AttDir>5) 
 		{
@@ -3289,7 +3335,7 @@ void FOnlineEngine::ChosenProcess()
 		{
 			PathMoveX=tosendTargetCrit->hex_x;
 			PathMoveY=tosendTargetCrit->hex_y;
-			if(!hf.CutPath(lpChosen->hex_x,lpChosen->hex_y,&PathMoveX,&PathMoveY,TALK_NPC_DISTANCE-1))
+			if(!hexField.CutPath(lpChosen->hex_x,lpChosen->hex_y,&PathMoveX,&PathMoveY,TALK_NPC_DISTANCE-1))
 			{
 				SetChosenAction(ACTION_NONE);
 				break;
@@ -3329,7 +3375,7 @@ void FOnlineEngine::ChosenProcess()
 		{
 			PathMoveX=tosendTargetObj->hex_x;
 			PathMoveY=tosendTargetObj->hex_y;
-			if(!hf.CutPath(lpChosen->hex_x,lpChosen->hex_y,&PathMoveX,&PathMoveY,1))
+			if(!hexField.CutPath(lpChosen->hex_x,lpChosen->hex_y,&PathMoveX,&PathMoveY,1))
 			{
 				SetChosenAction(ACTION_NONE);
 				break;
@@ -3341,7 +3387,7 @@ void FOnlineEngine::ChosenProcess()
 			return;
 		}
 
-		lpChosen->cur_dir=hf.GetDir(lpChosen->hex_x,lpChosen->hex_y,tosendTargetObj->hex_x,tosendTargetObj->hex_y);
+		lpChosen->cur_dir=hexField.GetDir(lpChosen->hex_x,lpChosen->hex_y,tosendTargetObj->hex_x,tosendTargetObj->hex_y);
 		Net_SendDir();
 		Net_SendPickObject(tosendTargetObj->hex_x,tosendTargetObj->hex_y,tosendTargetObj->sobj->id);
 
@@ -3719,16 +3765,16 @@ void FOnlineEngine::TryExit()
 void FOnlineEngine::GetRandomSplash(char* splash_name)
 {
 	char path_splash[128];
-	strcpy(path_splash,".\\data\\");
-	strcat(path_splash,pathlst[PT_ART_SPLASH]);
-	strcat(path_splash,"params.txt");
+	strcpy(path_splash, ".\\data\\");
+	strcat(path_splash, pathlst[PT_ART_SPLASH]);
+	strcat(path_splash, "params.txt");
 
-	int splash_count=GetPrivateProfileInt("splash","count",0,path_splash);
-	int cur_splash=random(splash_count);
+	int splash_count = GetPrivateProfileInt("splash", "count", 0, path_splash);
+	int cur_splash = rand() % splash_count;
 
 	char itoc[16];
-	sprintf(itoc,"%d",cur_splash);
+	sprintf(itoc, "%d", cur_splash);
 
-	GetPrivateProfileString("splash",itoc,"splash0.rix",splash_name,63,path_splash);
+	GetPrivateProfileString("splash", itoc, "splash0.rix", splash_name, 63, path_splash);
 }
 // !Cvet ----------------------------------------------------------------

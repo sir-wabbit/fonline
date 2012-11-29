@@ -1,8 +1,6 @@
 #ifndef __CRITTER_H__
 #define __CRITTER_H__
 
-#include "stdafx.h"
-
 #include "CSpriteManager.h"
 #include "CFont.h"
 #include "netproto.h"
@@ -107,7 +105,12 @@ public:
 	                                  text_str(NULL), visible(0), weapon(0), rit(-1) {
 	  strcpy(name,"none");
 	}
-	~CCritter(){SAFEDELA(text_str);};
+	~CCritter() {
+	  if (text_str != NULL) {
+	    delete [] text_str;
+	    text_str = NULL;
+	  }
+	};
 
 //!Cvet ++++++++++++++++++++++++++++
 	int Tick_count; //продолжительность действия
