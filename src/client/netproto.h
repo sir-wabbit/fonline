@@ -164,59 +164,59 @@ public:
 };
 
 //карта параметров
-typedef std::map<char*, uint8_t, CompareCharPtr> params_map;
+typedef std::map<std::string, uint8_t> params_map;
 typedef std::map<uint8_t, std::string> params_str_map;
 
 //Статы. Stats
-const uint8_t ST_STRENGHT				=0;//{Сила}
-const uint8_t ST_PERCEPTION			=1;//{Восприятие}
-const uint8_t ST_ENDURANCE				=2;//{Выносливость}
-const uint8_t ST_CHARISMA				=3;//{Обаяние}
-const uint8_t ST_INTELLECT				=4;//{Ум}
-const uint8_t ST_AGILITY				=5;//{Координация}
-const uint8_t ST_LUCK					=6;//{Удача}
+const uint8_t ST_STRENGHT             = 0;  //{Сила}
+const uint8_t ST_PERCEPTION           = 1;  //{Восприятие}
+const uint8_t ST_ENDURANCE            = 2;  //{Выносливость}
+const uint8_t ST_CHARISMA				      = 3;  //{Обаяние}
+const uint8_t ST_INTELLECT            = 4;  //{Ум}
+const uint8_t ST_AGILITY              = 5;  //{Координация}
+const uint8_t ST_LUCK                 = 6;  //{Удача}
 //===========================
-const uint8_t ST_MAX_LIFE				=7;//{Макс. Баллы Жизни}
-const uint8_t ST_MAX_COND				=8;//{Максимальная кондиция}
-const uint8_t ST_ARMOR_CLASS			=9;//{Класс Брони}
-const uint8_t ST_MELEE_DAMAGE			=10;//{Вред невооруженный}
-const uint8_t ST_WEAPON_DAMAGE			=11;//{Вред оружием}
-const uint8_t ST_CARRY_WEIGHT			=12;//{Макс. груз}
-const uint8_t ST_SEQUENCE				=13;//{Реакция}
-const uint8_t ST_HEALING_RATE			=14;//{Лечения}
-const uint8_t ST_CRITICAL_CHANCE		=15;//{Шанс критический.}
-const uint8_t ST_MAX_CRITICAL			=16;//{Максимальный критический}
-const uint8_t ST_INGURE_ABSORB			=17;//{Порог Ранения}
-const uint8_t ST_LASER_ABSORB			=18;//{Порог Повреждения лазером}
-const uint8_t ST_FIRE_ABSORB			=19;//{Порог Повреждения Огнем}
-const uint8_t ST_PLASMA_ABSORB			=20;//{Порог Повреждения Плазмой}
-const uint8_t ST_ELECTRO_ABSORB		=21;//{Порог Повреждения Электричеством}
-const uint8_t ST_EMP_ABSORB			=22;//{Порог повреждения EMP}
-const uint8_t ST_BLAST_ABSORB			=23;//{Порог Повреждения при Взрыве}
-const uint8_t ST_INGURE_RESIST			=24;//{Сопротивляемость Ранению}
-const uint8_t ST_LASER_RESIST			=25;//{Сопротивляемость Ранению Лазером}
-const uint8_t ST_FIRE_RESIST			=26;//{Сопротивляемость Ранению Огнем}
-const uint8_t ST_PLASMA_RESIST			=27;//{Сопротивляемость Ранению Плазмой}
-const uint8_t ST_ELECTRO_RESIST		=28;//{Сопротивляемость Ранению Электричеством}
-const uint8_t ST_EMP_RESIST			=29;//{Сопротивляемость Ранению EMP}
-const uint8_t ST_BLAST_RESIST			=30;//{Сопротивляемость Ранению при Взрыве}
-const uint8_t ST_RADIATION_RESISTANCE	=31;//{Сопротивляемость Радиации}
-const uint8_t ST_POISON_RESISTANCE		=32;//{Сопротивляемость Ядам}
-const uint8_t ST_AGE					=33;//{Возраст}
-const uint8_t ST_GENDER				=34;//{Род}
-const uint8_t ST_CURRENT_HP			=35;//{Текущие Баллы жизни}
-const uint8_t ST_POISONING_LEVEL		=36;//{Текущий Уровень Ядов}
-const uint8_t ST_RADIATION_LEVEL		=37;//{Текущий Уровень Радиации}
-const uint8_t ST_CURRENT_STANDART		=38;//{Текущая кондиция}
+const uint8_t ST_MAX_LIFE             = 7;  //{Макс. Баллы Жизни}
+const uint8_t ST_MAX_COND             = 8;  //{Максимальная кондиция}
+const uint8_t ST_ARMOR_CLASS          = 9;  //{Класс Брони}
+const uint8_t ST_MELEE_DAMAGE         = 10; //{Вред невооруженный}
+const uint8_t ST_WEAPON_DAMAGE        = 11; //{Вред оружием}
+const uint8_t ST_CARRY_WEIGHT         = 12; //{Макс. груз}
+const uint8_t ST_SEQUENCE             = 13; //{Реакция}
+const uint8_t ST_HEALING_RATE         = 14; //{Лечения}
+const uint8_t ST_CRITICAL_CHANCE      = 15; //{Шанс критический.}
+const uint8_t ST_MAX_CRITICAL         = 16; //{Максимальный критический}
+const uint8_t ST_INGURE_ABSORB        = 17; //{Порог Ранения}
+const uint8_t ST_LASER_ABSORB         = 18; //{Порог Повреждения лазером}
+const uint8_t ST_FIRE_ABSORB          = 19; //{Порог Повреждения Огнем}
+const uint8_t ST_PLASMA_ABSORB        = 20; //{Порог Повреждения Плазмой}
+const uint8_t ST_ELECTRO_ABSORB       = 21; //{Порог Повреждения Электричеством}
+const uint8_t ST_EMP_ABSORB           = 22; //{Порог повреждения EMP}
+const uint8_t ST_BLAST_ABSORB         = 23; //{Порог Повреждения при Взрыве}
+const uint8_t ST_INGURE_RESIST        = 24; //{Сопротивляемость Ранению}
+const uint8_t ST_LASER_RESIST         = 25; //{Сопротивляемость Ранению Лазером}
+const uint8_t ST_FIRE_RESIST          = 26; //{Сопротивляемость Ранению Огнем}
+const uint8_t ST_PLASMA_RESIST        = 27; //{Сопротивляемость Ранению Плазмой}
+const uint8_t ST_ELECTRO_RESIST       = 28; //{Сопротивляемость Ранению Электричеством}
+const uint8_t ST_EMP_RESIST           = 29; //{Сопротивляемость Ранению EMP}
+const uint8_t ST_BLAST_RESIST         = 30; //{Сопротивляемость Ранению при Взрыве}
+const uint8_t ST_RADIATION_RESISTANCE = 31; //{Сопротивляемость Радиации}
+const uint8_t ST_POISON_RESISTANCE    = 32; //{Сопротивляемость Ядам}
+const uint8_t ST_AGE                  = 33; //{Возраст}
+const uint8_t ST_GENDER               = 34; //{Род}
+const uint8_t ST_CURRENT_HP           = 35; //{Текущие Баллы жизни}
+const uint8_t ST_POISONING_LEVEL      = 36; //{Текущий Уровень Ядов}
+const uint8_t ST_RADIATION_LEVEL      = 37; //{Текущий Уровень Радиации}
+const uint8_t ST_CURRENT_STANDART     = 38; //{Текущая кондиция}
 
 //Навыки. Skills
-const uint8_t SK_SMALL_GUNS			=0;//{Мелкое Оружие}
-const uint8_t SK_BIG_GUNS				=1;//{Крупное Оружие}
-const uint8_t SK_ENERGY_WEAPONS		=2;//{Энергетическое Оружие}
-const uint8_t SK_UNARMED				=3;//{Не вооружен}
-const uint8_t SK_MELEE_WEAPONS			=4;//{Холодное Оружие}
-const uint8_t SK_THROWING				=5;//{Бросок}
-const uint8_t SK_FIRST_AID				=6;//{Помощь}
+const uint8_t SK_SMALL_GUNS           = 0;  //{Мелкое Оружие}
+const uint8_t SK_BIG_GUNS             = 1;  //{Крупное Оружие}
+const uint8_t SK_ENERGY_WEAPONS       = 2;  //{Энергетическое Оружие}
+const uint8_t SK_UNARMED              = 3;  //{Не вооружен}
+const uint8_t SK_MELEE_WEAPONS        = 4;  //{Холодное Оружие}
+const uint8_t SK_THROWING             = 5;  //{Бросок}
+const uint8_t SK_FIRST_AID            = 6;  //{Помощь}
 const uint8_t SK_DOCTOR				=7;//{Врач}
 const uint8_t SK_SNEAK					=8;//{Крадучесть}
 const uint8_t SK_LOCKPICK				=9;//{Взломщик}

@@ -108,8 +108,8 @@ int FOnlineEngine::Init_Iface()
 
 	IntY=MODE_HEIGHT-GetPrivateProfileInt(key1,"IntMain3",300,CFG_INT_FILE);
 
-	IntAP[0]=GetPrivateProfileInt(key1,"IntAP0",1,CFG_INT_FILE); IntAP.l+=IntX;
-	IntAP[1]=GetPrivateProfileInt(key1,"IntAP1",1,CFG_INT_FILE); IntAP.t+=IntY;
+	IntAP[0]=GetPrivateProfileInt(key1,"IntAP0",1,CFG_INT_FILE); IntAP.left += IntX;
+	IntAP[1]=GetPrivateProfileInt(key1,"IntAP1",1,CFG_INT_FILE); IntAP.top += IntY;
 	IntAPstepX=GetPrivateProfileInt(key1,"IntAPstepX",1,CFG_INT_FILE);
 	IntAPstepY=GetPrivateProfileInt(key1,"IntAPstepY",1,CFG_INT_FILE);
 
@@ -404,36 +404,36 @@ int FOnlineEngine::Init_Iface()
 	char f_name[64];
 //Интерфейс
 	GetPrivateProfileString(key1,"IntMainPic","error",f_name,64,CFG_INT_FILE);
-	if(!(ifacen=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(ifacen=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"IntPanelPic","error",f_name,64,CFG_INT_FILE);
-	if(!(panel=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(panel=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"IntAPgreenPic","error",f_name,64,CFG_INT_FILE);
-	if(!(diodeG=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(diodeG=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntAPyellowPic","error",f_name,64,CFG_INT_FILE);
-	if(!(diodeY=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(diodeY=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntAPredPic","error",f_name,64,CFG_INT_FILE);
-	if(!(diodeR=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(diodeR=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"IntBScrUpPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intscrupon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intscrupon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntBScrDownPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intscrdownon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intscrdownon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntBChangePicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intchangesloton=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intchangesloton=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntBInvPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intinvon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intinvon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntBMenuPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intmenuon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intmenuon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntBSkillPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intskillon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intskillon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntBMapPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intmapon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intmapon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntBInfoPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intinfoon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intinfoon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"IntBPipPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(intpipon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(intpipon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	int t1;
 	FILE *cf;
@@ -446,7 +446,7 @@ int FOnlineEngine::Init_Iface()
 		while(!feof(cf))
 		{
 			fscanf(cf, "%s", &f_name);
-			pic_use[t1]=sm.LoadSprite(f_name,PT_ART_INTRFACE);
+			pic_use[t1]=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE);
 
 			if(!pic_use[t1])
 			{
@@ -467,30 +467,30 @@ int FOnlineEngine::Init_Iface()
 
 	//картинка мессаги чезена
 	GetPrivateProfileString(key1,"IntMessPic","error",f_name,64,CFG_INT_FILE);
-	if(!(chosen_mess_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(chosen_mess_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 //Инвентарь
 	GetPrivateProfileString(key1,"InvMainPic","error",f_name,64,CFG_INT_FILE);
-	if(!(invbox=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invbox=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"InvBOkPicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(invokoff=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invokoff=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"InvBOkPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(invokon=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invokon=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"InvBUpPicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(invscrupout=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invscrupout=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"InvBUpPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(invscrupin=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invscrupin=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"InvBUpPicNa","error",f_name,64,CFG_INT_FILE);
-	if(!(invscrupoff=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invscrupoff=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"InvBDnPicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(invscrdwout=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invscrdwout=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"InvBDnPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(invscrdwin=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invscrdwin=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"InvBDnPicNa","error",f_name,64,CFG_INT_FILE);
-	if(!(invscrdwoff=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(invscrdwoff=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	//большая и малая картинка в инвентаре
 	WriteLog("Загрузка картинок в инвентарь статических объектов...");
@@ -500,8 +500,8 @@ int FOnlineEngine::Init_Iface()
 		while(!feof(cf))
 		{
 			fscanf(cf, "%s", &f_name);
-			inv_pic_b[t1]=sm.LoadSprite(f_name,PT_ART_INVEN);
-			inv_pic_s[t1]=sm.LoadMiniSprite(f_name,2,PT_ART_INVEN);
+			inv_pic_b[t1]=spriteManager.LoadSprite(f_name,PT_ART_INVEN);
+			inv_pic_s[t1]=spriteManager.LoadMiniSprite(f_name,2,PT_ART_INVEN);
 
 			if((!inv_pic_b[t1])||(!inv_pic_s[t1]))
 			{
@@ -522,122 +522,122 @@ int FOnlineEngine::Init_Iface()
 
 //Логин/пасс
 	GetPrivateProfileString(key1,"LogMainPic","error",f_name,64,CFG_INT_FILE);
-	if(!(loginpic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(loginpic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 //Регистрация
 	GetPrivateProfileString(key1,"RegMainPic","error",f_name,64,CFG_INT_FILE);
-	if(!(registpic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(registpic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 //Диалог
 	GetPrivateProfileString(key1,"DlgBeginPic","error",f_name,64,CFG_INT_FILE);
-	if(!(dialog_begin=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(dialog_begin=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"DlgAnswPic","error",f_name,64,CFG_INT_FILE);
-	if(!(dialog_answ=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(dialog_answ=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"DlgEndPic","error",f_name,64,CFG_INT_FILE);
-	if(!(dialog_end=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(dialog_end=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 // курсоры
-	if(!(cur_move=sm.LoadSprite("msef001.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_move_block=sm.LoadSprite("msef002.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_use_o=sm.LoadSprite("acttohit.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_use_s=sm.LoadSprite("crossuse.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_wait=sm.LoadSprite("wait2.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_move=spriteManager.LoadSprite("msef001.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_move_block=spriteManager.LoadSprite("msef002.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_use_o=spriteManager.LoadSprite("acttohit.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_use_s=spriteManager.LoadSprite("crossuse.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_wait=spriteManager.LoadSprite("wait2.frm",PT_ART_INTRFACE))) return 0;
 
-	if(!(cur_hand=sm.LoadSprite("hand.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_def=sm.LoadSprite("actarrow.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_hand=spriteManager.LoadSprite("hand.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_def=spriteManager.LoadSprite("actarrow.frm",PT_ART_INTRFACE))) return 0;
 
-	if(!(cur_right=sm.LoadSprite("screast.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_left=sm.LoadSprite("scrwest.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_up=sm.LoadSprite("scrnorth.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_down=sm.LoadSprite("scrsouth.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_right=spriteManager.LoadSprite("screast.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_left=spriteManager.LoadSprite("scrwest.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_up=spriteManager.LoadSprite("scrnorth.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_down=spriteManager.LoadSprite("scrsouth.frm",PT_ART_INTRFACE))) return 0;
 
-	if(!(cur_ru=sm.LoadSprite("scrneast.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_lu=sm.LoadSprite("scrnwest.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_rd=sm.LoadSprite("scrseast.frm",PT_ART_INTRFACE))) return 0;
-	if(!(cur_ld=sm.LoadSprite("scrswest.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_ru=spriteManager.LoadSprite("scrneast.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_lu=spriteManager.LoadSprite("scrnwest.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_rd=spriteManager.LoadSprite("scrseast.frm",PT_ART_INTRFACE))) return 0;
+	if(!(cur_ld=spriteManager.LoadSprite("scrswest.frm",PT_ART_INTRFACE))) return 0;
 
 //Графика LMenu
 	GetPrivateProfileString(key1,"LMenuTalkPicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_talk_off=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_talk_off=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LMenuTalkPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_talk_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_talk_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"LMenuLookPicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_look_off=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_look_off=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LMenuLookPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_look_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_look_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"LMenuCancelPicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_break_off=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_break_off=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LMenuCancelPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_break_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_break_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"LMenuUsePicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_use_off=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_use_off=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LMenuUsePicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_use_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_use_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"LMenuGMFollowPicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_gmfollow_off=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_gmfollow_off=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LMenuGMFollowPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_gmfollow_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_gmfollow_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"LMenuGMTakePicUp","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_gmtake_off=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_gmtake_off=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LMenuGMTakePicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lm_gmtake_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lm_gmtake_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 //Мини-карта
 	GetPrivateProfileString(key1,"LmapMainPic","error",f_name,64,CFG_INT_FILE);
-	if(!(lmap_main=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lmap_main=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LmapBOkPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lmap_bok_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lmap_bok_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LmapBScanPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lmap_bscan_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lmap_bscan_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"LmapBLoHiPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(lmap_blohi_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
-	if(!(lmap_pix=sm.LoadSprite("green_pix.png",PT_ART_INTRFACE))) return 0;
+	if(!(lmap_blohi_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(lmap_pix=spriteManager.LoadSprite("green_pix.png",PT_ART_INTRFACE))) return 0;
 
 //Skillbox
 	GetPrivateProfileString(key1,"SboxMainPic","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_main=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_main=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBCancelPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_bcancel_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_bcancel_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBSneakPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_bsneak_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_bsneak_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBLockpickPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_blockpick_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_blockpick_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBStealPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_bsteal_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_bsteal_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBTrapPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_btrap_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_btrap_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBFirstAidPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_bfirstaid_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_bfirstaid_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBDoctorPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_bdoctor_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_bdoctor_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBSciencePicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_bscience_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_bscience_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"SboxBRepairPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(sbox_brepair_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(sbox_brepair_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 //Menu option
 	GetPrivateProfileString(key1,"MoptMainPic","error",f_name,64,CFG_INT_FILE);
-	if(!(mopt_main=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(mopt_main=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"MoptBResumePicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(mopt_bresume_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(mopt_bresume_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"MoptBExitPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(mopt_bexit_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(mopt_bexit_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 //Global map
 	sprintf(key2,"GmapMain%dx%dPic",MODE_WIDTH,MODE_HEIGHT);
 	GetPrivateProfileString(key1,key2,"error",f_name,64,CFG_INT_FILE);
-	if(!(gm_iface_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_iface_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	if(opt_screen_mode==2)
 	{
 		sprintf(key2,"GmapMain%dx%dPic2",MODE_WIDTH,MODE_HEIGHT);
 		GetPrivateProfileString(key1,key2,"error",f_name,64,CFG_INT_FILE);
-		if(!(gm_iface_pic2=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+		if(!(gm_iface_pic2=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	}
 
 	for(int px=0;px<5;++px)
@@ -645,71 +645,71 @@ int FOnlineEngine::Init_Iface()
 		{
 			sprintf(key2,"GmapPMap_%d_%d",px,py);
 			GetPrivateProfileString(key1,key2,"error",f_name,64,CFG_INT_FILE);
-			if(!(gm_pic[px][py]=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+			if(!(gm_pic[px][py]=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 		}
 
 	GetPrivateProfileString(key1,"GmapPLockContrPic","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_lock_contr_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_lock_contr_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBStopPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_bstop_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_bstop_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBSpeed0PicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_bspeed0_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_bspeed0_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBSpeed1PicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_bspeed1_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_bspeed1_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBSpeed2PicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_bspeed2_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_bspeed2_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBToLocalPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_btolocal_on=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_btolocal_on=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapPGroupLocPic","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_gr_loc_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_gr_loc_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapPGroupTargPic","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_gr_targ_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_gr_targ_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"GmapLoc48","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_loc48_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_loc48_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapLoc24","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_loc24_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_loc24_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapLoc12","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_loc12_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_loc12_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"GmapPCrOnline","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_cr_online=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_cr_online=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapPCrOffline","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_cr_offline=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_cr_offline=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapPCrNPC","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_cr_npc=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_cr_npc=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	GetPrivateProfileString(key1,"GmapTabPic","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_wtab_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_wtab_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBlankTabPic","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_wblanktab_pic=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_wblanktab_pic=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBTabLocPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_btabloc_picdn=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_btabloc_picdn=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBTabsScrUpPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_tabs_scrup_picdn=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_tabs_scrup_picdn=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	GetPrivateProfileString(key1,"GmapBTabsScrDnPicDn","error",f_name,64,CFG_INT_FILE);
-	if(!(gm_tabs_scrdn_picdn=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+	if(!(gm_tabs_scrdn_picdn=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	gm_locpic[0]=NULL;
 	for(int i=1;i<10;++i)
 	{
 		sprintf(key2,"GmapLocPic%d",i);
 		GetPrivateProfileString(key1,key2,"error",f_name,64,CFG_INT_FILE);
-		if(!(gm_locpic[i]=sm.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
+		if(!(gm_locpic[i]=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 	}
 //===========================================================================================
 
 //Звуки
 TICK gtime=GetTickCount();
 //	uint16_t snd1;
-//	if(!(snd1=sdm.LoadSound("01.ogg",PT_SND_MUSIC)))
+//	if(!(snd1=soundManager.LoadSound("01.ogg",PT_SND_MUSIC)))
 //	{
 //		WriteLog("OGG FALSE\n");
 //		return 0;
 //	}
-	sdm.LPESound("intro.ogg",PT_SND_MUSIC);
+	soundManager.LPESound("intro.ogg",PT_SND_MUSIC);
 WriteLog("time load sound:%d\n",GetTickCount()-gtime);
-//	sdm.PlaySound(snd1);
+//	soundManager.PlaySound(snd1);
 
 	SetCur(CUR_DEFAULT);
 
@@ -724,30 +724,30 @@ WriteLog("time load sound:%d\n",GetTickCount()-gtime);
 
 void FOnlineEngine::InvDraw() 
 {
-	sm.DrawSprite(invbox,InvX,InvY,COLOR_DEFAULT); //инвентарь
+	spriteManager.DrawSprite(invbox,InvX,InvY,COLOR_DEFAULT); //инвентарь
 
 	if(scroll_items<=0) 
-		sm.DrawSprite(invscrupoff,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх выключена
+		spriteManager.DrawSprite(invscrupoff,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх выключена
 	else 
 		if(InvHold==1) 
-			sm.DrawSprite(invscrupin,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх нажата
+			spriteManager.DrawSprite(invscrupin,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх нажата
 		else 
-			sm.DrawSprite(invscrupout,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх отпущена
+			spriteManager.DrawSprite(invscrupout,InvBtnUp[0]+InvX,InvBtnUp[1]+InvY,COLOR_DEFAULT); //кнопка вверх отпущена
 
 	int count_items=lpChosen->obj.size();
 	if(scroll_items>=count_items-(InvObl[3]-InvObl[1])/HeightItem)
-		sm.DrawSprite(invscrdwoff,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз выключена
+		spriteManager.DrawSprite(invscrdwoff,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз выключена
 	else 
-		if(InvHold==2) sm.DrawSprite(invscrdwin,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз нажата
+		if(InvHold==2) spriteManager.DrawSprite(invscrdwin,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз нажата
 		else 
-			sm.DrawSprite(invscrdwout,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз отпущена
+			spriteManager.DrawSprite(invscrdwout,InvBtnDown[0]+InvX,InvBtnDown[1]+InvY,COLOR_DEFAULT); //кнопка вниз отпущена
 
 	if(InvHold==3) 
-		sm.DrawSprite(invokon,InvBtnOk[0]+InvX,InvBtnOk[1]+InvY,COLOR_DEFAULT); //конопка ОК
+		spriteManager.DrawSprite(invokon,InvBtnOk[0]+InvX,InvBtnOk[1]+InvY,COLOR_DEFAULT); //конопка ОК
 	else 
-		sm.DrawSprite(invokoff,InvBtnOk[0]+InvX,InvBtnOk[1]+InvY,COLOR_DEFAULT); //конопка ОК
+		spriteManager.DrawSprite(invokoff,InvBtnOk[0]+InvX,InvBtnOk[1]+InvY,COLOR_DEFAULT); //конопка ОК
 
-	sm.DrawSprite(lpChosen->cur_id,InvChosen[0]+InvX,InvChosen[1]+InvY,COLOR_DEFAULT); //отрисовка чезена
+	spriteManager.DrawSprite(lpChosen->cur_id,InvChosen[0]+InvX,InvChosen[1]+InvY,COLOR_DEFAULT); //отрисовка чезена
 
 	//отрисовка объектов в инвентаре
 	int IB=0;
@@ -757,9 +757,9 @@ void FOnlineEngine::InvDraw()
 	{
 		if(IB>=scroll_items && IB<scroll_items+(InvObl[3]-InvObl[1])/HeightItem)
 		{
-			si=sm.GetSpriteInfo(inv_pic_s[(*it).second->object->p[OBJ_PIC_INV]]);
-			//sm.DrawSpriteSize(
-			sm.DrawSprite(inv_pic_s[(*it).second->object->p[OBJ_PIC_INV]],
+			si=spriteManager.GetSpriteInfo(inv_pic_s[(*it).second->object->p[OBJ_PIC_INV]]);
+			//spriteManager.DrawSpriteSize(
+			spriteManager.DrawSprite(inv_pic_s[(*it).second->object->p[OBJ_PIC_INV]],
 				InvObl[0]+InvX+(InvObl[2]-InvObl[0]-si->w)/2,
 				InvObl[1]+InvY+(IB2*HeightItem),COLOR_DEFAULT);
 			IB2++;
@@ -770,24 +770,24 @@ void FOnlineEngine::InvDraw()
 	//отрисовка объектов в слот1
 	if(lpChosen->a_obj->object->p[OBJ_PIC_INV])
 	{
-		si=sm.GetSpriteInfo(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]]);
-		sm.DrawSprite(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]],
+		si=spriteManager.GetSpriteInfo(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]]);
+		spriteManager.DrawSprite(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]],
 			InvSlot1[0]+InvX+(InvSlot1[2]-InvSlot1[0]-si->w)/2,
 			InvSlot1[1]+InvY+(InvSlot1[3]-InvSlot1[1]-si->h)/2,COLOR_DEFAULT);
 	}
 	//отрисовка объектов в слот2
 	if(lpChosen->a_obj2)
-		sm.DrawSprite(inv_pic_b[lpChosen->a_obj2->object->p[OBJ_PIC_INV]],InvSlot2[0]+InvX,InvSlot2[1]+InvY,COLOR_DEFAULT);
+		spriteManager.DrawSprite(inv_pic_b[lpChosen->a_obj2->object->p[OBJ_PIC_INV]],InvSlot2[0]+InvX,InvSlot2[1]+InvY,COLOR_DEFAULT);
 	//отрисовка объектов в armor
 	if(lpChosen->a_obj_arm->object->p[OBJ_PIC_INV])
 	{
-		si=sm.GetSpriteInfo(inv_pic_b[lpChosen->a_obj_arm->object->p[OBJ_PIC_INV]]);
-		sm.DrawSprite(inv_pic_b[lpChosen->a_obj_arm->object->p[OBJ_PIC_INV]],
+		si=spriteManager.GetSpriteInfo(inv_pic_b[lpChosen->a_obj_arm->object->p[OBJ_PIC_INV]]);
+		spriteManager.DrawSprite(inv_pic_b[lpChosen->a_obj_arm->object->p[OBJ_PIC_INV]],
 			InvArmor[0]+InvX+(InvArmor[2]-InvArmor[0]-si->w)/2,
 			InvArmor[1]+InvY+(InvArmor[3]-InvArmor[1]-si->h)/2,COLOR_DEFAULT);
 	}
 
-	sm.Flush();
+	spriteManager.Flush();
 
 		char playstr[1024];
 	RECT r1={txtObject[0]+InvX,txtObject[1]+InvY,txtObject[2]+InvX,txtObject[3]+InvY};
@@ -957,7 +957,7 @@ int FOnlineEngine::InvMouseUp()
 		{
 			Net_SendChangeObject(lpChosen->m_obj->id,3);
 
-			hf.AddObj(lpChosen->m_obj->object,lpChosen->hex_x,lpChosen->hex_y,0);
+			hexField.AddObj(lpChosen->m_obj->object,lpChosen->hex_x,lpChosen->hex_y,0);
 
 			lpChosen->Action(ANIM2_SIT,ACTTIME_DROP_OBJ);
 
@@ -1015,24 +1015,24 @@ void FOnlineEngine::InvMouseMove()
 
 void FOnlineEngine::IntDraw()
 {
-	if(edit_mode) sm.DrawSprite(panel,IntX+5,IntY-40,COLOR_DEFAULT);
+	if(edit_mode) spriteManager.DrawSprite(panel,IntX+5,IntY-40,COLOR_DEFAULT);
 
-	sm.DrawSprite(ifacen,IntX,IntY,COLOR_DEFAULT);
+	spriteManager.DrawSprite(ifacen,IntX,IntY,COLOR_DEFAULT);
 
-	if(IntHold==1) sm.DrawSprite(intscrupon,IntBScrUp[0],IntBScrUp[1],COLOR_DEFAULT);
-	if(IntHold==2) sm.DrawSprite(intscrdownon,IntBScrDown[0],IntBScrDown[1],COLOR_DEFAULT);
-	if(IntHold==3) sm.DrawSprite(intchangesloton,IntBChangeSlot[0],IntBChangeSlot[1],COLOR_DEFAULT);
-	if(IntHold==4) sm.DrawSprite(intinvon,IntBInv[0],IntBInv[1],COLOR_DEFAULT);
-	if(IntHold==5) sm.DrawSprite(intmenuon,IntBMenu[0],IntBMenu[1],COLOR_DEFAULT);
-	if(IntHold==6) sm.DrawSprite(intskillon,IntBSkill[0],IntBSkill[1],COLOR_DEFAULT);
-	if(IntHold==7) sm.DrawSprite(intmapon,IntBMap[0],IntBMap[1],COLOR_DEFAULT);
-	if(IntHold==8) sm.DrawSprite(intinfoon,IntBInfo[0],IntBInfo[1],COLOR_DEFAULT);
-	if(IntHold==9) sm.DrawSprite(intpipon,IntBPip[0],IntBPip[1],COLOR_DEFAULT);
+	if(IntHold==1) spriteManager.DrawSprite(intscrupon,IntBScrUp[0],IntBScrUp[1],COLOR_DEFAULT);
+	if(IntHold==2) spriteManager.DrawSprite(intscrdownon,IntBScrDown[0],IntBScrDown[1],COLOR_DEFAULT);
+	if(IntHold==3) spriteManager.DrawSprite(intchangesloton,IntBChangeSlot[0],IntBChangeSlot[1],COLOR_DEFAULT);
+	if(IntHold==4) spriteManager.DrawSprite(intinvon,IntBInv[0],IntBInv[1],COLOR_DEFAULT);
+	if(IntHold==5) spriteManager.DrawSprite(intmenuon,IntBMenu[0],IntBMenu[1],COLOR_DEFAULT);
+	if(IntHold==6) spriteManager.DrawSprite(intskillon,IntBSkill[0],IntBSkill[1],COLOR_DEFAULT);
+	if(IntHold==7) spriteManager.DrawSprite(intmapon,IntBMap[0],IntBMap[1],COLOR_DEFAULT);
+	if(IntHold==8) spriteManager.DrawSprite(intinfoon,IntBInfo[0],IntBInfo[1],COLOR_DEFAULT);
+	if(IntHold==9) spriteManager.DrawSprite(intpipon,IntBPip[0],IntBPip[1],COLOR_DEFAULT);
 
 	if(lpChosen->a_obj->object->p[OBJ_PIC_INV])
 	{
-		SpriteInfo* si=sm.GetSpriteInfo(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]]);
-		sm.DrawSprite(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]],
+		SpriteInfo* si=spriteManager.GetSpriteInfo(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]]);
+		spriteManager.DrawSprite(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]],
 			IntObject[0]+(IntObject[2]-IntObject[0]-si->w)/2,
 			IntObject[1]+(IntObject[3]-IntObject[1]-si->h)/2,COLOR_DEFAULT);
 	}
@@ -1041,44 +1041,44 @@ void FOnlineEngine::IntDraw()
 	{
 		switch(lpChosen->rate_object)
 		{
-		case 1: sm.DrawSprite(pic_use[lpChosen->a_obj->object->p[OBJ_WEAP_PA_PIC]],IntObject[0]+10,IntObject[1]+10,COLOR_DEFAULT); break;
-		case 2: sm.DrawSprite(pic_use[lpChosen->a_obj->object->p[OBJ_WEAP_SA_PIC]],IntObject[0]+10,IntObject[1]+10,COLOR_DEFAULT); break;
-		case 3: sm.DrawSprite(pic_use[lpChosen->a_obj->object->p[OBJ_WEAP_TA_PIC]],IntObject[0]+10,IntObject[1]+10,COLOR_DEFAULT); break;
-		default: sm.DrawSprite(pic_use[10],IntObject[0]+5,IntObject[1],COLOR_DEFAULT); break;
+		case 1: spriteManager.DrawSprite(pic_use[lpChosen->a_obj->object->p[OBJ_WEAP_PA_PIC]],IntObject[0]+10,IntObject[1]+10,COLOR_DEFAULT); break;
+		case 2: spriteManager.DrawSprite(pic_use[lpChosen->a_obj->object->p[OBJ_WEAP_SA_PIC]],IntObject[0]+10,IntObject[1]+10,COLOR_DEFAULT); break;
+		case 3: spriteManager.DrawSprite(pic_use[lpChosen->a_obj->object->p[OBJ_WEAP_TA_PIC]],IntObject[0]+10,IntObject[1]+10,COLOR_DEFAULT); break;
+		default: spriteManager.DrawSprite(pic_use[10],IntObject[0]+5,IntObject[1],COLOR_DEFAULT); break;
 		}
 	}
 	else
-		sm.DrawSprite(pic_use[10],IntObject[0]+5,IntObject[1],COLOR_DEFAULT);
+		spriteManager.DrawSprite(pic_use[10],IntObject[0]+5,IntObject[1],COLOR_DEFAULT);
 
 	//диодики
 	if(!lpChosen->IsFree())
 	{
-		sm.DrawSprite(diodeG,IntAP[0],IntAP[1],COLOR_DEFAULT);
+		spriteManager.DrawSprite(diodeG,IntAP[0],IntAP[1],COLOR_DEFAULT);
 		int timed=lpChosen->Tick_count-(GetTickCount()-lpChosen->Tick_start);
 		for(int num_d=1; num_d<=20; num_d++)
 		{
 			if(num_d<=timed/500 && num_d<=14)
-				sm.DrawSprite(diodeG,IntAP[0]+num_d*IntAPstepX,IntAP[1]+num_d*IntAPstepY,COLOR_DEFAULT);
+				spriteManager.DrawSprite(diodeG,IntAP[0]+num_d*IntAPstepX,IntAP[1]+num_d*IntAPstepY,COLOR_DEFAULT);
 			else
 			if(num_d>14 && num_d<=17 && num_d-15<=(timed-7500)/3000 && timed>7500)
-				sm.DrawSprite(diodeY,IntAP[0]+num_d*IntAPstepX,IntAP[1]+num_d*IntAPstepY,COLOR_DEFAULT);
+				spriteManager.DrawSprite(diodeY,IntAP[0]+num_d*IntAPstepX,IntAP[1]+num_d*IntAPstepY,COLOR_DEFAULT);
 			else
 			if(num_d>17 && num_d<20 && num_d-18<=(timed-16500)/10000 && timed>16500)
-				sm.DrawSprite(diodeR,IntAP[0]+num_d*IntAPstepX,IntAP[1]+num_d*IntAPstepY,COLOR_DEFAULT);
+				spriteManager.DrawSprite(diodeR,IntAP[0]+num_d*IntAPstepX,IntAP[1]+num_d*IntAPstepY,COLOR_DEFAULT);
 		}
 	}
 
 	//дефолтное действие
-	if(Node_stay_mouse) sm.DrawSprite(Node_stay_mouse,cur_x+22,cur_y+21,COLOR_DEFAULT);
+	if(Node_stay_mouse) spriteManager.DrawSprite(Node_stay_mouse,cur_x+22,cur_y+21,COLOR_DEFAULT);
 
 	//мессаги чезена
 	int max_chosen_mess=0;
 	if(lpChosen->pe[PE_HIDE_MODE]) max_chosen_mess++;
 
 	for(int i=0;i<max_chosen_mess;++i)
-		sm.DrawSprite(chosen_mess_pic,IntMessX+IntMessStepX*i,IntMessY+IntMessStepY*i,COLOR_DEFAULT);
+		spriteManager.DrawSprite(chosen_mess_pic,IntMessX+IntMessStepX*i,IntMessY+IntMessStepY*i,COLOR_DEFAULT);
 
-	sm.Flush();
+	spriteManager.Flush();
 
 	//текст мессаг чезена
 	int cur_chosen_mess=0;
@@ -1371,9 +1371,9 @@ void FOnlineEngine::ShowLogIn()
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 	lpDevice->BeginScene();
 	//графика
-	sm.DrawSprite(loginpic,LogX,LogY,COLOR_DEFAULT);
+	spriteManager.DrawSprite(loginpic,LogX,LogY,COLOR_DEFAULT);
 
-	sm.Flush();
+	spriteManager.Flush();
 	//текст
 	RECT rlogin	={LogWLogin[0],LogWLogin[1],LogWLogin[2],LogWLogin[3]};
 	RECT rpass	={LogWPass[0] ,LogWPass[1] ,LogWPass[2] ,LogWPass[3] };
@@ -1402,12 +1402,12 @@ void FOnlineEngine::ShowLogIn()
 	case STATE_INIT_NET:	fnt.RenderText(rlogconn,"СОСТОЯНИЕ: ИНИЦИАЛИЗАЦИЯ СЕТИ"		,0,D3DCOLOR_XRGB(0,0,255)); break;
 	}
 	//курсор
-	SpriteInfo* si=sm.GetSpriteInfo(cur);
+	SpriteInfo* si=spriteManager.GetSpriteInfo(cur);
 	int curx=cur_x-(si->w >> 1)+si->offs_x;
 	int cury=cur_y-si->h+si->offs_y;
-	sm.DrawSprite(cur,curx,cury,COLOR_DEFAULT);
+	spriteManager.DrawSprite(cur,curx,cury,COLOR_DEFAULT);
 
-	sm.Flush();
+	spriteManager.Flush();
 	lpDevice->EndScene();
 	lpDevice->Present(NULL,NULL,NULL,NULL);
 }
@@ -1504,9 +1504,9 @@ void FOnlineEngine::ShowRegistration()
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 	lpDevice->BeginScene();
 	//графика
-	sm.DrawSprite(registpic,RegX,RegY,COLOR_DEFAULT);
+	spriteManager.DrawSprite(registpic,RegX,RegY,COLOR_DEFAULT);
 
-	sm.Flush();
+	spriteManager.Flush();
 	//текст
 //	RECT rwall={RegWAllS[0],RegWAllS[1],RegWAllS[2],RegWAllS[3]};
 	RECT rws={RegWS[0],RegWS[1],RegWS[2],RegWS[3]};
@@ -1573,7 +1573,7 @@ void FOnlineEngine::ShowRegistration()
 	//курсор
 	CurDraw();
 
-	sm.Flush();
+	spriteManager.Flush();
 	lpDevice->EndScene();
 	lpDevice->Present(NULL,NULL,NULL,NULL);
 }
@@ -1725,17 +1725,17 @@ void FOnlineEngine::RegInput()
 
 void FOnlineEngine::DlgDraw()
 {
-	SpriteInfo* spr_inf=sm.GetSpriteInfo(dialog_begin);
+	SpriteInfo* spr_inf=spriteManager.GetSpriteInfo(dialog_begin);
 	if(!spr_inf) return;
 
-	sm.DrawSprite(dialog_begin,DlgX,DlgY,COLOR_DEFAULT);
+	spriteManager.DrawSprite(dialog_begin,DlgX,DlgY,COLOR_DEFAULT);
 	for(int ddg=0; ddg<all_answers; ddg++)
 	{
-		sm.DrawSprite(dialog_answ,DlgX+DlgNextAnswX*ddg,DlgY+spr_inf->h+DlgNextAnswY*ddg,COLOR_DEFAULT);
+		spriteManager.DrawSprite(dialog_answ,DlgX+DlgNextAnswX*ddg,DlgY+spr_inf->h+DlgNextAnswY*ddg,COLOR_DEFAULT);
 	}
-	sm.DrawSprite(dialog_end,DlgX+DlgNextAnswX*all_answers,DlgY+spr_inf->h+DlgNextAnswY*all_answers,COLOR_DEFAULT);
+	spriteManager.DrawSprite(dialog_end,DlgX+DlgNextAnswX*all_answers,DlgY+spr_inf->h+DlgNextAnswY*all_answers,COLOR_DEFAULT);
 
-	sm.Flush();
+	spriteManager.Flush();
 
 	RECT rmt={DlgText[0]+DlgX,DlgText[1]+DlgY,DlgText[2]+DlgX,DlgText[3]+DlgY};
 	fnt.RenderText(rmt,text_dialog,0,D3DCOLOR_XRGB(0,200,200)); //текст нпц
@@ -1978,39 +1978,39 @@ void FOnlineEngine::LMenuDraw()
 		{
 		case LMENU_NODE_LOOK:
 			if(count_node==LMenu_cur_node)
-				sm.DrawSprite(lm_look_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_look_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			else
-				sm.DrawSprite(lm_look_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_look_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			break;
 		case LMENU_NODE_TALK:
 			if(count_node==LMenu_cur_node)
-				sm.DrawSprite(lm_talk_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_talk_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			else
-				sm.DrawSprite(lm_talk_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_talk_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			break;
 		case LMENU_NODE_BREAK:
 			if(count_node==LMenu_cur_node)
-				sm.DrawSprite(lm_break_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_break_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			else
-				sm.DrawSprite(lm_break_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_break_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			break;
 		case LMENU_NODE_PICK:
 			if(count_node==LMenu_cur_node)
-				sm.DrawSprite(lm_use_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_use_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			else
-				sm.DrawSprite(lm_use_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_use_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			break;
 		case LMENU_NODE_GMFOLLOW:
 			if(count_node==LMenu_cur_node)
-				sm.DrawSprite(lm_gmfollow_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_gmfollow_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			else
-				sm.DrawSprite(lm_gmfollow_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_gmfollow_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			break;
 		case LMENU_NODE_GMTAKE:
 			if(count_node==LMenu_cur_node)
-				sm.DrawSprite(lm_gmtake_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_gmtake_on,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			else
-				sm.DrawSprite(lm_gmtake_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
+				spriteManager.DrawSprite(lm_gmtake_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			break;
 		default:
 			WriteLog("!!!WORNING!!! Отрисовка ЛМеню - неизвестное состояние меню\n");
@@ -2621,27 +2621,27 @@ void FOnlineEngine::LmapPrepareMap()
 					LmapWMap[1]+pix_y+((lmap_zoom-1)/2),0xAA00FFFF,&LmapX,&LmapY));
 			}
 
-			if(FLAG(hf.hex_field[i2][i1].flags,FT_BLOCK))
+			if(FLAG(hexField.hex_field[i2][i1].flags,FT_BLOCK))
 			{
 				if(switch_HI==false)
 				{
-					if(!hf.hex_field[i2][i1].wall_id[0]
-					&& !hf.hex_field[i2][i1].wall_id[1]
-					&& !hf.hex_field[i2][i1].wall_id[2]) continue;
+					if(!hexField.hex_field[i2][i1].wall_id[0]
+					&& !hexField.hex_field[i2][i1].wall_id[1]
+					&& !hexField.hex_field[i2][i1].wall_id[2]) continue;
 				}
 				else
-					if(hf.hex_field[i2][i1].scroll_block==TRUE) continue;
+					if(hexField.hex_field[i2][i1].scroll_block==TRUE) continue;
 
-				if(!hf.hex_field[i2][i1].wall_id[0]
-				&& !hf.hex_field[i2][i1].wall_id[1]
-				&& !hf.hex_field[i2][i1].wall_id[2])
+				if(!hexField.hex_field[i2][i1].wall_id[0]
+				&& !hexField.hex_field[i2][i1].wall_id[1]
+				&& !hexField.hex_field[i2][i1].wall_id[2])
 					cur_color=0x7F00FF00;
 				else
 					cur_color=0xFF00FF00;
 			}
-			else if(hf.hex_field[i2][i1].lpcrit)
+			else if(hexField.hex_field[i2][i1].lpcrit)
 			{
-				if(hf.hex_field[i2][i1].lpcrit==lpChosen)
+				if(hexField.hex_field[i2][i1].lpcrit==lpChosen)
 					cur_color=0xFF0000FF;
 				else
 					cur_color=0xFFFF0000;
@@ -2655,24 +2655,24 @@ void FOnlineEngine::LmapPrepareMap()
 /*
 				lmap_prep_pix.push_back(new PrepPix(LmapWMap[0]+maxpixx+(lmap_zoom-1),
 					LmapWMap[1]+maxpixy,cur_color,&LmapX,&LmapY,
-					&hf.hex_field[i2][i1].lpcrit->hex_x,&hf.hex_field[i2][i1].lpcrit->hex_y));
+					&hexField.hex_field[i2][i1].lpcrit->hex_x,&hexField.hex_field[i2][i1].lpcrit->hex_y));
 
 				lmap_prep_pix.push_back(new PrepPix(LmapWMap[0]+maxpixx,
 					LmapWMap[1]+maxpixy+((lmap_zoom-1)/2),cur_color,&LmapX,&LmapY,
-					&hf.hex_field[i2][i1].lpcrit->hex_x,&hf.hex_field[i2][i1].lpcrit->hex_y));
+					&hexField.hex_field[i2][i1].lpcrit->hex_x,&hexField.hex_field[i2][i1].lpcrit->hex_y));
 
 				lmap_prep_pix.push_back(new PrepPix(LmapWMap[0]+maxpixx,
 					LmapWMap[1]+maxpixy,cur_color,&LmapX,&LmapY,
-					&hf.hex_field[i2][i1].lpcrit->hex_x,&hf.hex_field[i2][i1].lpcrit->hex_y));
+					&hexField.hex_field[i2][i1].lpcrit->hex_x,&hexField.hex_field[i2][i1].lpcrit->hex_y));
 
 				lmap_prep_pix.push_back(new PrepPix(LmapWMap[0]+maxpixx+(lmap_zoom-1),
 					LmapWMap[1]+maxpixy+((lmap_zoom-1)/2),cur_color,&LmapX,&LmapY,
-					&hf.hex_field[i2][i1].lpcrit->hex_x,&hf.hex_field[i2][i1].lpcrit->hex_y));
+					&hexField.hex_field[i2][i1].lpcrit->hex_x,&hexField.hex_field[i2][i1].lpcrit->hex_y));
 
 				continue;
 */
 			}
-			else if(FLAG(hf.hex_field[i2][i1].flags,FT_TRANSIT))
+			else if(FLAG(hexField.hex_field[i2][i1].flags,FT_TRANSIT))
 				cur_color=0xFFFFFFFF;
 			else
 				continue;
@@ -2689,19 +2689,19 @@ void FOnlineEngine::LmapPrepareMap()
 
 void FOnlineEngine::LmapDraw()
 {
-	sm.DrawSprite(lmap_main,LmapMain[0]+LmapX,LmapMain[1]+LmapY,COLOR_DEFAULT);
+	spriteManager.DrawSprite(lmap_main,LmapMain[0]+LmapX,LmapMain[1]+LmapY,COLOR_DEFAULT);
 
-	sm.DrawPrepLines(&lmap_prep_pix);
+	spriteManager.DrawPrepLines(&lmap_prep_pix);
 
 	RECT r0={LmapWMap[0]+LmapX,LmapWMap[1]+LmapY,LmapWMap[0]+LmapX+100,LmapWMap[1]+LmapY+15};
 	char str1[128];
 	sprintf(str1,"ZOOM: %d",lmap_zoom-1);
 	fnt.RenderText(r0,str1,0);
 
-	if(LmapHold==1) sm.DrawSprite(lmap_bok_on,LmapBOk[0]+LmapX,LmapBOk[1]+LmapY,COLOR_DEFAULT);
-	if(LmapHold==2) sm.DrawSprite(lmap_bscan_on,LmapBScan[0]+LmapX,LmapBScan[1]+LmapY,COLOR_DEFAULT);
+	if(LmapHold==1) spriteManager.DrawSprite(lmap_bok_on,LmapBOk[0]+LmapX,LmapBOk[1]+LmapY,COLOR_DEFAULT);
+	if(LmapHold==2) spriteManager.DrawSprite(lmap_bscan_on,LmapBScan[0]+LmapX,LmapBScan[1]+LmapY,COLOR_DEFAULT);
 
-	if(switch_HI==true) sm.DrawSprite(lmap_blohi_on,LmapBLoHi[0]+LmapX,LmapBLoHi[1]+LmapY,COLOR_DEFAULT);
+	if(switch_HI==true) spriteManager.DrawSprite(lmap_blohi_on,LmapBLoHi[0]+LmapX,LmapBLoHi[1]+LmapY,COLOR_DEFAULT);
 }
 
 void FOnlineEngine::LmapMouseDown()
@@ -2894,7 +2894,7 @@ void FOnlineEngine::GmapDraw()
 					(mx2>=sx1 && mx2<=sx2 && my1>=sy1 && my1<=sy2)||
 					(mx1>=sx1 && mx1<=sx2 && my2>=sy1 && my2<=sy2)||
 					(mx2>=sx1 && mx2<=sx2 && my2>=sy1 && my2<=sy2))
-				sm.DrawSprite(gm_pic[px][py],
+				spriteManager.DrawSprite(gm_pic[px][py],
 					px*512+GmapMapScrX,
 					py*512+GmapMapScrY,
 					COLOR_DEFAULT);
@@ -2928,13 +2928,13 @@ void FOnlineEngine::GmapDraw()
 			int loc_pic_y2=city->y+GmapMapScrY+city->radius;
 
 			if(loc_pic_x1<=GmapWMap[2] && loc_pic_y1<=GmapWMap[3] && loc_pic_x2>=GmapWMap[0] && loc_pic_y2>=GmapWMap[1])
-				sm.DrawSprite(cur_loc_pic,loc_pic_x1,loc_pic_y1,COLOR_DEFAULT,50);
+				spriteManager.DrawSprite(cur_loc_pic,loc_pic_x1,loc_pic_y1,COLOR_DEFAULT,50);
 		}
 
-		if(!(sprinf=sm.GetSpriteInfo(gm_gr_loc_pic))) return; //!!!write warning
-		sm.DrawSprite(gm_gr_loc_pic,GmapGroupX+GmapMapScrX-sprinf->w/2,GmapGroupY+GmapMapScrY-sprinf->h/2,COLOR_DEFAULT);
-		if(!(sprinf=sm.GetSpriteInfo(gm_gr_targ_pic))) return; //!!!write warning
-		sm.DrawSprite(gm_gr_targ_pic,GmapMoveX+GmapMapScrX-sprinf->w/2,GmapMoveY+GmapMapScrY-sprinf->h/2,COLOR_DEFAULT);
+		if(!(sprinf=spriteManager.GetSpriteInfo(gm_gr_loc_pic))) return; //!!!write warning
+		spriteManager.DrawSprite(gm_gr_loc_pic,GmapGroupX+GmapMapScrX-sprinf->w/2,GmapGroupY+GmapMapScrY-sprinf->h/2,COLOR_DEFAULT);
+		if(!(sprinf=spriteManager.GetSpriteInfo(gm_gr_targ_pic))) return; //!!!write warning
+		spriteManager.DrawSprite(gm_gr_targ_pic,GmapMoveX+GmapMapScrX-sprinf->w/2,GmapMoveY+GmapMapScrY-sprinf->h/2,COLOR_DEFAULT);
 
 		int cur_tabx=GmapWTabs[0]-gm_tab_scr_x;
 		int cur_taby=GmapWTabs[1]-gm_tab_scr_y;
@@ -2944,11 +2944,11 @@ void FOnlineEngine::GmapDraw()
 		{
 			GM_city* city=(*it_c);
 
-			sm.DrawSprite(gm_wtab_pic,cur_tabx,cur_taby,COLOR_DEFAULT);
-			sm.DrawSprite(gm_locpic[city->num],GmapWTabLoc[0]+cur_tabx,GmapWTabLoc[1]+cur_taby,COLOR_DEFAULT);
+			spriteManager.DrawSprite(gm_wtab_pic,cur_tabx,cur_taby,COLOR_DEFAULT);
+			spriteManager.DrawSprite(gm_locpic[city->num],GmapWTabLoc[0]+cur_tabx,GmapWTabLoc[1]+cur_taby,COLOR_DEFAULT);
 
 			if(GmapHold==7 && GmapCurHoldBLoc==cur_city) //button location
-				sm.DrawSprite(gm_btabloc_picdn,GmapBTabLoc[0]+cur_tabx,GmapBTabLoc[1]+cur_taby,COLOR_DEFAULT);
+				spriteManager.DrawSprite(gm_btabloc_picdn,GmapBTabLoc[0]+cur_tabx,GmapBTabLoc[1]+cur_taby,COLOR_DEFAULT);
 
 			cur_tabx+=GmapTabNextX;
 			cur_taby+=GmapTabNextY;
@@ -2959,28 +2959,28 @@ void FOnlineEngine::GmapDraw()
 		{
 			if(cur_tabx>GmapWTabs[2] || cur_taby>GmapWTabs[3]) break;
 
-			sm.DrawSprite(gm_wblanktab_pic,cur_tabx,cur_taby,COLOR_DEFAULT);
+			spriteManager.DrawSprite(gm_wblanktab_pic,cur_tabx,cur_taby,COLOR_DEFAULT);
 
 			cur_tabx+=GmapTabNextX;
 			cur_taby+=GmapTabNextY;
 		}
 	}
 
-	sm.DrawSprite(gm_iface_pic,0,0,COLOR_DEFAULT);
-	if(opt_screen_mode==2) sm.DrawSprite(gm_iface_pic2,640,0,COLOR_DEFAULT);
+	spriteManager.DrawSprite(gm_iface_pic,0,0,COLOR_DEFAULT);
+	if(opt_screen_mode==2) spriteManager.DrawSprite(gm_iface_pic2,640,0,COLOR_DEFAULT);
 
 	if(gm_process==true)
 	{
 		switch(GmapSpeed)
 		{
 		case GM_SPEED_SLOW:
-			sm.DrawSprite(gm_bspeed0_on,GmapBSpeed0[0],GmapBSpeed0[1],COLOR_DEFAULT);
+			spriteManager.DrawSprite(gm_bspeed0_on,GmapBSpeed0[0],GmapBSpeed0[1],COLOR_DEFAULT);
 			break;
 		case GM_SPEED_NORM:
-			sm.DrawSprite(gm_bspeed1_on,GmapBSpeed1[0],GmapBSpeed1[1],COLOR_DEFAULT);
+			spriteManager.DrawSprite(gm_bspeed1_on,GmapBSpeed1[0],GmapBSpeed1[1],COLOR_DEFAULT);
 			break;
 		case GM_SPEED_FAST:
-			sm.DrawSprite(gm_bspeed2_on,GmapBSpeed2[0],GmapBSpeed2[1],COLOR_DEFAULT);
+			spriteManager.DrawSprite(gm_bspeed2_on,GmapBSpeed2[0],GmapBSpeed2[1],COLOR_DEFAULT);
 			break;
 		//default:
 		//	Net_SendGiveGlobalInfo(GM_INFO_PARAM);
@@ -2989,21 +2989,21 @@ void FOnlineEngine::GmapDraw()
 
 		switch(GmapHold)
 		{
-		case 2: sm.DrawSprite(gm_btolocal_on,GmapBToLocal[0],GmapBToLocal[1],COLOR_DEFAULT); break; //to_local
-		case 3: sm.DrawSprite(gm_bstop_on,GmapBStop[0],GmapBStop[1],COLOR_DEFAULT); break; //stop
-		case 4: sm.DrawSprite(gm_bspeed0_on,GmapBSpeed0[0],GmapBSpeed0[1],COLOR_DEFAULT); break; //speed0
-		case 5: sm.DrawSprite(gm_bspeed1_on,GmapBSpeed1[0],GmapBSpeed1[1],COLOR_DEFAULT); break; //speed1
-		case 6: sm.DrawSprite(gm_bspeed2_on,GmapBSpeed2[0],GmapBSpeed2[1],COLOR_DEFAULT); break; //speed2
-		case 8: sm.DrawSprite(gm_tabs_scrup_picdn,GmapBTabsScrUp[0],GmapBTabsScrUp[1],COLOR_DEFAULT); break; //scrUp
-		case 9: sm.DrawSprite(gm_tabs_scrdn_picdn,GmapBTabsScrDn[0],GmapBTabsScrDn[1],COLOR_DEFAULT); break; //scrDown
+		case 2: spriteManager.DrawSprite(gm_btolocal_on,GmapBToLocal[0],GmapBToLocal[1],COLOR_DEFAULT); break; //to_local
+		case 3: spriteManager.DrawSprite(gm_bstop_on,GmapBStop[0],GmapBStop[1],COLOR_DEFAULT); break; //stop
+		case 4: spriteManager.DrawSprite(gm_bspeed0_on,GmapBSpeed0[0],GmapBSpeed0[1],COLOR_DEFAULT); break; //speed0
+		case 5: spriteManager.DrawSprite(gm_bspeed1_on,GmapBSpeed1[0],GmapBSpeed1[1],COLOR_DEFAULT); break; //speed1
+		case 6: spriteManager.DrawSprite(gm_bspeed2_on,GmapBSpeed2[0],GmapBSpeed2[1],COLOR_DEFAULT); break; //speed2
+		case 8: spriteManager.DrawSprite(gm_tabs_scrup_picdn,GmapBTabsScrUp[0],GmapBTabsScrUp[1],COLOR_DEFAULT); break; //scrUp
+		case 9: spriteManager.DrawSprite(gm_tabs_scrdn_picdn,GmapBTabsScrDn[0],GmapBTabsScrDn[1],COLOR_DEFAULT); break; //scrDown
 		}
 
-		if(lock_group_contr==true) sm.DrawSprite(gm_lock_contr_pic,GmapPLockContrX,GmapPLockContrY,COLOR_DEFAULT);
+		if(lock_group_contr==true) spriteManager.DrawSprite(gm_lock_contr_pic,GmapPLockContrX,GmapPLockContrY,COLOR_DEFAULT);
 	}
 
 //TEXT START======================================================================
 
-	sm.Flush();
+	spriteManager.Flush();
 
 	if(gm_process==true)
 	{
@@ -3052,7 +3052,7 @@ void FOnlineEngine::GmapDraw()
 		//map coord
 		if(cur_x>=GmapWMap[0] && cur_y>=GmapWMap[1] && cur_x<=GmapWMap[2] && cur_y<=GmapWMap[3])
 		{
-			SpriteInfo* cur_info=sm.GetSpriteInfo(cur);
+			SpriteInfo* cur_info=spriteManager.GetSpriteInfo(cur);
 			RECT rmc={cur_x+cur_info->w,cur_y+cur_info->h,cur_x+cur_info->w+150,cur_y+cur_info->h+100};
 			sprintf(gmstr,
 				"Coord: %d : %d\n"
@@ -3106,12 +3106,12 @@ void FOnlineEngine::GmapDraw()
 			if(crit->npc==true) cur_pic=gm_cr_npc;
 
 			SpriteInfo* sprinf=NULL;
-			if(!(sprinf=sm.GetSpriteInfo(cur_pic))) continue;
+			if(!(sprinf=spriteManager.GetSpriteInfo(cur_pic))) continue;
 
 			posx=cur_crit*GmapWNameStepX+GmapWName[2]-sprinf->w;
 			posy=cur_crit*GmapWNameStepY+GmapWName[1]-3;
 
-			sm.DrawSprite(cur_pic,posx,posy,COLOR_DEFAULT,100);
+			spriteManager.DrawSprite(cur_pic,posx,posy,COLOR_DEFAULT,100);
 
 			cur_crit++;
 		}
@@ -3119,7 +3119,7 @@ void FOnlineEngine::GmapDraw()
 
 	CurDraw();
 
-	sm.Flush();
+	spriteManager.Flush();
 
 	lpDevice->EndScene();
 	lpDevice->Present(NULL,NULL,NULL,NULL);
@@ -3347,19 +3347,19 @@ void FOnlineEngine::GmapMouseMove()
 
 void FOnlineEngine::SboxDraw()
 {
-	sm.DrawSprite(sbox_main,SboxMain[0]+SboxX,SboxMain[1]+SboxY,COLOR_DEFAULT);
+	spriteManager.DrawSprite(sbox_main,SboxMain[0]+SboxX,SboxMain[1]+SboxY,COLOR_DEFAULT);
 
-	if(SboxHold==1) sm.DrawSprite(sbox_bcancel_on,SboxBCancel[0]+SboxX,SboxBCancel[1]+SboxY,COLOR_DEFAULT);
-	if(SboxHold==2) sm.DrawSprite(sbox_bsneak_on,SboxBSneak[0]+SboxX,SboxBSneak[1]+SboxY,COLOR_DEFAULT);
-	if(SboxHold==3) sm.DrawSprite(sbox_blockpick_on,SboxBLockpick[0]+SboxX,SboxBLockpick[1]+SboxY,COLOR_DEFAULT);
-	if(SboxHold==4) sm.DrawSprite(sbox_bsteal_on,SboxBSteal[0]+SboxX,SboxBSteal[1]+SboxY,COLOR_DEFAULT);
-	if(SboxHold==5) sm.DrawSprite(sbox_btrap_on,SboxBTrap[0]+SboxX,SboxBTrap[1]+SboxY,COLOR_DEFAULT);
-	if(SboxHold==6) sm.DrawSprite(sbox_bfirstaid_on,SboxBFirstAid[0]+SboxX,SboxBFirstAid[1]+SboxY,COLOR_DEFAULT);
-	if(SboxHold==7) sm.DrawSprite(sbox_bdoctor_on,SboxBDoctor[0]+SboxX,SboxBDoctor[1]+SboxY,COLOR_DEFAULT);
-	if(SboxHold==8) sm.DrawSprite(sbox_bscience_on,SboxBScience[0]+SboxX,SboxBScience[1]+SboxY,COLOR_DEFAULT);
-	if(SboxHold==9) sm.DrawSprite(sbox_brepair_on,SboxBRepair[0]+SboxX,SboxBRepair[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==1) spriteManager.DrawSprite(sbox_bcancel_on,SboxBCancel[0]+SboxX,SboxBCancel[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==2) spriteManager.DrawSprite(sbox_bsneak_on,SboxBSneak[0]+SboxX,SboxBSneak[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==3) spriteManager.DrawSprite(sbox_blockpick_on,SboxBLockpick[0]+SboxX,SboxBLockpick[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==4) spriteManager.DrawSprite(sbox_bsteal_on,SboxBSteal[0]+SboxX,SboxBSteal[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==5) spriteManager.DrawSprite(sbox_btrap_on,SboxBTrap[0]+SboxX,SboxBTrap[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==6) spriteManager.DrawSprite(sbox_bfirstaid_on,SboxBFirstAid[0]+SboxX,SboxBFirstAid[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==7) spriteManager.DrawSprite(sbox_bdoctor_on,SboxBDoctor[0]+SboxX,SboxBDoctor[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==8) spriteManager.DrawSprite(sbox_bscience_on,SboxBScience[0]+SboxX,SboxBScience[1]+SboxY,COLOR_DEFAULT);
+	if(SboxHold==9) spriteManager.DrawSprite(sbox_brepair_on,SboxBRepair[0]+SboxX,SboxBRepair[1]+SboxY,COLOR_DEFAULT);
 
-	sm.Flush();
+	spriteManager.Flush();
 
 	RECT rsneak={SboxTSneak[0]+SboxX,SboxTSneak[1]+SboxY,SboxTSneak[2]+SboxX,SboxTSneak[3]+SboxY};
 	RECT rlockpick={SboxTLockpick[0]+SboxX,SboxTLockpick[1]+SboxY,SboxTLockpick[2]+SboxX,SboxTLockpick[3]+SboxY};
@@ -3471,10 +3471,10 @@ void FOnlineEngine::SboxMouseUp()
 
 void FOnlineEngine::MoptDraw()
 {
-	sm.DrawSprite(mopt_main,MoptMain[0],MoptMain[1],COLOR_DEFAULT);
+	spriteManager.DrawSprite(mopt_main,MoptMain[0],MoptMain[1],COLOR_DEFAULT);
 
-	if(MoptHold==1) sm.DrawSprite(mopt_bresume_on,MoptBResume[0],MoptBResume[1],COLOR_DEFAULT);
-	if(MoptHold==2) sm.DrawSprite(mopt_bexit_on,MoptBExit[0],MoptBExit[1],COLOR_DEFAULT);
+	if(MoptHold==1) spriteManager.DrawSprite(mopt_bresume_on,MoptBResume[0],MoptBResume[1],COLOR_DEFAULT);
+	if(MoptHold==2) spriteManager.DrawSprite(mopt_bexit_on,MoptBExit[0],MoptBExit[1],COLOR_DEFAULT);
 }
 
 void FOnlineEngine::MoptMouseDown()
@@ -3504,24 +3504,24 @@ void FOnlineEngine::CurDraw()
 {
 	if((IsCur(CUR_DEFAULT) || IsCur(CUR_USE_OBJECT) || IsCur(CUR_USE_SKILL) || IsCur(CUR_WAIT)) && !IsLMenu())
 	{
-		SpriteInfo* si=sm.GetSpriteInfo(cur);
+		SpriteInfo* si=spriteManager.GetSpriteInfo(cur);
 		int x=cur_x-(si->w >> 1)+si->offs_x;
 		int y=cur_y-si->h+si->offs_y;
-		sm.DrawSprite(cur,x,y,COLOR_DEFAULT);
+		spriteManager.DrawSprite(cur,x,y,COLOR_DEFAULT);
 	}
 	else if(IsCur(CUR_MOVE))
 	{
 		if(!GetMouseTile(cur_x,cur_y))
-			sm.DrawSprite(cur_def,cur_x,cur_y,COLOR_DEFAULT);
+			spriteManager.DrawSprite(cur_def,cur_x,cur_y,COLOR_DEFAULT);
 		else
 		{
 		  // FIXME[27.11.2012 alex]: crashes here
-			if(!FLAG(hf.hex_field[TargetY][TargetX].flags,FT_NOWAY))
-				sm.DrawSprite(cur_move,hf.hex_field[TargetY][TargetX].scr_x+1,
-					hf.hex_field[TargetY][TargetX].scr_y-1,COLOR_DEFAULT);
+			if(!FLAG(hexField.hex_field[TargetY][TargetX].flags,FT_NOWAY))
+				spriteManager.DrawSprite(cur_move,hexField.hex_field[TargetY][TargetX].scr_x+1,
+					hexField.hex_field[TargetY][TargetX].scr_y-1,COLOR_DEFAULT);
 			else
-				sm.DrawSprite(cur_move_block,hf.hex_field[TargetY][TargetX].scr_x+1,
-					hf.hex_field[TargetY][TargetX].scr_y-1,COLOR_DEFAULT);
+				spriteManager.DrawSprite(cur_move_block,hexField.hex_field[TargetY][TargetX].scr_x+1,
+					hexField.hex_field[TargetY][TargetX].scr_y-1,COLOR_DEFAULT);
 		}
 	}
 }

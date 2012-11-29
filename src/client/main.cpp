@@ -47,11 +47,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInst, LPSTR lpCmdLi
 
 	LoadSettings();
 
+  size_t modeWidth = screen_width[opt_screen_mode];
+  size_t modeHeight = screen_height[opt_screen_mode];
+
 	HWND hWnd = CreateWindow(
 		"FOnline",
 		"Fallout Online",
 		WS_OVERLAPPEDWINDOW & (~WS_MAXIMIZEBOX) & (~WS_SIZEBOX) & (~WS_SYSMENU),
-		0,0,MODE_WIDTH+5,MODE_HEIGHT+25,
+		0,0,modeWidth + 5, modeHeight + 25,
 		NULL,
 		NULL,
 		hInstance,
