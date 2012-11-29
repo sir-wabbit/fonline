@@ -1,12 +1,3 @@
-/********************************************************************
-	created:	19:01:2007   00:00;
-
-	author:		Anton Tsvetinsky
-	
-	purpose:	acm,ogg
-*********************************************************************/
-
-#include "stdafx.h"
 #include "common.h"
 #include "SoundMngr.h"
 #include "CFileMngr.h"
@@ -98,20 +89,44 @@ int SoundManager::LoadSound(char* fname, int TypePath)
 
 	if(!stricmp(ext,".wav"))
 	{
-		if(!LoadWAV(&fmt,&smplData,&sizeData)) { SAFEDELA(smplData); fm.UnloadFile(); return 0; }
+		if (!LoadWAV(&fmt, &smplData, &sizeData)) { 
+		  if (smplData != NULL) {
+		    delete [] smplData;
+		    smplData = NULL;
+		  }
+		  fm.UnloadFile();
+		  return 0;
+		}
 	}
 	else if(!stricmp(ext,".acm"))
 	{
-		if(!LoadACM(&fmt,&smplData,&sizeData)) { SAFEDELA(smplData); fm.UnloadFile(); return 0; }
-	}
-	else if(!stricmp(ext,".ogg"))
-	{
+		if(!LoadACM(&fmt,&smplData,&sizeData)) {
+      if (smplData != NULL) {
+        delete [] smplData;
+        smplData = NULL;
+      }
+		  fm.UnloadFile(); 
+		  return 0;
+		}
+	} else if (!stricmp(ext, ".ogg")) {
 		char full_path[256];
-		if(!fm.GetFullPath(fname,TypePath,&full_path[0])) { SAFEDELA(smplData); fm.UnloadFile(); return 0; }	
-		if(!LoadOGG(&fmt,&smplData,&sizeData,&full_path[0])) { SAFEDELA(smplData); fm.UnloadFile(); return 0; }
-	}
-	else
-	{
+		if  (!fm.GetFullPath(fname,TypePath,&full_path[0])) { 
+      if (smplData != NULL) {
+        delete [] smplData;
+        smplData = NULL;
+      }
+		  fm.UnloadFile();
+		  return 0;
+		}	
+		if (!LoadOGG(&fmt,&smplData,&sizeData,&full_path[0])) {
+      if (smplData != NULL) {
+        delete [] smplData;
+        smplData = NULL;
+      }
+      fm.UnloadFile();
+      return 0;
+    }
+	} else {
 		fm.UnloadFile();
 		WriteLog("Ошибка - Загрузка звука - Неизвестный формат файла звука |%s|\n",fname);
 		return 0;
@@ -130,9 +145,11 @@ int SoundManager::LoadSound(char* fname, int TypePath)
 
 	Sound* nsnd=new Sound;
 
-	if(lpDS->CreateSoundBuffer(&dsbd,&nsnd->buf,0)!=DS_OK)
-	{
-		SAFEDELA(smplData);
+	if (lpDS->CreateSoundBuffer(&dsbd,&nsnd->buf,0) != DS_OK) {
+    if (smplData != NULL) {
+      delete [] smplData;
+      smplData = NULL;
+    }
 		WriteLog("Ошибка - Загрузка звука - Неудалось создать буфер для звука\n");
 		return 0;
 	}
@@ -140,16 +157,21 @@ int SoundManager::LoadSound(char* fname, int TypePath)
 	void *pDst=0;
 	DWORD wSize=0;
 
-	if(nsnd->buf->Lock(0,0,&pDst,&wSize,0,0,DSBLOCK_ENTIREBUFFER)!=DS_OK)
-	{
-		SAFEDELA(smplData); 
+	if (nsnd->buf->Lock(0, 0, &pDst, &wSize, 0, 0, DSBLOCK_ENTIREBUFFER) != DS_OK) {
+    if (smplData != NULL) {
+      delete [] smplData;
+      smplData = NULL;
+    }
 		WriteLog("Ошибка - Загрузка звука - Невозможно заблокировать память\n");
 		return 0;
 	}
 
-	memcpy(pDst,smplData,wSize);
+	memcpy(pDst, smplData, wSize);
 
-	SAFEDELA(smplData);
+  if (smplData != NULL) {
+    delete [] smplData;
+    smplData = NULL;
+  }
 
 	nsnd->buf->Unlock(pDst,wSize,0,0);
 
@@ -250,7 +272,14 @@ int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 
 	delete (acm);
 
-	if(dec_data!=data_size) { WriteLog("Ошибка - Загрузка звука - Ошибка в декодировании ACM\n"); SAFEDEL(*sample_data); return 0; }
+	if (dec_data != data_size) { 
+	  WriteLog("Ошибка - Загрузка звука - Ошибка в декодировании ACM\n"); 
+	  if (*sample_data != NULL) {
+	    delete sample_data;
+	    sample_data = NULL;
+	  } 
+	  return 0; 
+	}
 
 //	SAFEDEL(step_buff);
 

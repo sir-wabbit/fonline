@@ -98,7 +98,7 @@ public:
 	uint8_t alpha; //прозрачность криттера
 //!Cvet ----------------------------------
 
-	IntRect drect;
+	fonline::math::Rect<int> drect;
 	
 	int rit;
 	//dtree_map::iterator rit; // индекс по которому можно найти любого Перса

@@ -2954,8 +2954,8 @@ CCritter* FOnlineEngine::GetMouseCritter(int cursor_x, int cursor_y)
 	{
 		cr=(*it).second;
 
-		if(cursor_x > cr->drect.l && cursor_x < cr->drect.r)
-			if(cursor_y > cr->drect.t && cursor_y < cr->drect.b)
+		if(cursor_x > cr->drect.left && cursor_x < cr->drect.right)
+			if(cursor_y > cr->drect.top && cursor_y < cr->drect.bottom)
 				return cr;
 	}
 

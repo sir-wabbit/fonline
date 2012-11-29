@@ -1,20 +1,20 @@
 #ifndef _CSPRITEMGR_H_
 #define _CSPRITEMGR_H_
 
-#include "stdafx.h"
-
 #include <d3dx8.h>
 #include <dinput.h>
 #include <dxerr8.h>
 #include <dsound.h>
 
-#include "CFileMngr.h"
-#include "netproto.h"
-
 #include <vector>
 #include <map>
 
 #include <assert.h>
+
+#include "CFileMngr.h"
+#include "netproto.h"
+
+#include <base/math/rect.hpp>
 
 //!Cvet ++++
 #define COLOR_DEFAULT		D3DCOLOR_ARGB(255,((opt_gcolor_default >> 16) & 0xFF)+opt_light,\
@@ -113,8 +113,21 @@ struct CritFrames
 	uint8_t cnt_frames; //кол-во кадров в анимации на каждое направление
 	uint16_t ticks;
 
-	CritFrames(): ind(NULL),next_x(NULL),next_y(NULL){};
-	~CritFrames(){SAFEDELA(ind);SAFEDELA(next_x);SAFEDELA(next_y);};
+	CritFrames(): ind(NULL), next_x(NULL), next_y(NULL) { };
+	~CritFrames() {
+	  if (ind != NULL) {
+	    delete [] ind;
+	    ind = NULL;
+	  }
+	  if (next_x != NULL) {
+	    delete [] next_x;
+	    next_x = NULL;
+	  }
+    if (next_y != NULL) {
+      delete [] next_y;
+      next_y = NULL;
+    }
+	};
 };
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
@@ -131,7 +144,20 @@ struct AnyFrames
 	uint16_t ticks;// периоды анимаций
 
 	AnyFrames(): ind(NULL),next_x(NULL),next_y(NULL),offs_x(0),offs_y(0){};
-	~AnyFrames(){SAFEDELA(ind);SAFEDELA(next_x);SAFEDELA(next_y);};
+	~AnyFrames() {
+    if (ind != NULL) {
+      delete [] ind;
+      ind = NULL;
+    }
+    if (next_x != NULL) {
+      delete [] next_x;
+      next_x = NULL;
+    }
+    if (next_y != NULL) {
+      delete [] next_y;
+      next_y = NULL;
+    }
+	};
 };
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
@@ -192,13 +218,21 @@ public:
 	LPDIRECT3DVERTEXBUFFER8 GetVB() {return lpVB;};
 	LPDIRECT3DINDEXBUFFER8 GetIB() {return lpIB;};
 
-	void GetDrawCntrRect(PrepSprite* prep, IntRect* prect);
+  void GetDrawCntrRect(PrepSprite* prep, fonline::math::Rect<int>* prect);
 
 	CSpriteManager();
-	~CSpriteManager(){for(int d1=0;d1<100;d1++)
-						for(int d2=0;d2<27;d2++)
-							for(int d3=0;d3<27;d3++)
-								SAFEDEL(CrAnim[d1][d2][d3]);}; //!Cvet
+	~CSpriteManager(){
+	  for(int d1 = 0; d1 < 100; d1++) {
+		  for(int d2 = 0; d2 < 27; d2++) {
+			  for(int d3 = 0; d3 < 27; d3++) {
+				  if (CrAnim[d1][d2][d3]) {
+				    delete [] CrAnim[d1][d2][d3];
+				    CrAnim[d1][d2][d3] = NULL;
+				  }
+				}
+		  }
+		}
+	}; //!Cvet
 
 //!Cvet ++++++++++++++++++++++++++++++++++++++
 	ctypes_map crit_types;

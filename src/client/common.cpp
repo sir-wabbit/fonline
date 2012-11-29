@@ -1,5 +1,3 @@
-#include "stdafx.h" // инициализация большинства переменных
-
 #include "common.h"
 
 #include <Windows.h>

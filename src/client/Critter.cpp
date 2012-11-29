@@ -424,10 +424,10 @@ void CCritter::ChangeCur_offs(short change_ox, short change_oy)
 //	WriteLog("%d+=%d\n",cur_oy,change_oy);
 //	WriteLog("==================================\n");
 	
-	drect.l+=change_ox;
-	drect.r+=change_ox;
-	drect.t+=change_oy;
-	drect.b+=change_oy;
+	drect.left += change_ox;
+	drect.right += change_ox;
+	drect.top += change_oy;
+	drect.bottom += change_oy;
 }
 
 void CCritter::SetCur_offs(short set_ox, short set_oy)
@@ -448,10 +448,10 @@ void CCritter::SetCur_offs(short set_ox, short set_oy)
 	cur_ox=set_ox;
 	cur_oy=set_oy;
 
-	drect.l+=diff_x;
-	drect.r+=diff_x;
-	drect.t+=diff_y;
-	drect.b+=diff_y;
+	drect.left += diff_x;
+	drect.right += diff_x;
+	drect.top += diff_y;
+	drect.bottom += diff_y;
 }
 
 void CCritter::AccamulateCur_offs()
@@ -486,8 +486,8 @@ void CCritter::DrawText(CFOFont* lpfnt)
 	if(!text_str && FLAG(flags,FCRIT_MOB)) return;
 	if(visible)
 	{
-		int x=drect.l+((drect.r-drect.l)>>1)-100+cmn_scr_ox;
-		int y=drect.t-73+cmn_scr_oy;
+		int x=drect.left+((drect.right-drect.left)>>1)-100+cmn_scr_ox;
+		int y=drect.top-73+cmn_scr_oy;
 	
 		RECT r={x,y,x+200,y+70};
 		lpfnt->RenderText(r,text_str?text_str:name,FT_CENTERX|FT_BOTTOM,text_color);
