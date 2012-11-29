@@ -1524,7 +1524,7 @@ void CSpriteManager::DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lps
 	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
 }
 
-void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, IntRect* prect)
+void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, fonline::math::Rect<int>* prect)
 {
 	uint16_t id;
 	if(prep->lp_sprid) id=*prep->lp_sprid;
@@ -1537,10 +1537,10 @@ void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, IntRect* prect)
 	if(prep->lp_ox) x+=*prep->lp_ox;
 	if(prep->lp_oy) y+=*prep->lp_oy;
 
-	prect->l=x;
-	prect->t=y;
-	prect->r=x+lpinf->w;
-	prect->b=y+lpinf->h;
+	prect->left = x;
+	prect->top = y;
+	prect->right = x+lpinf->w;
+	prect->bottom = y+lpinf->h;
 }
 
 void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)

@@ -1,6 +1,8 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#include <Windows.h>
+
 #define PP_STRING(a) #a
 #define PP_CONCAT2(a,b)  a##b
 #define PP_CONCAT3(a, b, c) a##b##c
