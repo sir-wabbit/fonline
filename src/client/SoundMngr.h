@@ -9,6 +9,8 @@
 	purpose:	acm,ogg
 *********************************************************************/
 
+#include <dsound.h>
+
 #include "CFileMngr.h"
 
 #include "decomp_acm\acmstrm.h"
