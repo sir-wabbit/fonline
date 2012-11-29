@@ -1,6 +1,13 @@
 #ifndef _CSPRITEMGR_H_
 #define _CSPRITEMGR_H_
 
+#include "stdafx.h"
+
+#include <d3dx8.h>
+#include <dinput.h>
+#include <dxerr8.h>
+#include <dsound.h>
+
 #include "CFileMngr.h"
 #include "netproto.h"
 

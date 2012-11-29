@@ -1,3 +1,4 @@
+#include <dinput.h>
 
 #include "stdafx.h"
 #include "keyb.h"

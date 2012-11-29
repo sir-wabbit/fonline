@@ -1,7 +1,9 @@
-#include "stdafx.h"
+#include <Windows.h>
 
 #include "common.h"
 #include "FEngine.h"
+
+#include "resource.h"
 
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
@@ -16,12 +18,10 @@
 *********************************************************************/
 
 LRESULT APIENTRY WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
 FOnlineEngine* engine;
 
-
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInst, LPSTR lpCmdLine, int nCmdShow) {
-	WNDCLASS wndClass;//Используется для регистрации класса окна
+	WNDCLASS wndClass;
 	
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 	wndClass.lpfnWndProc = WndProc;

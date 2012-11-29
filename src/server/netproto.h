@@ -5,15 +5,11 @@
 #include <set>
 #include <map>
 
-/********************************************************************
-	created:	21:12:2004   00:14
-
-	author:		Oleg Mareskin
-	
-	edit:		Denis Balikhin, Anton Tsvetinsky
-	
-	purpose:	
-*********************************************************************/
+// Для работы с двоичными константами.
+#define BIN__N(x) (x) | x>>3 | x>>6 | x>>9
+#define BIN__B(x) (x) & 0xf | (x) >> 12 & 0xf0
+#define BIN8(v) (BIN__B(BIN__N(0x##v)))
+#define BIN16(high, low)	((BIN8(high) << 8) | (BIN8(low)))
 
 //!Cvet +++++++++++++++++++++++++++++++
 #define MAX_NPC			5000

@@ -1,13 +1,8 @@
 #ifndef __CRITTER_H__
 #define __CRITTER_H__
-/********************************************************************
-	created:	21:08:2004   20:06
 
-	author:		Oleg Mareskin
-	edit:		Denis Balikhin, Anton Tsvetinsky
-	
-	purpose:	
-*********************************************************************/
+#include "stdafx.h"
+
 #include "CSpriteManager.h"
 #include "CFont.h"
 #include "netproto.h"

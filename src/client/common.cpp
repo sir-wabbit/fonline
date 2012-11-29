@@ -3,6 +3,7 @@
 #include "common.h"
 
 #include <Windows.h>
+#include <d3dx8.h>
 #include <dxerr8.h>
 #include <tchar.h>
 #include <assert.h>

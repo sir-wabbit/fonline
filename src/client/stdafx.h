@@ -12,18 +12,10 @@
 
 
 #include <windows.h>
-#include "resource.h"
 
 #define random(a) (rand()*a/(RAND_MAX+1))
 
-#include <d3dx8.h>
-#include <dinput.h>
-#include <dxerr8.h>
-#include <dsound.h> //!Cvet
-
 #pragma warning (disable : 4786)
-
-#include <crtdbg.h>
 
 #define SAFEREL(x) {if(x) (x)->Release();(x)=NULL;}
 #define SAFEDEL(x) {if(x) delete (x);(x)=NULL;}
@@ -55,14 +47,6 @@ struct IntRect
 //#define MODE_HEIGHT (opt_screen_mode?768:600)
 #define MODE_WIDTH (screen_width[opt_screen_mode]) //!Cvet
 #define MODE_HEIGHT (screen_height[opt_screen_mode]) //!Cvet
-
-//!Cvet ++++
-//для работы с двоичными константами
-#define BIN__N(x) (x) | x>>3 | x>>6 | x>>9
-#define BIN__B(x) (x) & 0xf | (x)>>12 & 0xf0
-#define BIN8(v) (BIN__B(BIN__N(0x##v)))
-
-#define BIN16(bin16,bin8)	((BIN8(bin16)<<8)|(BIN8(bin8)))
 
 //для работы с битами (по игре - флагами)
 #define BITS(x,y) ((x)&(y))
