@@ -28,8 +28,6 @@
 
 #include <windows.h>
 #include "cfile.h"
-#include "../unlzss/unlzss.h"
-
 
 long CPlainFile::seek (long dist, int from) {
 	long absPos;

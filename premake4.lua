@@ -7,6 +7,43 @@ function copy(src, dst, always)
   postbuildcommands { action  .. " " .. script .. " " .. cwd .. " " .. src .. " " .. dst .. " " .. tostring(always) }
 end
 
+function configurationPath(action, arch, conf)
+  return path.join(action, path.join(arch, conf))
+end
+
+_config_path = nil
+_action = nil
+_architecture = nil
+_configuration = nil
+_build = nil
+
+function setConfig(action, arch, conf)
+  _action = action
+  _architecture = arch
+  _configuration = conf
+  
+  _build = {}
+  if action ~= nil then table.insert(_build, action) end
+  if arch ~= nil then table.insert(_build, arch) end
+  if conf ~= nil then table.insert(_build, conf) end
+  
+  configuration(_build)
+  
+  if action ~= nil and arch ~= nil and conf ~= nil then
+    _config_path = configurationPath(action, arch, conf)
+  end
+end
+
+function forEachWinPlatform(func)
+  for _,arch in pairs({"x32", "x64"}) do
+    for _,conf in pairs({"debug", "release"}) do
+      for _, action in pairs({"vs2008"}) do
+        func(action, arch, conf)
+      end
+    end
+  end
+end
+
 function resource(src, dst, always)
   if always == nil then
     always = false
@@ -18,32 +55,22 @@ function resource(src, dst, always)
   copy(src, path.join("bin", dst), always)
 end
 
-function windows_libdir(name)
-  for _,arch in pairs({"x32", "x64"}) do
-    for _,conf in pairs({"debug", "release"}) do
-      for _, plat in pairs({"vs2008"}) do
-        local confpath = path.join(plat, path.join(arch, conf))
-        
-        configuration { "windows", arch, conf, plat }
-          libdirs { path.join("lib", path.join(name, confpath)) }
-      end
-    end
-  end
+function windowsLibDir(name)
+  forEachWinPlatform(function (action, arch, conf)
+    setConfig(action, arch, conf)
+    
+    libdirs { path.join("lib", path.join(name, _config_path)) }
+  end)
   configuration "*"
 end
 
-function windows_binary(basePath, dllName)
-  for _,arch in pairs({"x32", "x64"}) do
-    for _,conf in pairs({"debug", "release"}) do
-      for _, plat in pairs({"vs2008"}) do
-        local confpath = path.join(plat, path.join(arch, conf))
-        local libBase = path.join("lib", path.join(basePath, confpath))
-        
-        configuration { "windows", arch, conf, plat }
-          resource(path.join(libBase, dllName), dllName, true)
-      end
-    end
-  end
+function windowsBinary(basePath, dllName)
+  forEachWinPlatform(function (action, arch, conf)
+    setConfig(action, arch, conf)
+    
+    local libBase = path.join("lib", path.join(basePath, _config_path))
+    copy(path.join(libBase, dllName), path.join("bin", path.join(_config_path, dllName)), true)
+  end)
   configuration "*"
 end
 
@@ -63,15 +90,10 @@ solution "fonline-open-source"
   platforms { "x32" }
   location "build"
   
-  targetdir "bin"
-  --[[for _,arch in pairs({"x32", "x64"}) do
-    for _,conf in pairs({"debug", "release"}) do
-      for _,plat in pairs({"vs2008"}) do
-        configuration { arch, conf, plat }
-          targetdir(path.join("bin", path.join(plat, path.join(arch, conf))))
-      end
-    end
-  end]]--
+  forEachWinPlatform(function (action, arch, conf)
+    setConfig(action, arch, conf)
+    targetdir(path.join("bin", _config_path))
+  end)
 
   configuration "debug"
     defines { "DEBUG" }
@@ -81,15 +103,13 @@ solution "fonline-open-source"
     defines { "NDEBUG" }
     flags { "Optimize" }
   
-  configuration { "windows" }
+  configuration "windows"
     includedirs "inc/win32"
     defines { "WIN32", "_WIN32" }
     defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
-    
-  configuration "windows"
     defines "HAVE_VSNPRINTF"
   
-  project "fonline-client"
+  project "FOnlineClient"
     kind "WindowedApp"
     language "C++"
     
@@ -97,9 +117,11 @@ solution "fonline-open-source"
         
     includedirs { "inc", "src" }
     
-    links { "fo-base",
+    links { "FOnlineBase",
             "IniFile",
-            "SimpleLeakDetector" }
+            "SimpleLeakDetector",
+            "LZSS",
+            "ACMDecompressor" }
     
     files { 
       "src/client/**.hpp", 
@@ -120,24 +142,24 @@ solution "fonline-open-source"
       linkoptions { "/nodefaultlib:libci.lib" }
       
     -- Ogg + Vorbis
-    windows_libdir("libogg")
-    windows_libdir("libvorbis")
-    windows_binary("libogg", "libogg.dll")
-    windows_binary("libvorbis", "libvorbis.dll")
-    windows_binary("libvorbis", "libvorbisfile.dll")
+    windowsLibDir("libogg")
+    windowsLibDir("libvorbis")
+    windowsBinary("libogg", "libogg.dll")
+    windowsBinary("libvorbis", "libvorbis.dll")
+    windowsBinary("libvorbis", "libvorbisfile.dll")
     links { "libogg", "libvorbis", "libvorbisfile" }
     
     -- ZLib
     includedirs { "inc/zlib" }
-    windows_libdir("zlib")
-    windows_binary("zlib", "zlib.dll")
+    windowsLibDir("zlib")
+    windowsBinary("zlib", "zlib.dll")
     links "zlib"
     
     -- Winsock
     configuration "windows"
       links { "ws2_32" }
   
-  project "fonline-server"
+  project "FOnlineServer"
     kind "WindowedApp"
     language "C++"
     
@@ -145,8 +167,9 @@ solution "fonline-open-source"
     
     includedirs { "inc", "src" }
     
-    links { "fo-base",
-            "IniFile" }
+    links { "FOnlineBase",
+            "IniFile",
+            "LZSS" }
     
     files { 
       "src/server/**.hpp", 
@@ -158,8 +181,8 @@ solution "fonline-open-source"
     resincludedirs { "src/server" }
     
     -- MySQL
-    windows_libdir("libmysql")
-    windows_binary("libmysql", "libmysql.dll")
+    windowsLibDir("libmysql")
+    windowsBinary("libmysql", "libmysql.dll")
     links { "libmysql" }
       
     -- Winsock
@@ -168,11 +191,11 @@ solution "fonline-open-source"
       
     -- ZLib
     includedirs { "inc/zlib" }
-    windows_libdir("zlib")
-    windows_binary("zlib", "zlib.dll")
+    windowsLibDir("zlib")
+    windowsBinary("zlib", "zlib.dll")
     links "zlib"
       
-  project "fo-base"
+  project "FOnlineBase"
     kind "SharedLib"
     language "C++"
     
@@ -205,3 +228,23 @@ solution "fonline-open-source"
     includedirs { "src" }
     files { "src/SimpleLeakDetector/*.cpp",
             "src/SimpleLeakDetector/*.hpp" }
+  
+  project "LZSS"
+    kind "SharedLib"
+    language "C++"
+    
+    defines "LZSS_DLL"
+    
+    includedirs { "src" }
+    files { "src/LZSS/*.cpp",
+            "src/LZSS/*.hpp" }
+            
+  project "ACMDecompressor"
+    kind "SharedLib"
+    language "C++"
+    
+    defines "ACMDECOMPRESSOR_DLL"
+    
+    includedirs { "src" }
+    files { "src/ACMDecompressor/*.cpp",
+            "src/ACMDecompressor/*.hpp" }

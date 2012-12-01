@@ -1,14 +1,10 @@
-#include "../stdafx.h"
-
-#include "../common.h"
-
 #include <memory.h>
 #include <stdio.h>
 
 // XXX[27.7.2012 alex]: this code reeks of x64-incompatibility
 
 
-#include "acmstrm.h"
+#include "ACMDecompressor.hpp"
 // SomeBuff [PackAttr2, SomeSize]
 
 char Table1 [27] =

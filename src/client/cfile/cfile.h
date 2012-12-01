@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #include "../zlib/zlib.h"
-#include "../unlzss/unlzss.h"
+#include <LZSS/LZSS.hpp>
 
 // Since no audio plugin for Fallout performs backward seek and large
 // forward moves, we do not need block caching when reading LZ_Block Files.

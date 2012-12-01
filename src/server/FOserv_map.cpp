@@ -562,10 +562,9 @@ LONGLONG CServer::FindTransit(uint16_t num_map, HexTYPE num_x, HexTYPE num_y)
 
 void CServer::EraseCrFromMap(CCritter* acl, int num_map, int hex_x, int hex_y)
 {
-	cl_map::iterator it_cr=NULL;
+	cl_map::iterator it_cr;
 
-	if(!num_map)
-	{
+	if(!num_map) {
 		it_cr=map_cr[num_map].find(acl->info.id);
 		if(it_cr!=map_cr[num_map].end()) map_cr[num_map].erase(it_cr);
 		return;
@@ -1159,7 +1158,7 @@ void CServer::GM_GroupStartMove(CCritter* rule_acl)
 	if(!rule_acl->group.prep_crit.empty())
 	{
 		CCritter* cr=NULL;
-		cl_map::iterator it_cr=NULL;
+		cl_map::iterator it_cr;
 		for(crid_set::iterator it_id=rule_acl->group.prep_crit.begin();it_id!=rule_acl->group.prep_crit.end();++it_id)
 		{
 			it_cr=rule_acl->vis_cl.find((*it_id));
