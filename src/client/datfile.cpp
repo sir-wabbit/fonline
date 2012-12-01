@@ -134,7 +134,11 @@ DatArchive::~DatArchive()
    if(buff != NULL)
       delete[] buff;
 
-	SAFEDEL(reader);
+  if (reader != NULL) {
+    delete reader;
+    reader = NULL;
+  }
+  
 	fmap.clear();
 }
 //------------------------------------------------------------------------------

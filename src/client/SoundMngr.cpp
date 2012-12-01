@@ -184,7 +184,7 @@ int SoundManager::LoadSound(char* fname, int TypePath)
 
 int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
 {
-	uint32_t dw_buf=fm.GetRDWord();
+	uint32_t dw_buf = fm.GetRDWord();
 
 	if(dw_buf!=MAKEFOURCC('R','I','F','F')) { WriteLog("|RIFF| not found |%d|\n"); return 0; }
 

@@ -9,7 +9,7 @@
 	
 	purpose:	
 *********************************************************************/
-
+/*
 
 #include <windows.h>
 
@@ -62,5 +62,6 @@ struct IntRect
 #define BREAK_BEGIN do{
 #define BREAK_END }while(0)
 //!Cvet ----
+*/
 
 #endif //__STDAFX_H__

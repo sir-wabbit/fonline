@@ -3,6 +3,10 @@
 #include "CHexField.h"
 #include "common.h"
 
+#define MODE_WIDTH (screen_width[opt_screen_mode]) //!Cvet
+#define MODE_HEIGHT (screen_height[opt_screen_mode]) //!Cvet
+#define random(a) (rand()*a/(RAND_MAX+1))
+
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 /********************************************************************
 	created:	2005   22:04
@@ -13,6 +17,18 @@
 	
 	purpose:	
 *********************************************************************/
+
+//для работы с битами (по игре - флагами)
+#define BITS(x,y) ((x)&(y))
+#define FLAG BITS
+
+#define SET_BITS(x,y) (x)=(x)|(y)
+#define SETFLAG SET_BITS
+
+//#define UNSET_BITS(x,y) {if((x)&(y)) (x)=(x)^(y);}
+#define UNSET_BITS(x,y) (x)=((x)|(y))^(y)
+#define UNSETFLAG UNSET_BITS
+
 // стандартные обьекты карты
 #define DRAW_ORDER_HEX  0
 //#define DRAW_ORDER_MISC 1 //!Cvet
@@ -135,16 +151,28 @@ void CHexField::Clear()
 //	misc_fnames.clear();
 
 
-	for(dtree_map::iterator jt=dtree.begin();jt!=dtree.end();jt++)
-		SAFEDEL((*jt).second);
+	for(dtree_map::iterator jt=dtree.begin();jt!=dtree.end();jt++) {
+    if ((*jt).second != NULL) {
+      delete (*jt).second;
+      (*jt).second = NULL;
+    }
+  }
 	dtree.clear();
 
-	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++) //!Cvet
-		SAFEDEL((*jt).second);
+	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++) {
+    if ((*jt).second != NULL) {
+      delete (*jt).second;
+      (*jt).second = NULL;
+    }
+  }
 	dtree_roof_rain.clear();
 
-	for(Rain::iterator it_rain=rain.begin();it_rain!=rain.end();it_rain++) //!Cvet
-		SAFEDEL((*it_rain));
+	for(Rain::iterator it_rain=rain.begin();it_rain!=rain.end();it_rain++) {
+    if ((*it_rain) != NULL) {
+      delete (*it_rain);
+      (*it_rain) = NULL;
+    }
+	}
 	rain.clear();
 
 	all_obj.clear(); //!Cvet
@@ -170,9 +198,20 @@ void CHexField::Clear()
 		delete (*oi);
 	prep_vec_roof.clear();
 
-	SAFEREL(lpVBpr_tile);
-	SAFEREL(lpVBpr_roof);
-	SAFEDELA(view2);
+  if (lpVBpr_tile != NULL) {
+    lpVBpr_tile->Release();
+    lpVBpr_tile = NULL;
+  }
+  
+  if (lpVBpr_roof != NULL) {
+    lpVBpr_roof->Release();
+    lpVBpr_roof = NULL;
+  }
+
+  if (view2 != NULL) {
+    delete [] view2;
+    view2 = NULL;
+  }
 
 	MapLoaded=FALSE; //!Cvet
 
@@ -488,7 +527,10 @@ int CHexField::LoadObj()
 	v2c_x=VIEW_CX+wright; //центры
 	v2c_y=VIEW_CY+hbegin;
 
-	SAFEDELA(view2);
+  if (view2 != NULL) {
+    delete [] view2;
+    view2 = NULL;
+  }
 
 	view2=new ViewField[v2h*v2w]; //создаем новую видимую область
 
@@ -707,7 +749,11 @@ int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, uint16_t tile_fl
 		if(!res)
 		{
 			WriteLog("Ошибка - не удалось загрузить анимацию при добавлении итема\n");
-			SAFEDEL(newitm);
+			
+      if (newitm != NULL) {
+        delete newitm;
+        newitm = NULL;
+      }
 			return 0;
 		}
 
@@ -1003,16 +1049,28 @@ void CHexField::SetCenter2(int x, int y)
 	RebuildTiles();
 
 	//очистим дерево, в котором будут объекты.
-	for(dtree_map::iterator jt=dtree.begin();jt!=dtree.end();jt++)
-		SAFEDEL((*jt).second);
+	for(dtree_map::iterator jt=dtree.begin();jt!=dtree.end();jt++) {
+    if ((*jt).second != NULL) {
+      delete (*jt).second;
+      (*jt).second = NULL;
+    }
+	}
 	dtree.clear();
 
-	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++)
-		SAFEDEL((*jt).second);
+	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++) {
+    if ((*jt).second != NULL) {
+      delete (*jt).second;
+      (*jt).second = NULL;
+    }
+  }
 	dtree_roof_rain.clear();
 
-	for(Rain::iterator it_rain=rain.begin();it_rain!=rain.end();it_rain++)
-		SAFEDEL((*it_rain));
+	for(Rain::iterator it_rain=rain.begin();it_rain!=rain.end();it_rain++) {
+    if ((*it_rain) != NULL) {
+      delete (*it_rain);
+      (*it_rain) = NULL;
+    }
+  }
 	rain.clear();
 
 	y2=0;
@@ -1455,10 +1513,15 @@ int CHexField::Scroll()
 	return 1;
 }
 
-void CHexField::PreRestore()
-{
-	SAFEREL(lpVBpr_tile);
-	SAFEREL(lpVBpr_roof); //!Cvet
+void CHexField::PreRestore() {
+  if (lpVBpr_tile != NULL) {
+    lpVBpr_tile->Release();
+    lpVBpr_tile = NULL;
+  }
+  if (lpVBpr_roof != NULL) {
+    lpVBpr_roof->Release();
+    lpVBpr_roof = NULL;
+  }
 }
 
 void CHexField::PostRestore()
@@ -1508,7 +1571,10 @@ void CHexField::RemoveCrit(CCritter* pcrit)
 		{
 
       WriteLog("R1=");
-			SAFEDEL(it->second);
+      if (it->second != NULL) {
+        delete it->second;
+        it->second = NULL;
+      }
       WriteLog("R2...");
 			dtree.erase(it);
 		}
@@ -1749,9 +1815,18 @@ int CHexField::UnLoadMap()
 {
 	if(MapLoaded==FALSE) return 1;
 
-	SAFEREL(lpVBpr_tile);
-	SAFEREL(lpVBpr_roof);
-	SAFEDELA(view2);
+  if (lpVBpr_tile != NULL) {
+    lpVBpr_tile->Release();
+    lpVBpr_tile = NULL;
+  }
+  if (lpVBpr_roof != NULL) {
+    lpVBpr_roof->Release();
+    lpVBpr_roof = NULL;
+  }
+  if (view2 != NULL) {
+    delete [] view2;
+    view2 = NULL;
+  }
 
 	lpVBpr_tile=NULL;
 	lpVBpr_roof=NULL;
@@ -1777,16 +1852,28 @@ int CHexField::UnLoadMap()
 	loaded_wall.clear();
 	loaded_tile.clear();
 */
-	for(dtree_map::iterator jt=dtree.begin();jt!=dtree.end();jt++)
-		SAFEDEL((*jt).second);
+	for(dtree_map::iterator jt=dtree.begin();jt!=dtree.end();jt++) {
+    if (jt->second != NULL) {
+      delete jt->second;
+      jt->second = NULL;
+    }
+  }
 	dtree.clear();
 
-	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++)
-		SAFEDEL((*jt).second);
+	for(dtree_map::iterator jt=dtree_roof_rain.begin();jt!=dtree_roof_rain.end();jt++) {
+    if (jt->second != NULL) {
+      delete jt->second;
+      jt->second = NULL;
+    }
+  }
 	dtree_roof_rain.clear();
 
-	for(Rain::iterator it_rain=rain.begin();it_rain!=rain.end();it_rain++)
-		SAFEDEL((*it_rain));
+	for(Rain::iterator it_rain=rain.begin();it_rain!=rain.end();it_rain++) {
+    if ((*it_rain) != NULL) {
+      delete (*it_rain);
+      (*it_rain) = NULL;
+    }
+	}
 	rain.clear();
 
 	for(int x=0;x<MAXTILEX;x++)

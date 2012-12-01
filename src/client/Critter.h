@@ -17,9 +17,9 @@ const uint8_t ANIM2_SIT	=11;
 class CCritter
 {
 public:
-	void SetDir(uint8_t dir);
-	void RotCW();
-	void RotCCW();
+	void SetDirection(uint8_t dir);
+	void RotateClockwise();
+	void RotateCounterClockwise();
 
 	void Animate(uint8_t action, uint8_t num_frame); //!Cvet анимация стойки с объектом weapon
 	void SetAnimation(); //!Cvet
@@ -33,17 +33,18 @@ public:
 	void DrawText(CFOFont* lpfnt);
 	void SetVisible(bool av) {visible=av;};
     
-    // Смещения координаты фрейма в пикселях координатах
+  // Смещения координаты фрейма в пикселях координатах
 	uint16_t cur_id,miniplayer;
 	short cur_ox;
 	short cur_oy;
-    // Координаты Дюда в хексах Den Baster
-    HexTYPE hex_x;
+	
+  // Координаты Дюда в хексах Den Baster
+  HexTYPE hex_x;
 	HexTYPE hex_y;
 	uint8_t cur_dir; // направление
 
 	CritterID id;
-// Перенес из привата
+  // Перенес из привата
 	uint8_t weapon; // Тип оружия в руках для анимаций Den Baster !Cvet (предпоследняя буква)
 
 	char name[MAX_NAME+1];

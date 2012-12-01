@@ -13,6 +13,23 @@
 #include "common.h"
 #include "keyb.h"
 
+#define MODE_WIDTH (screen_width[opt_screen_mode]) //!Cvet
+#define MODE_HEIGHT (screen_height[opt_screen_mode]) //!Cvet
+#define BREAK_BEGIN do{
+#define BREAK_END }while(0)
+#define random(a) (rand()*a/(RAND_MAX+1))
+
+//для работы с битами (по игре - флагами)
+#define BITS(x,y) ((x)&(y))
+#define FLAG BITS
+
+#define SET_BITS(x,y) (x)=(x)|(y)
+#define SETFLAG SET_BITS
+
+//#define UNSET_BITS(x,y) {if((x)&(y)) (x)=(x)^(y);}
+#define UNSET_BITS(x,y) (x)=((x)|(y))^(y)
+#define UNSETFLAG UNSET_BITS
+
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 //==============================================================================================================================
 //******************************************************************************************************************************
@@ -2598,8 +2615,12 @@ void FOnlineEngine::LmapPrepareMap()
 	ex+=maxpixx;
 	ey+=maxpixy;
 
-	for(Pix_vec::iterator it_p=lmap_prep_pix.begin();it_p!=lmap_prep_pix.end();it_p++)
-		SAFEDEL((*it_p));
+	for(Pix_vec::iterator it_p=lmap_prep_pix.begin();it_p!=lmap_prep_pix.end();it_p++) {
+		if ((*it_p) != NULL) {
+		  delete *it_p;
+		  *it_p = NULL;
+		}
+  }
 	lmap_prep_pix.clear();
 
 	uint32_t cur_color=0;

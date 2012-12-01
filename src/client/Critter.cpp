@@ -3,6 +3,19 @@
 #include "Critter.h"
 #include "common.h"
 
+#define random(a) (rand()*a/(RAND_MAX+1))
+
+//для работы с битами (по игре - флагами)
+#define BITS(x,y) ((x)&(y))
+#define FLAG BITS
+
+#define SET_BITS(x,y) (x)=(x)|(y)
+#define SETFLAG SET_BITS
+
+//#define UNSET_BITS(x,y) {if((x)&(y)) (x)=(x)^(y);}
+#define UNSET_BITS(x,y) (x)=((x)|(y))^(y)
+#define UNSETFLAG UNSET_BITS
+
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 /********************************************************************
 	created:	2005   22:04
@@ -284,7 +297,7 @@ void CCritter::SetAnimation()
 //	WriteLog("SetAnimation - cond=%d,cond_ext=%d\n",cond,cond_ext);
 }
 
-void CCritter::SetDir(uint8_t dir)
+void CCritter::SetDirection(uint8_t dir)
 {
   __invariant();
 	if(dir>5 && dir<0) dir=0;
@@ -293,7 +306,7 @@ void CCritter::SetDir(uint8_t dir)
 	SetAnimation();
 }
 
-void CCritter::RotCW()
+void CCritter::RotateClockwise()
 {
   __invariant();
 	cur_dir++;
@@ -302,7 +315,7 @@ void CCritter::RotCW()
 	SetAnimation();
 }
 
-void CCritter::RotCCW()
+void CCritter::RotateCounterClockwise()
 {
   __invariant();
 	if(!cur_dir) cur_dir=5;
@@ -470,7 +483,10 @@ void CCritter::AccamulateCur_offs()
 void CCritter::SetText(char* str, uint32_t color)
 {
   __invariant();
-	SAFEDELA(text_str);
+  if (text_str != NULL) {
+    delete [] text_str;
+    text_str = NULL;
+  }
 	text_str=new char[strlen(str)+1];
 	strcpy(text_str,str);
 	SetTime=GetTickCount();
@@ -495,7 +511,10 @@ void CCritter::DrawText(CFOFont* lpfnt)
 
 	if(GetTickCount()-SetTime>=text_delay)
 	{
-		SAFEDELA(text_str);
+    if (text_str != NULL) {
+      delete [] text_str;
+      text_str = NULL;
+    }
 		text_color=COLOR_CRITNAME;
 	}
 }
