@@ -394,15 +394,14 @@ void CServer::MOBs_RefreshGroup(uint16_t num_group)
 	mobs_group* cur_group=&mobs_gr[num_group];
 
 	CCritter* cur_mob=NULL;
-	prep_mob_map::iterator it_pm=NULL;
 	for(cl_map::iterator it_m=cur_group->mobs.begin();it_m!=cur_group->mobs.end();++it_m)
 	{
 		cur_mob=(*it_m).second;
 		if(cur_mob->info.map) LogExecStr("Ошибка - Не удаленный моб после очистки карты от мобов\n");
 
-		it_pm=prep_mob.find(cur_mob->i_mob->name);
+		prep_mob_map::iterator it_pm = prep_mob.find(cur_mob->i_mob->name);
 		if(it_pm==prep_mob.end()) continue;
 
-		MOB_Update((*it_pm).second,cur_mob);
+		MOB_Update(it_pm->second,cur_mob);
 	}
 }

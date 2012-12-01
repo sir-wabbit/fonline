@@ -1705,7 +1705,7 @@ int CSpriteManager::EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_
 	if(!CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 	TICK loadA=GetTickCount();
 
-	sprinfo_map::iterator it=NULL;
+	sprinfo_map::iterator it;
 	int num_frm=CrAnim[anim_type][anim_ind1][anim_ind2]->cnt_frames;
 	for(int or=0;or<6;or++)
 		for(int frm=0;frm<num_frm;frm++)

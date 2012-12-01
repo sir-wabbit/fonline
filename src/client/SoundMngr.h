@@ -13,10 +13,10 @@
 
 #include "CFileMngr.h"
 
-#include "decomp_acm\acmstrm.h"
-
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
+
+#include <ACMDecompressor/ACMDecompressor.hpp>
 
 struct Sound
 {
