@@ -239,10 +239,14 @@ int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 	int data_size;
 //	int step_data_size;
 
-	CACMUnpacker* acm=new CACMUnpacker(fm.GetBuf(),fm.GetFsize(),channel,freq,data_size);
+  ACMDecompressor::Context acm;
+  bool acmInitialized = ACMDecompressor::Init(&acm, fm.GetBuf(),fm.GetFsize(),channel,freq,data_size);
 	data_size*=2;
 
-	if(!acm) { WriteLog("Ошибка - Загрузка звука - Неинициализировался распаковщик ACM\n"); return 0; }
+	if (!acmInitialized) { 
+	  WriteLog("Ошибка - Загрузка звука - Неинициализировался распаковщик ACM\n"); 
+	  return 0; 
+	}
 
 	freq/=2; //???
 
@@ -268,9 +272,7 @@ int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 		data_size-=step_data_size;
 	}
 */
-	int dec_data=acm->readAndDecompress((unsigned short*)*sample_data,data_size);
-
-	delete (acm);
+  int dec_data = ACMDecompressor::ReadAndDecompress(&acm, (unsigned short*)*sample_data,data_size);
 
 	if (dec_data != data_size) { 
 	  WriteLog("Ошибка - Загрузка звука - Ошибка в декодировании ACM\n"); 

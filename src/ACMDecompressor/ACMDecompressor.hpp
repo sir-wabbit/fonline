@@ -16,30 +16,13 @@
 
 //typedef int (_stdcall* FileReadFunction) (int hFile, unsigned char* buffer, int count);
 
-class CACMUnpacker {
-public:
-  // CACMUnpacker (FileReadFunction readFunc, int fileHandle, int &channels, int &frequency, int &samples);
-	ACMDECOMPRESSOR_API CACMUnpacker (uint8_t* fileHandle, uint32_t fileLenght, int &channels, int &frequency, int &samples); //!Cvet
-		// samples = count of sound samples (one sample is 16bits)
-	ACMDECOMPRESSOR_API ~CACMUnpacker() {
-//!Cvet comment
-//		if (fileBuffPtr) delete (fileBuffPtr);
-		if (decompBuff) free (decompBuff);
-		if (someBuff) delete (someBuff);
-	}
+namespace ACMDecompressor {
 
-	ACMDECOMPRESSOR_API int readAndDecompress (unsigned short* buff, int count);
-		// read sound samples from ACM stream
-		// buff  - buffer to place decompressed samples
-		// count - size of buffer (in bytes)
-		// return: count of actually decompressed bytes
-
-private:
+struct Context {
   // File reading
   //	FileReadFunction read_file; // file reader function
 
   //	int hFile; // file handle, can be anything, e.g. ptr to reader-object
-  int str_read (uint8_t** d_stream, int d_size, uint8_t* f_stream);
   uint8_t* hFile;
   uint32_t fileLen;
   int fileCur;
@@ -61,40 +44,52 @@ private:
   int valsToGo; // samples left to decompress
   int *values; // pointer to decompressed samples
   int valCnt; // count of decompressed samples
-
-  // Reading routines
-  unsigned char readNextPortion(); // read next block of data
-  void prepareBits (int bits); // request bits
-  int getBits (int bits); // request and return next bits
-
-public:
-  // These functions are used to fill the buffer with the amplitude values
-  int Return0 (int pass, int ind);
-  int ZeroFill (int pass, int ind);
-  int LinearFill (int pass, int ind);
-
-  int k1_3bits (int pass, int ind);
-  int k1_2bits (int pass, int ind);
-  int t1_5bits (int pass, int ind);
-
-  int k2_4bits (int pass, int ind);
-  int k2_3bits (int pass, int ind);
-  int t2_7bits (int pass, int ind);
-
-  int k3_5bits (int pass, int ind);
-  int k3_4bits (int pass, int ind);
-
-  int k4_5bits (int pass, int ind);
-  int k4_4bits (int pass, int ind);
-
-  int t3_7bits (int pass, int ind);
-  
-  // Unpacking functions
-  int createAmplitudeDictionary();
-  void unpackValues(); // unpack current block
-  int makeNewValues(); // prepare new block, then unpack it
 };
 
-typedef int (CACMUnpacker::* FillerProc) (int pass, int ind);
+// Init the acm decompressor stream.
+// @param  ctx     ACM decompressor context.
+// @param  fileHandle
+// @param  fileLength
+// @param  channels
+// @param  frequency
+// @param  samples
+ACMDECOMPRESSOR_API bool Init(Context* ctx, uint8_t* fileHandle, uint32_t fileLength, int &channels, int &frequency, int &samples);
+
+// Close the acm decompressor stream.
+// @param  ctx     ACM decompressor context.
+ACMDECOMPRESSOR_API void Close(Context* ctx);
+
+// Read sound samples from the ACM stream.
+// @param  ctx     ACM decompressor context.
+// @param  buffer  Buffer to place decompressed samples.
+// @param  count   Buffer size in bytes.
+// @return         The number of actually decompressed bytes.
+ACMDECOMPRESSOR_API int ReadAndDecompress(Context* ctx, unsigned short* buffer, int count);
+
+} // namespace ACMDecompressor
+
+class CACMUnpacker {
+public:
+  // CACMUnpacker (FileReadFunction readFunc, int fileHandle, int &channels, int &frequency, int &samples);
+	ACMDECOMPRESSOR_API CACMUnpacker (uint8_t* fileHandle, uint32_t fileLenght, int &channels, int &frequency, int &samples) {
+	  memset(&ctx, 0, sizeof(ctx));
+    ACMDecompressor::Init(&ctx, fileHandle, fileLenght, channels, frequency, samples);
+	}
+		// samples = count of sound samples (one sample is 16bits)
+	ACMDECOMPRESSOR_API ~CACMUnpacker() {
+    ACMDecompressor::Close(&ctx);
+	}
+
+	ACMDECOMPRESSOR_API int readAndDecompress (unsigned short* buff, int count) {
+    return ACMDecompressor::ReadAndDecompress(&ctx, buff, count);
+	}
+		// read sound samples from ACM stream
+		// buff  - buffer to place decompressed samples
+		// count - size of buffer (in bytes)
+		// return: count of actually decompressed bytes
+
+private:
+  ACMDecompressor::Context ctx;
+};
 
 #endif
