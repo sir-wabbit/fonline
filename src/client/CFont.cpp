@@ -4,6 +4,17 @@
 
 #include "common.h"
 
+//для работы с битами (по игре - флагами)
+#define BITS(x,y) ((x)&(y))
+#define FLAG BITS
+
+#define SET_BITS(x,y) (x)=(x)|(y)
+#define SETFLAG SET_BITS
+
+//#define UNSET_BITS(x,y) {if((x)&(y)) (x)=(x)^(y);}
+#define UNSET_BITS(x,y) (x)=((x)|(y))^(y)
+#define UNSETFLAG UNSET_BITS
+
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 char* list_fnt[4]=
@@ -26,7 +37,12 @@ CFOFont::CFOFont(): crtd(0),lpVB(NULL),lpIB(NULL),lpDevice(NULL),lpWaitBuf(NULL)
 
 CFOFont::~CFOFont()
 {
-	for(int cur_f=0;cur_f<MAX_FONT;++cur_f) SAFEDELA(fonts[cur_f].maxx);
+	for(int cur_f=0;cur_f<MAX_FONT;++cur_f) {
+    if (fonts[cur_f].maxx != NULL) {
+      delete [] fonts[cur_f].maxx;
+      fonts[cur_f].maxx = NULL;
+    }
+	}
 }
 
 
@@ -112,9 +128,17 @@ void CFOFont::Clear()
 {
 	WriteLog("CFont Clear...\n");
 
-	for(int cur_f=0;cur_f<MAX_FONT;++cur_f) SAFEREL(fonts[cur_f].fontSurface);
+	for(int cur_f=0;cur_f<MAX_FONT;++cur_f) {
+    if (fonts[cur_f].fontSurface != NULL) {
+      fonts[cur_f].fontSurface->Release();
+      fonts[cur_f].fontSurface = NULL;
+    }
+	}
 
-	SAFEDELA(lpWaitBuf);
+  if (lpWaitBuf != NULL) {
+    delete [] lpWaitBuf;
+    lpWaitBuf = NULL;
+  }
 
 	crtd=0;
 	WriteLog("CFont Clear complete\n");
@@ -256,7 +280,10 @@ void CFOFont::RenderText(RECT r,char* astr,uint32_t flags, uint32_t col, int num
 	if(strcnt>font->max_cnt)
 	{
 		while(strcnt>font->max_cnt) font->max_cnt*=2;
-		SAFEDELA(font->maxx);
+    if (font->maxx != NULL) {
+      delete [] font->maxx;
+      font->maxx = NULL;
+    }
 		font->maxx=new int[font->max_cnt];
 	}
 
@@ -374,7 +401,11 @@ void CFOFont::RenderText(RECT r,char* astr,uint32_t flags, uint32_t col, int num
 	}
 
 	Flush(&font->cur_pos);
-	SAFEDELA(alloc_str);
+	
+  if (alloc_str != NULL) {
+    delete [] alloc_str;
+    alloc_str = NULL;
+  }
 }
 
 int CFOFont::Flush(int* cur_pos) //!Cvet int* cur_pos

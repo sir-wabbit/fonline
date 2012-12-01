@@ -3,6 +3,9 @@
 #include "CSpriteManager.h"
 #include "common.h"
 
+#define MODE_WIDTH (screen_width[opt_screen_mode]) //!Cvet
+#define MODE_HEIGHT (screen_height[opt_screen_mode]) //!Cvet
+
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 /********************************************************************
 	created:	2005   22:04
@@ -109,9 +112,18 @@ void CSpriteManager::Clear()
 		delete (*iv);
 	call_vec.clear();
 
-	SAFEREL(lpVB);
-	SAFEREL(lpIB);
-	SAFEDELA(lpWaitBuf);
+	if (lpVB != NULL) {
+	  lpVB->Release();
+	  lpVB = NULL;
+	}
+	if (lpIB != NULL) {
+	  lpIB->Release();
+	  lpIB = NULL;
+	}
+	if (lpWaitBuf != NULL) {
+	  delete [] lpWaitBuf;
+	  lpWaitBuf = NULL;
+	}
 
 	crtd=0;
 	WriteLog("CSprMan Clear complete\n");
@@ -417,7 +429,10 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	}
 	else
 	{
-		SAFEDEL(lpinf);
+    if (lpinf != NULL) {
+      delete lpinf;
+      lpinf = NULL;
+    }
 		fm.UnloadFile();
 		WriteLog("Неизвестный формат файла:|%s|\n",ext);
 		return 0;
@@ -1364,7 +1379,10 @@ int CSpriteManager::DrawSpriteSize(uint16_t id, int x, int y,double size, uint32
 
 int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lplpBuf,onesurf_vec* lpsvec, uint32_t color, uint8_t alpha)
 {
-	SAFEREL((*lplpBuf));
+	if ((*lplpBuf) != NULL) {
+	  (*lplpBuf)->Release();
+	  *lplpBuf = NULL;
+	}
 	for(onesurf_vec::iterator iv=lpsvec->begin();iv!=lpsvec->end();iv++)
 		delete (*iv);
 	lpsvec->clear();
@@ -1388,7 +1406,10 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 
 	if(ibdesc.Size<need_size)
 	{
-		SAFEREL(lpIB);
+		if (lpIB != NULL) {
+		  lpIB->Release();
+		  lpIB = NULL;
+		}
 		//и индексов
 		hr=lpDevice->CreateIndexBuffer(need_size,D3DUSAGE_WRITEONLY,
 			D3DFMT_INDEX16,D3DPOOL_DEFAULT,&lpIB);
@@ -1501,7 +1522,10 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 		memcpy(pBuffer,localBuf,sizeof(MYVERTEX)*mulpos);
 	(*lplpBuf)->Unlock();
 
-	SAFEDELA(localBuf);
+  if (localBuf != NULL) {
+    delete [] localBuf;
+    localBuf = NULL;
+  }
 
 	return 1;
 }
@@ -1603,8 +1627,14 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 
 void CSpriteManager::PreRestore()
 {
-	SAFEREL(lpVB);
-	SAFEREL(lpIB);
+	if (lpVB != NULL) {
+	  lpVB->Release();
+	  lpVB = NULL;
+	}
+	if (lpIB != NULL) {
+	  lpIB->Release();
+	  lpIB = NULL;
+	}
 }
 
 void CSpriteManager::PostRestore()
@@ -1691,7 +1721,13 @@ int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t
 		WriteLog("2 попытка |%s|...",path);
 		if(!LoadAnimationD(path,PT_ART_CRITTERS,CrAnim[anim_type][anim_ind1][anim_ind2]))
 		{
-			SAFEDEL(CrAnim[anim_type][anim_ind1][anim_ind2]);
+		  CritFrames* frames = CrAnim[anim_type][anim_ind1][anim_ind2];
+      
+      if (frames != NULL) {
+        delete frames;
+        frames = NULL;
+      }
+			
 			WriteLog("Анимация не найдена\n");
 			return 0;
 		}
@@ -1716,7 +1752,14 @@ int CSpriteManager::EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_
 			delete (*it).second;
 			spriteData.erase(it);
 		}
-	SAFEDEL(CrAnim[anim_type][anim_ind1][anim_ind2]);
+  
+  CritFrames* frames = CrAnim[anim_type][anim_ind1][anim_ind2];
+
+  if (frames != NULL) {
+    delete frames;
+    frames = NULL;
+  }
+  
 	WriteLog("Время удаления анимации =%d\n",GetTickCount()-loadA);
 	return 1;
 }
@@ -1762,7 +1805,10 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(MYVERTEX));
 	p_VB->Unlock();
 
-	SAFEDELA(g_Vertices);
+  if (g_Vertices != NULL) {
+    delete [] g_Vertices;
+    g_Vertices = NULL;
+  }
 
 	lpDevice->SetStreamSource(0,p_VB,sizeof(MYVERTEX));
 
@@ -1776,7 +1822,10 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 //	lpDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTEXF_LINEAR);
 	lpDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTEXF_LINEAR);
 
-	SAFEREL(p_VB);
+  if (p_VB != NULL) {
+    p_VB->Release();
+    p_VB = NULL;
+  }
 
 	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
 }
@@ -1817,7 +1866,10 @@ void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
 	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(MYVERTEX));
 	p_VB->Unlock();
 
-	SAFEDELA(g_Vertices);
+  if (g_Vertices != NULL) {
+    delete [] g_Vertices;
+    g_Vertices = NULL;
+  }
 
 	lpDevice->SetStreamSource(0,p_VB,sizeof(MYVERTEX));
 
@@ -1831,7 +1883,10 @@ void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
 //	lpDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTEXF_LINEAR);
 	lpDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTEXF_LINEAR);
 
-	SAFEREL(p_VB);
+  if (p_VB != NULL) {
+    p_VB->Release();
+    p_VB = NULL;
+  }
 
 	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
 }

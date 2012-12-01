@@ -185,7 +185,10 @@ void FileManager::Clear()
 }
 
 void FileManager::UnloadFile() {
-	SAFEDELA(buffer);
+  if (buffer != NULL) {
+    delete [] buffer;
+    buffer = NULL;
+  }
 }
 
 int FileManager::LoadFile(char* fileName, int pathType)

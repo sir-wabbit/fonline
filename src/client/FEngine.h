@@ -125,7 +125,7 @@ public:
 
 	FOnlineEngine();
 private:
-	bool crtd;
+	bool initialized;
 	bool islost;
 	bool dilost;
 
@@ -271,7 +271,7 @@ private:
 	params_str_map perks_str_map;
 	//params_str_map object_map;
 
-//Объекты в игре
+  //Объекты в игре
 	stat_map all_s_obj; //вся статика в игре
 	//имена объектов
 	string_map name_obj;
@@ -283,7 +283,7 @@ private:
 	//картинки использования
 	uint16_t pic_use[100];
 
-//Управление чузеном
+  //Управление чузеном
 	chosen_action_vec chosen_action;
 
 	HexTYPE PathMoveX;
@@ -361,7 +361,7 @@ private:
 	int IntMessStepX,IntMessStepY;
 	fonline::math::Rect<int> IntMess;
 
-//Меню левой кнопки (LMenu)=======================================================
+  //Меню левой кнопки (LMenu)=======================================================
 	uint16_t lm_talk_off,lm_talk_on,lm_look_off,lm_look_on,lm_break_off,lm_break_on,
 		lm_use_off,lm_use_on,lm_gmfollow_off,lm_gmfollow_on,lm_gmtake_off,lm_gmtake_on;
 

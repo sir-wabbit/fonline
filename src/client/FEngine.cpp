@@ -21,7 +21,7 @@ void zlib_free(void *opaque, void *address) {
     free(address);
 }
 
-FOnlineEngine::FOnlineEngine(): crtd(0),hWnd(NULL),lpD3D(NULL),lpDevice(NULL),islost(0),lpDInput(NULL),lpKeyboard(NULL),lpMouse(NULL)
+FOnlineEngine::FOnlineEngine(): initialized(0),hWnd(NULL),lpD3D(NULL),lpDevice(NULL),islost(0),lpDInput(NULL),lpKeyboard(NULL),lpMouse(NULL)
 {
 	dilost=0;
 	
@@ -309,7 +309,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 	WriteLog("Всего спрайтов загружено: %d\n",spriteManager.GetLoadedCnt());
 
 	WriteLog("FEngine Initialization complete\n");
-	crtd=1;
+	initialized=1;
 
 	return 1;
 }
@@ -454,7 +454,7 @@ void FOnlineEngine::Clear()
     ComBuf = NULL;
   }
   
-	crtd=0;
+	initialized=0;
 
 	WriteLog("FEngine Clear complete\n");
 }
@@ -525,7 +525,7 @@ int FOnlineEngine::Render()
 	else call_cnt++;
 
 	ParseInput();
-	if(!crtd || islost) return 0;
+	if(!initialized || islost) return 0;
 	
 	//Инициализация сети
 	if(state==STATE_INIT_NET)
@@ -786,8 +786,8 @@ void FOnlineEngine::ParseInput()
 		}
 		else
 		{
-			DI_ONDOWN( DIK_LEFT , lpChosen->RotCCW(); Net_SendDir() );
-			DI_ONDOWN( DIK_RIGHT, lpChosen->RotCW(); Net_SendDir() );
+			DI_ONDOWN( DIK_LEFT , lpChosen->RotateCounterClockwise(); Net_SendDir() );
+			DI_ONDOWN( DIK_RIGHT, lpChosen->RotateClockwise(); Net_SendDir() );
 		}
 
 		DI_ONDOWN( DIK_T ,hexField.SwitchShowTrack() ); //!Cvet
@@ -1071,7 +1071,7 @@ void FOnlineEngine::ParseInput()
 
 void FOnlineEngine::Restore()
 {
-	if(!crtd || !islost) return;
+	if(!initialized || !islost) return;
 	WriteLog("Restoring...\n");
 	WriteLog("параметры режима.....");
 	D3DDISPLAYMODE d3ddm;
@@ -1150,7 +1150,7 @@ void FOnlineEngine::Restore()
 
 void FOnlineEngine::RestoreDI()
 {
-	if(!crtd || !lpKeyboard) return;
+	if(!initialized || !lpKeyboard) return;
 //	WriteLog("Restoring DI...\n");
 
 	//возвращаем контроль клавиатуре
@@ -1847,7 +1847,7 @@ void FOnlineEngine::Net_OnCritterDir()
 
 	if(pcrit->cur_dir==new_dir) return;
 
-	pcrit->SetDir(new_dir);
+	pcrit->SetDirection(new_dir);
 
 	WriteLog("OK\n");
 }
