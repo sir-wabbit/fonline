@@ -157,7 +157,7 @@ int CCritter::Move(uint8_t dir)
 	return movementType;
 }
 
-void CCritter::Action(Byte action, uint32_t action_tick)
+void CCritter::Action(uint8_t action, uint32_t action_tick)
 {
   __invariant();
 	Tick_Start(action_tick);

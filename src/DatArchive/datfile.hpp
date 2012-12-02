@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <stdint.h>
 
 #include "DatArchive.hpp"
 
@@ -37,18 +38,16 @@ public:
   DATARCHIVE_API int ReadTree();
   DATARCHIVE_API void IndexingDAT();
 
-  DATARCHIVE_API HANDLE DATOpenFile(char* fname);
   DATARCHIVE_API bool FindFile(const std::string& fname);
 
-  DATARCHIVE_API bool DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
-                                                 LPDWORD lpNumberOfBytesRead);
-  DATARCHIVE_API bool DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod);
-
-  DATARCHIVE_API uint32_t DATGetFileSize();
+  DATARCHIVE_API bool DATOpenFile(char* fname);
+  DATARCHIVE_API uint64_t DATGetFileSize();
+  DATARCHIVE_API bool DATReadFile(void* buffer, size_t numberOfBytesToRead, size_t* numberOfBytesRead);
+  DATARCHIVE_API bool DATSetFilePointer(int64_t offset, uint32_t moveMethod);
 
   DATARCHIVE_API void ShowError();
   
-  UINT error;
+  unsigned int error;
   
 private:
   //index_map index;
@@ -63,13 +62,13 @@ private:
 
   bool lError;
 
-  HANDLE hFile; //Handles: (DAT) files
+  void* hFile; //Handles: (DAT) files
 
   uint8_t *m_pInBuf;
 
-  ULONG FileSizeFromDat;
-  ULONG TreeSize;
-  ULONG FilesTotal;
+  uint32_t FileSizeFromDat;
+  uint32_t TreeSize;
+  uint32_t FilesTotal;
 
   uint8_t* ptr, *buff,*ptr_end;
   //in buff - DATtree, ptr - pointer

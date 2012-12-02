@@ -1,6 +1,8 @@
 #ifndef _FENGINE_H_
 #define _FENGINE_H_
 
+#include <zlib.h>
+
 #include "CSpriteManager.h"
 #include "SoundMngr.h"
 #include "CHexField.h"

@@ -11,7 +11,6 @@
   #define DATARCHIVE_API
 #endif
 
-#include "cfile/cfile.hpp"
 #include "datfile.hpp"
 
 #endif//DATARCHIVE_DATARCHIVE_HPP_

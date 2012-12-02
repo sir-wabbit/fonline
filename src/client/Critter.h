@@ -23,7 +23,7 @@ public:
 
 	void Animate(uint8_t action, uint8_t num_frame); //!Cvet анимация стойки с объектом weapon
 	void SetAnimation(); //!Cvet
-	void Action(Byte action, uint32_t action_tick); //!Cvet
+	void Action(uint8_t action, uint32_t action_tick); //!Cvet
 
 	void Process(); //!Cvet CBufMngr дал указатель чтоб чезен мог работать с сетью
 

@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <assert.h>
 
+#include "cfile/cfile.hpp"
+
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 #define VER_FALLOUT1 0x00000013
@@ -239,24 +241,25 @@ void DatArchive::IndexingDAT() {
 
 
 //------------------------------------------------------------------------------
-HANDLE DatArchive::DATOpenFile(char* fname)
-{
-   // ifwe still have old non-closed reader - we kill it
-   if(reader) {
-      delete reader;
-      reader = NULL;
-   }
+bool DatArchive::DATOpenFile(char* fname) {
+  // if we still have old non-closed reader - kill it
+  if(reader) {
+    delete reader;
+    reader = NULL;
+  }
 
-   if(hFile != INVALID_HANDLE_VALUE)
-   {
-	  if(FindFile(fname))
-      {
-		  if(!fileType) reader = new CPlainFile (hFile, offset, realSize);
-			else reader = new InflatorStream (hFile, offset, realSize, packedSize);
-         return hFile;
+  if(hFile != INVALID_HANDLE_VALUE) {
+    if(FindFile(fname)) {
+      if(!fileType) {
+        reader = new CPlainFile (hFile, offset, realSize);
+      } else {
+        reader = new InflatorStream (hFile, offset, realSize, packedSize);
       }
-   }
-   return INVALID_HANDLE_VALUE;
+      return true;
+    }
+  }
+  
+  return false;
 }
 //------------------------------------------------------------------------------
 bool DatArchive::FindFile(const std::string& fileName)
@@ -302,29 +305,37 @@ bool DatArchive::FindFile(const std::string& fileName)
    return false;
 }
 //------------------------------------------------------------------------------
-bool DatArchive::DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod)
-{
-   if(hFile == INVALID_HANDLE_VALUE) return false;
-   reader->seek (lDistanceToMove, dwMoveMethod);
-   return true;
+bool DatArchive::DATSetFilePointer(int64_t lDistanceToMove, uint32_t dwMoveMethod) {
+  if(hFile == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+  reader->seek (lDistanceToMove, dwMoveMethod);
+  return true;
 }
 //------------------------------------------------------------------------------
-uint32_t DatArchive::DATGetFileSize(void)
-{
-   if(hFile == INVALID_HANDLE_VALUE) return 0;
-   return realSize;
+uint64_t DatArchive::DATGetFileSize(void) {
+  if(hFile == INVALID_HANDLE_VALUE) {
+    return 0;
+  }
+  
+  return realSize;
 }
 //------------------------------------------------------------------------------
-bool DatArchive::DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
-                                                    LPDWORD lpNumberOfBytesRead)
-{
-   if(hFile == INVALID_HANDLE_VALUE) return false;
-   if(!lpBuffer) return false;
-   if(!nNumberOfBytesToRead) {
-      lpNumberOfBytesRead = 0;
-      return true;
-   }
-   reader->read (lpBuffer, nNumberOfBytesToRead, (long*)lpNumberOfBytesRead);
-   return true;
+bool DatArchive::DATReadFile(void* lpBuffer, size_t nNumberOfBytesToRead, size_t* lpNumberOfBytesRead) {
+  if (hFile == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+  
+  if (!lpBuffer) {
+    return false;
+  }
+  
+  if (!nNumberOfBytesToRead) {
+    lpNumberOfBytesRead = 0;
+    return true;
+  }
+  
+  reader->read(lpBuffer, nNumberOfBytesToRead, (long*)lpNumberOfBytesRead);
+  return true;
 }
 //------------------------------------------------------------------------------
