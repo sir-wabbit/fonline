@@ -24,7 +24,7 @@
 #include "frmload.h"
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
-CSpriteManager::CSpriteManager(): crtd(0),maxSpriteCount(0),currentPosition(0),
+CSpriteManager::CSpriteManager(): initialized(0), maxSpriteCount(0), currentPosition(0),
 	lpDevice(NULL),lpVB(NULL),lpIB(NULL),lpWaitBuf(NULL),lastSurface(NULL),next_id(1),currentSurface(NULL)
 {
 	col=D3DCOLOR_ARGB(255,128,128,128);
@@ -32,15 +32,16 @@ CSpriteManager::CSpriteManager(): crtd(0),maxSpriteCount(0),currentPosition(0),
 	memset(this->CrAnim, 0, sizeof(CrAnim));
 }
 
-int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
-{
-	if(crtd) return 0; //пересоздание с новыми размерами только через пересоздание класса.
+int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
+  assert(!initialized);
+  assert(lpD3Device != NULL);
+  
 	WriteLog("CSpriteManager Initialization...\n");
 
-	maxSpriteCount=opt_flushval;
-	currentPosition=0;
+	maxSpriteCount = opt_flushval;
+	currentPosition = 0;
 
-	lpDevice=lpD3Device;
+	lpDevice = lpD3Device;
 
 	//Создаем буфер вершин
 	WriteLog("Создаю VB на %d спрайтов\n",maxSpriteCount);
@@ -90,12 +91,13 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device)
 	if(!LoadCritTypes()) return 0; //!Cvet
 
 	WriteLog("CSpriteManager Initialization complete\n");
-	crtd=1;
+	initialized=1;
 	return 1;
 }
 
-void CSpriteManager::Clear()
-{
+void CSpriteManager::Clear() {
+  assert(initialized);
+  
 	WriteLog("CSprMan Clear...\n");
 
 	fm.Clear();
@@ -125,14 +127,18 @@ void CSpriteManager::Clear()
 	  lpWaitBuf = NULL;
 	}
 
-	crtd=0;
+	initialized=0;
 	WriteLog("CSprMan Clear complete\n");
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteInfo** ppInfo)
-{
-	if(!crtd) return 0;
+int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteInfo** ppInfo) {
+  assert(initialized);
+  assert(fname != NULL);
+  assert(fname[0] != '\0');
+  //assert(ppInfo != NULL);
+
+	if(!initialized) return 0;
 	if(!fname[0]) return 0;
 
 	if(!fm.LoadFile(fname,PathType))
@@ -259,7 +265,12 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 
 int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!Cvet переименовал
 {
-	if(!crtd) return 0;
+  assert(initialized);
+  assert(fname != NULL);
+  assert(fname[0] != '\0');
+  //assert(ppInfo != NULL);
+
+	if(!initialized) return 0;
 	if(!fname[0]) return 0;
 
 	if(!fm.LoadFile(fname,PathType))
@@ -394,6 +405,11 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 {
+  assert(initialized);
+  assert(fname != NULL);
+  assert(fname[0] != '\0');
+  //assert(ppInfo != NULL);
+
 	char* ext=strstr(fname,".");
 
 	if(!ext)
@@ -522,7 +538,12 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 {
-	if(!crtd) return 0;
+  assert(initialized);
+  assert(fname != NULL);
+  assert(fname[0] != '\0');
+  assert(pframes != NULL);
+
+	if(!initialized) return 0;
 	if(!fname[0]) return 0;
 
 //	WriteLog("Loading animation %s\n",fname);
@@ -679,7 +700,11 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 
 int CSpriteManager::LoadRix(char *fname, int PathType)
 {
-	if(!crtd) return 0;
+  assert(initialized);
+  assert(fname != NULL);
+  assert(fname[0] != '\0');
+
+	if(!initialized) return 0;
 	if(!fname[0]) return 0;
 	if(!fm.LoadFile(fname,PathType))
 		return 0;
@@ -805,8 +830,12 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 // Для 1-но направленных анимаций
 int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 {
-    
-	if(!crtd) return 0;
+  assert(initialized);
+  assert(fname != NULL);
+  assert(fname[0] != '\0');
+  assert(pframes != NULL);
+  
+	if(!initialized) return 0;
 	if(!fname[0]) return 0;
 
 	char path[1024];
@@ -977,7 +1006,13 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 // Для любых спрайтовых анимаций 
 int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim, SpriteInfo** ppInfo)
 {
-	if(!crtd) return 0;
+  assert(initialized);
+  assert(fname != NULL);
+  assert(fname[0] != '\0');
+  assert(aanim != NULL);
+  assert(ppInfo != NULL);
+
+	if(!initialized) return 0;
 	if(!fname[0]) return 0;
 
 	char path[1024];
@@ -1152,7 +1187,11 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 
 LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(uint16_t w, uint16_t h)
 {
-	if(!crtd) return 0;
+  assert(initialized);
+  assert(w > 0);
+  assert(h > 0);
+
+	if(!initialized) return 0;
 	if(w>opt_basetex || h>opt_basetex)
 	{
 		for(last_w=opt_basetex;last_w<w;last_w*=2);
@@ -1178,17 +1217,18 @@ LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(uint16_t w, uint16_t h)
 	return lpSurf;
 }
 
-void CSpriteManager::NextSurface()
-{
+void CSpriteManager::NextSurface() {
+  assert(initialized);
 	lastSurface=NULL;
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
-int CSpriteManager::Flush()
-{
+int CSpriteManager::Flush() {
+  assert(initialized);
+  
 	//который потом разом сливается в буфер вершин
-	if(!crtd) return 0;
+	if(!initialized) return 0;
 	void* pBuffer;
 	int mulpos=4*currentPosition;
 	lpVB->Lock(0,sizeof(MYVERTEX)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
@@ -1219,6 +1259,8 @@ int CSpriteManager::Flush()
 
 int CSpriteManager::DrawSprite(uint16_t id, int x, int y, uint32_t color, uint32_t alpha) //!Cvet uint32_t color uint32_t alpha
 {
+  assert(initialized);
+  
 	SpriteInfo* lpinf=spriteData[id];
 	if(!lpinf) return 0;
 
@@ -1329,6 +1371,8 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 
 int CSpriteManager::DrawSpriteSize(uint16_t id, int x, int y,double size, uint32_t color) //!Cvet uint32_t color
 {
+  assert(initialized);
+  
 	SpriteInfo* lpinf=spriteData[id];
 	if(!lpinf) return 0;
     //lpinf->spr_rect.x1/=size;
@@ -1379,6 +1423,10 @@ int CSpriteManager::DrawSpriteSize(uint16_t id, int x, int y,double size, uint32
 
 int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lplpBuf,onesurf_vec* lpsvec, uint32_t color, uint8_t alpha)
 {
+  assert(initialized);
+  assert(lpdtree != NULL);
+  assert(lpsvec != NULL);
+  
 	if ((*lplpBuf) != NULL) {
 	  (*lplpBuf)->Release();
 	  *lplpBuf = NULL;
@@ -1532,6 +1580,10 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 
 void CSpriteManager::DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lpsvec, uint16_t cnt)
 {
+  assert(initialized);
+  assert(lpBuf != NULL);
+  assert(lpsvec != NULL);
+
 	if(!cnt) return;
 	Flush();
 
@@ -1550,6 +1602,10 @@ void CSpriteManager::DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lps
 
 void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, fonline::math::Rect<int>* prect)
 {
+  assert(initialized);
+  assert(prep != NULL);
+  assert(prect != NULL);
+
 	uint16_t id;
 	if(prep->lp_sprid) id=*prep->lp_sprid;
 	else id=prep->spr_id;
@@ -1569,6 +1625,9 @@ void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, fonline::math::Rect<int>*
 
 void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 {
+  assert(initialized);
+  assert(lpdtree != NULL);
+
 	for(dtree_map::iterator jt=lpdtree->begin();jt!=lpdtree->end();jt++)
 	{
 		uint16_t id;
@@ -1627,6 +1686,8 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 
 void CSpriteManager::PreRestore()
 {
+  assert(initialized);
+  
 	if (lpVB != NULL) {
 	  lpVB->Release();
 	  lpVB = NULL;
@@ -1639,6 +1700,8 @@ void CSpriteManager::PreRestore()
 
 void CSpriteManager::PostRestore()
 {
+  assert(initialized);
+  
 	//Создаем буфер вершин
 	WriteLog("Пересоздаю VB на %d спрайтов\n",maxSpriteCount);
 	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
@@ -1683,7 +1746,8 @@ void CSpriteManager::PostRestore()
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++
 int CSpriteManager::LoadCritTypes()
 {
-
+  //assert(initialized);
+  
 	//загружаем список криттеров
 	char str[1024];
 	char key[64];
@@ -1703,6 +1767,8 @@ int CSpriteManager::LoadCritTypes()
 
 int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
 {
+  assert(initialized);
+  
 	if(CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 
 	WriteLog("Загрузка анимации type=%d,ind1=%d,ind2=%d...",anim_type,anim_ind1,anim_ind2);
@@ -1738,6 +1804,8 @@ int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t
 
 int CSpriteManager::EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
 {
+  assert(initialized);
+  
 	if(!CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 	TICK loadA=GetTickCount();
 
@@ -1766,6 +1834,7 @@ int CSpriteManager::EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_
 
 int CSpriteManager::CheckPixTransp()
 {
+  assert(initialized);
 	//lpDevice->GetPrivateData(NULL,NULL);
 
 	return 0;
@@ -1773,6 +1842,9 @@ int CSpriteManager::CheckPixTransp()
 
 void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 {
+  assert(initialized);
+  assert(prep_pix != NULL);
+  
 	if(prep_pix->empty()) return;
 
 	Flush();
@@ -1832,6 +1904,9 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 
 void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
 {
+  assert(initialized);
+  assert(prep_pix != NULL);
+
 	if(prep_pix->empty()) return;
 
 	Flush();
