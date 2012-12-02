@@ -121,7 +121,8 @@ solution "fonline-open-source"
             "IniFile",
             "SimpleLeakDetector",
             "LZSS",
-            "ACMDecompressor" }
+            "ACMDecompressor",
+            "DatArchive" }
     
     files { 
       "src/client/**.hpp", 
@@ -168,8 +169,7 @@ solution "fonline-open-source"
     includedirs { "inc", "src" }
     
     links { "FOnlineBase",
-            "IniFile",
-            "LZSS" }
+            "IniFile" }
     
     files { 
       "src/server/**.hpp", 
@@ -216,8 +216,8 @@ solution "fonline-open-source"
     defines "INIFILE_DLL"
     
     includedirs { "src" }
-    files { "src/IniFile/*.cpp",
-            "src/IniFile/*.hpp" }
+    files { "src/IniFile/**.cpp",
+            "src/IniFile/**.hpp" }
             
   project "SimpleLeakDetector"
     kind "SharedLib"
@@ -226,8 +226,8 @@ solution "fonline-open-source"
     defines "SIMPLELEAKDETECTOR_DLL"
     
     includedirs { "src" }
-    files { "src/SimpleLeakDetector/*.cpp",
-            "src/SimpleLeakDetector/*.hpp" }
+    files { "src/SimpleLeakDetector/**.cpp",
+            "src/SimpleLeakDetector/**.hpp" }
   
   project "LZSS"
     kind "SharedLib"
@@ -236,8 +236,8 @@ solution "fonline-open-source"
     defines "LZSS_DLL"
     
     includedirs { "src" }
-    files { "src/LZSS/*.cpp",
-            "src/LZSS/*.hpp" }
+    files { "src/LZSS/**.cpp",
+            "src/LZSS/**.hpp" }
             
   project "ACMDecompressor"
     kind "SharedLib"
@@ -246,5 +246,22 @@ solution "fonline-open-source"
     defines "ACMDECOMPRESSOR_DLL"
     
     includedirs { "src" }
-    files { "src/ACMDecompressor/*.cpp",
-            "src/ACMDecompressor/*.hpp" }
+    files { "src/ACMDecompressor/**.cpp",
+            "src/ACMDecompressor/**.hpp" }
+            
+  project "DatArchive"
+    kind "SharedLib"
+    language "C++"
+    
+    includedirs { "inc/zlib" }
+    windowsLibDir("zlib")
+    windowsBinary("zlib", "zlib.dll")
+    links "zlib"
+    
+    links "LZSS"
+    
+    defines "DATARCHIVE_DLL"
+    
+    includedirs { "src" }
+    files { "src/DatArchive/**.cpp",
+            "src/DatArchive/**.hpp" }

@@ -1,8 +1,9 @@
 #ifndef _CFILEMGR_H_
 #define _CFILEMGR_H_
 
-#include "datfile.h"
 #include <stdint.h>
+
+#include <DatArchive/DatArchive.hpp>
 
 #define PT_ART_CRITTERS 0
 #define PT_ART_INTRFACE 1

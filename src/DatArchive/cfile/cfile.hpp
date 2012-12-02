@@ -4,7 +4,9 @@
 #include <windows.h>
 #include <stdint.h>
 
-#include "../zlib/zlib.h"
+#include "../DatArchive.hpp"
+
+#include <zlib.h>
 #include <LZSS/LZSS.hpp>
 
 // Since no audio plugin for Fallout performs backward seek and large
@@ -23,25 +25,25 @@ protected:
 	long beginPos, fileSize;
 		// starting position in archive and size of real file image
 public:
-	IOStream(HANDLE file, long pos, long size) : hFile(file), beginPos(pos), fileSize(size) { 
+	DATARCHIVE_API IOStream(HANDLE file, long pos, long size) : hFile(file), beginPos(pos), fileSize(size) { 
 	  SetFilePointer(hFile, beginPos, NULL, FILE_BEGIN);
 	};
-	virtual ~IOStream() {};
+	DATARCHIVE_API virtual ~IOStream() {};
 
-	virtual long getSize() { return fileSize; };
-	virtual int eof() { return tell() >= fileSize; };
-	virtual long seek (long dist, int from) = 0;
-	virtual long tell() = 0;
-	virtual int read (void* buf, long toRead, long* read) = 0;
+	DATARCHIVE_API virtual long getSize() { return fileSize; };
+	DATARCHIVE_API virtual int eof() { return tell() >= fileSize; };
+	DATARCHIVE_API virtual long seek (long dist, int from) = 0;
+	DATARCHIVE_API virtual long tell() = 0;
+	DATARCHIVE_API virtual int read (void* buf, long toRead, long* read) = 0;
 };
 
 class CPlainFile: public IOStream {
 public:
-	CPlainFile (HANDLE file, long pos, long size):
+	DATARCHIVE_API CPlainFile (HANDLE file, long pos, long size):
 		IOStream (file, pos, size) {};
-	virtual long seek (long dist, int from);
-	virtual long tell() { return SetFilePointer(hFile, 0, NULL, FILE_CURRENT) - beginPos; };
-	virtual int read (void* buf, long toRead, long* read);
+	DATARCHIVE_API virtual long seek (long dist, int from);
+	DATARCHIVE_API virtual long tell() { return SetFilePointer(hFile, 0, NULL, FILE_CURRENT) - beginPos; };
+	DATARCHIVE_API virtual int read (void* buf, long toRead, long* read);
 };
 
 class CPackedFile: public IOStream {
@@ -53,26 +55,26 @@ protected:
 	virtual void skip (long dist);
 	virtual void reset() = 0;
 public:
-	CPackedFile (HANDLE file, long pos, long size, long packed):
+	DATARCHIVE_API CPackedFile (HANDLE file, long pos, long size, long packed):
 		IOStream (file, pos, size),
 		packedSize (packed),
 		curPos (0),
 		inBuf (NULL),
 		skipper (NULL) {};
-	virtual ~CPackedFile() {
+	DATARCHIVE_API virtual ~CPackedFile() {
 		if (skipper) delete[] skipper;
 		if (inBuf) delete[] inBuf;
 	};
 
-	virtual long seek (long dist, int from);
-	virtual long tell() { return curPos; };
+	DATARCHIVE_API virtual long seek (long dist, int from);
+	DATARCHIVE_API virtual long tell() { return curPos; };
 };
 
 class InflatorStream: public CPackedFile {
 protected:
 	z_stream stream;
 public:
-	InflatorStream (HANDLE file, long pos, long size, long packed):
+	DATARCHIVE_API InflatorStream (HANDLE file, long pos, long size, long packed):
 		CPackedFile (file, pos, size, packed) {
 			stream. zalloc = Z_NULL;
 			stream. zfree = Z_NULL;
@@ -81,11 +83,11 @@ public:
 			stream. avail_in = 0;
 			inflateInit (&stream);
 	}
-	virtual ~InflatorStream() {
+	DATARCHIVE_API virtual ~InflatorStream() {
 		inflateEnd (&stream);
 	};
 
-	virtual int read (void* buf, long toRead, long* read);
+	DATARCHIVE_API virtual int read (void* buf, long toRead, long* read);
 protected:
 	virtual void reset() {
 		inflateReset (&stream);
@@ -111,7 +113,7 @@ protected:
 	#endif
 	CunLZSS* decompressor;
 public:
-	C_LZ_BlockFile (HANDLE file, long pos, long size, long packed):
+	DATARCHIVE_API C_LZ_BlockFile (HANDLE file, long pos, long size, long packed):
 		CPackedFile (file, pos, size, packed)
 		#ifdef USE_LZ_BLOCKS
 			,
@@ -120,14 +122,14 @@ public:
 			blocks (NULL)
 		#endif
 		{decompressor = new CunLZSS();}
-	virtual ~C_LZ_BlockFile() {
+	DATARCHIVE_API virtual ~C_LZ_BlockFile() {
 		#ifdef USE_LZ_BLOCKS
 			if (blocks) delete[] blocks;
 		#endif
 		if (decompressor) delete (decompressor);
 	};
 
-	virtual int read (void* buf, long toRead, long* read);
+	DATARCHIVE_API virtual int read (void* buf, long toRead, long* read);
 protected:
 	virtual void reset() {
 		SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);

@@ -1,7 +1,4 @@
-#include "stdafx.h"
-
-#include "datfile.h"
-#include "common.h"
+#include "datfile.hpp"
 
 #include <algorithm>
 #include <assert.h>
@@ -199,15 +196,15 @@ void DatArchive::IndexingDAT() {
   find_map::iterator it = fmap.find(datFileName);
   
   if(it != fmap.end()) {
-    WriteLog("%s already indexed\n", datFileName.c_str());
+    //WriteLog("%s already indexed\n", datFileName.c_str());
     return;
   } else {
     fmap[datFileName] = IndexMap();
   }
   IndexMap& nmap = fmap[datFileName];
 
-  WriteLog("Indexing %s...",datFileName.c_str());
-  TICK tc = GetTickCount();
+  //WriteLog("Indexing %s...",datFileName.c_str());
+  //DWORD tc = GetTickCount();
   
   std::string path;
   std::string fname;
@@ -237,7 +234,7 @@ void DatArchive::IndexingDAT() {
       ptr += szFileName + 13;
   }
   ptr = buff;
-  WriteLog("for %d ms\n", GetTickCount() - tc);
+  //WriteLog("for %d ms\n", GetTickCount() - tc);
 }
 
 

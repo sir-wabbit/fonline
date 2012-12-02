@@ -27,7 +27,7 @@
 */
 
 #include <windows.h>
-#include "cfile.h"
+#include "cfile.hpp"
 
 long CPlainFile::seek (long dist, int from) {
 	long absPos;
