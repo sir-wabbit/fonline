@@ -23,6 +23,9 @@ struct Rect {
     }
     
     assert(0 <= index && index <= 3);
+    
+    // XXX[2.12.2012 alex]: we have to return *something*
+    return left;
   }
   
   T& operator[] (size_t index) {
@@ -36,6 +39,9 @@ struct Rect {
     }
 
     assert(0 <= index && index <= 3);
+    
+    // XXX[2.12.2012 alex]: we have to return *something*
+    return left;
   }
 };
 

@@ -4,8 +4,9 @@
 #include <map>
 #include <string>
 
-// Added by ABel: Seamless reading from both Fallouts' DAT
-#include "cfile/cfile.h"
+#include "DatArchive.hpp"
+
+class IOStream;
 
 enum
 {
@@ -27,25 +28,25 @@ typedef std::map<std::string, IndexMap> find_map;
 
 class DatArchive {
 public:
-  DatArchive();
-  virtual ~DatArchive();
+  DATARCHIVE_API DatArchive();
+  DATARCHIVE_API virtual ~DatArchive();
   
-  bool Init(char* filename);
-  bool IsLoaded();
+  DATARCHIVE_API bool Init(char* filename);
+  DATARCHIVE_API bool IsLoaded();
 
-  int ReadTree();
-  void IndexingDAT();
+  DATARCHIVE_API int ReadTree();
+  DATARCHIVE_API void IndexingDAT();
 
-  HANDLE DATOpenFile(char* fname);
-  bool FindFile(const std::string& fname);
+  DATARCHIVE_API HANDLE DATOpenFile(char* fname);
+  DATARCHIVE_API bool FindFile(const std::string& fname);
 
-  bool DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
+  DATARCHIVE_API bool DATReadFile(LPVOID lpBuffer, DWORD nNumberOfBytesToRead,
                                                  LPDWORD lpNumberOfBytesRead);
-  bool DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod);
+  DATARCHIVE_API bool DATSetFilePointer(LONG lDistanceToMove, uint32_t dwMoveMethod);
 
-  uint32_t DATGetFileSize();
+  DATARCHIVE_API uint32_t DATGetFileSize();
 
-  void ShowError();
+  DATARCHIVE_API void ShowError();
   
   UINT error;
   
