@@ -232,12 +232,11 @@ int FileManager::LoadFile(char* fileName, int pathType)
       }
 		}	
 
-		if(lpDATcr.DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
-		{
+		if (lpDATcr.DATOpenFile(pfname) != false) {
 			fileSize = lpDATcr.DATGetFileSize();			
 
 			buffer = new uint8_t[fileSize+1];
-			DWORD br;
+			size_t br;
 		
 			lpDATcr.DATReadFile(buffer,fileSize,&br);
 
@@ -261,12 +260,11 @@ int FileManager::LoadFile(char* fileName, int pathType)
     } else return 0; //а вот не вышло
 	}
 
-	if(lpDAT.DATOpenFile(pfname)!=INVALID_HANDLE_VALUE)
-	{	
+	if (lpDAT.DATOpenFile(pfname) != false) {	
 		fileSize = lpDAT.DATGetFileSize();
 
 		buffer = new uint8_t[fileSize+1];
-		DWORD br;
+		size_t br;
 		
 		lpDAT.DATReadFile(buffer,fileSize,&br);
 

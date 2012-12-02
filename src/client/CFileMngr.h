@@ -60,7 +60,7 @@ public:
 private:
 	bool initialized;
 
-	HANDLE file;
+	void* file;
 	uint32_t fileSize;
 	uint32_t position;
 	uint8_t* buffer;

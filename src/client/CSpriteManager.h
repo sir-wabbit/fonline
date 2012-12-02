@@ -226,7 +226,7 @@ public:
 		  for(int d2 = 0; d2 < 27; d2++) {
 			  for(int d3 = 0; d3 < 27; d3++) {
 				  if (CrAnim[d1][d2][d3]) {
-				    delete [] CrAnim[d1][d2][d3];
+				    delete CrAnim[d1][d2][d3];
 				    CrAnim[d1][d2][d3] = NULL;
 				  }
 				}
