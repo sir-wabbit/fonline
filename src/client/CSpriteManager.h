@@ -247,7 +247,7 @@ public:
 	void DrawPrepLines(Pix_vec* prep_pix);
 //!Cvet --------------------------------------
 private:
-	bool crtd;
+	bool initialized;
 
 	int LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo=NULL); //!Cvet загрузка альтернативной графики
 
