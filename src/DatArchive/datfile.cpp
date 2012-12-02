@@ -164,7 +164,7 @@ int DatArchive::ReadTree()
       return ERR_FILE_NOT_SUPPORTED;
    if(!Fallout1)
    {
-      i = SetFilePointer (hFile, -(TreeSize + 8), NULL, FILE_END);
+      i = SetFilePointer (hFile, -((LONG)TreeSize + 8), NULL, FILE_END);
       ReadFile(hFile, &FilesTotal, 4, &i, NULL);
    }
    else //FALLOUT 1 !!!

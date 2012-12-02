@@ -23,59 +23,82 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
- 
-#include "LZSS.hpp"
+ */ 
  
 #include <string.h>
+ 
+#include "LZSS.hpp"
 
-int CunLZSS::getC() {
-  if (inBufPtr >= inBufSize)
+// Number of bits for index and length respectively.
+#define INDEX_BC                12
+#define LENGTH_BC               4
+
+// Window size and raw lookahead size.
+#define WINSIZE                 (1 << INDEX_BC)
+#define RLOOK_SIZE              (1 << LENGTH_BC)
+
+// Number of bytes to break even in compressing
+#define BREAK_EVEN              2
+//((1 + INDEX_BC + LENGTH_BC) / 9)
+#define LOOK_SIZE               (RLOOK_SIZE + BREAK_EVEN)
+
+#define MOD_WINDOW( a )		(( a ) & (WINSIZE - 1))
+
+#define MAX_UNPACK_SIZE 0x44000
+
+namespace LZSS {
+
+int GetByte(Context* ctx) {
+  if (ctx->inBufPtr >= ctx->inBufSize)
     return -1;
-  return inBuf [inBufPtr++];
+  return ctx->inBuf [ctx->inBufPtr++];
 }
 
-void CunLZSS::putC (unsigned char c) {
-  if (outBufPtr < MAX_UNPACK_SIZE) {
-    // this condition must always be true, but who known for sure
-    outBuf [outBufPtr++] = c;
-    unpackedLen++;
+void PutByte(Context* ctx, unsigned char c) {
+  // This condition must always be true, but who knows for sure.
+  if (ctx->outBufPtr < MAX_UNPACK_SIZE) {
+    ctx->outBuf [ctx->outBufPtr++] = c;
+    ctx->unpackedLen++;
   }
 }
 
-void CunLZSS::decode() {
-  long command,
-    current_position,
-    match_position,
-    match_length;
-  int c, i;
+void Decode(Context* ctx) {
+  uint32_t command;
+  size_t current_position;
+  size_t match_position;
+  size_t match_length;
+  int c;
 
   command = 0;
   current_position = WINSIZE - LOOK_SIZE;
 
   while (1) {
     command >>= 1;
+    
     if ((command & 0xFF00) == 0) {
-      if ( (c = getC()) == -1)
+      if ( (c = GetByte(ctx)) == -1)
         break;
       command = 0xFF00 + c;
     }
-    if ( (c = getC()) == -1)
+    
+    if ( (c = GetByte(ctx)) == -1)
       break;
+    
     if (command & 1) {
-      window [current_position] = c;
+      ctx->window [current_position] = c;
       current_position = MOD_WINDOW (current_position + 1);
-      putC (c);
+      PutByte(ctx, c);
     } else {
       match_position = c;
-      if ( (c = getC()) == -1)
+      if ( (c = GetByte(ctx)) == -1)
         break;
       match_position += ((c & 0xF0) << 4);
       match_length = (c & 0xF) + BREAK_EVEN;
-      for (i=0; i<=match_length; i++) {
-        c = window [MOD_WINDOW (match_position + i)];
-        window [current_position] = c;
-        putC (c);
+      
+      for (size_t i = 0; i <= match_length; i++) {
+        c = ctx->window [MOD_WINDOW (match_position + i)];
+        ctx->window [current_position] = c;
+        PutByte(ctx, c);
         current_position = MOD_WINDOW (current_position + 1);
       }
     }
@@ -83,30 +106,56 @@ void CunLZSS::decode() {
   }
 }
 
+}; // namespace LZSS
+
+CunLZSS::CunLZSS() {
+  memset(ctx, 0, sizeof(ctx));
+}
+
+CunLZSS::~CunLZSS() {
+  if (ctx->window) {
+    delete (ctx->window);
+    ctx->window = NULL;
+  }
+  
+  if (ctx->outBuf) {
+    delete (ctx->outBuf);
+    ctx->outBuf = NULL;
+  }
+}
+
 void CunLZSS::takeNewData (unsigned char* in, long availIn, int doUnpack) {
-  if (!window) window = new unsigned char [WINSIZE + LOOK_SIZE - 1];
-  if (!outBuf) outBuf = new unsigned char [MAX_UNPACK_SIZE];
+  if (!ctx->window) ctx->window = new unsigned char [WINSIZE + LOOK_SIZE - 1];
+  if (!ctx->outBuf) ctx->outBuf = new unsigned char [MAX_UNPACK_SIZE];
 
   if (doUnpack) {
-    inBuf = in;
-    inBufSize = availIn;
-    inBufPtr = outBufPtr = 0;
-    memset (window, 0x20, WINSIZE + LOOK_SIZE - 1);
-    unpackedLen = 0;
-    decode ();
+    ctx->inBuf = in;
+    ctx->inBufSize = availIn;
+    ctx->inBufPtr = ctx->outBufPtr = 0;
+    memset (ctx->window, 0x20, WINSIZE + LOOK_SIZE - 1);
+    ctx->unpackedLen = 0;
+    LZSS::Decode(ctx);
   } else {
-    memcpy (outBuf, in, availIn);
-    unpackedLen = availIn;
+    memcpy (ctx->outBuf, in, availIn);
+    ctx->unpackedLen = availIn;
   }
-  outBufPtr = 0;
+  ctx->outBufPtr = 0;
 }
 
 long CunLZSS::getUnpacked (unsigned char* to, long count) {
-  long res = (count>unpackedLen)? unpackedLen: count;
+  long res = (count>ctx->unpackedLen)? ctx->unpackedLen: count;
   if (res) {
-    memcpy (to, outBuf+outBufPtr, res);
-    outBufPtr += res;
-    unpackedLen -= res;
+    memcpy (to, ctx->outBuf+ctx->outBufPtr, res);
+    ctx->outBufPtr += res;
+    ctx->unpackedLen -= res;
   }
   return res;
 }
+
+long CunLZSS::left() {
+  return ctx->unpackedLen;
+};
+
+void CunLZSS::clear() {
+  ctx->unpackedLen = 0;
+};
