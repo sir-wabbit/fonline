@@ -30,7 +30,9 @@
 #include "cfile.hpp"
 
 long CPlainFile::seek (long dist, int from) {
-	long absPos;
+  fseek(hFile, dist, from);
+  return ftell(hFile);
+	/*long absPos;
 	if (from == FILE_CURRENT)
 		absPos = tell() + dist;
 	else if (from == FILE_END)
@@ -47,14 +49,14 @@ long CPlainFile::seek (long dist, int from) {
 	long res = SetFilePointer (hFile, absPos + beginPos, NULL, FILE_BEGIN);
 	if (res != 0xFFFFFFFF)
 		res -= beginPos;
-	return res;
+	return res;*/
 }
 int CPlainFile::read (void* buf, long toRead, long* read) {
 	long left = fileSize - tell();
 	if (left < toRead)
 		toRead = left;
-	ReadFile (hFile, buf, toRead, (LPDWORD)read, NULL);
-	return (*read != -1);
+	int err = fread(buf, 1, toRead, hFile);
+	return err == toRead;
 }
 
 
@@ -121,12 +123,13 @@ int InflatorStream::read (void* buf, long toRead, long* read) {
 
 	long oldTotOut = stream. total_out;
 
-	long left = packedSize + beginPos - SetFilePointer(hFile, 0, NULL, FILE_CURRENT);
+	long left = packedSize + beginPos - ftell(hFile);
 
 	while (stream. avail_out && res == Z_OK) {
 		if ((!stream. avail_in) && left > 0) {
 			stream. next_in = inBuf;
-			ReadFile (hFile, inBuf, (left>BUFF_SIZE)?BUFF_SIZE:left, (LPDWORD)&stream. avail_in, NULL);
+			stream. avail_in = fread(inBuf, 1, (left>BUFF_SIZE)?BUFF_SIZE:left, hFile);
+			//ReadFile (hFile, inBuf, (left>BUFF_SIZE)?BUFF_SIZE:left, (LPDWORD)&stream. avail_in, NULL);
 			left -= stream. avail_in;
 		}
 		unsigned long progress = stream. total_out;
@@ -189,7 +192,8 @@ void C_LZ_BlockFile::skip (long dist) {
 		return;
 	if (block != currentBlock-1) {
 		decompressor->clear();
-		SetFilePointer (hFile, blocks[block]. archPos, NULL, FILE_BEGIN);
+		fseek(hFile, blocks[block]. archPos, SEEK_END);
+		//SetFilePointer (hFile, blocks[block]. archPos, NULL, FILE_BEGIN);
 		dist = absPos - blocks[block]. filePos;
 		currentBlock = block;
 		curPos = blocks[block]. filePos;
@@ -222,9 +226,11 @@ int C_LZ_BlockFile::read (void* buf, long toRead, long* read) {
 		if ( !decompressor->left() ) {
 			unsigned short lhdr;
 			DWORD read_cnt;
-			ReadFile (hFile, &lhdr, 2, &read_cnt, NULL);
+			fread(&lhdr, 2, 1, hFile);
+			//ReadFile (hFile, &lhdr, 2, &read_cnt, NULL);
 			lhdr = ((lhdr & 0xFF00) >> 8) + ((lhdr & 0x00FF) << 8);
-            ReadFile (hFile, inBuf, lhdr & 0x7FFF, &read_cnt, NULL);
+      fread(inBuf, 1, lhdr & 0x7FFF, hFile);
+      //ReadFile (hFile, inBuf, lhdr & 0x7FFF, &read_cnt, NULL);
 			decompressor->takeNewData (inBuf, read_cnt,	(lhdr & 0x8000) == 0);
 #ifdef USE_LZ_BLOCKS
 			currentBlock++;
@@ -252,27 +258,31 @@ int C_LZ_BlockFile::read (void* buf, long toRead, long* read) {
 }
 #ifdef USE_LZ_BLOCKS
 void C_LZ_BlockFile::allocateBlocks() {
-	long oldFilePos = SetFilePointer(hFile, 0, NULL, FILE_CURRENT);
+	long oldFilePos = ftell();
 
 // get count of blocks:
 	long blockCnt = 0,
 		blocksSize = 0;
 	unsigned short lhdr;
-	SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
+	fseek(hFile, beginPos, SEEK_SET);
+	//SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
 	while (blocksSize < packedSize) {
 		uint32_t dummy;
-		ReadFile (hFile, &lhdr, 2, &dummy, NULL);
+		fread(hFile, &lhdr, 2);
+		//ReadFile (hFile, &lhdr, 2, &dummy, NULL);
 		lhdr = ((lhdr & 0xFF00) >> 8) + ((lhdr & 0x007F) << 8);
 		blocksSize += lhdr;
 		blockCnt++;
-		SetFilePointer (hFile, lhdr, NULL, FILE_CURRENT);
+		fseek(hFile, lhdr, SEEK_CUR);
+		//SetFilePointer (hFile, lhdr, NULL, FILE_CURRENT);
 	}
 
 	blocks = new block [blockCnt + 1];
 	blocks[0]. filePos = 0;
 	blocks[0]. archPos = beginPos;
 	knownBlocks = 1;
-
-	SetFilePointer (hFile, oldFilePos, NULL, FILE_BEGIN);
+	
+  fseek(hFile, oldFilePos, SEEK_SET);
+	//SetFilePointer (hFile, oldFilePos, NULL, FILE_BEGIN);
 }
 #endif

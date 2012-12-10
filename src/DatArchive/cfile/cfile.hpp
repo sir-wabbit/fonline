@@ -1,7 +1,8 @@
 #ifndef _GAP_FDAT_CFILE_H
 #define _GAP_FDAT_CFILE_H
 
-#include <windows.h>
+//#include <windows.h>
+#include <stdio.h>
 #include <stdint.h>
 
 #include "../DatArchive.hpp"
@@ -21,12 +22,12 @@
 // abstract class, parent to different File Handlers
 class IOStream {
 protected:
-	HANDLE hFile; // archive file descriptor
+	FILE* hFile; // archive file descriptor
 	long beginPos, fileSize;
 		// starting position in archive and size of real file image
 public:
-	DATARCHIVE_API IOStream(HANDLE file, long pos, long size) : hFile(file), beginPos(pos), fileSize(size) { 
-	  SetFilePointer(hFile, beginPos, NULL, FILE_BEGIN);
+	DATARCHIVE_API IOStream(FILE* file, long pos, long size) : hFile(file), beginPos(pos), fileSize(size) {
+	  fseek(hFile, beginPos, SEEK_SET);
 	};
 	DATARCHIVE_API virtual ~IOStream() {};
 
@@ -39,23 +40,22 @@ public:
 
 class CPlainFile: public IOStream {
 public:
-	DATARCHIVE_API CPlainFile (HANDLE file, long pos, long size):
+	DATARCHIVE_API CPlainFile (FILE* file, long pos, long size):
 		IOStream (file, pos, size) {};
 	DATARCHIVE_API virtual long seek (long dist, int from);
-	DATARCHIVE_API virtual long tell() { return SetFilePointer(hFile, 0, NULL, FILE_CURRENT) - beginPos; };
+	DATARCHIVE_API virtual long tell() { return ftell(hFile) - beginPos; };
 	DATARCHIVE_API virtual int read (void* buf, long toRead, long* read);
 };
 
 class CPackedFile: public IOStream {
 protected:
-	uint8_t *skipper,
-		*inBuf;
+	uint8_t *skipper, *inBuf;
 	long packedSize;
 	long curPos; // position from beginning of unpacked image
 	virtual void skip (long dist);
 	virtual void reset() = 0;
 public:
-	DATARCHIVE_API CPackedFile (HANDLE file, long pos, long size, long packed):
+	DATARCHIVE_API CPackedFile (FILE* file, long pos, long size, long packed):
 		IOStream (file, pos, size),
 		packedSize (packed),
 		curPos (0),
@@ -74,7 +74,7 @@ class InflatorStream: public CPackedFile {
 protected:
 	z_stream stream;
 public:
-	DATARCHIVE_API InflatorStream (HANDLE file, long pos, long size, long packed):
+	DATARCHIVE_API InflatorStream (FILE* file, long pos, long size, long packed):
 		CPackedFile (file, pos, size, packed) {
 			stream. zalloc = Z_NULL;
 			stream. zfree = Z_NULL;
@@ -91,7 +91,8 @@ public:
 protected:
 	virtual void reset() {
 		inflateReset (&stream);
-		SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
+		fseek(hFile, beginPos, SEEK_SET);
+		//SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
 		curPos = 0;
 		stream. next_in = Z_NULL;
 		stream. avail_in = 0;
@@ -113,7 +114,7 @@ protected:
 	#endif
 	CunLZSS* decompressor;
 public:
-	DATARCHIVE_API C_LZ_BlockFile (HANDLE file, long pos, long size, long packed):
+	DATARCHIVE_API C_LZ_BlockFile (FILE* file, long pos, long size, long packed):
 		CPackedFile (file, pos, size, packed)
 		#ifdef USE_LZ_BLOCKS
 			,
@@ -132,7 +133,8 @@ public:
 	DATARCHIVE_API virtual int read (void* buf, long toRead, long* read);
 protected:
 	virtual void reset() {
-		SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
+	  fseek(hFile, beginPos, SEEK_SET);
+		//SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
 		curPos = 0;
 		#ifdef USE_LZ_BLOCKS
 			currentBlock = 0;
