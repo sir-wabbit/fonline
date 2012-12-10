@@ -225,11 +225,11 @@ int C_LZ_BlockFile::read (void* buf, long toRead, long* read) {
 	while (toRead && curPos < fileSize) {
 		if ( !decompressor->left() ) {
 			unsigned short lhdr;
-			DWORD read_cnt;
+			size_t read_cnt;
 			fread(&lhdr, 2, 1, hFile);
 			//ReadFile (hFile, &lhdr, 2, &read_cnt, NULL);
 			lhdr = ((lhdr & 0xFF00) >> 8) + ((lhdr & 0x00FF) << 8);
-      fread(inBuf, 1, lhdr & 0x7FFF, hFile);
+      read_cnt = fread(inBuf, 1, lhdr & 0x7FFF, hFile);
       //ReadFile (hFile, inBuf, lhdr & 0x7FFF, &read_cnt, NULL);
 			decompressor->takeNewData (inBuf, read_cnt,	(lhdr & 0x8000) == 0);
 #ifdef USE_LZ_BLOCKS
