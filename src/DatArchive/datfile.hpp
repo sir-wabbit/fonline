@@ -21,7 +21,7 @@ enum
    ERR_FILE_NOT_SUPPORTED2,
 };
 
-typedef std::map<std::string, uint8_t*> IndexMap;
+typedef std::map<std::string, const uint8_t*> IndexMap;
 
 struct DATArchiveInfo {
   DATArchiveInfo() : FileSizeFromDat(0), TreeSize(0), FilesTotal(0), treePtr(0) { }
@@ -55,8 +55,6 @@ public:
   DATARCHIVE_API bool Init(char* filename);
   DATARCHIVE_API bool IsLoaded();
 
-  DATARCHIVE_API bool FindFile(const std::string& fname);
-
   DATARCHIVE_API bool DATOpenFile(char* fname);
   DATARCHIVE_API uint64_t DATGetFileSize();
   DATARCHIVE_API bool DATReadFile(void* buffer, size_t numberOfBytesToRead, size_t* numberOfBytesRead);
@@ -64,21 +62,15 @@ public:
   
   unsigned int error;
   
-private:
-  int ReadTree();
-  void IndexingDAT();
+private:  
+  FILE* fileStream;
   
   DATArchiveInfo archive;
   DATFileInfo file;
 
   bool lError;
 
-  FILE* hFile; //Handles: (DAT) files
-
-  uint8_t* ptr, *buff,*ptr_end;
-  //in buff - DATtree, ptr - pointer
-
-  IOStream* reader; // reader for current file in DAT-archive
+  IOStream* reader;
 };
 
 
