@@ -11,7 +11,7 @@ int CServer::RefreshZoneMasks()
 	int zx,zy;
 	bool not_all=false;
 
-	if(!fm.LoadFile("maps_westland.bmp",PT_MASKS)) not_all=true;
+	if(!fm.LoadFile("maps_westland.bmp",PT_SERVER_MASKS)) not_all=true;
 	else
 	{
 		for(zx=0;zx<GM_MAXZONEX;++zx)
@@ -22,7 +22,7 @@ int CServer::RefreshZoneMasks()
 					UNSETFLAG(gm_zone[zx][zy].district,DISTRICT_WESTLAND);
 	}
 
-	if(!fm.LoadFile("maps_mountain.bmp",PT_MASKS)) not_all=true;
+	if(!fm.LoadFile("maps_mountain.bmp",PT_SERVER_MASKS)) not_all=true;
 	else
 	{
 		for(zx=0;zx<GM_MAXZONEX;++zx)
@@ -33,7 +33,7 @@ int CServer::RefreshZoneMasks()
 					UNSETFLAG(gm_zone[zx][zy].district,DISTRICT_MOUNTAINS);
 	}
 
-	if(!fm.LoadFile("maps_forest.bmp",PT_MASKS)) not_all=true;
+	if(!fm.LoadFile("maps_forest.bmp",PT_SERVER_MASKS)) not_all=true;
 	else
 	{
 		for(zx=0;zx<GM_MAXZONEX;++zx)
@@ -44,7 +44,7 @@ int CServer::RefreshZoneMasks()
 					UNSETFLAG(gm_zone[zx][zy].district,DISTRICT_FOREST);
 	}
 
-	if(!fm.LoadFile("maps_ocean.bmp",PT_MASKS)) not_all=true;
+	if(!fm.LoadFile("maps_ocean.bmp",PT_SERVER_MASKS)) not_all=true;
 	else
 	{
 		for(zx=0;zx<GM_MAXZONEX;++zx)
@@ -55,7 +55,7 @@ int CServer::RefreshZoneMasks()
 					UNSETFLAG(gm_zone[zx][zy].district,DISTRICT_OCEAN);
 	}
 
-	if(!fm.LoadFile("mobs_power.bmp",PT_MASKS)) not_all=true;
+	if(!fm.LoadFile("mobs_power.bmp",PT_SERVER_MASKS)) not_all=true;
 	else
 	{
 		for(zx=0;zx<GM_MAXZONEX;++zx)
@@ -238,7 +238,7 @@ int CServer::LoadAllMaps()
 		strcpy(fnam,(*it_m).second.c_str());
 		LogExecStr("\t%s...",fnam);
 
-		if(fm.LoadFile(fnam,PT_MAPS))
+		if(fm.LoadFile(fnam,PT_SERVER_MAPS))
 		{
 			
 		}

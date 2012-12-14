@@ -205,20 +205,23 @@ solution "FOnlineOpenSource"
     kind "SharedLib"
     language "C++"
     
+    defines "FONLINE_FILEMANAGER_DYNAMIC"
+    defines "FONLINE_FILEMANAGER_EXPORTS"
+    
     links "DatArchive"
+    links "FOnlineCommon"
     
     includedirs { "src", "inc" }
-    defines "FONLINE_FILEMANAGER_DLL"
     
     files { "src/FOnlineFileManager/**.cpp",
             "src/FOnlineFileManager/**.hpp" }
   
   project "FOnlineCommon"
-    kind "StaticLib"
+    kind "SharedLib"
     language "C++"
     
-    --defines { "FONLINE_COMMON_DYNAMIC" }
-    --defines { "FONLINE_COMMON_EXPORTS" }
+    defines { "FONLINE_COMMON_DYNAMIC" }
+    defines { "FONLINE_COMMON_EXPORTS" }
     
     includedirs { "inc", "src" }
     
@@ -227,6 +230,13 @@ solution "FOnlineOpenSource"
       "src/FOnlineCommon/**.cpp",
       "src/FOnlineCommon/**.rc"
     }
+    
+    -- DirectX
+    includedirs { "dx8sdk/include" }
+    configuration "x32"
+      libdirs { "dx8sdk/lib" }
+      links { "d3dx8", "d3d8", "dinput8", "dxguid", "dxerr8", "wsock32", "dsound" }
+      linkoptions { "/nodefaultlib:libci.lib" }
   
   project "IniFile"
     kind "SharedLib"

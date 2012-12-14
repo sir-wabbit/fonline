@@ -41,7 +41,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInst, LPSTR lpCmdLi
 	  return -1;
 	}
 	
-	if (!OpenLogFile()) {
+	if (!OpenLogFile("FOnlineClient.log")) {
+	  ReportErrorMessage("IO error.", "Could not open log file.");
 		return -1;
 	}
 
