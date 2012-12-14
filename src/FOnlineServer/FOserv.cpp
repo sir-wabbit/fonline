@@ -1071,6 +1071,8 @@ void CServer::Finish()
 	closesocket(s);
 
 	//FinishScriptSystem();
+	NPC_ClearAll();
+	ClearStaticObjects();
 	ClearClients();
 	UnloadSocials();
 	sql.Finish_mySQL();

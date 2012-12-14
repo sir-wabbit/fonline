@@ -73,6 +73,7 @@ DWORD WINAPI GameLoopThread(void *);
 
 		SAFEDEL(serv);
 		_CrtDumpMemoryLeaks();
+		SimpleLeakDetector::PrintAllLeaks();
 
 		return 0;
 	}
@@ -157,7 +158,7 @@ DWORD WINAPI GameLoopThread(void *);
 		
 		serv->RunGameLoop();
 	
-		serv->Finish();
+		serv->Finish();    
 
 	GAMELOOPEND:	
 		hGameThread=NULL;

@@ -121,7 +121,7 @@ struct npc_info
 	npc_dialog compiled_dialog;
 
 	npc_info():talking(0){};
-	//~npc_info(){SAFEDELA(dialogs);};
+	~npc_info(){ };
 };
 
 const uint8_t MOB_COND_PASSIVE			=0;

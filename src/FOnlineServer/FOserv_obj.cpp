@@ -77,6 +77,14 @@ int CServer::DelObjFromListInd(CCritter* acl, uint32_t del_ind)
 	return 0;
 }
 
+void CServer::ClearStaticObjects() {
+  for(stat_map::iterator it=all_s_obj.begin(); it!=all_s_obj.end(); it++) {
+    SAFEDEL((*it).second);
+  }
+  
+  all_s_obj.clear();
+}
+
 int CServer::LoadAllStaticObjects()
 {
 	LogExecStr("Загрузка статических объектов...");
@@ -85,11 +93,7 @@ int CServer::LoadAllStaticObjects()
 	FILE *cf2;
 	params_map::iterator it_o;
 
-	for(stat_map::iterator it=all_s_obj.begin(); it!=all_s_obj.end(); it++)
-	{
-		SAFEDEL((*it).second);
-		all_s_obj.erase(it);
-	}
+	ClearStaticObjects();
 
 	if((cf=fopen("objects\\all_obj.st","rt"))==NULL)
 	{
@@ -122,6 +126,7 @@ int CServer::LoadAllStaticObjects()
 		it_o=object_map.find(tmpc);
 		if(it_o==object_map.end())
 		{
+		  delete new_obj;
 			LogExecStr("Параметр |%s| не найден",tmpc);
 			return 0;
 		}
@@ -134,6 +139,7 @@ int CServer::LoadAllStaticObjects()
 			it_o=object_map.find(tmpc);
 			if(it_o==object_map.end())
 			{
+			  delete new_obj;
 				LogExecStr("Параметр |%s| не найден",tmpc);
 				return 0;
 			}
