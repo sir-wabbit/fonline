@@ -169,7 +169,7 @@ int FileManager::GetStr(char* str,uint32_t len)
 	return 1;
 }
 
-int FileManager::CopyMem(void* ptr, size_t size)
+int FileManager::Read(void* ptr, size_t size)
 {
 	if(position+size>fileSize) return 0;
 

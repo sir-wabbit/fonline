@@ -122,7 +122,8 @@ solution "fonline-open-source"
             "SimpleLeakDetector",
             "LZSS",
             "ACMDecompressor",
-            "DatArchive" }
+            "DatArchive",
+            "FOnlineFileManager" }
     
     files { 
       "src/client/**.hpp", 
@@ -169,7 +170,8 @@ solution "fonline-open-source"
     includedirs { "inc", "src" }
     
     links { "FOnlineBase",
-            "IniFile" }
+            "IniFile",
+            "FOnlineFileManager" }
     
     files { 
       "src/server/**.hpp", 
@@ -265,3 +267,15 @@ solution "fonline-open-source"
     includedirs { "src" }
     files { "src/DatArchive/**.cpp",
             "src/DatArchive/**.hpp" }
+  
+  project "FOnlineFileManager"
+    kind "SharedLib"
+    language "C++"
+    
+    links "DatArchive"
+    
+    includedirs { "src", "inc" }
+    defines "FONLINE_FILEMANAGER_DLL"
+    
+    files { "src/FOnlineFileManager/**.cpp",
+            "src/FOnlineFileManager/**.hpp" }

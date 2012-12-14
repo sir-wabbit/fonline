@@ -31,10 +31,17 @@
 
 extern char pathlst[][50];
 
+/*enum {
+  FM_ERROR_NONE = 0,
+  FM_ERROR_NO_MASTER_DAT,
+  FM_ERROR_FILE_NOT_FOUND,
+  FM_ERROR_NO_CRITTER_DAT,
+  FM_ERROR_NO_FONLINE_DAT
+} FileManagerError;*/
 
 class FileManager {
 public:
-	int Init();
+	int Init(const char* masterDatPath, const char* critterDatPath, const char* fonlineDatPath);
 	void Clear();
 	void UnloadFile();
 	int LoadFile(char* fname, int PathType);
@@ -50,10 +57,10 @@ public:
 	uint16_t GetRWord(); //!Cvet
 	uint32_t GetDWord();
 	uint32_t GetRDWord(); //!Cvet
-	int CopyMem(void* ptr, size_t size);
+	int Read(void* ptr, size_t size);
 
-	uint8_t* GetBuf(){ return buffer; }; //!Cvet
-	uint32_t GetFsize(){ return fileSize; }; //!Cvet
+	uint8_t* GetBufferPtr(){ return buffer; }; //!Cvet
+	uint32_t GetFileSize(){ return fileSize; }; //!Cvet
 
 
 	FileManager(): initialized(0),file(NULL),fileSize(0),position(0),buffer(NULL){};
@@ -74,3 +81,5 @@ private:
 };
 
 #endif
+
+//#include <FOnlineFileManager/FileManager.hpp>
