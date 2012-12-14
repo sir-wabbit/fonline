@@ -5,6 +5,44 @@
 #include "stdafx.h"
 #include "FOserv.h"
 
+void CServer::NPC_ClearAll() {
+  for(cl_map::iterator it=pc.begin(); it!=pc.end(); it++) {
+    if (it->second->i_npc != NULL) {
+      npc_info* info = it->second->i_npc;
+      
+      for(dialogs_map::iterator it=info->dialogs.begin(); it!=info->dialogs.end(); it++) {
+        npc_dialog* dialog = it->second;
+        
+        for (answers_list::iterator it = dialog->answers.begin(); it != dialog->answers.end(); ++it) {
+          answer* answ = *it;
+          
+          for (demand_list::iterator it = answ->demands.begin(); it != answ->demands.end(); ++it) {
+            SAFEDEL(*it);
+          }
+          answ->demands.clear();
+          
+          for (result_list::iterator it = answ->results.begin(); it != answ->results.end(); ++it) {
+            SAFEDEL(*it);
+          }
+          answ->results.clear();
+          
+          SAFEDEL(*it);
+        }
+        
+        dialog->answers.clear();
+      
+        SAFEDEL(it->second);
+      }
+      
+      info->dialogs.clear();
+    }
+  
+    SAFEDEL(it->second);
+  }
+  
+  pc.clear();
+}
+
 int CServer::NPC_LoadAll()
 {
 	char file_name[256];

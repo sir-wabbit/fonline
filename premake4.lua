@@ -175,7 +175,8 @@ solution "FOnlineOpenSource"
     
     links { "FOnlineCommon",
             "FOnlineFileManager",
-            "IniFile" }
+            "IniFile",
+            "SimpleLeakDetector" }
     
     files { 
       "src/FOnlineServer/**.hpp", 

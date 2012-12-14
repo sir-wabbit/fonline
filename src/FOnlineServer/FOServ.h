@@ -18,6 +18,7 @@
 #include "sql.h"
 #include "Critter.h"
 #include <FOnlineFileManager/FileManager.hpp>
+#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 #define PATH_OBJECTS ".\\objects\\"
 #define PATH_NPC ".\\npc\\"
@@ -159,7 +160,16 @@ struct encaunter_info
 	map_info* emap;
 
 	encaunter_info():num(0),district(DISTRICT_WESTLAND),max_groups(0),count_groups(0),emap(NULL){};
-	~encaunter_info(){SAFEDEL(emap);};
+	~encaunter_info(){
+	  // Apparently map info is not owned by encAunter_info,
+	  // thus no need to free it.
+	  
+	  //if (emap != NULL) {
+	  //  delete emap;
+	  //  emap = NULL;
+	  //}
+	};
+	
 };
 
 struct gmap_dot
@@ -298,6 +308,7 @@ class CServer
 	uint32_t cur_obj_id;
 
 //статика
+  void ClearStaticObjects();
 	int LoadAllStaticObjects();
 
 //динамика
@@ -367,6 +378,7 @@ class CServer
 
 	cl_map pc; //Карта НПЦ
 
+  void NPC_ClearAll();
 	int  NPC_LoadAll();
 	void NPC_Remove(CCritter* npc);
 
