@@ -284,3 +284,18 @@ solution "FOnlineOpenSource"
     includedirs { "src" }
     files { "src/DatArchive/**.cpp",
             "src/DatArchive/**.hpp" }
+            
+  project "UnitTest++"
+    kind "StaticLib"
+    language "C++"
+    
+    files { "src/UnitTest++/*.cpp",
+            "src/UnitTest++/*.h" }
+            
+    configuration "windows"
+      files { "src/UnitTest++/Win32/**.cpp",
+              "src/UnitTest++/Win32/**.h" }
+              
+    configuration "linux"
+      files { "src/UnitTest++/Posix/**.cpp",
+              "src/UnitTest++/Posix/**.h" }
