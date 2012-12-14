@@ -14,7 +14,7 @@
 #include "CFileMngr.h"
 #include "netproto.h"
 
-#include <base/math/rect.hpp>
+#include <FOnlineCommon/math/rect.hpp>
 
 //!Cvet ++++
 #define COLOR_DEFAULT		D3DCOLOR_ARGB(255,((opt_gcolor_default >> 16) & 0xFF)+opt_light,\

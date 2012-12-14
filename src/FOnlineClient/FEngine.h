@@ -10,8 +10,8 @@
 #include "CFont.h"
 #include "netproto.h"
 
-#include <base/buffer.hpp>
-#include <base/math/rect.hpp>
+#include <FOnlineCommon/buffer.hpp>
+#include <FOnlineCommon/math/rect.hpp>
 
 /********************************************************************
 	created:	2005   22:04

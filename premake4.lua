@@ -89,7 +89,7 @@ newaction {
   end
 }
 
-solution "fonline-open-source"
+solution "FOnlineOpenSource"
   configurations { "debug", "release" }
   platforms { "x32" }
   location "build"
@@ -121,24 +121,24 @@ solution "fonline-open-source"
         
     includedirs { "inc", "src" }
     
-    links { "FOnlineBase",
+    links { "FOnlineCommon",
+            "FOnlineFileManager",
             "IniFile",
             "SimpleLeakDetector",
             "LZSS",
             "ACMDecompressor",
-            "DatArchive",
-            "FOnlineFileManager" }
+            "DatArchive" }
     
     files { 
-      "src/client/**.hpp", 
-      "src/client/**.h", 
-      "src/client/**.cpp",
-      "src/client/**.rc"
+      "src/FOnlineClient/**.hpp", 
+      "src/FOnlineClient/**.h", 
+      "src/FOnlineClient/**.cpp",
+      "src/FOnlineClient/**.rc"
     }
     
     resource("data", "data")
     
-    resincludedirs { "src/client" }
+    resincludedirs { "src/FOnlineClient" }
     
     -- DirectX
     includedirs { "dx8sdk/include" }
@@ -173,18 +173,18 @@ solution "fonline-open-source"
     
     includedirs { "inc", "src" }
     
-    links { "FOnlineBase",
-            "IniFile",
-            "FOnlineFileManager" }
+    links { "FOnlineCommon",
+            "FOnlineFileManager",
+            "IniFile" }
     
     files { 
-      "src/server/**.hpp", 
-      "src/server/**.h", 
-      "src/server/**.cpp",
-      "src/server/**.rc"
+      "src/FOnlineServer/**.hpp", 
+      "src/FOnlineServer/**.h", 
+      "src/FOnlineServer/**.cpp",
+      "src/FOnlineServer/**.rc"
     }
     
-    resincludedirs { "src/server" }
+    resincludedirs { "src/FOnlineServer" }
     
     -- MySQL
     windowsLibDir("libmysql")
@@ -200,19 +200,32 @@ solution "fonline-open-source"
     windowsLibDir("zlib")
     windowsBinary("zlib", "zlib.dll")
     links "zlib"
-      
-  project "FOnlineBase"
+
+  project "FOnlineFileManager"
     kind "SharedLib"
     language "C++"
     
-    defines { "FO_BASE_DLL" }
+    links "DatArchive"
+    
+    includedirs { "src", "inc" }
+    defines "FONLINE_FILEMANAGER_DLL"
+    
+    files { "src/FOnlineFileManager/**.cpp",
+            "src/FOnlineFileManager/**.hpp" }
+  
+  project "FOnlineCommon"
+    kind "StaticLib"
+    language "C++"
+    
+    --defines { "FONLINE_COMMON_DYNAMIC" }
+    --defines { "FONLINE_COMMON_EXPORTS" }
     
     includedirs { "inc", "src" }
     
     files {
-      "src/base/**.hpp",
-      "src/base/**.cpp",
-      "src/base/**.rc"
+      "src/FOnlineCommon/**.hpp",
+      "src/FOnlineCommon/**.cpp",
+      "src/FOnlineCommon/**.rc"
     }
   
   project "IniFile"
@@ -271,15 +284,3 @@ solution "fonline-open-source"
     includedirs { "src" }
     files { "src/DatArchive/**.cpp",
             "src/DatArchive/**.hpp" }
-  
-  project "FOnlineFileManager"
-    kind "SharedLib"
-    language "C++"
-    
-    links "DatArchive"
-    
-    includedirs { "src", "inc" }
-    defines "FONLINE_FILEMANAGER_DLL"
-    
-    files { "src/FOnlineFileManager/**.cpp",
-            "src/FOnlineFileManager/**.hpp" }

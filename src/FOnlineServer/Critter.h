@@ -15,7 +15,7 @@
 
 #include "netproto.h"
 #include <zlib/zlib.h>
-#include <base/buffer.hpp>
+#include <FOnlineCommon/buffer.hpp>
 //#include "sql.h"
 
 
