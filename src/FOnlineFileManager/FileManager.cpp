@@ -136,9 +136,27 @@ char pathlst[][50]=
 	"sound\\sfx\\",
 
 	"text\\english\\game\\",
+	
+  "maps\\",
+  "maps\\wm_mask\\",
 };
 
 FileManager::FileManager(): initialized(0),file(NULL),fileSize(0),position(0),buffer(NULL) { };
+
+int FileManager::Init() {
+  WriteLog("FileManager Initialization...\n");
+
+  strcpy(fo_dat, "./");
+
+  WriteLog("FileManager Initialization complete\n");
+  initialized=1;
+  return 1;
+}
+
+FileManager::~FileManager() {
+  Clear();
+  initialized = 0;
+}
 
 int FileManager::Init(const char* masterDatPath, const char* critterDatPath, const char* fonlineDatPath) {
   assert(masterDatPath != NULL);

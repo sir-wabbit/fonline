@@ -40,11 +40,15 @@
 
 #define PT_TXT_GAME     18
 
+#define PT_SERVER_MAPS	19
+#define PT_SERVER_MASKS	20
+
 FONLINE_FILEMANAGER_API char pathlst[][50];
 
 
 class FileManager {
 public:
+  FONLINE_FILEMANAGER_API int Init();
   FONLINE_FILEMANAGER_API int Init(const char* masterDatPath, const char* critterDatPath, const char* fonlineDatPath);
   FONLINE_FILEMANAGER_API void Clear();
   FONLINE_FILEMANAGER_API void UnloadFile();
@@ -68,6 +72,7 @@ public:
 
 
   FONLINE_FILEMANAGER_API FileManager();
+  FONLINE_FILEMANAGER_API ~FileManager();
   
 private:
   bool initialized;

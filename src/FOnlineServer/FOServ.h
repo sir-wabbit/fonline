@@ -17,7 +17,7 @@
 //!Cvet ++++
 #include "sql.h"
 #include "Critter.h"
-#include "CFileMngr.h"
+#include <FOnlineFileManager/FileManager.hpp>
 
 #define PATH_OBJECTS ".\\objects\\"
 #define PATH_NPC ".\\npc\\"
