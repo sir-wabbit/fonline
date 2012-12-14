@@ -52,7 +52,11 @@ function resource(src, dst, always)
   end
 
   copy(src, path.join("build", dst), always)
-  copy(src, path.join("bin", dst), always)
+  forEachWinPlatform(function (action, arch, conf)
+    setConfig(action, arch, conf)    
+    copy(src, path.join("bin", path.join(_config_path, dst)), always)
+  end)
+  configuration "*"
 end
 
 function windowsLibDir(name)
@@ -69,7 +73,7 @@ function windowsBinary(basePath, dllName)
     setConfig(action, arch, conf)
     
     local libBase = path.join("lib", path.join(basePath, _config_path))
-    copy(path.join(libBase, dllName), path.join("bin", path.join(_config_path, dllName)), true)
+    copy(path.join(libBase, dllName), path.join("bin", path.join(_config_path, dllName)))
   end)
   configuration "*"
 end
