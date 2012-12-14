@@ -4,7 +4,7 @@
 #include "CSpriteManager.h"
 #include "CFont.h"
 #include "netproto.h"
-#include <base/buffer.hpp>
+#include <FOnlineCommon/buffer.hpp>
 
 const uint8_t FIRST_FRAME	=0;
 const uint8_t LAST_FRAME	=200;
