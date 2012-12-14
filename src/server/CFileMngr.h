@@ -33,10 +33,10 @@ public:
 	uint16_t GetRWord(); //!Cvet
 	uint32_t GetDWord();
 	uint32_t GetRDWord(); //!Cvet
-	int CopyMem(void* ptr, size_t size);
+	int Read(void* ptr, size_t size);
 
-	char* GetBuf(){ return buffer; }; //!Cvet
-	size_t GetFsize(){ return fileSize; }; //!Cvet
+	char* GetBufferPtr(){ return buffer; }; //!Cvet
+	size_t GetFileSize(){ return fileSize; }; //!Cvet
 
 
 	FileManager(): initialized(0), fileSize(0),position(0),buffer(NULL){};

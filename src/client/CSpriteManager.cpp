@@ -86,7 +86,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
 
 	lpWaitBuf=new MYVERTEX[maxSpriteCount*4];
 
-	if(!fm.Init()) return 0;
+	if(!fm.Init(opt_masterpath.c_str(), opt_critterpath.c_str(), opt_fopath.c_str())) return 0;
 
 	if(!LoadCritTypes()) return 0; //!Cvet
 
@@ -200,7 +200,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	for(int i=0;i < h; i++) 
 	{
 		fm.SetCurrentPosition(ptr);
-		fm.CopyMem(res+wpos,w);
+		fm.Read(res+wpos,w);
 		wpos+=w;
 		memset(res+wpos,0,aligned_width);
 		wpos+=aligned_width;
@@ -343,7 +343,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	for(int i=0;i < h; i++) 
 	{
 		fm.SetCurrentPosition(ptr);
-		fm.CopyMem(res+wpos,w);
+		fm.Read(res+wpos,w);
 		wpos+=w;
 		memset(res+wpos,0,aligned_width);
 		wpos+=aligned_width;
@@ -636,7 +636,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			for(int i=0;i < h; i++) 
 			{
 				fm.SetCurrentPosition(ptr);
-				fm.CopyMem(res+wpos,w);
+				fm.Read(res+wpos,w);
 				wpos+=w;
 				memset(res+wpos,0,aligned_width);
 				wpos+=aligned_width;
@@ -711,8 +711,8 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 
 	SpriteInfo* lpinf=new SpriteInfo;
 	fm.SetCurrentPosition(0x4);
-	uint16_t w;fm.CopyMem(&w,2);
-	uint16_t h;fm.CopyMem(&h,2);
+	uint16_t w;fm.Read(&w,2);
+	uint16_t h;fm.Read(&h,2);
 	if(w!=640 || h!=480) return 0;
 	lpinf->w=MODE_WIDTH;
 	lpinf->h=MODE_HEIGHT;
@@ -758,7 +758,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	uint8_t* ppos=res+sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER);
 	for(i=0;i<256;i++)
 	{
-		fm.CopyMem(ppos,3);
+		fm.Read(ppos,3);
 		for(int j=0;j<3;j++)
 			ppos[j]*=4;
 		uint8_t t=ppos[2];
@@ -772,7 +772,7 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	for(i=0;i < h; i++) 
 	{
 		fm.SetCurrentPosition(ptr);
-		fm.CopyMem(res+wpos,w);
+		fm.Read(res+wpos,w);
 		wpos+=w;
 		memset(res+wpos,0,aligned_width);
 		wpos+=aligned_width;
@@ -941,7 +941,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			for(int i=0;i < h; i++) 
 			{
 				fm.SetCurrentPosition(ptr);
-				fm.CopyMem(res+wpos,w);
+				fm.Read(res+wpos,w);
 				wpos+=w;
 				memset(res+wpos,0,aligned_width);
 				wpos+=aligned_width;
@@ -1108,7 +1108,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 		for(int i=0;i < h; i++) 
 		{
 			fm.SetCurrentPosition(ptr);
-			fm.CopyMem(res+wpos,w);
+			fm.Read(res+wpos,w);
 			wpos+=w;
 			memset(res+wpos,0,aligned_width);
 			wpos+=aligned_width;
@@ -1119,7 +1119,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 	for(int i=0;i < h; i++) 
 	{
 		fm.SetCurrentPosition(ptr);
-		fm.CopyMem(res+wpos,w);
+		fm.Read(res+wpos,w);
 		wpos+=w;
 		memset(res+wpos,0,aligned_width);
 		wpos+=aligned_width;

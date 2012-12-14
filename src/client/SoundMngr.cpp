@@ -9,7 +9,7 @@ int SoundManager::Init()
 
 	WriteLog("SoundManager Init\n");
 
-	if(!fm.Init()) return 0;;
+	if (!fm.Init(opt_masterpath.c_str(), opt_critterpath.c_str(), opt_fopath.c_str())) return 0;;
 
 	if(DirectSoundCreate8(0,&lpDS,0)!=DS_OK)
 	{
@@ -202,7 +202,7 @@ int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 
 	if(!dw_buf) { WriteLog("Ошибка - Загрузка звука - .Неизвестный формат аудио файла\n"); return 0; }
 
-	fm.CopyMem(fformat,16);
+	fm.Read(fformat,16);
 
 	fformat->cbSize=0;
 
@@ -227,7 +227,7 @@ int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 
 	*sample_data=new unsigned char[dw_buf];
 
-	if(!fm.CopyMem(*sample_data,dw_buf)) { WriteLog("Ошибка - Загрузка звука - Звуковой файл битый\n"); return 0; }
+	if(!fm.Read(*sample_data,dw_buf)) { WriteLog("Ошибка - Загрузка звука - Звуковой файл битый\n"); return 0; }
 
 	return 1;
 }
@@ -240,7 +240,7 @@ int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 //	int step_data_size;
 
   ACMDecompressor::Context acm;
-  bool acmInitialized = ACMDecompressor::Init(&acm, fm.GetBuf(),fm.GetFsize(),channel,freq,data_size);
+  bool acmInitialized = ACMDecompressor::Init(&acm, fm.GetBufferPtr(),fm.GetFileSize(),channel,freq,data_size);
 	data_size*=2;
 
 	if (!acmInitialized) { 

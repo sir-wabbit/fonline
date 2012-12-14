@@ -78,8 +78,8 @@ int CHexField::Init(CSpriteManager* lpsm)
 	}
 	lpSM=lpsm;
 
-	if(!fm.Init()) return 0;
-	if(!fm_map.Init()) return 0;
+	if(!fm.Init(opt_masterpath.c_str(), opt_critterpath.c_str(), opt_fopath.c_str())) return 0;
+	if(!fm_map.Init(opt_masterpath.c_str(), opt_critterpath.c_str(), opt_fopath.c_str())) return 0;
 
 	if(!LoadList("tiles.lst",PT_ART_TILES,&tile_fnames)) return 0;
 	if(!LoadList("items.lst",PT_ART_ITEMS,&item_fnames)) return 0; //!Cvet

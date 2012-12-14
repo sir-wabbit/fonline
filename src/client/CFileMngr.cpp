@@ -1,10 +1,14 @@
-#include "stdafx.h"
-
 #include "CFileMngr.h"
+
 #include "common.h"
 
+#include <Windows.h>
+
 #include <stdio.h>
+#include <sys/stat.h>
 #include <assert.h>
+
+#include <string>
 
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
@@ -112,65 +116,86 @@ char pathlst[][50]=
 	"text\\english\\game\\",
 };
 
+namespace {
 
-int FileManager::Init()
-{  
+/*const char* ErrorToString(FileManagerError err) {
+  switch(err) {
+    case FM_ERROR_NONE:           return "<none>";
+    case FM_ERROR_NO_MASTER_DAT:  return "Could not find master.dat / or master data directory.";
+    case FM_ERROR_FILE_NOT_FOUND: return "Could not find file.";
+    case FM_ERROR_NO_CRITTER_DAT: return "Could not find critter.dat / or critter data directory.";
+    case FM_ERROR_NO_FONLINE_DAT: return "Could not find fonline.dat / or fonline data directory."
+  }
+}*/
+
+bool IsDir(const char* path) {
+  struct stat buf;
+  
+  // Empty path is equivalent to ".", must be true.
+  if (path[0] == 0) {
+      return true;
+  }
+  
+  if (stat(path, &buf) == 0) {
+      return buf.st_mode & S_IFDIR != 0;
+  }
+  
+  return false;
+}
+
+};
+
+
+int FileManager::Init(const char* masterDatPath, const char* critterDatPath, const char* fonlineDatPath) {
+  assert(masterDatPath != NULL);
+  assert(critterDatPath != NULL);
+  assert(fonlineDatPath != NULL);
+  
+  assert(masterDatPath[0] != 0);
+  assert(critterDatPath[0] != 0);
+  assert(fonlineDatPath[0] != 0);
+	
 	WriteLog("FileManager Initialization...\n");
 	
-	master_dat[0]=0;
+	// FIXME[12.12.2012 alex]: copypasta
 	
-	if(!opt_masterpath[0]) {
-		ReportErrorMessage("FileManager Init","Не найден файл %s или в нем нет раздела master_dat",CFG_FILE);
-		return 0;
-	}
+	master_dat[0] = 0;
+	strcat(master_dat, masterDatPath);
 	
-	if(opt_masterpath[0]=='.') strcat(master_dat,".");
-	else if(opt_masterpath[1]!=':') strcat(master_dat,"..\\");
-	
-	strcat(master_dat,opt_masterpath.c_str());
-	
-	if(strstr(master_dat, ".dat")) {
-		lpDAT.Init(master_dat);
-		
-		if(lpDAT.error == ERR_CANNOT_OPEN_FILE) {
-			ReportErrorMessage("FileManager Init>","файл %s не найден",master_dat);
-			return 0;
-		}
+	if (!IsDir(master_dat)) {
+    lpDAT.Init(master_dat);
+
+    if(lpDAT.error == ERR_CANNOT_OPEN_FILE) {
+      ReportErrorMessage("FileManager Init>","файл %s не найден",master_dat);
+      return 0;
+    }
 	} else {
-		if (master_dat[strlen(master_dat)-1]!='\\') strcat(master_dat,"\\");
+	  strcat(master_dat, "/");
 	}
 
-	crit_dat[0]=0;
-	if(!opt_critterpath[0])
-	{
-		ReportErrorMessage("FileManager Init","Не найден файл %s или в нем нет раздела critter_dat",CFG_FILE);
-		return 0;
-	}
+	crit_dat[0] = 0;
+	strcat(crit_dat, critterDatPath);
 	
-	if(opt_critterpath[0]=='.') strcat(crit_dat,".");
-		else if(opt_critterpath[1]!=':') strcat(crit_dat,"..\\");
-	strcat(crit_dat,opt_critterpath.c_str());
-	if(strstr(crit_dat,".dat"))
-	{
-		lpDATcr.Init(crit_dat);		
-		if(lpDATcr.error==ERR_CANNOT_OPEN_FILE)
-		{
+	if (!IsDir(crit_dat)) {
+		lpDATcr.Init(crit_dat);
+		
+		if(lpDATcr.error==ERR_CANNOT_OPEN_FILE) {
 			ReportErrorMessage("FileManager Init>","файл %s не найден",crit_dat);
 			return 0;
 		}
 	}
-	else
-	{
-		if(crit_dat[strlen(crit_dat)-1]!='\\') strcat(crit_dat,"\\");
+	else {
+	  strcat(crit_dat, "/");
 	}
 
-	if(!opt_fopath[0])
-	{
-		ReportErrorMessage("FileManager Init","Не найден файл %s или в нем нет раздела fonline_dat",CFG_FILE);
-		return 0;
-	}
-	strcpy(fo_dat,opt_fopath.c_str());
-	if(fo_dat[strlen(fo_dat)-1]!='\\') strcat(fo_dat,"\\");
+  fo_dat[0] = 0;
+	strcpy(fo_dat, fonlineDatPath);
+  if (!IsDir(fo_dat)) {
+    // FIXME[12.12.2012 alex]: not supported yet.
+    assert(false);
+  } else {
+    strcat(fo_dat, "/");
+  }
 
 	WriteLog("FileManager Initialization complete\n");
 	initialized=1;
@@ -195,12 +220,6 @@ int FileManager::LoadFile(char* fileName, int pathType)
 {
   assert(fileName != NULL);
   assert(initialized);
-
-	if(!initialized)
-	{
-		ReportErrorMessage("FileMngr LoadFile","FileMngr не был иницилазирован до загрузки файла %s",fileName);
-		return 0;
-	}
 	
 	UnloadFile();
 
@@ -311,7 +330,7 @@ int FileManager::GetStr(char* str,uint32_t len)
 	return 1;
 }
 
-int FileManager::CopyMem(void* ptr, size_t size)
+int FileManager::Read(void* ptr, size_t size)
 {
 	if(position+size>fileSize) return 0;
 
