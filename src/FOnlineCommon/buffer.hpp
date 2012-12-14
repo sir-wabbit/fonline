@@ -1,7 +1,7 @@
 #ifndef FO_BASE_BUFFER_HPP_
 #define FO_BASE_BUFFER_HPP_
 
-#include "fo-base.hpp"
+#include "Common.hpp"
 #include <stdint.h>
 
 namespace fonline {
