@@ -9,8 +9,8 @@
 #include <stdint.h>
 #include <string>
 
-#define PT_MAPS		0
-#define PT_MASKS	1
+#define PT_SERVER_MAPS		0
+#define PT_SERVER_MASKS	1
 
 extern char pathlst[][50];
 

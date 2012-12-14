@@ -4,8 +4,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef _WIN32
-  #ifdef FONLINE_FILEMANAGER_DLL
+#if defined(_WIN32)
+  #ifdef FONLINE_FILEMANAGER_EXPORTS
     #define FONLINE_FILEMANAGER_API __declspec(dllexport)
   #else
     #define FONLINE_FILEMANAGER_API __declspec(dllimport)
@@ -40,34 +40,35 @@
 
 #define PT_TXT_GAME     18
 
-extern char pathlst[][50];
+FONLINE_FILEMANAGER_API char pathlst[][50];
 
 
 class FileManager {
 public:
-  int Init();
-  void Clear();
-  void UnloadFile();
-  int LoadFile(char* fname, int PathType);
+  FONLINE_FILEMANAGER_API int Init(const char* masterDatPath, const char* critterDatPath, const char* fonlineDatPath);
+  FONLINE_FILEMANAGER_API void Clear();
+  FONLINE_FILEMANAGER_API void UnloadFile();
+  FONLINE_FILEMANAGER_API int LoadFile(char* fname, int PathType);
 
-  int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet полный путь к файлу
+  FONLINE_FILEMANAGER_API int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet полный путь к файлу
 
-  void SetCurrentPosition(uint32_t pos);
-  void GoForward(uint32_t offs);
+  FONLINE_FILEMANAGER_API void SetCurrentPosition(uint32_t pos);
+  FONLINE_FILEMANAGER_API void GoForward(uint32_t offs);
 
-  int GetStr(char* str,uint32_t len);
-  uint8_t GetByte(); //!Cvet
-  uint16_t GetWord();
-  uint16_t GetRWord(); //!Cvet
-  uint32_t GetDWord();
-  uint32_t GetRDWord(); //!Cvet
-  int Read(void* ptr, size_t size);
+  FONLINE_FILEMANAGER_API int GetStr(char* str,uint32_t len);
+  FONLINE_FILEMANAGER_API uint8_t GetByte(); //!Cvet
+  FONLINE_FILEMANAGER_API uint16_t GetWord();
+  FONLINE_FILEMANAGER_API uint16_t GetRWord(); //!Cvet
+  FONLINE_FILEMANAGER_API uint32_t GetDWord();
+  FONLINE_FILEMANAGER_API uint32_t GetRDWord(); //!Cvet
+  FONLINE_FILEMANAGER_API int Read(void* ptr, size_t size);
 
-  uint8_t* GetBufferPtr(){ return buffer; }; //!Cvet
-  uint32_t GetFileSize(){ return fileSize; }; //!Cvet
+  FONLINE_FILEMANAGER_API uint8_t* GetBufferPtr(){ return buffer; }; //!Cvet
+  FONLINE_FILEMANAGER_API uint32_t GetFileSize(){ return fileSize; }; //!Cvet
 
 
-  FileManager(): initialized(0),file(NULL),fileSize(0),position(0),buffer(NULL){};
+  FONLINE_FILEMANAGER_API FileManager();
+  
 private:
   bool initialized;
 

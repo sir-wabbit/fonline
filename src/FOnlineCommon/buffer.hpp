@@ -8,20 +8,20 @@ namespace fonline {
 
 class Buffer {
 public:
-	FO_BASE_DECL Buffer();
-	FO_BASE_DECL Buffer(size_t alen);
-	FO_BASE_DECL ~Buffer();
+	FONLINE_COMMON_API Buffer();
+	FONLINE_COMMON_API Buffer(size_t alen);
+	FONLINE_COMMON_API ~Buffer();
 
-	FO_BASE_DECL void Reset();
-	FO_BASE_DECL void Write(const void* buf, size_t alen);
-	FO_BASE_DECL void Read(void *buf, size_t alen);
+	FONLINE_COMMON_API void Reset();
+	FONLINE_COMMON_API void Write(const void* buf, size_t alen);
+	FONLINE_COMMON_API void Read(void *buf, size_t alen);
 	
 	// XXX[1.8.2012 alex]: new names
-	FO_BASE_DECL bool IsError() {return error;}
-	FO_BASE_DECL bool NeedProcess() {return (readPosition<writePosition);}
+	FONLINE_COMMON_API bool IsError() {return error;}
+	FONLINE_COMMON_API bool NeedProcess() {return (readPosition<writePosition);}
 	
-	FO_BASE_DECL void EnsureCapacity(size_t capacity);
-	FO_BASE_DECL void EnsureWriteCapacity(size_t dataSize);
+	FONLINE_COMMON_API void EnsureCapacity(size_t capacity);
+	FONLINE_COMMON_API void EnsureWriteCapacity(size_t dataSize);
 
   template<class T> Buffer& operator<<(const T& value) {
     // XXX[1.8.2012 alex]: endianness?

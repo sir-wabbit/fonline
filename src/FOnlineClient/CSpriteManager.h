@@ -11,9 +11,9 @@
 
 #include <assert.h>
 
-#include "CFileMngr.h"
 #include "netproto.h"
 
+#include <FOnlineFileManager/FileManager.hpp>
 #include <FOnlineCommon/math/rect.hpp>
 
 //!Cvet ++++

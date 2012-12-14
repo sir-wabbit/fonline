@@ -666,7 +666,7 @@ void sub_4d3fcc (short *decBuff, int *someBuff, int someSize, int blocks) {
   } else {
     for (int i=0; i<someSize; i++) {
       int* someBuff_ptr = someBuff;
-      if ((blocks >> 1) & 1 != 0) {
+      if (((blocks >> 1) & 1) != 0) {
         row_0 = someBuff_ptr[0];
         row_1 = someBuff_ptr[someSize];
 

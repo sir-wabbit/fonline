@@ -11,12 +11,11 @@
 
 #include <dsound.h>
 
-#include "CFileMngr.h"
-
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 
 #include <ACMDecompressor/ACMDecompressor.hpp>
+#include <FOnlineFileManager/FileManager.hpp>
 
 struct Sound
 {

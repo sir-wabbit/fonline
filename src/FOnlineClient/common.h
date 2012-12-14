@@ -3,6 +3,9 @@
 
 #include <Windows.h>
 
+#include <FOnlineCommon/Common.hpp>
+#include <FOnlineCommon/ErrorHandling.hpp>
+
 #define PP_STRING(a) #a
 #define PP_CONCAT2(a,b)  a##b
 #define PP_CONCAT3(a, b, c) a##b##c
@@ -10,17 +13,6 @@
 #define PP_UNIQUE_LABEL(prefix) PP_UNIQUE_LABEL_(prefix, __LINE__)
 
 void LoadSettings();
-
-int OpenLogFile();
-void CloseLogFile();
-void WriteLog(char* fmt, ...);
-
-void ReportErrorMessage(char* hdr, char* fmt, ...);
-
-char* FormatStdCError(errno_t errorCode);
-char* FormatDirectXError(HRESULT errorCode);
-char* FormatWin32Error(DWORD errCode);
-char* FormatLastWin32Error();
 
 #define CFG_FILE ".\\data\\FOnline.cfg"
 /********************************************************************

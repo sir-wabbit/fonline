@@ -1,6 +1,6 @@
 #include "common.h"
 #include "SoundMngr.h"
-#include "CFileMngr.h"
+#include <FOnlineFileManager/FileManager.hpp>
 //#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 int SoundManager::Init()
