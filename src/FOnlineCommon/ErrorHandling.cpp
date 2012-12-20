@@ -99,7 +99,7 @@ char* FormatLastWin32Error() {
   return result;
 }
 
-void ReportErrorMessage(char* hdr, char* fmt, ...) {
+void ReportErrorMessage(const char* hdr, const char* fmt, ...) {
   assert(hdr != NULL);
   assert(fmt != NULL);
 

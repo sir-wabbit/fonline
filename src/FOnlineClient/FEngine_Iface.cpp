@@ -67,7 +67,7 @@ char* LoginMess[50]=
 
 int FOnlineEngine::Init_Iface()
 {
-	WriteLog("Инициализация интерфейса...\n");
+	FONLINE_LOG("Инициализация интерфейса...\n");
 
 	CreateStringsParamsMaps();
 
@@ -456,7 +456,7 @@ int FOnlineEngine::Init_Iface()
 	FILE *cf;
 
 	//картинка использования
-	WriteLog("Загрузка названий типов использования объектов...");
+	FONLINE_LOG("Загрузка названий типов использования объектов...");
 	if((cf = fopen("data\\objects\\pic_use.txt", "rt")) != NULL)
 	{
 		t1=0;
@@ -467,18 +467,18 @@ int FOnlineEngine::Init_Iface()
 
 			if(!pic_use[t1])
 			{
-				WriteLog("Ошибка загрузки %s\n",f_name);
+				FONLINE_LOG("Ошибка загрузки %s\n",f_name);
 				return 0;
 			}
 
 			t1++;
 		}
 		fclose(cf);
-		WriteLog("Выполнено\n");
+		FONLINE_LOG("Выполнено\n");
 	} 
 	else
 	{
-		WriteLog("Файл не найден\n");
+		FONLINE_LOG("Файл не найден\n");
 		return 0;
 	}
 
@@ -510,7 +510,7 @@ int FOnlineEngine::Init_Iface()
 	if(!(invscrdwoff=spriteManager.LoadSprite(f_name,PT_ART_INTRFACE))) return 0;
 
 	//большая и малая картинка в инвентаре
-	WriteLog("Загрузка картинок в инвентарь статических объектов...");
+	FONLINE_LOG("Загрузка картинок в инвентарь статических объектов...");
 	if((cf = fopen("data\\objects\\pic_inv.txt", "rt")) != NULL)
 	{
 		t1=0;
@@ -522,18 +522,18 @@ int FOnlineEngine::Init_Iface()
 
 			if((!inv_pic_b[t1])||(!inv_pic_s[t1]))
 			{
-				WriteLog("Ошибка %d=%s\n",t1,f_name);
+				FONLINE_LOG("Ошибка %d=%s\n",t1,f_name);
 				return 0;
 			}
 
 			t1++;
 		}
 		fclose(cf);
-		WriteLog("Выполнено\n");
+		FONLINE_LOG("Выполнено\n");
 	} 
 	else
 	{
-		WriteLog("Файл не найден\n");
+		FONLINE_LOG("Файл не найден\n");
 		return 0;
 	}
 
@@ -721,16 +721,16 @@ TICK gtime=GetTickCount();
 //	uint16_t snd1;
 //	if(!(snd1=soundManager.LoadSound("01.ogg",PT_SND_MUSIC)))
 //	{
-//		WriteLog("OGG FALSE\n");
+//		FONLINE_LOG("OGG FALSE\n");
 //		return 0;
 //	}
 	soundManager.LPESound("intro.ogg",PT_SND_MUSIC);
-WriteLog("time load sound:%d\n",GetTickCount()-gtime);
+FONLINE_LOG("time load sound:%d\n",GetTickCount()-gtime);
 //	soundManager.PlaySound(snd1);
 
 	SetCur(CUR_DEFAULT);
 
-	WriteLog("Инициализация интерфейса прошла успешно\n");
+	FONLINE_LOG("Инициализация интерфейса прошла успешно\n");
 
 	return 1;
 }
@@ -1439,7 +1439,7 @@ void FOnlineEngine::LogInput()
 	if(hr!=DI_OK)
 	{
 		dilost=1;
-		WriteLog("LogParseInput> %s\n",(char*)DXGetErrorString8(hr));
+		FONLINE_LOG("LogParseInput> %s\n",(char*)DXGetErrorString8(hr));
 		return;
 	}
 
@@ -1473,7 +1473,7 @@ void FOnlineEngine::LogInput()
 	if(hr!=DI_OK)
 	{
 		dilost=1;
-		WriteLog("LogParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
+		FONLINE_LOG("LogParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
 		return;
 	}
 		
@@ -1605,7 +1605,7 @@ void FOnlineEngine::RegInput()
 	if(hr!=DI_OK)
 	{
 		dilost=1;
-		WriteLog("RegParseInput> %s\n",(char*)DXGetErrorString8(hr));
+		FONLINE_LOG("RegParseInput> %s\n",(char*)DXGetErrorString8(hr));
 		return;
 	}
 
@@ -1650,7 +1650,7 @@ void FOnlineEngine::RegInput()
 	if(hr!=DI_OK)
 	{
 		dilost=1;
-		WriteLog("RegParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
+		FONLINE_LOG("RegParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
 		return;
 	}
 		
@@ -1986,7 +1986,7 @@ void FOnlineEngine::LMenuTryCreate()
 void FOnlineEngine::LMenuDraw()
 {
 	if(!IsLMenu()) return;
-	if(!LMenu_nodes) { WriteLog("!!!WARNING!!! Отрисовка ЛМеню - пустой указатель\n"); return; }
+	if(!LMenu_nodes) { FONLINE_LOG("!!!WARNING!!! Отрисовка ЛМеню - пустой указатель\n"); return; }
 
 	int count_node=0;
 	for(LMenu_list::iterator it_l=LMenu_nodes->begin(); it_l!=LMenu_nodes->end(); it_l++)
@@ -2030,7 +2030,7 @@ void FOnlineEngine::LMenuDraw()
 				spriteManager.DrawSprite(lm_gmtake_off,LMenu_cur_x,LMenu_cur_y+LMenu_node_height*count_node,COLOR_DEFAULT);
 			break;
 		default:
-			WriteLog("!!!WORNING!!! Отрисовка ЛМеню - неизвестное состояние меню\n");
+			FONLINE_LOG("!!!WORNING!!! Отрисовка ЛМеню - неизвестное состояние меню\n");
 			break;
 		}
 
@@ -2040,7 +2040,7 @@ void FOnlineEngine::LMenuDraw()
 
 void FOnlineEngine::LMenuMouseMove()
 {
-	if(!LMenu_nodes) { WriteLog("!!!WARNING!!! Движение ЛМеню - невалидный указатель\n"); return; }
+	if(!LMenu_nodes) { FONLINE_LOG("!!!WARNING!!! Движение ЛМеню - невалидный указатель\n"); return; }
 
 	LMenu_cur_node=(cur_y-LMenu_cur_y)/LMenu_node_height;
 	if(LMenu_cur_node<0) LMenu_cur_node=0;
@@ -2211,7 +2211,7 @@ void FOnlineEngine::SetLMenu(uint8_t set_lmenu)
 	case LMENU_NPC:
 		if(!curTargetCrit)
 		{
-			WriteLog("Ошибка - SetLMenu - Player or NPC - передача пустого указателя!\n");
+			FONLINE_LOG("Ошибка - SetLMenu - Player or NPC - передача пустого указателя!\n");
 			SetLMenu(LMENU_OFF);
 			return;
 		}
@@ -2237,7 +2237,7 @@ void FOnlineEngine::SetLMenu(uint8_t set_lmenu)
 	case LMENU_ITEM:
 		if(!curTargetObj)
 		{
-			WriteLog("Ошибка - SetLMenu - Item - передача пустого указателя!\n");
+			FONLINE_LOG("Ошибка - SetLMenu - Item - передача пустого указателя!\n");
 			SetLMenu(LMENU_OFF);
 			return;
 		}
@@ -3156,7 +3156,7 @@ void FOnlineEngine::GmapInput()
 	if(hr!=DI_OK)
 	{
 		dilost=1;
-		WriteLog("RegParseInput> %s\n",(char*)DXGetErrorString8(hr));
+		FONLINE_LOG("RegParseInput> %s\n",(char*)DXGetErrorString8(hr));
 		return;
 	}
 
@@ -3207,7 +3207,7 @@ void FOnlineEngine::GmapInput()
 	if(hr!=DI_OK)
 	{
 		dilost=1;
-		WriteLog("RegParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
+		FONLINE_LOG("RegParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
 		return;
 	}
 		

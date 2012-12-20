@@ -144,11 +144,11 @@ char pathlst[][50]=
 FileManager::FileManager(): initialized(0),file(NULL),fileSize(0),position(0),buffer(NULL) { };
 
 int FileManager::Init() {
-  WriteLog("FileManager Initialization...\n");
+  FONLINE_LOG("FileManager Initialization...\n");
 
   strcpy(fo_dat, "./");
 
-  WriteLog("FileManager Initialization complete\n");
+  FONLINE_LOG("FileManager Initialization complete\n");
   initialized=1;
   return 1;
 }
@@ -167,7 +167,7 @@ int FileManager::Init(const char* masterDatPath, const char* critterDatPath, con
   assert(critterDatPath[0] != 0);
   assert(fonlineDatPath[0] != 0);
 	
-	WriteLog("FileManager Initialization...\n");
+	FONLINE_LOG("FileManager Initialization...\n");
 	
 	// FIXME[12.12.2012 alex]: copypasta
 	
@@ -209,16 +209,16 @@ int FileManager::Init(const char* masterDatPath, const char* critterDatPath, con
     strcat(fo_dat, "/");
   }
 
-	WriteLog("FileManager Initialization complete\n");
+	FONLINE_LOG("FileManager Initialization complete\n");
 	initialized=1;
 	return 1;
 }
 
 void FileManager::Clear()
 {
-	WriteLog("FileManager Clear...\n");
+	FONLINE_LOG("FileManager Clear...\n");
 	UnloadFile();
-	WriteLog("FileManager Clear complete\n");
+	FONLINE_LOG("FileManager Clear complete\n");
 }
 
 void FileManager::UnloadFile() {
@@ -251,7 +251,7 @@ int FileManager::LoadFile(char* fileName, int pathType)
 
 	if(pathType==PT_ART_CRITTERS) {
 		if (!lpDATcr.IsLoaded()) {
-		  WriteLog("Loading from normal FS.\n");
+		  FONLINE_LOG("Loading from normal FS.\n");
 			//попрбуем загрузить из critter_dat если это каталог
 			strcpy(path,crit_dat);
 			strcat(path,pfname);
@@ -281,7 +281,7 @@ int FileManager::LoadFile(char* fileName, int pathType)
 	
 	if(!lpDAT.IsLoaded())
 	{
-	  WriteLog("Loading from normal FS.\n");
+	  FONLINE_LOG("Loading from normal FS.\n");
 		//попрбуем загрузить из master_dat если это каталог
 		strcpy(path,master_dat);
 		strcat(path,pfname);
@@ -305,7 +305,7 @@ int FileManager::LoadFile(char* fileName, int pathType)
 		return 1;
 	}
 
-	WriteLog("FileMngr - Файл %s не найден\n",pfname);//!Cvet
+	FONLINE_LOG("FileMngr - Файл %s не найден\n",pfname);//!Cvet
 	return 0;
 }
 
@@ -424,7 +424,7 @@ int FileManager::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet 
     return 1;
   }
 
-	WriteLog("Файл:|%s|\n",get_path);
+	FONLINE_LOG("Файл:|%s|\n",get_path);
 
 	return 0;
 }

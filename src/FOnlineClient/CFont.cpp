@@ -49,7 +49,7 @@ CFOFont::~CFOFont()
 int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB)
 {
 	if(crtd) return 0;
-	WriteLog("CFont Initialization...\n");
+	FONLINE_LOG("CFont Initialization...\n");
 
 	lpDevice=lpD3Device;
 	lpIB=aIB;
@@ -60,7 +60,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 
 	for(int cur_f=0;cur_f<MAX_FONT;++cur_f)
 	{
-		WriteLog("Init Font %s...",list_fnt[cur_f]);
+		FONLINE_LOG("Init Font %s...",list_fnt[cur_f]);
 
 		char path[1024];
 		strcpy(path,opt_fopath.c_str());
@@ -116,17 +116,17 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 			fonts[cur_f].xyarr[i][3]=(FLOAT)(fonts[cur_f].letters[i].dy+h)/wd;
 		}
 
-		WriteLog("OK\n");
+		FONLINE_LOG("OK\n");
 	}
 
-	WriteLog("CFont Initialization complete\n");
+	FONLINE_LOG("CFont Initialization complete\n");
 	crtd=1;
 	return 1;
 }
 
 void CFOFont::Clear()
 {
-	WriteLog("CFont Clear...\n");
+	FONLINE_LOG("CFont Clear...\n");
 
 	for(int cur_f=0;cur_f<MAX_FONT;++cur_f) {
     if (fonts[cur_f].fontSurface != NULL) {
@@ -141,7 +141,7 @@ void CFOFont::Clear()
   }
 
 	crtd=0;
-	WriteLog("CFont Clear complete\n");
+	FONLINE_LOG("CFont Clear complete\n");
 }
 
 void CFOFont::PreRestore()
