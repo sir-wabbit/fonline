@@ -777,7 +777,7 @@ void FOnlineEngine::InvDraw()
 			si=spriteManager.GetSpriteInfo(inv_pic_s[(*it).second->object->p[OBJ_PIC_INV]]);
 			//spriteManager.DrawSpriteSize(
 			spriteManager.DrawSprite(inv_pic_s[(*it).second->object->p[OBJ_PIC_INV]],
-				InvObl[0]+InvX+(InvObl[2]-InvObl[0]-si->w)/2,
+				InvObl[0]+InvX+(InvObl[2]-InvObl[0]-si->width)/2,
 				InvObl[1]+InvY+(IB2*HeightItem),COLOR_DEFAULT);
 			IB2++;
 		}
@@ -789,8 +789,8 @@ void FOnlineEngine::InvDraw()
 	{
 		si=spriteManager.GetSpriteInfo(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]]);
 		spriteManager.DrawSprite(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]],
-			InvSlot1[0]+InvX+(InvSlot1[2]-InvSlot1[0]-si->w)/2,
-			InvSlot1[1]+InvY+(InvSlot1[3]-InvSlot1[1]-si->h)/2,COLOR_DEFAULT);
+			InvSlot1[0]+InvX+(InvSlot1[2]-InvSlot1[0]-si->width)/2,
+			InvSlot1[1]+InvY+(InvSlot1[3]-InvSlot1[1]-si->height)/2,COLOR_DEFAULT);
 	}
 	//отрисовка объектов в слот2
 	if(lpChosen->a_obj2)
@@ -800,8 +800,8 @@ void FOnlineEngine::InvDraw()
 	{
 		si=spriteManager.GetSpriteInfo(inv_pic_b[lpChosen->a_obj_arm->object->p[OBJ_PIC_INV]]);
 		spriteManager.DrawSprite(inv_pic_b[lpChosen->a_obj_arm->object->p[OBJ_PIC_INV]],
-			InvArmor[0]+InvX+(InvArmor[2]-InvArmor[0]-si->w)/2,
-			InvArmor[1]+InvY+(InvArmor[3]-InvArmor[1]-si->h)/2,COLOR_DEFAULT);
+			InvArmor[0]+InvX+(InvArmor[2]-InvArmor[0]-si->width)/2,
+			InvArmor[1]+InvY+(InvArmor[3]-InvArmor[1]-si->height)/2,COLOR_DEFAULT);
 	}
 
 	spriteManager.Flush();
@@ -1050,8 +1050,8 @@ void FOnlineEngine::IntDraw()
 	{
 		SpriteInfo* si=spriteManager.GetSpriteInfo(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]]);
 		spriteManager.DrawSprite(inv_pic_b[lpChosen->a_obj->object->p[OBJ_PIC_INV]],
-			IntObject[0]+(IntObject[2]-IntObject[0]-si->w)/2,
-			IntObject[1]+(IntObject[3]-IntObject[1]-si->h)/2,COLOR_DEFAULT);
+			IntObject[0]+(IntObject[2]-IntObject[0]-si->width)/2,
+			IntObject[1]+(IntObject[3]-IntObject[1]-si->height)/2,COLOR_DEFAULT);
 	}
 
 	if(lpChosen->a_obj->object->type==OBJ_TYPE_WEAPON)
@@ -1420,8 +1420,8 @@ void FOnlineEngine::ShowLogIn()
 	}
 	//курсор
 	SpriteInfo* si=spriteManager.GetSpriteInfo(cur);
-	int curx=cur_x-(si->w >> 1)+si->offs_x;
-	int cury=cur_y-si->h+si->offs_y;
+	int curx=cur_x-(si->width >> 1)+si->offsetX;
+	int cury=cur_y-si->height+si->offsetY;
 	spriteManager.DrawSprite(cur,curx,cury,COLOR_DEFAULT);
 
 	spriteManager.Flush();
@@ -1748,9 +1748,9 @@ void FOnlineEngine::DlgDraw()
 	spriteManager.DrawSprite(dialog_begin,DlgX,DlgY,COLOR_DEFAULT);
 	for(int ddg=0; ddg<all_answers; ddg++)
 	{
-		spriteManager.DrawSprite(dialog_answ,DlgX+DlgNextAnswX*ddg,DlgY+spr_inf->h+DlgNextAnswY*ddg,COLOR_DEFAULT);
+		spriteManager.DrawSprite(dialog_answ,DlgX+DlgNextAnswX*ddg,DlgY+spr_inf->height+DlgNextAnswY*ddg,COLOR_DEFAULT);
 	}
-	spriteManager.DrawSprite(dialog_end,DlgX+DlgNextAnswX*all_answers,DlgY+spr_inf->h+DlgNextAnswY*all_answers,COLOR_DEFAULT);
+	spriteManager.DrawSprite(dialog_end,DlgX+DlgNextAnswX*all_answers,DlgY+spr_inf->height+DlgNextAnswY*all_answers,COLOR_DEFAULT);
 
 	spriteManager.Flush();
 
@@ -2953,9 +2953,9 @@ void FOnlineEngine::GmapDraw()
 		}
 
 		if(!(sprinf=spriteManager.GetSpriteInfo(gm_gr_loc_pic))) return; //!!!write warning
-		spriteManager.DrawSprite(gm_gr_loc_pic,GmapGroupX+GmapMapScrX-sprinf->w/2,GmapGroupY+GmapMapScrY-sprinf->h/2,COLOR_DEFAULT);
+		spriteManager.DrawSprite(gm_gr_loc_pic,GmapGroupX+GmapMapScrX-sprinf->width/2,GmapGroupY+GmapMapScrY-sprinf->height/2,COLOR_DEFAULT);
 		if(!(sprinf=spriteManager.GetSpriteInfo(gm_gr_targ_pic))) return; //!!!write warning
-		spriteManager.DrawSprite(gm_gr_targ_pic,GmapMoveX+GmapMapScrX-sprinf->w/2,GmapMoveY+GmapMapScrY-sprinf->h/2,COLOR_DEFAULT);
+		spriteManager.DrawSprite(gm_gr_targ_pic,GmapMoveX+GmapMapScrX-sprinf->width/2,GmapMoveY+GmapMapScrY-sprinf->height/2,COLOR_DEFAULT);
 
 		int cur_tabx=GmapWTabs[0]-gm_tab_scr_x;
 		int cur_taby=GmapWTabs[1]-gm_tab_scr_y;
@@ -3074,7 +3074,7 @@ void FOnlineEngine::GmapDraw()
 		if(cur_x>=GmapWMap[0] && cur_y>=GmapWMap[1] && cur_x<=GmapWMap[2] && cur_y<=GmapWMap[3])
 		{
 			SpriteInfo* cur_info=spriteManager.GetSpriteInfo(cur);
-			RECT rmc={cur_x+cur_info->w,cur_y+cur_info->h,cur_x+cur_info->w+150,cur_y+cur_info->h+100};
+			RECT rmc={cur_x+cur_info->width,cur_y+cur_info->height,cur_x+cur_info->width+150,cur_y+cur_info->height+100};
 			sprintf(gmstr,
 				"Coord: %d : %d\n"
 				"Zone: %d : %d",
@@ -3129,7 +3129,7 @@ void FOnlineEngine::GmapDraw()
 			SpriteInfo* sprinf=NULL;
 			if(!(sprinf=spriteManager.GetSpriteInfo(cur_pic))) continue;
 
-			posx=cur_crit*GmapWNameStepX+GmapWName[2]-sprinf->w;
+			posx=cur_crit*GmapWNameStepX+GmapWName[2]-sprinf->width;
 			posy=cur_crit*GmapWNameStepY+GmapWName[1]-3;
 
 			spriteManager.DrawSprite(cur_pic,posx,posy,COLOR_DEFAULT,100);
@@ -3526,8 +3526,8 @@ void FOnlineEngine::CurDraw()
 	if((IsCur(CUR_DEFAULT) || IsCur(CUR_USE_OBJECT) || IsCur(CUR_USE_SKILL) || IsCur(CUR_WAIT)) && !IsLMenu())
 	{
 		SpriteInfo* si=spriteManager.GetSpriteInfo(cur);
-		int x=cur_x-(si->w >> 1)+si->offs_x;
-		int y=cur_y-si->h+si->offs_y;
+		int x=cur_x-(si->width >> 1)+si->offsetX;
+		int y=cur_y-si->height+si->offsetY;
 		spriteManager.DrawSprite(cur,x,y,COLOR_DEFAULT);
 	}
 	else if(IsCur(CUR_MOVE))

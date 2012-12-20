@@ -3,6 +3,8 @@
 #include "CSpriteManager.h"
 #include "common.h"
 
+#include <IniFile/IniFile.hpp>
+
 #define MODE_WIDTH (screen_width[opt_screen_mode]) //!Cvet
 #define MODE_HEIGHT (screen_height[opt_screen_mode]) //!Cvet
 
@@ -45,8 +47,8 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
 
 	//Создаем буфер вершин
 	FONLINE_LOG("Создаю VB на %d спрайтов\n",maxSpriteCount);
-	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
-		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
+	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(Vertex),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
+		D3DFVF_VERTEX_FORMAT,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("SM::CreateVertexBuffer",(char*)DXGetErrorString8(hr));
 		return 0;
@@ -80,15 +82,15 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
 	delete[] IndexList;
 
 	lpDevice->SetIndices(lpIB,0);
-	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
-	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
+	lpDevice->SetStreamSource(0,lpVB,sizeof(Vertex));
+	lpDevice->SetVertexShader(D3DFVF_VERTEX_FORMAT);
 
 
-	lpWaitBuf=new MYVERTEX[maxSpriteCount*4];
+	lpWaitBuf=new Vertex[maxSpriteCount*4];
 
 	if(!fm.Init(opt_masterpath.c_str(), opt_critterpath.c_str(), opt_fopath.c_str())) return 0;
 
-	if(!LoadCritTypes()) return 0; //!Cvet
+	if(!LoadCritterTypes()) return 0; //!Cvet
 
 	FONLINE_LOG("CSpriteManager Initialization complete\n");
 	initialized=1;
@@ -98,7 +100,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
 void CSpriteManager::Clear() {
   assert(initialized);
   
-	FONLINE_LOG("CSprMan Clear...\n");
+	FONLINE_LOG("Clearing all sprites.\n");
 
 	fm.Clear();
 
@@ -128,7 +130,7 @@ void CSpriteManager::Clear() {
 	}
 
 	initialized=0;
-	FONLINE_LOG("CSprMan Clear complete\n");
+	FONLINE_LOG("Clearing complete.\n");
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
@@ -152,40 +154,40 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 	fm.SetCurrentPosition(0x16);
 	offs_y=fm.GetWord();
 
-	lpinf->offs_x=offs_x;
-	lpinf->offs_y=offs_y;
+	lpinf->offsetX=offs_x;
+	lpinf->offsetY=offs_y;
 
 
 	fm.SetCurrentPosition(0x3e);
 	uint16_t w=fm.GetWord();
 	uint16_t h=fm.GetWord();
-	lpinf->w=w;
-	lpinf->h=h;
+	lpinf->width=w;
+	lpinf->height=h;
 	if(!lastSurface)
 	{
-		lpinf->lpSurf=CreateNewSurf(w,h);
-		if(!lpinf->lpSurf) return 0;
-		lpinf->spr_rect(0,0,w,h);
-		lastSurface=lpinf->lpSurf;
+		lpinf->surface=CreateNewSurface(w,h);
+		if(!lpinf->surface) return 0;
+		lpinf->spriteRect(0,0,w,h);
+		lastSurface=lpinf->surface;
 	}
 	else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 	{
-		lpinf->lpSurf=lastSurface;
-		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+		lpinf->surface=lastSurface;
+		lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else if( last_w>=w && (last_h-busy_h)>=h )
 	{
 		free_x=0;
 		free_y=busy_h;
-		lpinf->lpSurf=lastSurface;
-		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+		lpinf->surface=lastSurface;
+		lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else
 	{
-		lpinf->lpSurf=CreateNewSurf(w,h);
-		if(!lpinf->lpSurf) return 0;
-		lpinf->spr_rect(0,0,w,h);
-		lastSurface=lpinf->lpSurf;
+		lpinf->surface=CreateNewSurface(w,h);
+		if(!lpinf->surface) return 0;
+		lpinf->spriteRect(0,0,w,h);
+		lastSurface=lpinf->surface;
 	}
 
 	int aligned_width = (4 - w%4)%4;
@@ -245,12 +247,12 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
 
 	free_x+=w;
 	if((free_y+h)>busy_h) busy_h=free_y+h;
-	lpinf->spr_rect.x1/=last_w;
-	lpinf->spr_rect.x2/=last_w;
-	lpinf->spr_rect.y1/=last_h;
-	lpinf->spr_rect.y2/=last_h;
-    lpinf->h/=size; // Уменьшаем пропорции предметов для инвентаря
-    lpinf->w/=size; // Статическое масштабирование
+	lpinf->spriteRect.x1/=last_w;
+	lpinf->spriteRect.x2/=last_w;
+	lpinf->spriteRect.y1/=last_h;
+	lpinf->spriteRect.y2/=last_h;
+    lpinf->height/=size; // Уменьшаем пропорции предметов для инвентаря
+    lpinf->width/=size; // Статическое масштабирование
     
 	FONLINE_LOG("size %d",size);
 
@@ -295,40 +297,40 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	fm.SetCurrentPosition(0x16);
 	offs_y=fm.GetWord();
 
-	lpinf->offs_x=offs_x;
-	lpinf->offs_y=offs_y;
+	lpinf->offsetX=offs_x;
+	lpinf->offsetY=offs_y;
 
 
 	fm.SetCurrentPosition(0x3e);
 	uint16_t w=fm.GetWord();
 	uint16_t h=fm.GetWord();
-	lpinf->w=w;
-	lpinf->h=h;
+	lpinf->width=w;
+	lpinf->height=h;
 	if(!lastSurface)
 	{
-		lpinf->lpSurf=CreateNewSurf(w,h);
-		if(!lpinf->lpSurf) return 0;
-		lpinf->spr_rect(0,0,w,h);
-		lastSurface=lpinf->lpSurf;
+		lpinf->surface=CreateNewSurface(w,h);
+		if(!lpinf->surface) return 0;
+		lpinf->spriteRect(0,0,w,h);
+		lastSurface=lpinf->surface;
 	}
 	else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 	{
-		lpinf->lpSurf=lastSurface;
-		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+		lpinf->surface=lastSurface;
+		lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else if( last_w>=w && (last_h-busy_h)>=h )
 	{
 		free_x=0;
 		free_y=busy_h;
-		lpinf->lpSurf=lastSurface;
-		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+		lpinf->surface=lastSurface;
+		lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else
 	{
-		lpinf->lpSurf=CreateNewSurf(w,h);
-		if(!lpinf->lpSurf) return 0;
-		lpinf->spr_rect(0,0,w,h);
-		lastSurface=lpinf->lpSurf;
+		lpinf->surface=CreateNewSurface(w,h);
+		if(!lpinf->surface) return 0;
+		lpinf->spriteRect(0,0,w,h);
+		lastSurface=lpinf->surface;
 	}
 
 	int aligned_width = (4 - w%4)%4;
@@ -388,10 +390,10 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 
 	free_x+=w;
 	if((free_y+h)>busy_h) busy_h=free_y+h;
-	lpinf->spr_rect.x1/=last_w;
-	lpinf->spr_rect.x2/=last_w;
-	lpinf->spr_rect.y1/=last_h;
-	lpinf->spr_rect.y2/=last_h;
+	lpinf->spriteRect.x1/=last_w;
+	lpinf->spriteRect.x2/=last_w;
+	lpinf->spriteRect.y1/=last_h;
+	lpinf->spriteRect.y2/=last_h;
 
 	spriteData[next_id++]=lpinf;
 
@@ -420,8 +422,8 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	}
 
 	SpriteInfo* lpinf=new SpriteInfo;
-	uint32_t w=0;
-	uint32_t h=0;
+	size_t w=0;
+	size_t h=0;
 
 //.bmp+, .dds-, .dib-, .hdr-, .jpg+, .pfm-, .png+, .ppm-, .tga-
 
@@ -456,37 +458,37 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 	fm.UnloadFile();
 
-	lpinf->w=w;
-	lpinf->h=h;
+	lpinf->width=w;
+	lpinf->height=h;
 
-	lpinf->offs_x=0;
-	lpinf->offs_y=0;
+	lpinf->offsetX=0;
+	lpinf->offsetY=0;
 
 	if(!lastSurface)
 	{
-		lpinf->lpSurf=CreateNewSurf(w,h);
-		if(!lpinf->lpSurf) return 0;
-		lpinf->spr_rect(0,0,w,h);
-		lastSurface=lpinf->lpSurf;
+		lpinf->surface=CreateNewSurface(w,h);
+		if(!lpinf->surface) return 0;
+		lpinf->spriteRect(0,0,w,h);
+		lastSurface=lpinf->surface;
 	}
 	else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 	{
-		lpinf->lpSurf=lastSurface;
-		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+		lpinf->surface=lastSurface;
+		lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else if( last_w>=w && (last_h-busy_h)>=h )
 	{
 		free_x=0;
 		free_y=busy_h;
-		lpinf->lpSurf=lastSurface;
-		lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+		lpinf->surface=lastSurface;
+		lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 	}
 	else
 	{
-		lpinf->lpSurf=CreateNewSurf(w,h);
-		if(!lpinf->lpSurf) return 0;
-		lpinf->spr_rect(0,0,w,h);
-		lastSurface=lpinf->lpSurf;
+		lpinf->surface=CreateNewSurface(w,h);
+		if(!lpinf->surface) return 0;
+		lpinf->spriteRect(0,0,w,h);
+		lastSurface=lpinf->surface;
 	}
 
 	LPDIRECT3DSURFACE8 lpsurf;
@@ -523,10 +525,10 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 
 	free_x+=w;
 	if((free_y+h)>busy_h) busy_h=free_y+h;
-	lpinf->spr_rect.x1/=last_w;
-	lpinf->spr_rect.x2/=last_w;
-	lpinf->spr_rect.y1/=last_h;
-	lpinf->spr_rect.y2/=last_h;
+	lpinf->spriteRect.x1/=last_w;
+	lpinf->spriteRect.x2/=last_w;
+	lpinf->spriteRect.y1/=last_h;
+	lpinf->spriteRect.y2/=last_h;
 
 	spriteData[next_id++]=lpinf;
 
@@ -580,14 +582,14 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 		for(int frm=0;frm<frm_num;frm++)
 		{
 			SpriteInfo* lpinf=new SpriteInfo;
-			lpinf->offs_x=offs_x[or];
-			lpinf->offs_y=offs_y[or];
+			lpinf->offsetX=offs_x[or];
+			lpinf->offsetY=offs_y[or];
 		
 			fm.SetCurrentPosition(cur_ptr);
 			uint16_t w=fm.GetWord();
 			uint16_t h=fm.GetWord();
-			lpinf->w=w;
-			lpinf->h=h;
+			lpinf->width=w;
+			lpinf->height=h;
 			fm.GoForward(4);
 			pframes->next_x[or*frm_num+frm]=fm.GetWord();
 			pframes->next_y[or*frm_num+frm]=fm.GetWord();
@@ -595,32 +597,32 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 			if(!lastSurface)
 			{
 				//спрайт будет помещен в новую поверхность
-				lpinf->lpSurf=CreateNewSurf(w,h);
-				if(!lpinf->lpSurf) return 0;
-				lpinf->spr_rect(0,0,w,h);
-				lastSurface=lpinf->lpSurf;
+				lpinf->surface=CreateNewSurface(w,h);
+				if(!lpinf->surface) return 0;
+				lpinf->spriteRect(0,0,w,h);
+				lastSurface=lpinf->surface;
 			}
 			else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 			{
 				//спрайт будет помещен в горизонтальный ряд
-				lpinf->lpSurf=lastSurface;
-				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+				lpinf->surface=lastSurface;
+				lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else if( last_w>=w && (last_h-busy_h)>=h )
 			{
 				//начинаем новый горизонтальный ряд этим спрайтом
 				free_x=0;
 				free_y=busy_h;
-				lpinf->lpSurf=lastSurface;
-				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+				lpinf->surface=lastSurface;
+				lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else
 			{
 				//спрайт вообще не поместился на эту поверхность
-				lpinf->lpSurf=CreateNewSurf(w,h);
-				if(!lpinf->lpSurf) return 0;
-				lpinf->spr_rect(0,0,w,h);
-				lastSurface=lpinf->lpSurf;
+				lpinf->surface=CreateNewSurface(w,h);
+				if(!lpinf->surface) return 0;
+				lpinf->spriteRect(0,0,w,h);
+				lastSurface=lpinf->surface;
 			}
 
 			int aligned_width = (4 - w%4)%4;
@@ -683,10 +685,10 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 
 			free_x+=w;
 			if((free_y+h)>busy_h) busy_h=free_y+h;
-			lpinf->spr_rect.x1/=last_w;
-			lpinf->spr_rect.x2/=last_w;
-			lpinf->spr_rect.y1/=last_h;
-			lpinf->spr_rect.y2/=last_h;
+			lpinf->spriteRect.x1/=last_w;
+			lpinf->spriteRect.x2/=last_w;
+			lpinf->spriteRect.y1/=last_h;
+			lpinf->spriteRect.y2/=last_h;
 
 			spriteData[next_id++]=lpinf;
 
@@ -714,34 +716,34 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 	uint16_t w;fm.Read(&w,2);
 	uint16_t h;fm.Read(&h,2);
 	if(w!=640 || h!=480) return 0;
-	lpinf->w=MODE_WIDTH;
-	lpinf->h=MODE_HEIGHT;
+	lpinf->width=MODE_WIDTH;
+	lpinf->height=MODE_HEIGHT;
 	
 	if(!lastSurface)
 	{
-		lpinf->lpSurf=CreateNewSurf(MODE_WIDTH,MODE_HEIGHT);
-		if(!lpinf->lpSurf) return 0;
-		lpinf->spr_rect(0,0,MODE_WIDTH,MODE_HEIGHT);
-		lastSurface=lpinf->lpSurf;
+		lpinf->surface=CreateNewSurface(MODE_WIDTH,MODE_HEIGHT);
+		if(!lpinf->surface) return 0;
+		lpinf->spriteRect(0,0,MODE_WIDTH,MODE_HEIGHT);
+		lastSurface=lpinf->surface;
 	}
 	else if( (last_w-free_x)>=MODE_WIDTH && (last_h-free_y)>=MODE_HEIGHT )
 	{
-		lpinf->lpSurf=lastSurface;
-		lpinf->spr_rect(free_x,free_y,free_x+MODE_WIDTH,free_y+MODE_HEIGHT);
+		lpinf->surface=lastSurface;
+		lpinf->spriteRect(free_x,free_y,free_x+MODE_WIDTH,free_y+MODE_HEIGHT);
 	}
 	else if( last_w>=MODE_WIDTH && (last_h-busy_h)>=MODE_HEIGHT )
 	{
 		free_x=0;
 		free_y=busy_h;
-		lpinf->lpSurf=lastSurface;
-		lpinf->spr_rect(free_x,free_y,free_x+MODE_WIDTH,free_y+MODE_HEIGHT);
+		lpinf->surface=lastSurface;
+		lpinf->spriteRect(free_x,free_y,free_x+MODE_WIDTH,free_y+MODE_HEIGHT);
 	}
 	else
 	{
-		lpinf->lpSurf=CreateNewSurf(MODE_WIDTH,MODE_HEIGHT);
-		if(!lpinf->lpSurf) return 0;
-		lpinf->spr_rect(0,0,MODE_WIDTH,MODE_HEIGHT);
-		lastSurface=lpinf->lpSurf;
+		lpinf->surface=CreateNewSurface(MODE_WIDTH,MODE_HEIGHT);
+		if(!lpinf->surface) return 0;
+		lpinf->spriteRect(0,0,MODE_WIDTH,MODE_HEIGHT);
+		lastSurface=lpinf->surface;
 	}
 
 	int aligned_width = (4 - w%4)%4;
@@ -816,10 +818,10 @@ int CSpriteManager::LoadRix(char *fname, int PathType)
 
 	free_x+=MODE_WIDTH;
 	if((free_y+MODE_HEIGHT)>busy_h) busy_h=free_y+MODE_HEIGHT;
-	lpinf->spr_rect.x1/=last_w;
-	lpinf->spr_rect.x2/=last_w;
-	lpinf->spr_rect.y1/=last_h;
-	lpinf->spr_rect.y2/=last_h;
+	lpinf->spriteRect.x1/=last_w;
+	lpinf->spriteRect.x2/=last_w;
+	lpinf->spriteRect.y1/=last_h;
+	lpinf->spriteRect.y2/=last_h;
 
 	spriteData[next_id++]=lpinf;
 
@@ -885,14 +887,14 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 		for(int frm=0;frm<frm_num;frm++)
 		{
 			SpriteInfo* lpinf=new SpriteInfo;
-			lpinf->offs_x=offs_x[or];
-			lpinf->offs_y=offs_y[or];
+			lpinf->offsetX=offs_x[or];
+			lpinf->offsetY=offs_y[or];
 		
 			fm.SetCurrentPosition(cur_ptr);
 			uint16_t w=fm.GetWord();
 			uint16_t h=fm.GetWord();
-			lpinf->w=w;
-			lpinf->h=h;
+			lpinf->width=w;
+			lpinf->height=h;
 			fm.GoForward(4);
 			pframes->next_x[or*frm_num+frm]=fm.GetWord();
 			pframes->next_y[or*frm_num+frm]=fm.GetWord();
@@ -900,32 +902,32 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 			if(!lastSurface)
 			{
 				//спрайт будет помещен в новую поверхность
-				lpinf->lpSurf=CreateNewSurf(w,h);
-				if(!lpinf->lpSurf) return 0;
-				lpinf->spr_rect(0,0,w,h);
-				lastSurface=lpinf->lpSurf;
+				lpinf->surface=CreateNewSurface(w,h);
+				if(!lpinf->surface) return 0;
+				lpinf->spriteRect(0,0,w,h);
+				lastSurface=lpinf->surface;
 			}
 			else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 			{
 				//спрайт будет помещен в горизонтальный ряд
-				lpinf->lpSurf=lastSurface;
-				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+				lpinf->surface=lastSurface;
+				lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else if( last_w>=w && (last_h-busy_h)>=h )
 			{
 				//начинаем новый горизонтальный ряд этим спрайтом
 				free_x=0;
 				free_y=busy_h;
-				lpinf->lpSurf=lastSurface;
-				lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+				lpinf->surface=lastSurface;
+				lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 			}
 			else
 			{
 				//спрайт вообще не поместился на эту поверхность
-				lpinf->lpSurf=CreateNewSurf(w,h);
-				if(!lpinf->lpSurf) return 0;
-				lpinf->spr_rect(0,0,w,h);
-				lastSurface=lpinf->lpSurf;
+				lpinf->surface=CreateNewSurface(w,h);
+				if(!lpinf->surface) return 0;
+				lpinf->spriteRect(0,0,w,h);
+				lastSurface=lpinf->surface;
 			}
 
 			int aligned_width = (4 - w%4)%4;
@@ -988,10 +990,10 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 
 			free_x+=w;
 			if((free_y+h)>busy_h) busy_h=free_y+h;
-			lpinf->spr_rect.x1/=last_w;
-			lpinf->spr_rect.x2/=last_w;
-			lpinf->spr_rect.y1/=last_h;
-			lpinf->spr_rect.y2/=last_h;
+			lpinf->spriteRect.x1/=last_w;
+			lpinf->spriteRect.x2/=last_w;
+			lpinf->spriteRect.y1/=last_h;
+			lpinf->spriteRect.y2/=last_h;
 
 			spriteData[next_id++]=lpinf;
 
@@ -1057,13 +1059,13 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 
 		uint16_t w=fm.GetWord();
 		uint16_t h=fm.GetWord();
-		lpinf->w=w;
-		lpinf->h=h;
+		lpinf->width=w;
+		lpinf->height=h;
 
 		fm.GoForward(4);
 
-		lpinf->offs_x=offs_x;
-		lpinf->offs_y=offs_y;
+		lpinf->offsetX=offs_x;
+		lpinf->offsetY=offs_y;
 
 		aanim->next_x[frm]=fm.GetWord();
 		aanim->next_y[frm]=fm.GetWord();
@@ -1071,29 +1073,29 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 
 		if(!lastSurface)
 		{
-			lpinf->lpSurf=CreateNewSurf(w,h);
-			if(!lpinf->lpSurf) return 0;
-			lpinf->spr_rect(0,0,w,h);
-			lastSurface=lpinf->lpSurf;
+			lpinf->surface=CreateNewSurface(w,h);
+			if(!lpinf->surface) return 0;
+			lpinf->spriteRect(0,0,w,h);
+			lastSurface=lpinf->surface;
 		}
 		else if( (last_w-free_x)>=w && (last_h-free_y)>=h )
 		{
-			lpinf->lpSurf=lastSurface;
-			lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+			lpinf->surface=lastSurface;
+			lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 		}
 		else if( last_w>=w && (last_h-busy_h)>=h )
 		{
 			free_x=0;
 			free_y=busy_h;
-			lpinf->lpSurf=lastSurface;
-			lpinf->spr_rect(free_x,free_y,free_x+w,free_y+h);
+			lpinf->surface=lastSurface;
+			lpinf->spriteRect(free_x,free_y,free_x+w,free_y+h);
 		}
 		else
 		{
-			lpinf->lpSurf=CreateNewSurf(w,h);
-			if(!lpinf->lpSurf) return 0;
-			lpinf->spr_rect(0,0,w,h);
-			lastSurface=lpinf->lpSurf;
+			lpinf->surface=CreateNewSurface(w,h);
+			if(!lpinf->surface) return 0;
+			lpinf->spriteRect(0,0,w,h);
+			lastSurface=lpinf->surface;
 		}
 
 		int aligned_width = (4 - w%4)%4;
@@ -1167,10 +1169,10 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 
 		free_x+=w;
 		if((free_y+h)>busy_h) busy_h=free_y+h;
-		lpinf->spr_rect.x1/=last_w;
-		lpinf->spr_rect.x2/=last_w;
-		lpinf->spr_rect.y1/=last_h;
-		lpinf->spr_rect.y2/=last_h;
+		lpinf->spriteRect.x1/=last_w;
+		lpinf->spriteRect.x2/=last_w;
+		lpinf->spriteRect.y1/=last_h;
+		lpinf->spriteRect.y2/=last_h;
     
 		spriteData[next_id++]=lpinf;
 		aanim->ind[frm]=next_id-1;
@@ -1185,36 +1187,30 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
-LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurf(uint16_t w, uint16_t h)
+LPDIRECT3DTEXTURE8 CSpriteManager::CreateNewSurface(uint16_t w, uint16_t h)
 {
   assert(initialized);
-  assert(w > 0);
-  assert(h > 0);
 
-	if(!initialized) return 0;
-	if(w>opt_basetex || h>opt_basetex)
-	{
-		for(last_w=opt_basetex;last_w<w;last_w*=2);
-		for(last_h=opt_basetex;last_h<h;last_h*=2);
+	if (w > opt_basetex || h > opt_basetex) {
+		for (last_w = opt_basetex; last_w < w; last_w *= 2);
+		for (last_h = opt_basetex; last_h < h; last_h *= 2);
+	} else {
+	  last_w=opt_basetex;
+		last_h=opt_basetex;
 	}
-	else
-		{
-			last_w=opt_basetex;
-			last_h=opt_basetex;
-		}
 
-	LPDIRECT3DTEXTURE8 lpSurf=NULL;
+	LPDIRECT3DTEXTURE8 surface = NULL;
 
-	HRESULT hr=lpDevice->CreateTexture(last_w,last_h,1,0,TEX_FRMT,D3DPOOL_MANAGED,&lpSurf);
-
-	if(hr!=D3D_OK){
-		ReportErrorMessage("CSpriteManager CreateNewSurf","Не могу создать новую текстуру");
+	HRESULT hr = lpDevice->CreateTexture(last_w, last_h, 1, 0, TEX_FRMT, D3DPOOL_MANAGED, &surface);
+	if (hr != D3D_OK) {
+		ReportErrorMessage("CSpriteManager CreateNewSurface", "Could not create a new surface");
 		return NULL;
-	} 
-	surfaceList.push_back(lpSurf);
-	busy_w=busy_h=free_x=free_y=0;
+	}
+	
+	surfaceList.push_back(surface);
+	busy_w = busy_h = free_x = free_y = 0;
 
-	return lpSurf;
+	return surface;
 }
 
 void CSpriteManager::NextSurface() {
@@ -1227,78 +1223,78 @@ void CSpriteManager::NextSurface() {
 int CSpriteManager::Flush() {
   assert(initialized);
   
-	//который потом разом сливается в буфер вершин
-	if(!initialized) return 0;
-	void* pBuffer;
-	int mulpos=4*currentPosition;
-	lpVB->Lock(0,sizeof(MYVERTEX)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
-		memcpy(pBuffer,lpWaitBuf,sizeof(MYVERTEX)*mulpos);
-	lpVB->Unlock();
+  void* buffer = NULL;
+  int quadCount = 4 * currentPosition;
+  
+  lpVB->Lock(0, sizeof(Vertex) * quadCount, (BYTE**) &buffer, D3DLOCK_DISCARD);
+  memcpy(buffer, lpWaitBuf, sizeof(Vertex) * quadCount);
+  lpVB->Unlock();
 
-	//рисуем спрайты
-	if(!call_vec.empty())
-	{
-		uint16_t rpos=0;
-		for(onesurf_vec::iterator iv=call_vec.begin();iv!=call_vec.end();iv++)
-		{
+  //рисуем спрайты
+  if (!call_vec.empty()) {
+		uint16_t rpos = 0;
+		
+		for (onesurf_vec::iterator iv = call_vec.begin(); iv != call_vec.end(); ++iv) {
 			lpDevice->SetTexture(0,(*iv)->lpSurf);
-			lpDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,mulpos,rpos,2*(*iv)->cnt);
-			rpos+=6*(*iv)->cnt;
+			lpDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, quadCount, rpos, 2 * (*iv)->cnt);
+			rpos += 6 * (*iv)->cnt;
 			delete (*iv);
 		}
 
 		call_vec.clear();
-		last_call=NULL;
-		currentSurface=NULL;
-	}
-	else lpDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,mulpos,0,2*currentPosition);	
+		last_call = NULL;
+		currentSurface = NULL;
+	} else {
+	  lpDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, quadCount, 0, 2 * currentPosition);	
+  }
 
-	currentPosition=0;
+	currentPosition = 0;
 	return 1;
 }
 
-int CSpriteManager::DrawSprite(uint16_t id, int x, int y, uint32_t color, uint32_t alpha) //!Cvet uint32_t color uint32_t alpha
-{
+int CSpriteManager::DrawSprite(uint16_t id, int x, int y, uint32_t color, uint32_t alpha) {
   assert(initialized);
   
-	SpriteInfo* lpinf=spriteData[id];
-	if(!lpinf) return 0;
-
-	if(currentSurface!=lpinf->lpSurf)
-	{
-		last_call=new OneSurface(lpinf->lpSurf);
-		call_vec.push_back(last_call);
-		currentSurface=lpinf->lpSurf;
+	SpriteInfo* info = spriteData[id];
+	if (!info) {
+	  return 0;
 	}
-	else if(last_call) last_call->cnt++;
+
+	if (currentSurface != info->surface) {
+		last_call = new OneSurface(info->surface);
+		call_vec.push_back(last_call);
+		currentSurface = info->surface;
+	} else if(last_call) {
+	  last_call->cnt++;
+	}
 
 	int mulpos=currentPosition*4;
 
-	if(!color) color=col; //!Cvet
-	if(alpha) color+=alpha<<24;
+	if (!color) color = col; //!Cvet
+	if (alpha) color += alpha << 24;
 
 	lpWaitBuf[mulpos].x=x-0.5f;
-	lpWaitBuf[mulpos].y=y+lpinf->h-0.5f;
-	lpWaitBuf[mulpos].tu=lpinf->spr_rect.x1;
-	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
+	lpWaitBuf[mulpos].y=y+info->height-0.5f;
+	lpWaitBuf[mulpos].tu=info->spriteRect.x1;
+	lpWaitBuf[mulpos].tv=info->spriteRect.y2;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
 	lpWaitBuf[mulpos].x=x-0.5f;
 	lpWaitBuf[mulpos].y=y-0.5f;
-	lpWaitBuf[mulpos].tu=lpinf->spr_rect.x1;
-	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y1;
+	lpWaitBuf[mulpos].tu=info->spriteRect.x1;
+	lpWaitBuf[mulpos].tv=info->spriteRect.y1;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
-	lpWaitBuf[mulpos].x=x+lpinf->w-0.5f;
+	lpWaitBuf[mulpos].x=x+info->width-0.5f;
 	lpWaitBuf[mulpos].y=y-0.5f;
-	lpWaitBuf[mulpos].tu=lpinf->spr_rect.x2;
-	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y1;
+	lpWaitBuf[mulpos].tu=info->spriteRect.x2;
+	lpWaitBuf[mulpos].tv=info->spriteRect.y1;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
-	lpWaitBuf[mulpos].x=x+lpinf->w-0.5f;
-	lpWaitBuf[mulpos].y=y+lpinf->h-0.5f;
-	lpWaitBuf[mulpos].tu=lpinf->spr_rect.x2;
-	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
+	lpWaitBuf[mulpos].x=x+info->width-0.5f;
+	lpWaitBuf[mulpos].y=y+info->height-0.5f;
+	lpWaitBuf[mulpos].tu=info->spriteRect.x2;
+	lpWaitBuf[mulpos].tv=info->spriteRect.y2;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
 	currentPosition++;
@@ -1359,11 +1355,11 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 
 	SAFEREL(p_VB);
 
-	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
-	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
-//	lpDevice->SetTexture(0,last_call->lpSurf);
+	lpDevice->SetStreamSource(0,lpVB,sizeof(Vertex));
+	lpDevice->SetVertexShader(D3DFVF_VERTEX_FORMAT);
+//	lpDevice->SetTexture(0,last_call->surface);
 //	lpDevice->SetIndices(lpIB,0);
-//	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
+//	lpDevice->SetVertexShader(D3DFVF_VERTEX_FORMAT);
 
 //	FONLINE_LOG("p:%d\n",prep_pix->size());
 }
@@ -1375,14 +1371,14 @@ int CSpriteManager::DrawSpriteSize(uint16_t id, int x, int y,double size, uint32
   
 	SpriteInfo* lpinf=spriteData[id];
 	if(!lpinf) return 0;
-    //lpinf->spr_rect.x1/=size;
-    //lpinf->spr_rect.x1/=size;
+    //lpinf->spriteRect.x1/=size;
+    //lpinf->spriteRect.x1/=size;
 
-	if(currentSurface!=lpinf->lpSurf)
+	if(currentSurface!=lpinf->surface)
 	{
-		last_call=new OneSurface(lpinf->lpSurf);
+		last_call=new OneSurface(lpinf->surface);
 		call_vec.push_back(last_call);
-		currentSurface=lpinf->lpSurf;
+		currentSurface=lpinf->surface;
 	}
 	else if(last_call) last_call->cnt++;
 
@@ -1391,27 +1387,27 @@ int CSpriteManager::DrawSpriteSize(uint16_t id, int x, int y,double size, uint32
 	if(!color) color=col; //!Cvet
 
 	lpWaitBuf[mulpos].x=x-0.5f;
-	lpWaitBuf[mulpos].y=y+lpinf->h-0.5f;
-	lpWaitBuf[mulpos].tu=lpinf->spr_rect.x1;
-	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
+	lpWaitBuf[mulpos].y=y+lpinf->height-0.5f;
+	lpWaitBuf[mulpos].tu=lpinf->spriteRect.x1;
+	lpWaitBuf[mulpos].tv=lpinf->spriteRect.y2;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
 	lpWaitBuf[mulpos].x=x-0.5f;
 	lpWaitBuf[mulpos].y=y-0.5f;
-	lpWaitBuf[mulpos].tu=lpinf->spr_rect.x1;
-	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y1;
+	lpWaitBuf[mulpos].tu=lpinf->spriteRect.x1;
+	lpWaitBuf[mulpos].tv=lpinf->spriteRect.y1;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
-	lpWaitBuf[mulpos].x=x+lpinf->w-0.5f;
+	lpWaitBuf[mulpos].x=x+lpinf->width-0.5f;
 	lpWaitBuf[mulpos].y=y-0.5f;
-	lpWaitBuf[mulpos].tu=lpinf->spr_rect.x2;
-	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y1;
+	lpWaitBuf[mulpos].tu=lpinf->spriteRect.x2;
+	lpWaitBuf[mulpos].tv=lpinf->spriteRect.y1;
 	lpWaitBuf[mulpos++].Diffuse=color;
 		
-	lpWaitBuf[mulpos].x=x+lpinf->w-0.5f;
-	lpWaitBuf[mulpos].y=y+lpinf->h-0.5f;
-	lpWaitBuf[mulpos].tu=lpinf->spr_rect.x2;
-	lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
+	lpWaitBuf[mulpos].x=x+lpinf->width-0.5f;
+	lpWaitBuf[mulpos].y=y+lpinf->height-0.5f;
+	lpWaitBuf[mulpos].tu=lpinf->spriteRect.x2;
+	lpWaitBuf[mulpos].tv=lpinf->spriteRect.y2;
 	lpWaitBuf[mulpos++].Diffuse=color;
 
 	currentPosition++;
@@ -1440,8 +1436,8 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 	if(!cnt) return 1;
 
 	//Создаем буфер вершин
-	HRESULT hr=lpDevice->CreateVertexBuffer(cnt*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
-		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,lplpBuf);
+	HRESULT hr=lpDevice->CreateVertexBuffer(cnt*4*sizeof(Vertex),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
+		D3DFVF_VERTEX_FORMAT,D3DPOOL_DEFAULT,lplpBuf);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("CSpriteMngr PrepareBuffer","Ошибка при создании буфера: %s",DXGetErrorString8(hr));
 		return 0;
@@ -1489,7 +1485,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 
 	uint16_t mulpos=0;
 	OneSurface* lc=NULL;
-	MYVERTEX* localBuf=new MYVERTEX[cnt*4];
+	Vertex* localBuf=new Vertex[cnt*4];
 
 	uint32_t new_color=col; //!Cvet
 	if(color) new_color=(new_color & 0xFF000000) + (color & 0xFFFFFF); //!Cvet
@@ -1508,7 +1504,7 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 			spr_vec* cur_spr_vec=&(*it_vec);
 			PrepSprite* cur_ps=*cur_spr_vec->begin();
 			SpriteInfo* cur_sinf=spriteData[cur_ps->spr_id];
-			if(cur_sinf->lpSurf==sinf->lpSurf)
+			if(cur_sinf->surface==sinf->surface)
 			{
 				cur_spr_vec->push_back((*jt).second);
 				break;
@@ -1533,41 +1529,41 @@ int CSpriteManager::PrepareBuffer(dtree_map* lpdtree,LPDIRECT3DVERTEXBUFFER8* lp
 			if((*it_spr)->lp_ox) x+=*(*it_spr)->lp_ox;
 			if((*it_spr)->lp_oy) y+=*(*it_spr)->lp_oy;
 
-			if(!lc || lc->lpSurf!=lpinf->lpSurf)
+			if(!lc || lc->lpSurf!=lpinf->surface)
 			{
-				lc=new OneSurface(lpinf->lpSurf);
+				lc=new OneSurface(lpinf->surface);
 				lpsvec->push_back(lc);
 			}
 			else lc->cnt++;
 
 			localBuf[mulpos].x=x-0.5f;
-			localBuf[mulpos].y=y+lpinf->h-0.5f;
-			localBuf[mulpos].tu=lpinf->spr_rect.x1;
-			localBuf[mulpos].tv=lpinf->spr_rect.y2;
+			localBuf[mulpos].y=y+lpinf->height-0.5f;
+			localBuf[mulpos].tu=lpinf->spriteRect.x1;
+			localBuf[mulpos].tv=lpinf->spriteRect.y2;
 			localBuf[mulpos++].Diffuse=new_color;
 
 			localBuf[mulpos].x=x-0.5f;
 			localBuf[mulpos].y=y-0.5f;
-			localBuf[mulpos].tu=lpinf->spr_rect.x1;
-			localBuf[mulpos].tv=lpinf->spr_rect.y1;
+			localBuf[mulpos].tu=lpinf->spriteRect.x1;
+			localBuf[mulpos].tv=lpinf->spriteRect.y1;
 			localBuf[mulpos++].Diffuse=new_color;
 
-			localBuf[mulpos].x=x+lpinf->w-0.5f;
+			localBuf[mulpos].x=x+lpinf->width-0.5f;
 			localBuf[mulpos].y=y-0.5f;
-			localBuf[mulpos].tu=lpinf->spr_rect.x2;
-			localBuf[mulpos].tv=lpinf->spr_rect.y1;
+			localBuf[mulpos].tu=lpinf->spriteRect.x2;
+			localBuf[mulpos].tv=lpinf->spriteRect.y1;
 			localBuf[mulpos++].Diffuse=new_color;
 			
-			localBuf[mulpos].x=x+lpinf->w-0.5f;
-			localBuf[mulpos].y=y+lpinf->h-0.5f;
-			localBuf[mulpos].tu=lpinf->spr_rect.x2;
-			localBuf[mulpos].tv=lpinf->spr_rect.y2;
+			localBuf[mulpos].x=x+lpinf->width-0.5f;
+			localBuf[mulpos].y=y+lpinf->height-0.5f;
+			localBuf[mulpos].tu=lpinf->spriteRect.x2;
+			localBuf[mulpos].tv=lpinf->spriteRect.y2;
 			localBuf[mulpos++].Diffuse=new_color;
 		}
 
 	void* pBuffer;
-	(*lplpBuf)->Lock(0,sizeof(MYVERTEX)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
-		memcpy(pBuffer,localBuf,sizeof(MYVERTEX)*mulpos);
+	(*lplpBuf)->Lock(0,sizeof(Vertex)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
+		memcpy(pBuffer,localBuf,sizeof(Vertex)*mulpos);
 	(*lplpBuf)->Unlock();
 
   if (localBuf != NULL) {
@@ -1587,17 +1583,16 @@ void CSpriteManager::DrawPrepared(LPDIRECT3DVERTEXBUFFER8 lpBuf,onesurf_vec* lps
 	if(!cnt) return;
 	Flush();
 
-	lpDevice->SetStreamSource(0,lpBuf,sizeof(MYVERTEX));
+	lpDevice->SetStreamSource(0,lpBuf,sizeof(Vertex));
 
 	uint16_t rpos=0;
-	for(onesurf_vec::iterator iv=lpsvec->begin();iv!=lpsvec->end();iv++)
-	{
+	for (onesurf_vec::iterator iv = lpsvec->begin(); iv != lpsvec->end(); ++iv) {
 		lpDevice->SetTexture(0,(*iv)->lpSurf);
 		lpDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,0,cnt*4,rpos,2*(*iv)->cnt);
 		rpos+=6*(*iv)->cnt;
 	}
 
-	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
+	lpDevice->SetStreamSource(0,lpVB,sizeof(Vertex));
 }
 
 void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, fonline::math::Rect<int>* prect)
@@ -1611,16 +1606,16 @@ void CSpriteManager::GetDrawCntrRect(PrepSprite* prep, fonline::math::Rect<int>*
 	else id=prep->spr_id;
 	SpriteInfo* lpinf=spriteData[id];
 	if(!lpinf) return;
-	int x=prep->scr_x-(lpinf->w >> 1)+lpinf->offs_x;
-	int y=prep->scr_y-lpinf->h+lpinf->offs_y;
+	int x=prep->scr_x-(lpinf->width >> 1)+lpinf->offsetX;
+	int y=prep->scr_y-lpinf->height+lpinf->offsetY;
 
 	if(prep->lp_ox) x+=*prep->lp_ox;
 	if(prep->lp_oy) y+=*prep->lp_oy;
 
 	prect->left = x;
 	prect->top = y;
-	prect->right = x+lpinf->w;
-	prect->bottom = y+lpinf->h;
+	prect->right = x+lpinf->width;
+	prect->bottom = y+lpinf->height;
 }
 
 void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
@@ -1635,17 +1630,17 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 		else id=(*jt).second->spr_id;
 		SpriteInfo* lpinf=spriteData[id];
 		if(!lpinf) continue;
-		int x=(*jt).second->scr_x-(lpinf->w >> 1)+lpinf->offs_x+cmn_scr_ox;
-		int y=(*jt).second->scr_y-lpinf->h+lpinf->offs_y+cmn_scr_oy;
+		int x=(*jt).second->scr_x-(lpinf->width >> 1)+lpinf->offsetX+cmn_scr_ox;
+		int y=(*jt).second->scr_y-lpinf->height+lpinf->offsetY+cmn_scr_oy;
 
 		if((*jt).second->lp_ox) x+=*(*jt).second->lp_ox;
 		if((*jt).second->lp_oy) y+=*(*jt).second->lp_oy;
 
-		if(currentSurface!=lpinf->lpSurf)
+		if(currentSurface!=lpinf->surface)
 		{
-			last_call=new OneSurface(lpinf->lpSurf);
+			last_call=new OneSurface(lpinf->surface);
 			call_vec.push_back(last_call);
-			currentSurface=lpinf->lpSurf;
+			currentSurface=lpinf->surface;
 		}
 		else if(last_call) last_call->cnt++;
 
@@ -1655,27 +1650,27 @@ void CSpriteManager::DrawTreeCntr(dtree_map* lpdtree)
 		if((*jt).second->alpha) cur_color+=((uint32_t)(*(*jt).second->alpha)<<24) & 0xFF000000;
 
 		lpWaitBuf[mulpos].x=x-0.5f;
-		lpWaitBuf[mulpos].y=y+lpinf->h-0.5f;
-		lpWaitBuf[mulpos].tu=lpinf->spr_rect.x1;
-		lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
+		lpWaitBuf[mulpos].y=y+lpinf->height-0.5f;
+		lpWaitBuf[mulpos].tu=lpinf->spriteRect.x1;
+		lpWaitBuf[mulpos].tv=lpinf->spriteRect.y2;
 		lpWaitBuf[mulpos++].Diffuse=cur_color;
 
 		lpWaitBuf[mulpos].x=x-0.5f;
 		lpWaitBuf[mulpos].y=y-0.5f;
-		lpWaitBuf[mulpos].tu=lpinf->spr_rect.x1;
-		lpWaitBuf[mulpos].tv=lpinf->spr_rect.y1;
+		lpWaitBuf[mulpos].tu=lpinf->spriteRect.x1;
+		lpWaitBuf[mulpos].tv=lpinf->spriteRect.y1;
 		lpWaitBuf[mulpos++].Diffuse=cur_color;
 
-		lpWaitBuf[mulpos].x=x+lpinf->w-0.5f;
+		lpWaitBuf[mulpos].x=x+lpinf->width-0.5f;
 		lpWaitBuf[mulpos].y=y-0.5f;
-		lpWaitBuf[mulpos].tu=lpinf->spr_rect.x2;
-		lpWaitBuf[mulpos].tv=lpinf->spr_rect.y1;
+		lpWaitBuf[mulpos].tu=lpinf->spriteRect.x2;
+		lpWaitBuf[mulpos].tv=lpinf->spriteRect.y1;
 		lpWaitBuf[mulpos++].Diffuse=cur_color;
 		
-		lpWaitBuf[mulpos].x=x+lpinf->w-0.5f;
-		lpWaitBuf[mulpos].y=y+lpinf->h-0.5f;
-		lpWaitBuf[mulpos].tu=lpinf->spr_rect.x2;
-		lpWaitBuf[mulpos].tv=lpinf->spr_rect.y2;
+		lpWaitBuf[mulpos].x=x+lpinf->width-0.5f;
+		lpWaitBuf[mulpos].y=y+lpinf->height-0.5f;
+		lpWaitBuf[mulpos].tu=lpinf->spriteRect.x2;
+		lpWaitBuf[mulpos].tv=lpinf->spriteRect.y2;
 		lpWaitBuf[mulpos++].Diffuse=cur_color;
 
 		currentPosition++;
@@ -1704,8 +1699,8 @@ void CSpriteManager::PostRestore()
   
 	//Создаем буфер вершин
 	FONLINE_LOG("Пересоздаю VB на %d спрайтов\n",maxSpriteCount);
-	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
-		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
+	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(Vertex),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
+		D3DFVF_VERTEX_FORMAT,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("SM::CreateVertexBuffer",(char*)DXGetErrorString8(hr));
 		return;
@@ -1739,33 +1734,39 @@ void CSpriteManager::PostRestore()
 	delete[] IndexList;
 
 	lpDevice->SetIndices(lpIB,0);
-	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
-	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
+	lpDevice->SetStreamSource(0,lpVB,sizeof(Vertex));
+	lpDevice->SetVertexShader(D3DFVF_VERTEX_FORMAT);
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++
-int CSpriteManager::LoadCritTypes()
+int CSpriteManager::LoadCritterTypes()
 {
   //assert(initialized);
   
 	//загружаем список криттеров
-	char str[1024];
+	
+  IniFile::RecordMap ini;
+  IniFile::LoadINI(opt_crfol, ini);
+	
+	//char str[1024];
 	char key[64];
-	CritterType cur=0;
-	CritterType cnt=GetPrivateProfileInt("critters","id_cnt",0,opt_crfol.c_str());
+	CritterType cur = 0;
+  CritterType cnt = IniFile::GetValue<int>(ini, "critters.id_cnt", 0);
+	//GetPrivateProfileInt("critters","id_cnt",0,opt_crfol.c_str());
 	if(!cnt) return 0;
 
 	for(cur=0;cur<cnt;cur++)
 	{
-		wsprintf(key,"%d",cur);
-		GetPrivateProfileString("critters",key,"",str,1023,opt_crfol.c_str());
-		if(!str[0]) continue;
-		crit_types[cur]=str;
+		wsprintf(key,"critters.%d",cur);
+    std::string str = IniFile::GetValue<std::string>(ini, key, "");
+		//GetPrivateProfileString("critters",key,"",str,1023,opt_crfol.c_str());
+		if (str == "") continue;
+		crit_types[cur] = str;
 	}
 	return 1;
 }
 
-int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
+int CSpriteManager::LoadCritterAnimation(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
 {
   assert(initialized);
   
@@ -1802,7 +1803,7 @@ int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t
 	return 1;
 }
 
-int CSpriteManager::EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
+int CSpriteManager::EraseCritterAnimation(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2)
 {
   assert(initialized);
   
@@ -1853,12 +1854,12 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 
 	LPDIRECT3DVERTEXBUFFER8 p_VB;
 
-	lpDevice->CreateVertexBuffer(cnt_pix*sizeof(MYVERTEX), 
+	lpDevice->CreateVertexBuffer(cnt_pix*sizeof(Vertex), 
 		D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, //D3DUSAGE_POINTS
-		D3DFVF_MYVERTEX, D3DPOOL_DEFAULT, 
+		D3DFVF_VERTEX_FORMAT, D3DPOOL_DEFAULT, 
 		&p_VB);
 
-	MYVERTEX* g_Vertices=new MYVERTEX[cnt_pix];
+	Vertex* g_Vertices=new Vertex[cnt_pix];
 
 	int cur_pix=0;
 	for(Pix_vec::iterator it_p=prep_pix->begin();it_p!=prep_pix->end();it_p++)
@@ -1873,8 +1874,8 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 	}
 
 	VOID* pVertices;
-	p_VB->Lock (0, cnt_pix*sizeof(MYVERTEX), (uint8_t**)&pVertices, D3DLOCK_DISCARD);
-	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(MYVERTEX));
+	p_VB->Lock (0, cnt_pix*sizeof(Vertex), (uint8_t**)&pVertices, D3DLOCK_DISCARD);
+	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(Vertex));
 	p_VB->Unlock();
 
   if (g_Vertices != NULL) {
@@ -1882,7 +1883,7 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
     g_Vertices = NULL;
   }
 
-	lpDevice->SetStreamSource(0,p_VB,sizeof(MYVERTEX));
+	lpDevice->SetStreamSource(0,p_VB,sizeof(Vertex));
 
 	lpDevice->SetTextureStageState(0,D3DTSS_COLOROP ,D3DTOP_DISABLE);
 	lpDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTEXF_POINT);
@@ -1899,7 +1900,7 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
     p_VB = NULL;
   }
 
-	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
+	lpDevice->SetStreamSource(0,lpVB,sizeof(Vertex));
 }
 
 void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
@@ -1915,12 +1916,12 @@ void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
 
 	LPDIRECT3DVERTEXBUFFER8 p_VB;
 
-	lpDevice->CreateVertexBuffer(cnt_pix*sizeof(MYVERTEX), 
+	lpDevice->CreateVertexBuffer(cnt_pix*sizeof(Vertex), 
 		D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, //D3DUSAGE_POINTS
-		D3DFVF_MYVERTEX, D3DPOOL_DEFAULT, 
+		D3DFVF_VERTEX_FORMAT, D3DPOOL_DEFAULT, 
 		&p_VB);
 
-	MYVERTEX* g_Vertices=new MYVERTEX[cnt_pix];
+	Vertex* g_Vertices=new Vertex[cnt_pix];
 
 	int cur_pix=0;
 	for(Pix_vec::iterator it_p=prep_pix->begin();it_p!=prep_pix->end();it_p++)
@@ -1937,8 +1938,8 @@ void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
 	}
 
 	VOID* pVertices;
-	p_VB->Lock (0, cnt_pix*sizeof(MYVERTEX), (uint8_t**)&pVertices, D3DLOCK_DISCARD);
-	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(MYVERTEX));
+	p_VB->Lock (0, cnt_pix*sizeof(Vertex), (uint8_t**)&pVertices, D3DLOCK_DISCARD);
+	memcpy (pVertices, g_Vertices, cnt_pix*sizeof(Vertex));
 	p_VB->Unlock();
 
   if (g_Vertices != NULL) {
@@ -1946,7 +1947,7 @@ void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
     g_Vertices = NULL;
   }
 
-	lpDevice->SetStreamSource(0,p_VB,sizeof(MYVERTEX));
+	lpDevice->SetStreamSource(0,p_VB,sizeof(Vertex));
 
 	lpDevice->SetTextureStageState(0,D3DTSS_COLOROP ,D3DTOP_DISABLE);
 	lpDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTEXF_POINT);
@@ -1963,6 +1964,6 @@ void CSpriteManager::DrawPrepLines(Pix_vec* prep_pix)
     p_VB = NULL;
   }
 
-	lpDevice->SetStreamSource(0,lpVB,sizeof(MYVERTEX));
+	lpDevice->SetStreamSource(0,lpVB,sizeof(Vertex));
 }
 //!Cvet -----------------------------------------

@@ -61,7 +61,7 @@ FOnlineEngine::FOnlineEngine(): initialized(0),hWnd(NULL),lpD3D(NULL),lpDevice(N
 
 int FOnlineEngine::Init(HWND _hWnd)
 {
-	FONLINE_LOG("\nFEngine Initialization...\n");
+	FONLINE_LOG("Initializing.\n");
 	
 	HRESULT hr;
 
@@ -69,94 +69,82 @@ int FOnlineEngine::Init(HWND _hWnd)
 
 	InitKeyboard();
 
-	FONLINE_LOG("Создаю Direct3D.....");
-	lpD3D=Direct3DCreate8(D3D_SDK_VERSION);
-	if(!lpD3D){
-		ReportErrorMessage("Engine Init","Не могу создать Direct3D.\nУбедитесь, что установлен DirectX версии 8.1 и выше");
+	FONLINE_LOG("Creating Direct3D.");
+	lpD3D = Direct3DCreate8(D3D_SDK_VERSION);
+	if (!lpD3D){
+		ReportErrorMessage("Engine Init", "Could not create Direct3D.\nPleas make sure you have DirectX version 8.1 or higher installed.");
 		return 0;
 	}
-	FONLINE_LOG("OK\n");
 
-	FONLINE_LOG("параметры режима.....");
+	FONLINE_LOG("Setting display mode.");
 	D3DDISPLAYMODE d3ddm;
-	hr=lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm);
-	if(hr!=D3D_OK){
+	hr = lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm);
+	if (hr != D3D_OK){
 		ReportErrorMessage("GetAdapterDisplayMode",(char*)DXGetErrorString8(hr));
 		return 0;
 	}
-	FONLINE_LOG("OK\n");
 
-	FONLINE_LOG("Create device.....");
+	FONLINE_LOG("Creating Direct3D device.");
 
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp,sizeof(d3dpp));
-	d3dpp.Windowed=opt_fullscr?0:1;
-	d3dpp.SwapEffect=D3DSWAPEFFECT_DISCARD;
+	d3dpp.Windowed = opt_fullscr ? 0 : 1;
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	//d3dpp.Flags=D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;	//??? lockable need
-	if(!opt_fullscr)
-		d3dpp.BackBufferFormat=d3ddm.Format;
-		else
-		{
-			d3dpp.BackBufferWidth = screen_width[opt_screen_mode];
-			d3dpp.BackBufferHeight = screen_height[opt_screen_mode];
-			d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
-			if (!opt_vsync) d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+	if(!opt_fullscr) {
+	  d3dpp.BackBufferFormat=d3ddm.Format;
+	} else {
+		d3dpp.BackBufferWidth = screen_width[opt_screen_mode];
+		d3dpp.BackBufferHeight = screen_height[opt_screen_mode];
+		d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
+		
+		if (!opt_vsync) {
+		  d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 		}
+	}
 
-	hr=lpD3D->CreateDevice(D3DADAPTER_DEFAULT,D3DDEVTYPE_HAL,hWnd,
-		D3DCREATE_SOFTWARE_VERTEXPROCESSING,&d3dpp,&lpDevice);
-	if(hr!=D3D_OK){
+	hr = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, 
+	                         &d3dpp, &lpDevice);
+	if (hr != D3D_OK){
 		ReportErrorMessage("CreateDevice",(char*)DXGetErrorString8(hr));
 		return 0;
 	}
-	FONLINE_LOG("OK\n");
 
-	FONLINE_LOG("Установка режимов.....");
-	lpDevice->SetRenderState(D3DRS_LIGHTING,FALSE); //выключаем свет
-	lpDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Disable Z-Buffer
-    lpDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE); //Disable Culling
-    //включаем прозрачность - Alpha blending
-	lpDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-
-//	lpDevice->SetRenderState( D3DRS_SRCBLEND,   D3DBLEND_SRCCOLOR );
-//	lpDevice->SetRenderState( D3DRS_DESTBLEND,  D3DBLEND_INVSRCCOLOR );
-
-	lpDevice->SetRenderState( D3DRS_SRCBLEND,   D3DBLEND_SRCALPHA );
-	lpDevice->SetRenderState( D3DRS_DESTBLEND,  D3DBLEND_INVSRCALPHA );
-    //включаем alpha testing
-	lpDevice->SetRenderState( D3DRS_ALPHATESTENABLE,  TRUE );
-	lpDevice->SetRenderState( D3DRS_ALPHAREF,         0x08 );
-	lpDevice->SetRenderState( D3DRS_ALPHAFUNC,  D3DCMP_GREATEREQUAL );
-
-	//линейная фильтрация
-//lpDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-//lpDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-//lpDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-        
+	FONLINE_LOG("Setting render mode.");
 	
-//lpDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-//lpDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+	// Disable lighting.
+	lpDevice->SetRenderState(D3DRS_LIGHTING,FALSE);
+	// Disable Z-Buffer.
+	lpDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+	// Disable culling.
+  lpDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE); 
+  
+  // Enable alpha blending.
+	lpDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	lpDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	lpDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+  
+  // Enable alpha testing.
+	lpDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	lpDevice->SetRenderState(D3DRS_ALPHAREF, 0x08);
+	lpDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 
-	lpDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTEXF_LINEAR);
-	lpDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTEXF_LINEAR);
+	// Enable linear filtration.
+	lpDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
+	lpDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR);
+	lpDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE2X);
+	lpDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 
+	lpDevice->SetVertexShader(D3DFVF_VERTEX_FORMAT);
+	
+	// Clear the back buffer.
+	lpDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,0), 1.0, 0);
 
-	lpDevice->SetTextureStageState(0,D3DTSS_COLOROP ,D3DTOP_MODULATE2X);
-//	lpDevice->SetTextureStageState(0,D3DTSS_ALPHAOP ,D3DTOP_SELECTARG1);
-	lpDevice->SetTextureStageState(0,D3DTSS_ALPHAOP ,D3DTOP_MODULATE); //!Cvet
+	if (!InitDirectInput()) return 0;
 
+	if (!spriteManager.Init(lpDevice)) return 0;
 
-	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
-	FONLINE_LOG("OK\n");
-
-	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
-
-
-	if(!InitDInput()) return 0;
-
-	if(!spriteManager.Init(lpDevice)) return 0;
-
-	if(!soundManager.Init()) return 0;
+	if (!soundManager.Init()) return 0;
 
 	FONLINE_LOG("Loading splash...");
 
@@ -181,7 +169,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 	spriteManager.DrawSprite(splash,0,0,COLOR_DEFAULT);
 	spriteManager.Flush();
 	lpDevice->EndScene();
-	lpDevice->Present(NULL,NULL,NULL,NULL);
+	lpDevice->Present(NULL, NULL, NULL, NULL);
 
 	FONLINE_LOG("OK\n");
 
@@ -198,8 +186,8 @@ int FOnlineEngine::Init(HWND _hWnd)
 
 	SetChosenAction(ACTION_NONE);
 
-//загружаем статические объекты
-	FONLINE_LOG("Загрузка статических объектов...");
+  //загружаем статические объекты
+	FONLINE_LOG("Loading static objects.");
 
 	FILE *o_cf;
 	FILE *o_cf2;
@@ -314,13 +302,13 @@ int FOnlineEngine::Init(HWND _hWnd)
 	return 1;
 }
 
-int FOnlineEngine::InitDInput()
+int FOnlineEngine::InitDirectInput()
 {
 	FONLINE_LOG("DInput init...\n");
     HRESULT hr = DirectInput8Create(GetModuleHandle(NULL),DIRECTINPUT_VERSION,IID_IDirectInput8,(void**)&lpDInput,NULL);
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Не могу создать DirectInput");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Не могу создать DirectInput");
 		return 0;
 	}
 
@@ -328,14 +316,14 @@ int FOnlineEngine::InitDInput()
     hr = lpDInput->CreateDevice(GUID_SysKeyboard,&lpKeyboard,NULL);
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Не могу создать GUID_SysKeyboard");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Не могу создать GUID_SysKeyboard");
 		return 0;
 	}
 
     hr = lpDInput->CreateDevice(GUID_SysMouse,&lpMouse,NULL);
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Не могу создать GUID_SysMouse");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Не могу создать GUID_SysMouse");
 		return 0;
 	}
     // Set the data format to "keyboard format" - a predefined data format 
@@ -344,14 +332,14 @@ int FOnlineEngine::InitDInput()
     hr = lpKeyboard->SetDataFormat(&c_dfDIKeyboard);
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Не могу установить формат данных для клавиатуры");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Не могу установить формат данных для клавиатуры");
 		return 0;
 	}
 
     hr = lpMouse->SetDataFormat(&c_dfDIMouse2);
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Не могу установить формат данных для мышки");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Не могу установить формат данных для мышки");
 		return 0;
 	}
 
@@ -359,7 +347,7 @@ int FOnlineEngine::InitDInput()
     hr = lpKeyboard->SetCooperativeLevel( hWnd,DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Ошибка SetCooperativeLevel для клавиатуры");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Ошибка SetCooperativeLevel для клавиатуры");
 		return 0;
 	}
 
@@ -367,7 +355,7 @@ int FOnlineEngine::InitDInput()
 	hr = lpMouse->SetCooperativeLevel( hWnd,DISCL_FOREGROUND | DISCL_EXCLUSIVE);//!Cvet сделал эксклюзив для всего
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Ошибка SetCooperativeLevel для мышки");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Ошибка SetCooperativeLevel для мышки");
 		return 0;
 	}
 
@@ -383,14 +371,14 @@ int FOnlineEngine::InitDInput()
     hr = lpKeyboard->SetProperty(DIPROP_BUFFERSIZE,&dipdw.diph);
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Ошибка настройки буфера приема для клавиатуры");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Ошибка настройки буфера приема для клавиатуры");
 		return 0;
 	}
 
     hr = lpMouse->SetProperty(DIPROP_BUFFERSIZE,&dipdw.diph);
 	if(hr!=DI_OK)
 	{
-		ReportErrorMessage("FOnlineEngine InitDInput","Ошибка настройки буфера приема для мышки");
+		ReportErrorMessage("FOnlineEngine InitDirectInput","Ошибка настройки буфера приема для мышки");
 		return 0;
 	}
 
@@ -1146,7 +1134,7 @@ void FOnlineEngine::Restore()
 	lpDevice->SetTextureStageState(0,D3DTSS_ALPHAOP ,D3DTOP_MODULATE); //!Cvet
 
 
-	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
+	lpDevice->SetVertexShader(D3DFVF_VERTEX_FORMAT);
 	FONLINE_LOG("OK\n");
 	
 	spriteManager.SetColor((0xFF000000)|((dayR+opt_light)<<16)|((dayG+opt_light)<<8)|(dayB+opt_light)); //!Cvet
@@ -2770,7 +2758,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
     
     // XXX[27.7.2012 alex]: this code needs Vector class with a length() method
     // XXX[27.7.2012 alex]: unused variable
-		int dist=sqrt(pow(GmapMoveX-GmapGroupX,2.0)+pow(GmapMoveY-GmapGroupY,2.0));
+    // int dist=sqrt(pow(GmapMoveX-GmapGroupX,2.0)+pow(GmapMoveY-GmapGroupY,2.0));
 
 		gm_process=true;
 	}

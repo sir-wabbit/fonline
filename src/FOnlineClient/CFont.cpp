@@ -56,7 +56,7 @@ int CFOFont::Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIR
 	lpVB=aVB;
 
 	spr_cnt=opt_flushval;
-	lpWaitBuf=new MYVERTEX[spr_cnt*4];
+	lpWaitBuf=new Vertex[spr_cnt*4];
 
 	for(int cur_f=0;cur_f<MAX_FONT;++cur_f)
 	{
@@ -414,8 +414,8 @@ int CFOFont::Flush(int* cur_pos) //!Cvet int* cur_pos
 	if(!crtd) return 0;
 	void* pBuffer;
 	int mulpos=4*(*cur_pos);
-	lpVB->Lock(0,sizeof(MYVERTEX)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
-		memcpy(pBuffer,lpWaitBuf,sizeof(MYVERTEX)*mulpos);
+	lpVB->Lock(0,sizeof(Vertex)*mulpos,(uint8_t**)&pBuffer,D3DLOCK_DISCARD);
+		memcpy(pBuffer,lpWaitBuf,sizeof(Vertex)*mulpos);
 	lpVB->Unlock();
 
 	//рисуем спрайты

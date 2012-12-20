@@ -34,23 +34,28 @@
 typedef std::map<CritterType, std::string> ctypes_map; //!Cvet перенес сюда
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-struct MYVERTEX
+struct Vertex
 {
-	FLOAT x,y,z,rhw;
+	float x,y,z,rhw;
 	uint32_t Diffuse;
-	FLOAT tu,tv;
+	float tu,tv;
 
-	MYVERTEX(): x(0),y(0),z(0),rhw(1),tu(0),tv(0),Diffuse(0){};
+	Vertex(): x(0),y(0),z(0),rhw(1),tu(0),tv(0),Diffuse(0){};
 };
-#define D3DFVF_MYVERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+
+struct Quad {
+  Vertex vertices[4];
+};
+
+#define D3DFVF_VERTEX_FORMAT (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
 struct FLTRECT
 {
-	FLOAT x1,y1,x2,y2;
+	float x1,y1,x2,y2;
 	FLTRECT():x1(0),y1(0),x2(0),y2(0){};
-	FLTRECT(FLOAT _x1,FLOAT _y1,FLOAT _x2,FLOAT _y2):x1(_x1),y1(_y1),x2(_x2),y2(_y2){};
+	FLTRECT(float _x1, float _y1, float _x2, float _y2):x1(_x1),y1(_y1),x2(_x2),y2(_y2){};
 
-	void operator() (FLOAT _x1,FLOAT _y1,FLOAT _x2,FLOAT _y2) {x1=_x1;y1=_y1;x2=_x2;y2=_y2;};
+	void operator() (float _x1, float _y1, float _x2, float _y2) {x1=_x1;y1=_y1;x2=_x2;y2=_y2;};
 };
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
@@ -58,13 +63,12 @@ struct FLTRECT
 typedef std::vector<LPDIRECT3DTEXTURE8> surf_vect;
 
 // структура спрайта для DX8
-struct SpriteInfo
-{
-	LPDIRECT3DTEXTURE8 lpSurf;
-	FLTRECT spr_rect;
-	uint16_t w,h;
-	short offs_x,offs_y;
-	SpriteInfo(): lpSurf(NULL),w(0),h(0),offs_x(0),offs_y(0){};
+struct SpriteInfo {
+	LPDIRECT3DTEXTURE8 surface;
+	FLTRECT spriteRect;
+	uint16_t width, height;
+	short offsetX, offsetY;
+	SpriteInfo(): surface(NULL),width(0),height(0),offsetX(0),offsetY(0){};
 };
 
 typedef std::map<uint16_t, SpriteInfo*> sprinfo_map;
@@ -237,9 +241,9 @@ public:
 //!Cvet ++++++++++++++++++++++++++++++++++++++
 	ctypes_map crit_types;
 	CritFrames* CrAnim[150][27][27];
-	int LoadCritTypes();
-	int LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
-	int EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
+	int LoadCritterTypes();
+	int LoadCritterAnimation(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
+	int EraseCritterAnimation(CritterType anim_type, uint8_t anim_ind1, uint8_t anim_ind2);
 
 	int CheckPixTransp();
 
@@ -274,9 +278,9 @@ private:
 	LPDIRECT3DINDEXBUFFER8 lpIB;//буфер с индексами
 
 	//Буфер вершин в системной памяти для постоянно меняющихся спрайтов
-	MYVERTEX* lpWaitBuf;
+	Vertex* lpWaitBuf;
 
-	LPDIRECT3DTEXTURE8 CreateNewSurf(uint16_t w, uint16_t h);
+	LPDIRECT3DTEXTURE8 CreateNewSurface(uint16_t w, uint16_t h);
 
 	FileManager fm;
 
