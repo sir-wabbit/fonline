@@ -1077,13 +1077,15 @@ void SQL::ChangeQuest(CritterID crid, uint16_t quest_num, char choose, int count
 	}
 
 	if(!(mySQL_res=mysql_store_result(mySQL))) return;
-	int num_rows=0;
-	if(!(num_rows=mysql_num_rows(mySQL_res))) return;
+	
+	my_ulonglong num_rows = 0;
+	if (!(num_rows = mysql_num_rows(mySQL_res))) {
+	  return;
+	}
 
-	mySQL_row=mysql_fetch_row(mySQL_res);
+	mySQL_row = mysql_fetch_row(mySQL_res);
 
-	for(int i=0;i<num_rows;++i) //!!!требуется оптимизация
-	{
+	for(my_ulonglong i = 0; i < num_rows; ++i) {//!!!требуется оптимизация
 		Query("UPDATE `quests` SET `value`='%d' WHERE `quest_num`='%d' AND `crid`='%s'",value1,quest_num,mySQL_row[i]);
 		//!!! отправлять данные игрокам о квестах
 		//дублирование?
@@ -1466,7 +1468,7 @@ void SQL::PrintTableInLog(char* table, char* rows)
 
 	while((mySQL_row=mysql_fetch_row(mySQL_res)))
 	{
-		for(int pt=0; pt<mysql_num_fields(mySQL_res); pt++)
+		for (unsigned int pt = 0; pt < mysql_num_fields(mySQL_res); pt++)
 			LogExecStr("%s - ",mySQL_row[pt]); 
 		LogExecStr(" | \n ");
 	}

@@ -55,9 +55,9 @@ public:
 
 private:
 
-	int LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data);
-	int LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data);
-	int LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data, char* ogg_path);
+	int LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, size_t* size_data);
+	int LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, size_t* size_data);
+	int LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, size_t* size_data, char* ogg_path);
 
 	FileManager fm;
 

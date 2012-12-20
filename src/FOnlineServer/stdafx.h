@@ -32,11 +32,11 @@
 
 //!Cvet ++++
 //для работы с двоичными константами
-#define BIN__N(x) (x) | x>>3 | x>>6 | x>>9
-#define BIN__B(x) (x) & 0xf | (x)>>12 & 0xf0
-#define BIN8(v) (BIN__B(BIN__N(0x##v)))
+//#define BIN__N(x) (x) | x>>3 | x>>6 | x>>9
+//#define BIN__B(x) (x) & 0xf | (x)>>12 & 0xf0
+//#define BIN8(v) (BIN__B(BIN__N(0x##v)))
 
-#define BIN16(bin16,bin8)	((BIN8(bin16)<<8)|(BIN8(bin8)))
+//#define BIN16(bin16,bin8)	((BIN8(bin16)<<8)|(BIN8(bin8)))
 
 //для работы с битами (по игре - флагами)
 #define BITS(x,y) ((x)&(y))

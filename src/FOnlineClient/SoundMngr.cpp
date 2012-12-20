@@ -182,7 +182,7 @@ int SoundManager::LoadSound(char* fname, int TypePath)
 	return cur_snd;
 }
 
-int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
+int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, size_t* size_data)
 {
 	uint32_t dw_buf = fm.GetRDWord();
 
@@ -232,7 +232,7 @@ int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 	return 1;
 }
 
-int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data)
+int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, size_t* size_data)
 {
 	int channel;
 	int freq;
@@ -288,7 +288,7 @@ int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 	return 1;
 }
 
-int SoundManager::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, uint32_t* size_data, char* ogg_path)
+int SoundManager::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, size_t* size_data, char* ogg_path)
 {
 	FILE *fs;
 	if(!(fs=fopen(ogg_path,"rb"))) return 0;
@@ -305,12 +305,11 @@ int SoundManager::LoadOGG(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 
 	*sample_data=new unsigned char[*size_data];
 
-	int decoded=0;
+	size_t decoded=0;
 
-	while(decoded<*size_data)
-	{
+	while (decoded < *size_data) {
 		int curr;
-		decoded+=ov_read(&vf,(char*)(*sample_data)+decoded,(*size_data)-decoded,0,2,1,&curr);
+		decoded += ov_read(&vf,(char*)(*sample_data)+decoded,(*size_data)-decoded,0,2,1,&curr);
 	}
 
 	fformat->wFormatTag=WAVE_FORMAT_PCM;

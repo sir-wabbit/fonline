@@ -33,8 +33,8 @@ public:
 
 	DATARCHIVE_API virtual long getSize() { return fileSize; };
 	DATARCHIVE_API virtual int eof() { return tell() >= fileSize; };
-	DATARCHIVE_API virtual long seek (long dist, int from) = 0;
-	DATARCHIVE_API virtual long tell() = 0;
+	DATARCHIVE_API virtual int64_t seek (int64_t dist, int from) = 0;
+	DATARCHIVE_API virtual int64_t tell() = 0;
 	DATARCHIVE_API virtual int read (void* buf, long toRead, long* read) = 0;
 };
 
@@ -42,8 +42,8 @@ class CPlainFile: public IOStream {
 public:
 	DATARCHIVE_API CPlainFile (FILE* file, long pos, long size):
 		IOStream (file, pos, size) {};
-	DATARCHIVE_API virtual long seek (long dist, int from);
-	DATARCHIVE_API virtual long tell() { return ftell(hFile) - beginPos; };
+	DATARCHIVE_API virtual int64_t seek (int64_t dist, int from);
+	DATARCHIVE_API virtual int64_t tell() { return ftell(hFile) - beginPos; };
 	DATARCHIVE_API virtual int read (void* buf, long toRead, long* read);
 };
 
@@ -52,7 +52,7 @@ protected:
 	uint8_t *skipper, *inBuf;
 	long packedSize;
 	long curPos; // position from beginning of unpacked image
-	virtual void skip (long dist);
+	virtual void skip (int64_t dist);
 	virtual void reset() = 0;
 public:
 	DATARCHIVE_API CPackedFile (FILE* file, long pos, long size, long packed):
@@ -66,8 +66,8 @@ public:
 		if (inBuf) delete[] inBuf;
 	};
 
-	DATARCHIVE_API virtual long seek (long dist, int from);
-	DATARCHIVE_API virtual long tell() { return curPos; };
+	DATARCHIVE_API virtual int64_t seek (int64_t dist, int from);
+	DATARCHIVE_API virtual int64_t tell() { return curPos; };
 };
 
 class InflatorStream: public CPackedFile {

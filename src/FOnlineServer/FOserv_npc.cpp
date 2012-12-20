@@ -5,36 +5,42 @@
 #include "stdafx.h"
 #include "FOserv.h"
 
-void CServer::NPC_ClearAll() {
-  for(cl_map::iterator it=pc.begin(); it!=pc.end(); it++) {
-    if (it->second->i_npc != NULL) {
-      npc_info* info = it->second->i_npc;
-      
-      for(dialogs_map::iterator it=info->dialogs.begin(); it!=info->dialogs.end(); it++) {
-        npc_dialog* dialog = it->second;
-        
-        for (answers_list::iterator it = dialog->answers.begin(); it != dialog->answers.end(); ++it) {
-          answer* answ = *it;
-          
-          for (demand_list::iterator it = answ->demands.begin(); it != answ->demands.end(); ++it) {
-            SAFEDEL(*it);
-          }
-          answ->demands.clear();
-          
-          for (result_list::iterator it = answ->results.begin(); it != answ->results.end(); ++it) {
-            SAFEDEL(*it);
-          }
-          answ->results.clear();
-          
-          SAFEDEL(*it);
-        }
-        
-        dialog->answers.clear();
-      
-        SAFEDEL(it->second);
+namespace {
+
+void ClearNpcInfo(npc_info* info) {
+  for(dialogs_map::iterator dlgIt = info->dialogs.begin(); dlgIt!=info->dialogs.end(); ++dlgIt) {
+    npc_dialog* dialog = dlgIt->second;
+
+    for (answers_list::iterator answerIt = dialog->answers.begin(); answerIt != dialog->answers.end(); ++answerIt) {
+      answer* answ = *answerIt;
+
+      for (demand_list::iterator demandIt = answ->demands.begin(); demandIt != answ->demands.end(); ++demandIt) {
+        SAFEDEL(*demandIt);
       }
-      
-      info->dialogs.clear();
+      answ->demands.clear();
+
+      for (result_list::iterator resultIt = answ->results.begin(); resultIt != answ->results.end(); ++resultIt) {
+        SAFEDEL(*resultIt);
+      }
+      answ->results.clear();
+
+      SAFEDEL(answ);
+    }
+
+    dialog->answers.clear();
+
+    SAFEDEL(dlgIt->second);
+  }
+
+  info->dialogs.clear();
+}
+
+} // anonymous namespace
+
+void CServer::NPC_ClearAll() {
+  for(cl_map::iterator it = pc.begin(); it != pc.end(); ++it) {
+    if (it->second->i_npc != NULL) {
+      ClearNpcInfo(it->second->i_npc);
     }
   
     SAFEDEL(it->second);
@@ -624,9 +630,12 @@ void CServer::NPC_Remove(CCritter* npc)
 void CServer::NPC_Process(CCritter* npc)
 {
 	return;
+	
 	if(npc->info.cond!=COND_LIFE) return;
 	if(npc->vis_cl.empty()) return;
-	if(npc->info.break_time>GetTickCount()-npc->info.start_bt) return;
+	if (npc->info.break_time + npc->info.start_bt > GetTickCount()) {
+	  return;
+	}
 
 //	npc->info.break_time=0;
 

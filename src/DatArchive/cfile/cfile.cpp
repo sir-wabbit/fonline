@@ -29,8 +29,8 @@
 #include <windows.h>
 #include "cfile.hpp"
 
-long CPlainFile::seek (long dist, int from) {
-  fseek(hFile, dist, from);
+int64_t CPlainFile::seek (int64_t dist, int from) {
+  _fseeki64(hFile, dist, from);
   return ftell(hFile);
 	/*long absPos;
 	if (from == FILE_CURRENT)
@@ -52,15 +52,15 @@ long CPlainFile::seek (long dist, int from) {
 	return res;*/
 }
 int CPlainFile::read (void* buf, long toRead, long* read) {
-	long left = fileSize - tell();
+	int64_t left = fileSize - tell();
 	if (left < toRead)
-		toRead = left;
+		toRead = (long) left;
 	int err = fread(buf, 1, toRead, hFile);
 	return err == toRead;
 }
 
 
-long CPackedFile::seek (long dist, int from) {
+int64_t CPackedFile::seek (int64_t dist, int from) {
 	if (from == FILE_CURRENT) {
 		if (!skipper) skipper = new uint8_t [BUFF_SIZE];
 		if (dist > 0)
@@ -90,7 +90,7 @@ long CPackedFile::seek (long dist, int from) {
 	}
 	return curPos;
 }
-void CPackedFile::skip (long dist) {
+void CPackedFile::skip (int64_t dist) {
 	if (!dist)
 		return;
 	if (curPos + dist >= fileSize) {
@@ -99,7 +99,7 @@ void CPackedFile::skip (long dist) {
 	}
 	long res;
 	while (dist > 0) {
-		res = (dist > BUFF_SIZE)? BUFF_SIZE: dist;
+		res = (long) ((dist > BUFF_SIZE) ? BUFF_SIZE : dist);
 		if (!read (skipper, res, &res) || !res)
 			break;
 		dist -= res;
