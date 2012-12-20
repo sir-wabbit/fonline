@@ -61,7 +61,7 @@ FOnlineEngine::FOnlineEngine(): initialized(0),hWnd(NULL),lpD3D(NULL),lpDevice(N
 
 int FOnlineEngine::Init(HWND _hWnd)
 {
-	WriteLog("\nFEngine Initialization...\n");
+	FONLINE_LOG("\nFEngine Initialization...\n");
 	
 	HRESULT hr;
 
@@ -69,24 +69,24 @@ int FOnlineEngine::Init(HWND _hWnd)
 
 	InitKeyboard();
 
-	WriteLog("Создаю Direct3D.....");
+	FONLINE_LOG("Создаю Direct3D.....");
 	lpD3D=Direct3DCreate8(D3D_SDK_VERSION);
 	if(!lpD3D){
 		ReportErrorMessage("Engine Init","Не могу создать Direct3D.\nУбедитесь, что установлен DirectX версии 8.1 и выше");
 		return 0;
 	}
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 
-	WriteLog("параметры режима.....");
+	FONLINE_LOG("параметры режима.....");
 	D3DDISPLAYMODE d3ddm;
 	hr=lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("GetAdapterDisplayMode",(char*)DXGetErrorString8(hr));
 		return 0;
 	}
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 
-	WriteLog("Create device.....");
+	FONLINE_LOG("Create device.....");
 
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp,sizeof(d3dpp));
@@ -109,9 +109,9 @@ int FOnlineEngine::Init(HWND _hWnd)
 		ReportErrorMessage("CreateDevice",(char*)DXGetErrorString8(hr));
 		return 0;
 	}
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 
-	WriteLog("Установка режимов.....");
+	FONLINE_LOG("Установка режимов.....");
 	lpDevice->SetRenderState(D3DRS_LIGHTING,FALSE); //выключаем свет
 	lpDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Disable Z-Buffer
     lpDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE); //Disable Culling
@@ -147,7 +147,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 
 
 	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 
@@ -158,7 +158,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 
 	if(!soundManager.Init()) return 0;
 
-	WriteLog("Loading splash...");
+	FONLINE_LOG("Loading splash...");
 
 	char* name_splash=new char[64];
 	GetRandomSplash(name_splash);
@@ -183,7 +183,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 	lpDevice->EndScene();
 	lpDevice->Present(NULL,NULL,NULL,NULL);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 
 	if(!fnt.Init(lpDevice,spriteManager.GetVB(),spriteManager.GetIB())) return 0;
 
@@ -192,14 +192,14 @@ int FOnlineEngine::Init(HWND _hWnd)
 
 	if(!Init_Iface())
 	{
-		WriteLog("FALSE\n");
+		FONLINE_LOG("FALSE\n");
 		return 0;
 	}
 
 	SetChosenAction(ACTION_NONE);
 
 //загружаем статические объекты
-	WriteLog("Загрузка статических объектов...");
+	FONLINE_LOG("Загрузка статических объектов...");
 
 	FILE *o_cf;
 	FILE *o_cf2;
@@ -214,7 +214,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 	all_s_obj.clear();
 
 	if ((o_cf = fopen("data\\objects\\all_obj.st","rt")) == NULL) {
-		WriteLog("Файл all_obj.st не найден\n");
+		FONLINE_LOG("Файл all_obj.st не найден\n");
 		return 0;
 	}
 
@@ -231,7 +231,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 		sprintf(tmpc,".\\data\\objects\\%d.st",tmpi);
 		if((o_cf2=fopen(tmpc,"rt"))==NULL)
 		{
-			WriteLog("Файл |%s| не найден\n",tmpc);
+			FONLINE_LOG("Файл |%s| не найден\n",tmpc);
 			return 0;
 		}
 
@@ -243,7 +243,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 		it_o=object_map.find(tmpc);
 		if(it_o==object_map.end())
 		{
-			WriteLog("Параметр |%s| не найден",tmpc);
+			FONLINE_LOG("Параметр |%s| не найден",tmpc);
 			return 0;
 		}
 		new_obj->type=(*it_o).second;
@@ -255,7 +255,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 			it_o=object_map.find(tmpc);
 			if(it_o==object_map.end())
 			{
-				WriteLog("Параметр |%s| не найден",tmpc);
+				FONLINE_LOG("Параметр |%s| не найден",tmpc);
 				return 0;
 			}
 			new_obj->p[(*it_o).second]=tmpi;
@@ -284,7 +284,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 		info_obj.insert(string_map::value_type((*it_so).second->id,std::string(get_info_obj)));
 	}
 
-	WriteLog("OK (%d объектов)\n",cnt_obj);
+	FONLINE_LOG("OK (%d объектов)\n",cnt_obj);
 //!Cvet ------------------------------------------------------------------------------------
 
 	if(!hexField.Init(&spriteManager)) return 0;
@@ -306,9 +306,9 @@ int FOnlineEngine::Init(HWND _hWnd)
 	ShowCursor(0);
 	cur_x=320;cur_y=240;
 
-	WriteLog("Всего спрайтов загружено: %d\n",spriteManager.GetLoadedCnt());
+	FONLINE_LOG("Всего спрайтов загружено: %d\n",spriteManager.GetLoadedCnt());
 
-	WriteLog("FEngine Initialization complete\n");
+	FONLINE_LOG("FEngine Initialization complete\n");
 	initialized=1;
 
 	return 1;
@@ -316,7 +316,7 @@ int FOnlineEngine::Init(HWND _hWnd)
 
 int FOnlineEngine::InitDInput()
 {
-	WriteLog("DInput init...\n");
+	FONLINE_LOG("DInput init...\n");
     HRESULT hr = DirectInput8Create(GetModuleHandle(NULL),DIRECTINPUT_VERSION,IID_IDirectInput8,(void**)&lpDInput,NULL);
 	if(hr!=DI_OK)
 	{
@@ -398,14 +398,14 @@ int FOnlineEngine::InitDInput()
     lpKeyboard->Acquire();
     lpMouse->Acquire();
 
-	WriteLog("DInput init OK\n");
+	FONLINE_LOG("DInput init OK\n");
 
 	return 1;
 }
 
 void FOnlineEngine::Clear()
 {
-	WriteLog("\nFEngine Clear...\n");
+	FONLINE_LOG("\nFEngine Clear...\n");
 
 	ClearKeyb();
 
@@ -456,7 +456,7 @@ void FOnlineEngine::Clear()
   
 	initialized=0;
 
-	WriteLog("FEngine Clear complete\n");
+	FONLINE_LOG("FEngine Clear complete\n");
 }
 
 void FOnlineEngine::ClearCritters() //!Cvet
@@ -630,7 +630,7 @@ int FOnlineEngine::Render()
 
 	if(lpDevice->Present(NULL,NULL,NULL,NULL)==D3DERR_DEVICELOST)
 	{
-		WriteLog("D3dDevice is lost\n");
+		FONLINE_LOG("D3dDevice is lost\n");
 		DoLost();
 	}
 
@@ -656,7 +656,7 @@ void FOnlineEngine::ParseInput()
 		if(hr!=DI_OK)
 		{
 			dilost=1;
-			WriteLog("WAIT ParseInput keyboard> %s\n",(char*)DXGetErrorString8(hr));
+			FONLINE_LOG("WAIT ParseInput keyboard> %s\n",(char*)DXGetErrorString8(hr));
 			return;
 		}
 
@@ -671,7 +671,7 @@ void FOnlineEngine::ParseInput()
 		if(hr!=DI_OK)
 		{
 			dilost=1;
-			WriteLog("WAIT ParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
+			FONLINE_LOG("WAIT ParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
 			return;
 		}
 
@@ -726,7 +726,7 @@ void FOnlineEngine::ParseInput()
 	if(hr!=DI_OK)
 	{
 		dilost=1;
-		WriteLog("ParseInput keyboard> %s\n",(char*)DXGetErrorString8(hr));
+		FONLINE_LOG("ParseInput keyboard> %s\n",(char*)DXGetErrorString8(hr));
 		return;
 	}
 
@@ -800,11 +800,11 @@ void FOnlineEngine::ParseInput()
 		DI_ONDOWN( DIK_G ,hexField.SwitchShowHex() );
 		DI_ONDOWN( DIK_R ,hexField.SwitchShowRain() ); //!Cvet
 
-//		DI_ONUP( DIK_Q ,opt_scroll_delay-=10;WriteLog("scroll_delay=%d\n",opt_scroll_delay) );
-//		DI_ONUP( DIK_W ,opt_scroll_delay+=10;WriteLog("scroll_delay=%d\n",opt_scroll_delay) );
+//		DI_ONUP( DIK_Q ,opt_scroll_delay-=10;FONLINE_LOG("scroll_delay=%d\n",opt_scroll_delay) );
+//		DI_ONUP( DIK_W ,opt_scroll_delay+=10;FONLINE_LOG("scroll_delay=%d\n",opt_scroll_delay) );
 //
-//		DI_ONUP( DIK_A ,opt_scroll_step>>=1;WriteLog("scroll_step=%d\n",opt_scroll_step) );
-//		DI_ONUP( DIK_S ,opt_scroll_step<<=1;WriteLog("scroll_step=%d\n",opt_scroll_step) );
+//		DI_ONUP( DIK_A ,opt_scroll_step>>=1;FONLINE_LOG("scroll_step=%d\n",opt_scroll_step) );
+//		DI_ONUP( DIK_S ,opt_scroll_step<<=1;FONLINE_LOG("scroll_step=%d\n",opt_scroll_step) );
 
 		DI_ONDOWN( DIK_RCONTROL ,CtrlDwn=1;
 			if(opt_change_lang==CHANGE_LANG_RCTRL) lang=(lang==LANG_RUS)?LANG_ENG:LANG_RUS;
@@ -866,7 +866,7 @@ void FOnlineEngine::ParseInput()
 	if(hr!=DI_OK)
 	{
 		dilost=1;
-		WriteLog("ParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
+		FONLINE_LOG("ParseInput mouse> %s\n",(char*)DXGetErrorString8(hr));
 		return;
 	}
 //!Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1083,15 +1083,15 @@ void FOnlineEngine::ParseInput()
 void FOnlineEngine::Restore()
 {
 	if(!initialized || !islost) return;
-	WriteLog("Restoring...\n");
-	WriteLog("параметры режима.....");
+	FONLINE_LOG("Restoring...\n");
+	FONLINE_LOG("параметры режима.....");
 	D3DDISPLAYMODE d3ddm;
 	HRESULT hr=lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm);
 	if(hr!=D3D_OK){
 		ReportErrorMessage("GetAdapterDisplayMode",(char*)DXGetErrorString8(hr));
 		return;
 	}
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp,sizeof(d3dpp));
@@ -1117,13 +1117,13 @@ void FOnlineEngine::Restore()
 	if(hr!=D3D_OK)
 	{
 		//ReportErrorMessage("Device Reset","Не могу перезапустить устройство");
-		WriteLog("Не могу перезапустить устройство\n");
+		FONLINE_LOG("Не могу перезапустить устройство\n");
 		return;
 	}
 	lpDevice->Clear(0,NULL,D3DCLEAR_TARGET,D3DCOLOR_XRGB(0,0,0),1.0,0);
 
 	
-	WriteLog("Установка режимов.....");
+	FONLINE_LOG("Установка режимов.....");
 	lpDevice->SetRenderState(D3DRS_LIGHTING,FALSE);//выключаем свет
 	lpDevice->SetRenderState(D3DRS_ZENABLE, FALSE); // Disable Z-Buffer
     lpDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE); // Disable Culling
@@ -1147,14 +1147,14 @@ void FOnlineEngine::Restore()
 
 
 	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 	
 	spriteManager.SetColor((0xFF000000)|((dayR+opt_light)<<16)|((dayG+opt_light)<<8)|(dayB+opt_light)); //!Cvet
 	spriteManager.PostRestore(); //именно в таком порядке. ибо spriteManager раньше должен создать IB
 	hexField.PostRestore();
 	fnt.PostRestore(spriteManager.GetVB(),spriteManager.GetIB());
 
-	WriteLog("Restoring complete\n");
+	FONLINE_LOG("Restoring complete\n");
 	islost=0;
 	cmn_lost=0;
 }
@@ -1162,16 +1162,16 @@ void FOnlineEngine::Restore()
 void FOnlineEngine::RestoreDI()
 {
 	if(!initialized || !lpKeyboard) return;
-//	WriteLog("Restoring DI...\n");
+//	FONLINE_LOG("Restoring DI...\n");
 
 	//возвращаем контроль клавиатуре
 	HRESULT hr=lpKeyboard->Acquire();
-//	if(hr==DI_OK) WriteLog("RestoringDI Keyboard OK\n");
-//		else WriteLog("RestoringDI Keyboard error %s\n",(char*)DXGetErrorString8(hr));
+//	if(hr==DI_OK) FONLINE_LOG("RestoringDI Keyboard OK\n");
+//		else FONLINE_LOG("RestoringDI Keyboard error %s\n",(char*)DXGetErrorString8(hr));
 
 	hr=lpMouse->Acquire();
-//	if(hr==DI_OK) WriteLog("RestoringDI Mouse OK\n");
-//		else WriteLog("RestoringDI Mouse error %s\n",(char*)DXGetErrorString8(hr));
+//	if(hr==DI_OK) FONLINE_LOG("RestoringDI Mouse OK\n");
+//		else FONLINE_LOG("RestoringDI Mouse error %s\n",(char*)DXGetErrorString8(hr));
 //	cur_x=320;cur_y=240;
 //	if(!opt_fullscr)
 //	{
@@ -1184,7 +1184,7 @@ void FOnlineEngine::RestoreDI()
 
 int FOnlineEngine::InitNet()
 {
-	WriteLog("Network init...\n");
+	FONLINE_LOG("Network init...\n");
 
 	state=STATE_DISCONNECT;
 
@@ -1215,21 +1215,21 @@ int FOnlineEngine::InitNet()
 
 	state=STATE_CONN;
 
-	WriteLog("Network init OK\n");
+	FONLINE_LOG("Network init OK\n");
 
 	return 1;
 }
 
 int FOnlineEngine::NetCon()
 {
-	WriteLog("Connecting to server %s:%d\n",opt_rhost,opt_rport);
+	FONLINE_LOG("Connecting to server %s:%d\n",opt_rhost,opt_rport);
 	sock=socket(AF_INET,SOCK_STREAM,0);
 	if(connect(sock,(sockaddr*)&remote,sizeof(SOCKADDR_IN)))
 	{
 		ReportErrorMessage("FOnlineEngine::NetCon","Не могу подключиться к серверу игры!\r\n");
 		return 0;
 	}
-	WriteLog("Connecting OK\n");
+	FONLINE_LOG("Connecting OK\n");
 
     zstrm.zalloc = zlib_alloc;
     zstrm.zfree = zlib_free;
@@ -1244,18 +1244,18 @@ int FOnlineEngine::NetCon()
 
 	return 1;
     // отладка сетевых сообщений
-    WriteLog("Net_Con");
+    FONLINE_LOG("Net_Con");
 }
 
 void FOnlineEngine::NetDiscon()
 {
-	WriteLog("Отсоединение ");
+	FONLINE_LOG("Отсоединение ");
 
 	if(zstrmok) inflateEnd(&zstrm);
 	closesocket(sock);
 	state=STATE_DISCONNECT;
 
-	WriteLog("--> Итоговая статистика сжатия трафика: %d -> %d\n",stat_com,stat_decom);
+	FONLINE_LOG("--> Итоговая статистика сжатия трафика: %d -> %d\n",stat_com,stat_decom);
 
 	ClearCritters(); //!Cvet
 	hexField.UnLoadMap(); //!Cvet
@@ -1284,7 +1284,7 @@ void FOnlineEngine::ParseSocket(uint16_t wait)
 		if(!NetInput())
 		{
 		//	ReportErrorMessage("FOnlineEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
-			WriteLog("FOnlineEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
+			FONLINE_LOG("FOnlineEngine::ParseSocket","Игровой сервер разорвал связь!\r\n");
 			sock=-1;
 			state=STATE_DISCONNECT;
 			return;
@@ -1310,7 +1310,7 @@ void FOnlineEngine::NetProcess()
 		{
 		case NETMSG_LOGINOK:
 			state=STATE_LOGINOK;
-			WriteLog("Аунтефикация пройдена\n");
+			FONLINE_LOG("Аунтефикация пройдена\n");
 			LogMsg=0;
 			break;
 		case NETMSG_ADDCRITTER:
@@ -1379,11 +1379,11 @@ void FOnlineEngine::NetProcess()
 //!Cvet -------------------------------------------
 
 		case NETMSG_NAMEERR:
-			WriteLog("Name: %s: ERR!\n",opt_name);
+			FONLINE_LOG("Name: %s: ERR!\n",opt_name);
 			state=STATE_DISCONNECT;
 			break;
 		default:
-			WriteLog("Wrong MSG: %d!\n",msg);
+			FONLINE_LOG("Wrong MSG: %d!\n",msg);
 			//state=STATE_DISCONNECT;
 			bin.Reset();
 			return;
@@ -1394,7 +1394,7 @@ void FOnlineEngine::NetProcess()
 
 /*void FOnlineEngine::Net_SendName(char* name)
 {
-	WriteLog("Net_SendName...");
+	FONLINE_LOG("Net_SendName...");
 
 	MessageType msg=NETMSG_NAME;
 
@@ -1407,12 +1407,12 @@ void FOnlineEngine::NetProcess()
 
 	state=STATE_NAMESEND;
     // отладка сетевых сообщений
-    WriteLog("OK\n");
+    FONLINE_LOG("OK\n");
 }*/
 //!Cvet ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void FOnlineEngine::Net_SendLogIn(char* login, char* pass)
 {
-	WriteLog("Net_SendLogIn...");
+	FONLINE_LOG("Net_SendLogIn...");
 
 	MessageType msg=NETMSG_LOGIN;
 
@@ -1422,13 +1422,13 @@ void FOnlineEngine::Net_SendLogIn(char* login, char* pass)
 
 	LogMsg=10;
     // отладка сетевых сообщений
-    WriteLog("OK\n");
+    FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendCreatePlayer(crit_info* newcr)
 {
 	int bi;
-	WriteLog("Посылаем данные на сервер...\n");
+	FONLINE_LOG("Посылаем данные на сервер...\n");
 
 //ФОРМИРОВАНИЕ ЗАПРОСА
 	MessageType msg=NETMSG_CREATE_CLIENT;
@@ -1451,14 +1451,14 @@ void FOnlineEngine::Net_SendCreatePlayer(crit_info* newcr)
 	//пол
 	bout << newcr->st[ST_GENDER];
 
-//	WriteLog("log:|%s|\n",newcr->login);
-//	WriteLog("pas:|%s|\n",newcr->pass);
-	WriteLog("OK\n");
+//	FONLINE_LOG("log:|%s|\n",newcr->login);
+//	FONLINE_LOG("pas:|%s|\n",newcr->pass);
+	FONLINE_LOG("OK\n");
 }
 //!Cvet ----------------------------------------------------------------
 void FOnlineEngine::Net_SendText(char* str)
 {
-	WriteLog("Net_SendText...");
+	FONLINE_LOG("Net_SendText...");
 
 	uint16_t len=strlen(str);
 	if(len>=MAX_TEXT) len=MAX_TEXT;
@@ -1468,31 +1468,31 @@ void FOnlineEngine::Net_SendText(char* str)
 	bout << len;
 	bout.Write(str,len);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendDir()
 {
-	WriteLog("Net_SendDir...");
+	FONLINE_LOG("Net_SendDir...");
 
 	MessageType msg=NETMSG_DIR;
 
 	bout << msg;
 	bout << lpChosen->cur_dir;
     // отладка сетевых сообщений
-    WriteLog("OK\n");
+    FONLINE_LOG("OK\n");
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void FOnlineEngine::Net_SendMove(uint8_t* dir) //переделал
 {
-	WriteLog("Net_SendMove...");
+	FONLINE_LOG("Net_SendMove...");
 
 	uint8_t how_move=lpChosen->Move(dir[0]);
 
 	if(how_move==MOVE_ERROR)
 	{
-		WriteLog("FALSE\n");
+		FONLINE_LOG("FALSE\n");
 		return;
 	}
 	hexField.MoveCritter(lpChosen,dir[0]);
@@ -1524,12 +1524,12 @@ void FOnlineEngine::Net_SendMove(uint8_t* dir) //переделал
 	bout << msg;
 	bout << move_params;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendUseSkill(uint8_t skill, uint32_t targ_id, uint8_t ori)
 {
-	WriteLog("Отправка использования скилла...");
+	FONLINE_LOG("Отправка использования скилла...");
 
 	MessageType msg=NETMSG_SEND_USE_SKILL;
 
@@ -1538,12 +1538,12 @@ void FOnlineEngine::Net_SendUseSkill(uint8_t skill, uint32_t targ_id, uint8_t or
 	bout << targ_id;
 	bout << ori;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendUseObject(uint8_t type_target, uint32_t targ_id, uint8_t crit_ori, uint8_t crit_num_action, uint8_t crit_rate_object)
 {
-	WriteLog("Отправка действия над предметом...");
+	FONLINE_LOG("Отправка действия над предметом...");
 
 	MessageType msg=NETMSG_SEND_USE_OBJECT;
 
@@ -1554,12 +1554,12 @@ void FOnlineEngine::Net_SendUseObject(uint8_t type_target, uint32_t targ_id, uin
 	bout << crit_num_action;
 	bout << crit_rate_object;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, uint16_t id_sobj)
 {
-	WriteLog("Отправка взаимодействия с предметом на земле...");
+	FONLINE_LOG("Отправка взаимодействия с предметом на земле...");
 
 	MessageType msg=NETMSG_SEND_PICK_OBJECT;
 
@@ -1568,12 +1568,12 @@ void FOnlineEngine::Net_SendPickObject(HexTYPE targ_x, HexTYPE targ_y, uint16_t 
 	bout << targ_y;
 	bout << id_sobj;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendChangeObject(uint32_t idobj, uint8_t num_slot)
 {
-	WriteLog("Отправка смены предмета id=%d, slot=%d...",idobj, num_slot);
+	FONLINE_LOG("Отправка смены предмета id=%d, slot=%d...",idobj, num_slot);
 
 	MessageType msg=NETMSG_SEND_CHANGE_OBJECT;
 
@@ -1581,12 +1581,12 @@ void FOnlineEngine::Net_SendChangeObject(uint32_t idobj, uint8_t num_slot)
 	bout << idobj;
 	bout << num_slot;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendTalk(CritterID id_to_talk, uint8_t answer)
 {
-	WriteLog("Отпрака сообщения по общению с НПЦ id_NPC=%d, ответ=%d...", id_to_talk, answer);
+	FONLINE_LOG("Отпрака сообщения по общению с НПЦ id_NPC=%d, ответ=%d...", id_to_talk, answer);
 
 	MessageType msg=NETMSG_SEND_TALK_NPC;
 
@@ -1596,58 +1596,58 @@ void FOnlineEngine::Net_SendTalk(CritterID id_to_talk, uint8_t answer)
 
 	lpChosen->Tick_Start(TALK_MAX_TIME);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendGetTime()
 {
-	WriteLog("Отпрака сообщения по запросу игрового времени...");
+	FONLINE_LOG("Отпрака сообщения по запросу игрового времени...");
 
 	MessageType msg=NETMSG_SEND_GET_TIME;
 
 	bout << msg;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendGiveMeMap(uint16_t map_num)
 {
-	WriteLog("Отпрака сообщения по запросу загрузки карты...");
+	FONLINE_LOG("Отпрака сообщения по запросу загрузки карты...");
 
 	MessageType msg=NETMSG_SEND_GIVE_ME_MAP;
 
 	bout << msg;
 	bout << map_num;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendLoadMapOK()
 {
-	WriteLog("Отпрака сообщения по успешной загрузке карты...");
+	FONLINE_LOG("Отпрака сообщения по успешной загрузке карты...");
 
 	MessageType msg=NETMSG_SEND_LOAD_MAP_OK;
 
 	bout << msg;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendGiveGlobalInfo(uint8_t info_flags)
 {
-	WriteLog("Отпрака сообщения запросу инфы о глобале №%d...",info_flags);
+	FONLINE_LOG("Отпрака сообщения запросу инфы о глобале №%d...",info_flags);
 
 	MessageType msg=NETMSG_SEND_GIVE_GLOBAL_INFO;
 
 	bout << msg;
 	bout << info_flags;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_SendRuleGlobal(uint8_t command, uint32_t param1, uint32_t param2)
 {
-	WriteLog("Отправка запроса управлением группой...");
+	FONLINE_LOG("Отправка запроса управлением группой...");
 
 	MessageType msg=NETMSG_SEND_RULE_GLOBAL;
 
@@ -1656,13 +1656,13 @@ void FOnlineEngine::Net_SendRuleGlobal(uint8_t command, uint32_t param1, uint32_
 	bout << param1;
 	bout << param2;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 //!Cvet -----------------------------------------------------------------------------
 
 void FOnlineEngine::Net_OnAddCritter()
 {
-	WriteLog("Присоединился новый игрок...");
+	FONLINE_LOG("Присоединился новый игрок...");
 	crit_info info;
 
 	info.a_obj=&info.def_obj1;
@@ -1687,8 +1687,8 @@ void FOnlineEngine::Net_OnAddCritter()
 	bin >> info.cond_ext;
 	bin >> info.flags;
 	bin.Read(info.name,MAX_NAME);
-WriteLog("Имя:%s\n",info.name);
-//WriteLog("Имя: %s, cond=%d,cond_ext=%d\n",info.name,info.cond,info.cond_ext);
+FONLINE_LOG("Имя:%s\n",info.name);
+//FONLINE_LOG("Имя: %s, cond=%d,cond_ext=%d\n",info.name,info.cond,info.cond_ext);
 	info.name[MAX_NAME]=0;
 
 	for(int i=0;i<5;i++)
@@ -1699,7 +1699,7 @@ WriteLog("Имя:%s\n",info.name);
 
 	if(bin.IsError())
 	{
-		WriteLog("Net_OnAddCritter","Wrong MSG data forNet_OnAddCritter!\n"); //ReportErrorMessage было
+		FONLINE_LOG("Net_OnAddCritter","Wrong MSG data forNet_OnAddCritter!\n"); //ReportErrorMessage было
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -1714,7 +1714,7 @@ WriteLog("Имя:%s\n",info.name);
 
 //	hexField.PostRestore();
 
-    WriteLog("Загрузка игрока закончена. %s, id=%d.\n",info.name,info.id);
+    FONLINE_LOG("Загрузка игрока закончена. %s, id=%d.\n",info.name,info.id);
 }
 
 void FOnlineEngine::Net_OnRemoveCritter()
@@ -1730,20 +1730,20 @@ void FOnlineEngine::Net_OnRemoveCritter()
 		return;
 	}
     LstDelCritId=remid;// отладка
-    WriteLog("%d клиент получил приказ сервера отключиться...",remid);
+    FONLINE_LOG("%d клиент получил приказ сервера отключиться...",remid);
 
 	crit_map::iterator it=critters.find(remid);
 	if(it==critters.end()) return;
 	CCritter* prem=(*it).second;
 
-	WriteLog("убираем с hexfield...");
+	FONLINE_LOG("убираем с hexfield...");
 	hexField.RemoveCrit(prem);
 
-	WriteLog("убираем с critters...");
+	FONLINE_LOG("убираем с critters...");
 	delete (*it).second;
 
 	critters.erase(it);
-    WriteLog("OK\n",remid);
+    FONLINE_LOG("OK\n",remid);
 }
 
 void FOnlineEngine::Net_OnCritterText()
@@ -1770,7 +1770,7 @@ void FOnlineEngine::Net_OnCritterText()
 
 	if(bin.IsError() || len>(MAX_TEXT+256))
 	{
-		WriteLog("Wrong MSG data or too long forProcess_GetText!(len=%d)\n",len);
+		FONLINE_LOG("Wrong MSG data or too long forProcess_GetText!(len=%d)\n",len);
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -1780,7 +1780,7 @@ void FOnlineEngine::Net_OnCritterText()
 
 	if(bin.IsError())
 	{
-		WriteLog("Wrong MSG data forProcess_GetText - partial recv!\n");
+		FONLINE_LOG("Wrong MSG data forProcess_GetText - partial recv!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -1819,12 +1819,12 @@ void FOnlineEngine::Net_OnCritterText()
 		if(pcrit) pcrit->SetText(str,text_color);
 	}
 
-	WriteLog("Net_OnCritterText");
+	FONLINE_LOG("Net_OnCritterText");
 }
 
 void FOnlineEngine::Net_OnCritterDir()
 {
-	WriteLog("Установка игроку ");
+	FONLINE_LOG("Установка игроку ");
 
 	CritterID crid;
 	uint8_t new_dir;
@@ -1832,18 +1832,18 @@ void FOnlineEngine::Net_OnCritterDir()
 	bin >> crid;
 	bin >> new_dir;
 
-	WriteLog("%d направления %d...",crid,new_dir);
+	FONLINE_LOG("%d направления %d...",crid,new_dir);
 
 	if(bin.IsError())
 	{
-		WriteLog("Wrong MSG data for Net_OnCritterDir!\n");
+		FONLINE_LOG("Wrong MSG data for Net_OnCritterDir!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
 
 	if(new_dir>5)
 	{
-		WriteLog("неверное значение\n");
+		FONLINE_LOG("неверное значение\n");
 		return;
 	}
 
@@ -1851,7 +1851,7 @@ void FOnlineEngine::Net_OnCritterDir()
 	CCritter* pcrit=NULL;
 	if(it==critters.end())
 	{
-		WriteLog("ненайден криттер\n");
+		FONLINE_LOG("ненайден криттер\n");
 		return;
 	}
 	pcrit=(*it).second;
@@ -1860,13 +1860,13 @@ void FOnlineEngine::Net_OnCritterDir()
 
 	pcrit->SetDirection(new_dir);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void FOnlineEngine::Net_OnCritterMove()
 {
-	WriteLog("Ходит игрок id=");
+	FONLINE_LOG("Ходит игрок id=");
 
 	CritterID crid=0;
 //	uint8_t dir=0;
@@ -1885,7 +1885,7 @@ void FOnlineEngine::Net_OnCritterMove()
 
 	if(bin.IsError())
 	{
-		WriteLog("Wrong MSG data for Net_OnCritterMove!\n");
+		FONLINE_LOG("Wrong MSG data for Net_OnCritterMove!\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
@@ -1907,8 +1907,8 @@ void FOnlineEngine::Net_OnCritterMove()
 	}
   // if(dir>5) return;
 
-	WriteLog("%d...", crid);
-  //	WriteLog("%d dir=%d movementType=%d...", crid, dir, how_move);
+	FONLINE_LOG("%d...", crid);
+  //	FONLINE_LOG("%d dir=%d movementType=%d...", crid, dir, how_move);
 
 	LstMoveId=crid; // для отладки движения
 
@@ -1934,12 +1934,12 @@ void FOnlineEngine::Net_OnCritterMove()
 	if ((pcrit->next_step[2] = ((move_params>>0x9) & 0x7))>PMOVE_5) pcrit->next_step[2]=0xFF;
 	if ((pcrit->next_step[3] = ((move_params>>0xC) & 0x7))>PMOVE_5) pcrit->next_step[3]=0xFF;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_OnCritterAction()
 {
-	WriteLog("Пинг: %d\n",GetTickCount()-Ping);
+	FONLINE_LOG("Пинг: %d\n",GetTickCount()-Ping);
 
 	CritterID crid;
 	uint8_t num_action;
@@ -1955,7 +1955,7 @@ void FOnlineEngine::Net_OnCritterAction()
 	bin >> rate_obj; //режим использования
 	bin >> ori; //ориентация действия
     
-	WriteLog("Игрок id=%d действует...",crid);
+	FONLINE_LOG("Игрок id=%d действует...",crid);
 
 	if(bin.IsError())
 	{
@@ -1984,7 +1984,7 @@ void FOnlineEngine::Net_OnCritterAction()
 
 	pcrit->cur_dir=ori;
 
-	WriteLog("Net_OnCritterAction - act=%d, rate=%d\n", num_action, rate_obj);
+	FONLINE_LOG("Net_OnCritterAction - act=%d, rate=%d\n", num_action, rate_obj);
 
 //обробатываем действия
 //достование/скрывание объекта
@@ -2186,7 +2186,7 @@ void FOnlineEngine::Net_OnChosenLogin()
 
 void FOnlineEngine::Net_OnChosenXY() // направление надо передавать?!cvet
 {
-	WriteLog("Проверка или установка места...");
+	FONLINE_LOG("Проверка или установка места...");
 
 	HexTYPE Chex_x;
 	HexTYPE Chex_y;
@@ -2205,38 +2205,38 @@ void FOnlineEngine::Net_OnChosenXY() // направление надо пере
 
 	if(!lpChosen->IsFree())
 	{
-		WriteLog("пропуск. Чезен занят\n");
+		FONLINE_LOG("пропуск. Чезен занят\n");
 		return;
 	}
 
 	if(Chex_x>=MAXTILEX || Chex_y>=MAXTILEY || Cori>5)
 	{
-		WriteLog("ОШИБКА в принятых данных |x=%d,y=%d,ori=%d|\n",Chex_x,Chex_y,Cori);
+		FONLINE_LOG("ОШИБКА в принятых данных |x=%d,y=%d,ori=%d|\n",Chex_x,Chex_y,Cori);
 		return;
 	}
 
 	if(lpChosen->cur_dir!=Cori)
 	{
 		lpChosen->cur_dir=Cori;
-		WriteLog("Установлено/Исправлено направление...");
+		FONLINE_LOG("Установлено/Исправлено направление...");
 	}
 
 	if(lpChosen->hex_x!=Chex_x || lpChosen->hex_y!=Chex_y)
 	{
 		hexField.TransitCritter(lpChosen,Cori,Chex_x,Chex_y,true);
-		WriteLog("Установлено/Исправлено местоположение...");
+		FONLINE_LOG("Установлено/Исправлено местоположение...");
 
 		SetChosenAction(ACTION_NONE);
 		lpChosen->SetAnimation();
 	}
 
     // отладка сетевых сообщений
-    WriteLog("OK\n");
+    FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_OnChosenParams()
 {
-	WriteLog("Присланны параметры...");
+	FONLINE_LOG("Присланны параметры...");
 
 	uint8_t type_param=0;
 	uint8_t all_send_params=0;
@@ -2282,23 +2282,23 @@ void FOnlineEngine::Net_OnChosenParams()
 		}
 		break;
 	default:
-		WriteLog("Ошибка. Неправильный тип параметра №%d\n", type_param);
+		FONLINE_LOG("Ошибка. Неправильный тип параметра №%d\n", type_param);
 		return;
 	}
 
 	if(bin.IsError())
 	{
-		WriteLog("Bin Error - Net_OnChosenParams\n");
+		FONLINE_LOG("Bin Error - Net_OnChosenParams\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
 
-	WriteLog("Загрузка параметров закончена - всего параметров типа %d прислано %d\n", type_param, all_send_params);
+	FONLINE_LOG("Загрузка параметров закончена - всего параметров типа %d прислано %d\n", type_param, all_send_params);
 }
 
 void FOnlineEngine::Net_OnChosenParam()
 {
-	WriteLog("Прислан параметр...");
+	FONLINE_LOG("Прислан параметр...");
 
 	uint8_t type_param=0;
 	uint8_t num_param=0;
@@ -2356,23 +2356,23 @@ void FOnlineEngine::Net_OnChosenParam()
 
 		break;
 	default:
-		WriteLog("Ошибка. Неправильный тип параметра №%d\n", type_param);
+		FONLINE_LOG("Ошибка. Неправильный тип параметра №%d\n", type_param);
 		return;
 	}
 
 	if(bin.IsError())
 	{
-		WriteLog("Bin Error - Net_OnChosenParam\n");
+		FONLINE_LOG("Bin Error - Net_OnChosenParam\n");
 		state=STATE_DISCONNECT;
 		return;
 	}
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_OnChosenAddObject()
 {
-	WriteLog("Добавляеться предмет...");
+	FONLINE_LOG("Добавляеться предмет...");
 
 	uint32_t id_d;
 	uint16_t id_s;
@@ -2396,13 +2396,13 @@ void FOnlineEngine::Net_OnChosenAddObject()
 
 	lpChosen->AddObject(aslot,id_d,broken_info,time_wear,all_s_obj[id_s]);
 
-	WriteLog("id_dyn=%d, id_stat=%d, a_slot=%d, wear=%d, broken=%d\n", 
+	FONLINE_LOG("id_dyn=%d, id_stat=%d, a_slot=%d, wear=%d, broken=%d\n", 
 		id_d, id_s, aslot, time_wear, broken_info);
 }
 
 void FOnlineEngine::Net_OnAddObjOnMap()
 {
-	WriteLog("Добавляеться предмет на земле...");
+	FONLINE_LOG("Добавляеться предмет на земле...");
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
@@ -2423,31 +2423,31 @@ void FOnlineEngine::Net_OnAddObjOnMap()
 
 	if(obj_x>=MAXTILEX || obj_y>=MAXTILEY)
 	{
-		WriteLog("ошибка границ\n");
+		FONLINE_LOG("ошибка границ\n");
 		return;
 	}
 
 	stat_map::iterator so=all_s_obj.find(obj_id);
 	if(so==all_s_obj.end())
 	{
-		WriteLog("не найден предмет в списке прототипов\n");
+		FONLINE_LOG("не найден предмет в списке прототипов\n");
 		return;
 	}
 
 	if(!hexField.AddObj((*so).second,obj_x,obj_y,tile_flags))
 	{
-		WriteLog("ошибка добавления\n");
+		FONLINE_LOG("ошибка добавления\n");
 		return;
 	}
 
 	//AddMess(0xFF00FFFF,"Прилетел предметик %d",(*so).second->id);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_OnChangeObjOnMap()
 {
-	WriteLog("Изменяется предмет на земле...");
+	FONLINE_LOG("Изменяется предмет на земле...");
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
@@ -2468,14 +2468,14 @@ void FOnlineEngine::Net_OnChangeObjOnMap()
 
 	if(obj_x>=MAXTILEX || obj_y>=MAXTILEY)
 	{
-		WriteLog("ошибка границ\n");
+		FONLINE_LOG("ошибка границ\n");
 		return;
 	}
 
 	stat_map::iterator so=all_s_obj.find(obj_id);
 	if(so==all_s_obj.end())
 	{
-		WriteLog("не найден предмет в списке прототипов\n");
+		FONLINE_LOG("не найден предмет в списке прототипов\n");
 		return;
 	}
 
@@ -2483,12 +2483,12 @@ void FOnlineEngine::Net_OnChangeObjOnMap()
 
 	//AddMess(0xFFAAAAFF,"Предметик изменился %d",(*so).second->id);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_OnRemObjFromMap()
 {
-	WriteLog("Удаляеться предмет с земли...");
+	FONLINE_LOG("Удаляеться предмет с земли...");
 
 	HexTYPE obj_x;
 	HexTYPE obj_y;
@@ -2507,14 +2507,14 @@ void FOnlineEngine::Net_OnRemObjFromMap()
 
 	if(obj_x>=MAXTILEX || obj_y>=MAXTILEY)
 	{
-		WriteLog("ошибка границ\n");
+		FONLINE_LOG("ошибка границ\n");
 		return;
 	}
 
 	stat_map::iterator so=all_s_obj.find(obj_id);
 	if(so==all_s_obj.end())
 	{
-		WriteLog("не найден предмет в списке прототипов\n");
+		FONLINE_LOG("не найден предмет в списке прототипов\n");
 		return;
 	}
 
@@ -2522,12 +2522,12 @@ void FOnlineEngine::Net_OnRemObjFromMap()
 
 	//AddMess(0xFFFFAAAA,"Улетел предметик %d",(*so).second->id);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_OnChosenTalk()
 {
-	WriteLog("Новая диалоговая ветка...");
+	FONLINE_LOG("Новая диалоговая ветка...");
 
 	uint32_t main_text;
 	uint32_t answer[MAX_ANSWERS];
@@ -2538,30 +2538,30 @@ void FOnlineEngine::Net_OnChosenTalk()
 	{
 		SetScreen(SCREEN_MAIN);
 		lpChosen->Tick_Null();
-		WriteLog("диалог закончен...OK\n");
+		FONLINE_LOG("диалог закончен...OK\n");
 		return;
 	}
 
 	bin >> main_text;
-	if(!LoadDialogFromFile(tosendTargetCrit->id,main_text,text_dialog)) WriteLog("Ошибка загрузки диалога №%d...", main_text);
+	if(!LoadDialogFromFile(tosendTargetCrit->id,main_text,text_dialog)) FONLINE_LOG("Ошибка загрузки диалога №%d...", main_text);
 
 	for(int ct=0; ct<all_answers; ct++)
 	{
 		bin >> answer[ct];
 		if(!LoadDialogFromFile(tosendTargetCrit->id,answer[ct],text_answer[ct]))
-			WriteLog("Ошибка загрузки ответа №%d...", answer[ct]);
+			FONLINE_LOG("Ошибка загрузки ответа №%d...", answer[ct]);
 	}
 
 	lpChosen->Tick_Start(TALK_MAX_TIME);
 
 	SetScreen(SCREEN_DIALOG_NPC);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_OnGameTime()
 {
-	WriteLog("Сведения о игровом времени...");
+	FONLINE_LOG("Сведения о игровом времени...");
 
 	bin >> Game_Time;
 	bin >> Game_Day;
@@ -2573,12 +2573,12 @@ void FOnlineEngine::Net_OnGameTime()
 
 	SetDayTime(Game_CurTime);
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void FOnlineEngine::Net_OnLoadMap()
 {
-	WriteLog("Приказ смены карты...\n");
+	FONLINE_LOG("Приказ смены карты...\n");
 
 	uint16_t num_map;
 	char name_map[30];
@@ -2595,7 +2595,7 @@ void FOnlineEngine::Net_OnLoadMap()
 		SetScreen(SCREEN_GLOBAL_MAP);
 		Net_SendLoadMapOK();
 
-		WriteLog("Global OK\n");
+		FONLINE_LOG("Global OK\n");
 		return;
 	}
 
@@ -2603,14 +2603,14 @@ void FOnlineEngine::Net_OnLoadMap()
 
 	if(hexField.LoadMap(name_map)) //local
 	{
-	  WriteLog("Loading local map\n");
+	  FONLINE_LOG("Loading local map\n");
 		Net_SendLoadMapOK();
 		SetScreen(SCREEN_MAIN);
 	}
 	else
 		Net_SendGiveMeMap(num_map);
 
-	WriteLog("Local OK\n");
+	FONLINE_LOG("Local OK\n");
 }
 
 void FOnlineEngine::Net_OnMap()
@@ -2620,7 +2620,7 @@ void FOnlineEngine::Net_OnMap()
 
 void FOnlineEngine::Net_OnGlobalInfo()
 {
-	WriteLog("Сведения о глобале...");
+	FONLINE_LOG("Сведения о глобале...");
 
 	uint8_t info_flags=0;
 
@@ -2630,7 +2630,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 
 	if((info_flags & GM_INFO_CITIES) != 0)
 	{
-		WriteLog("локации(");
+		FONLINE_LOG("локации(");
 
 		for(std::vector<GM_city*>::iterator it_c=gm_cities.begin();it_c!=gm_cities.end();++it_c)
 			delete (*it_c);
@@ -2640,7 +2640,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 
 		bin >> count_cities;
 
-		WriteLog("%d)...",count_cities);
+		FONLINE_LOG("%d)...",count_cities);
 
 		for(int i=0;i<count_cities;++i)
 		{
@@ -2660,7 +2660,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 	}
 
 	if((info_flags & GM_INFO_CRITS) != 0) {
-		WriteLog("криты(");
+		FONLINE_LOG("криты(");
 
 		for(std::vector<GM_crit*>::iterator it_cr=gm_crits.begin();it_cr!=gm_crits.end();++it_cr)
 			delete (*it_cr);
@@ -2673,7 +2673,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 
 		bin >> count_group;
 
-		WriteLog("%d)...",count_group);
+		FONLINE_LOG("%d)...",count_group);
 
 		if(!count_group || count_group>GM_MAX_GROUP)
 		{
@@ -2694,7 +2694,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 
 			if(bin.IsError())
 			{
-				WriteLog("Wrong MSG data for Net_OnGlobalInfo - partial recv!\n");
+				FONLINE_LOG("Wrong MSG data for Net_OnGlobalInfo - partial recv!\n");
 				state=STATE_DISCONNECT;
 				return;
 			}
@@ -2724,7 +2724,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 	}
 
 	if ((info_flags & GM_INFO_PARAM) != 0) {
-		WriteLog("параметры...");
+		FONLINE_LOG("параметры...");
 
 		uint16_t group_x;
 		uint16_t group_y;
@@ -2786,7 +2786,7 @@ void FOnlineEngine::Net_OnGlobalInfo()
 		return;
 	}
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 //!Cvet -----------------------------------------------------------------------------
 
@@ -2809,7 +2809,7 @@ int FOnlineEngine::NetOutput()
 
 	bout.Reset();
     // отладка сетевых сообщений
-    WriteLog("NetOutput\n");
+    FONLINE_LOG("NetOutput\n");
 
 	Ping=GetTickCount();
 
@@ -2820,7 +2820,7 @@ int FOnlineEngine::NetInput() {
 	int len = recv(sock,ComBuf,comlen,0);
 	if (len == SOCKET_ERROR || !len) {
 		//ReportErrorMessage("FOnlineEngine::NetInput","Socket error!\r\n");
-		WriteLog("FOnlineEngine::NetInput - Socket error!\r\n");
+		FONLINE_LOG("FOnlineEngine::NetInput - Socket error!\r\n");
 		return 0;
 	}
 	
@@ -2878,7 +2878,7 @@ int FOnlineEngine::NetInput() {
 		}
 		bin.writePosition+=zstrm.next_out-(UCHAR*)bin.data;
 	}
-	WriteLog("\nrecv %d->%d bytes\n",compos,bin.writePosition);
+	FONLINE_LOG("\nrecv %d->%d bytes\n",compos,bin.writePosition);
 	stat_com+=compos;
 	stat_decom+=bin.writePosition;
 	
@@ -2988,7 +2988,7 @@ CCritter* FOnlineEngine::AddCritter(crit_info* pinfo)
 
 	hexField.SetCrit(pcrit->hex_x,pcrit->hex_y,pcrit);
 
-//WriteLog("x=%d y=%d type=%d, weap=%d\n",pcrit->hex_x,pcrit->hex_y,pcrit->type,pcrit->weapon);
+//FONLINE_LOG("x=%d y=%d type=%d, weap=%d\n",pcrit->hex_x,pcrit->hex_y,pcrit->type,pcrit->weapon);
 
 	return pcrit;
 }
@@ -3033,26 +3033,26 @@ ItemObj* FOnlineEngine::GetMouseItem(int cursor_x, int cursor_y)
 int FOnlineEngine::CheckRegData(crit_info* newcr)
 {
 //ПРОВЕРКА ДАННЫХ
-	WriteLog("Проверка данных регистрации... ");
+	FONLINE_LOG("Проверка данных регистрации... ");
 	int bi;
 	//проверка на длинну логина
 	if(strlen(newcr->login)<MIN_LOGIN || strlen(newcr->login)>MAX_LOGIN)
 	{
-		WriteLog("Err - LOGIN\n");
+		FONLINE_LOG("Err - LOGIN\n");
 		LogMsg=1;
 		return 0;
 	}
 	//проверка на длинну пасса
 	if(strlen(newcr->pass)<MIN_LOGIN || strlen(newcr->pass)>MAX_LOGIN)
 	{
-		WriteLog("Err - PASS\n");
+		FONLINE_LOG("Err - PASS\n");
 		LogMsg=2;
 		return 0;
 	}
 	//проверка на длинну имени
 	if(strlen(newcr->name)<MIN_NAME || strlen(newcr->name)>MAX_NAME)
 	{
-		WriteLog("Err - NAME\n");
+		FONLINE_LOG("Err - NAME\n");
 		LogMsg=13;
 		return 0;
 	}
@@ -3060,28 +3060,28 @@ int FOnlineEngine::CheckRegData(crit_info* newcr)
 	for(bi=0; bi<5; bi++)
 		if(strlen(newcr->cases[bi])<MIN_NAME || strlen(newcr->cases[bi])>MAX_NAME)
 		{
-			WriteLog("Err - CASES%d\n",bi);
+			FONLINE_LOG("Err - CASES%d\n",bi);
 			LogMsg=14;
 			return 0;
 		}
 	//проверка базового типа
 	if(newcr->base_type<0 || newcr->base_type>2)
 	{ 
-		WriteLog("Err - БАЗОВЫЙ ТИП\n");
+		FONLINE_LOG("Err - БАЗОВЫЙ ТИП\n");
 		LogMsg=5;
 		return 0;
 	}
 	//проверка пола
 	if(newcr->st[ST_GENDER]<0 || newcr->st[ST_GENDER]>1) 
 	{ 
-		WriteLog("Err - ПОЛ\n");
+		FONLINE_LOG("Err - ПОЛ\n");
 		LogMsg=15;
 		return 0;
 	}
 	//проверка возраста
 	if(newcr->st[ST_AGE]<14 || newcr->st[ST_AGE]>80) 
 	{ 
-		WriteLog("Err - ВОЗРАСТ\n");
+		FONLINE_LOG("Err - ВОЗРАСТ\n");
 		LogMsg=16;
 		return 0;
 	}
@@ -3094,7 +3094,7 @@ int FOnlineEngine::CheckRegData(crit_info* newcr)
 		(newcr->st[ST_AGILITY	]<1)||(newcr->st[ST_AGILITY		]>10)||
 		(newcr->st[ST_LUCK		]<1)||(newcr->st[ST_LUCK		]>10))
 		{
-			WriteLog("Err - SPECIAL №%d\n", bi);
+			FONLINE_LOG("Err - SPECIAL №%d\n", bi);
 			LogMsg=5;
 			return 0;
 		}
@@ -3102,12 +3102,12 @@ int FOnlineEngine::CheckRegData(crit_info* newcr)
 		newcr->st[ST_CHARISMA]+newcr->st[ST_INTELLECT]+
 		newcr->st[ST_AGILITY]+newcr->st[ST_LUCK])!=40)
 		{ 
-			WriteLog("Err - SPECIAL sum\n");
+			FONLINE_LOG("Err - SPECIAL sum\n");
 			LogMsg=5;
 			return 0;
 		}
 		
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 	return 1;
 }
 
@@ -3207,7 +3207,7 @@ void FOnlineEngine::ChosenProcess()
 		if(lpChosen->hex_x!=PathMoveX || lpChosen->hex_y!=PathMoveY)
 		{ 
 		//ищем направление
-//WriteLog("hx=%d,px=%d,hy=%d,py=%d\n",lpChosen->hex_x,PathMoveX,lpChosen->hex_y,PathMoveY);
+//FONLINE_LOG("hx=%d,px=%d,hy=%d,py=%d\n",lpChosen->hex_x,PathMoveX,lpChosen->hex_y,PathMoveY);
 
 			uint8_t steps[FINDPATH_MAX_PATH];
 			HRESULT res=hexField.FindStep(lpChosen->hex_x,lpChosen->hex_y,PathMoveX,PathMoveY,&steps[0]);
@@ -3218,7 +3218,7 @@ void FOnlineEngine::ChosenProcess()
 			}
 		//обработка других ситуаций
 			if(res==FP_DEADLOCK		) lpChosen->SetText("Я туда не пройду",COLOR_TEXT_DEFAULT);
-			if(res==FP_ERROR		) WriteLog("!!!WORNING!!! Ошибка поиска пути\n",COLOR_TEXT_DEFAULT);
+			if(res==FP_ERROR		) FONLINE_LOG("!!!WORNING!!! Ошибка поиска пути\n",COLOR_TEXT_DEFAULT);
 			if(res==FP_TOOFAR		) lpChosen->SetText("Далековато",COLOR_TEXT_DEFAULT);
 			if(res==FP_ALREADY_HERE	) lpChosen->SetText("Уже тут",COLOR_TEXT_DEFAULT);
 		}
@@ -3263,7 +3263,7 @@ void FOnlineEngine::ChosenProcess()
 		if(AttDir>5) 
 		{
 			if(AttDir==FINDTARGET_BARRIER		) lpChosen->SetText("Я туда не попаду",COLOR_TEXT_DEFAULT);
-			if(AttDir==FINDTARGET_ERROR			) WriteLog("!!!WORNING!!! Ошибка поиска пути\n",COLOR_TEXT_DEFAULT);
+			if(AttDir==FINDTARGET_ERROR			) FONLINE_LOG("!!!WORNING!!! Ошибка поиска пути\n",COLOR_TEXT_DEFAULT);
 			if(AttDir==FINDTARGET_TOOFAR		) lpChosen->SetText("Далековато",COLOR_TEXT_DEFAULT);
 			if(AttDir==FINDTARGET_INVALID_TARG	) lpChosen->SetText("Неправильная цель",COLOR_TEXT_DEFAULT);
 
@@ -3767,7 +3767,7 @@ void FOnlineEngine::TryExit()
 {
 	if(state==STATE_DISCONNECT)
 	{
-		WriteLog("Quit user on ESCAPE\n");
+		FONLINE_LOG("Quit user on ESCAPE\n");
 		DestroyWindow(hWnd);
 	}
 	NetDiscon();

@@ -7,19 +7,19 @@ int SoundManager::Init()
 {
 	if(active==true) return 1;
 
-	WriteLog("SoundManager Init\n");
+	FONLINE_LOG("SoundManager Init\n");
 
 	if (!fm.Init(opt_masterpath.c_str(), opt_critterpath.c_str(), opt_fopath.c_str())) return 0;;
 
 	if(DirectSoundCreate8(0,&lpDS,0)!=DS_OK)
 	{
-		WriteLog("Неудалось создать устройство!\n");
+		FONLINE_LOG("Неудалось создать устройство!\n");
 		return 0;
 	}
 
 	if(lpDS->SetCooperativeLevel(GetForegroundWindow(),DSSCL_NORMAL)!=DS_OK)
 	{
-		WriteLog("Неудалось установить уровень кооперации!\n");
+		FONLINE_LOG("Неудалось установить уровень кооперации!\n");
 		return 0;
 	}
 
@@ -27,7 +27,7 @@ int SoundManager::Init()
 
 	active=true;
 
-	WriteLog("SoundManager Init OK\n");
+	FONLINE_LOG("SoundManager Init OK\n");
 
 	return 1;
 }
@@ -36,7 +36,7 @@ void SoundManager::Clear()
 {
 	if(active==false) return;
 
-	WriteLog("SoundManager Clear...\n");
+	FONLINE_LOG("SoundManager Clear...\n");
 
 	fm.Clear();
 
@@ -52,7 +52,7 @@ void SoundManager::Clear()
 
 	active=false;
 
-	WriteLog("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void SoundManager::LPESound(char* fname, int TypePath)
@@ -68,7 +68,7 @@ int SoundManager::LoadSound(char* fname, int TypePath)
 {
 	if (!fm.LoadFile(fname,TypePath))
 	{
-		WriteLog("Ошибка - Загрузка звука - Звук |%s| не найден\n",fname);	
+		FONLINE_LOG("Ошибка - Загрузка звука - Звук |%s| не найден\n",fname);	
 		return 0;
 	}
 
@@ -77,7 +77,7 @@ int SoundManager::LoadSound(char* fname, int TypePath)
 	if(!ext)
 	{
 		fm.UnloadFile();
-		WriteLog("Ошибка - Загрузка звука - Нет расширения у файла:|%s|\n",fname);
+		FONLINE_LOG("Ошибка - Загрузка звука - Нет расширения у файла:|%s|\n",fname);
 		return 0;
 	}
 
@@ -128,7 +128,7 @@ int SoundManager::LoadSound(char* fname, int TypePath)
     }
 	} else {
 		fm.UnloadFile();
-		WriteLog("Ошибка - Загрузка звука - Неизвестный формат файла звука |%s|\n",fname);
+		FONLINE_LOG("Ошибка - Загрузка звука - Неизвестный формат файла звука |%s|\n",fname);
 		return 0;
 	}
 
@@ -150,7 +150,7 @@ int SoundManager::LoadSound(char* fname, int TypePath)
       delete [] smplData;
       smplData = NULL;
     }
-		WriteLog("Ошибка - Загрузка звука - Неудалось создать буфер для звука\n");
+		FONLINE_LOG("Ошибка - Загрузка звука - Неудалось создать буфер для звука\n");
 		return 0;
 	}
 
@@ -162,7 +162,7 @@ int SoundManager::LoadSound(char* fname, int TypePath)
       delete [] smplData;
       smplData = NULL;
     }
-		WriteLog("Ошибка - Загрузка звука - Невозможно заблокировать память\n");
+		FONLINE_LOG("Ошибка - Загрузка звука - Невозможно заблокировать память\n");
 		return 0;
 	}
 
@@ -186,27 +186,27 @@ int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 {
 	uint32_t dw_buf = fm.GetRDWord();
 
-	if(dw_buf!=MAKEFOURCC('R','I','F','F')) { WriteLog("|RIFF| not found |%d|\n"); return 0; }
+	if(dw_buf!=MAKEFOURCC('R','I','F','F')) { FONLINE_LOG("|RIFF| not found |%d|\n"); return 0; }
 
 	fm.GoForward(4);
 
 	dw_buf=fm.GetRDWord();
 
-	if(dw_buf!=MAKEFOURCC('W','A','V','E')) { WriteLog("|WAVE| not found\n"); return 0; }
+	if(dw_buf!=MAKEFOURCC('W','A','V','E')) { FONLINE_LOG("|WAVE| not found\n"); return 0; }
 
 	dw_buf=fm.GetRDWord();
 
-	if(dw_buf!=MAKEFOURCC('f','m','t',' ')) { WriteLog("|fmt | not found\n"); return 0; }
+	if(dw_buf!=MAKEFOURCC('f','m','t',' ')) { FONLINE_LOG("|fmt | not found\n"); return 0; }
 	
 	dw_buf=fm.GetRDWord();
 
-	if(!dw_buf) { WriteLog("Ошибка - Загрузка звука - .Неизвестный формат аудио файла\n"); return 0; }
+	if(!dw_buf) { FONLINE_LOG("Ошибка - Загрузка звука - .Неизвестный формат аудио файла\n"); return 0; }
 
 	fm.Read(fformat,16);
 
 	fformat->cbSize=0;
 
-	if(fformat->wFormatTag!=1) { WriteLog("Ошибка - Загрузка звука - Сжатые файлы не поддерживаются\n"); return 0; }
+	if(fformat->wFormatTag!=1) { FONLINE_LOG("Ошибка - Загрузка звука - Сжатые файлы не поддерживаются\n"); return 0; }
 
 	fm.GoForward(dw_buf-16);
 
@@ -219,7 +219,7 @@ int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 		dw_buf=fm.GetRDWord();
 	}
 
-	if(dw_buf!=MAKEFOURCC('d','a','t','a')) { WriteLog("Ошибка - Загрузка звука - ..Неизвестный формат аудио файла\n"); return 0; }
+	if(dw_buf!=MAKEFOURCC('d','a','t','a')) { FONLINE_LOG("Ошибка - Загрузка звука - ..Неизвестный формат аудио файла\n"); return 0; }
 
 	dw_buf=fm.GetRDWord();
 
@@ -227,7 +227,7 @@ int SoundManager::LoadWAV(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 
 	*sample_data=new unsigned char[dw_buf];
 
-	if(!fm.Read(*sample_data,dw_buf)) { WriteLog("Ошибка - Загрузка звука - Звуковой файл битый\n"); return 0; }
+	if(!fm.Read(*sample_data,dw_buf)) { FONLINE_LOG("Ошибка - Загрузка звука - Звуковой файл битый\n"); return 0; }
 
 	return 1;
 }
@@ -244,7 +244,7 @@ int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
 	data_size*=2;
 
 	if (!acmInitialized) { 
-	  WriteLog("Ошибка - Загрузка звука - Неинициализировался распаковщик ACM\n"); 
+	  FONLINE_LOG("Ошибка - Загрузка звука - Неинициализировался распаковщик ACM\n"); 
 	  return 0; 
 	}
 
@@ -275,7 +275,7 @@ int SoundManager::LoadACM(WAVEFORMATEX* fformat, unsigned char** sample_data, ui
   int dec_data = ACMDecompressor::ReadAndDecompress(&acm, (unsigned short*)*sample_data,data_size);
 
 	if (dec_data != data_size) { 
-	  WriteLog("Ошибка - Загрузка звука - Ошибка в декодировании ACM\n"); 
+	  FONLINE_LOG("Ошибка - Загрузка звука - Ошибка в декодировании ACM\n"); 
 	  if (*sample_data != NULL) {
 	    delete sample_data;
 	    sample_data = NULL;
@@ -328,7 +328,7 @@ void SoundManager::PlaySound(uint16_t id)
 {
 	if(!id)
 	{
-		WriteLog("Ошибка - Проигрывание звука - Звук не загружен!\n");
+		FONLINE_LOG("Ошибка - Проигрывание звука - Звук не загружен!\n");
 		return;
 	}
 
@@ -336,7 +336,7 @@ void SoundManager::PlaySound(uint16_t id)
 
 	if(it==sounds.end())
 	{
-		WriteLog("Ошибка - Прогигрывание звука - Звук №%d не найден!",id);
+		FONLINE_LOG("Ошибка - Прогигрывание звука - Звук №%d не найден!",id);
 		return;
 	}
 
@@ -347,7 +347,7 @@ void SoundManager::StopSound(uint16_t id)
 {
 	if(!id)
 	{
-		WriteLog("Ошибка - Приостоновление звука - Звук не загружен!\n");
+		FONLINE_LOG("Ошибка - Приостоновление звука - Звук не загружен!\n");
 		return;
 	}
 
@@ -355,7 +355,7 @@ void SoundManager::StopSound(uint16_t id)
 
 	if(it==sounds.end())
 	{
-		WriteLog("Ошибка - Приостоновление звука - Звук №%d не найден!",id);
+		FONLINE_LOG("Ошибка - Приостоновление звука - Звук №%d не найден!",id);
 		return;
 	}
 
@@ -367,7 +367,7 @@ void SoundManager::PauseSound(uint16_t id)
 {
 	if(!id)
 	{
-		WriteLog("Ошибка - Приостоновление звука - Звук не загружен!\n");
+		FONLINE_LOG("Ошибка - Приостоновление звука - Звук не загружен!\n");
 		return;
 	}
 
@@ -375,7 +375,7 @@ void SoundManager::PauseSound(uint16_t id)
 
 	if(it==sounds.end())
 	{
-		WriteLog("Ошибка - Приостоновление звука - Звук №%d не найден!",id);
+		FONLINE_LOG("Ошибка - Приостоновление звука - Звук №%d не найден!",id);
 		return;
 	}
 
@@ -386,7 +386,7 @@ void SoundManager::EraseSound(uint16_t id)
 {
 	if(!id)
 	{
-		WriteLog("Ошибка - Удаление звука - Звук не загружен!\n");
+		FONLINE_LOG("Ошибка - Удаление звука - Звук не загружен!\n");
 		return;
 	}
 
@@ -394,7 +394,7 @@ void SoundManager::EraseSound(uint16_t id)
 
 	if(it==sounds.end())
 	{
-		WriteLog("Ошибка - Удаление звука - Звук №%d не найден!",id);
+		FONLINE_LOG("Ошибка - Удаление звука - Звук №%d не найден!",id);
 		return;
 	}
 

@@ -36,7 +36,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
   assert(!initialized);
   assert(lpD3Device != NULL);
   
-	WriteLog("CSpriteManager Initialization...\n");
+	FONLINE_LOG("CSpriteManager Initialization...\n");
 
 	maxSpriteCount = opt_flushval;
 	currentPosition = 0;
@@ -44,7 +44,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
 	lpDevice = lpD3Device;
 
 	//Создаем буфер вершин
-	WriteLog("Создаю VB на %d спрайтов\n",maxSpriteCount);
+	FONLINE_LOG("Создаю VB на %d спрайтов\n",maxSpriteCount);
 	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
@@ -90,7 +90,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
 
 	if(!LoadCritTypes()) return 0; //!Cvet
 
-	WriteLog("CSpriteManager Initialization complete\n");
+	FONLINE_LOG("CSpriteManager Initialization complete\n");
 	initialized=1;
 	return 1;
 }
@@ -98,7 +98,7 @@ int CSpriteManager::Init(LPDIRECT3DDEVICE8 lpD3Device) {
 void CSpriteManager::Clear() {
   assert(initialized);
   
-	WriteLog("CSprMan Clear...\n");
+	FONLINE_LOG("CSprMan Clear...\n");
 
 	fm.Clear();
 
@@ -128,7 +128,7 @@ void CSpriteManager::Clear() {
 	}
 
 	initialized=0;
-	WriteLog("CSprMan Clear complete\n");
+	FONLINE_LOG("CSprMan Clear complete\n");
 }
 
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
@@ -252,7 +252,7 @@ int CSpriteManager::LoadMiniSprite(char *fname,double size,int PathType,SpriteIn
     lpinf->h/=size; // Уменьшаем пропорции предметов для инвентаря
     lpinf->w/=size; // Статическое масштабирование
     
-	WriteLog("size %d",size);
+	FONLINE_LOG("size %d",size);
 
 	spriteData[next_id++]=lpinf;
 
@@ -281,7 +281,7 @@ int CSpriteManager::LoadSprite(char *fname,int PathType,SpriteInfo** ppInfo) //!
 	if(!ext)
 	{
 		fm.UnloadFile();
-		WriteLog("Нет расширения у файла:|%s|\n",fname);
+		FONLINE_LOG("Нет расширения у файла:|%s|\n",fname);
 		return 0;
 	}
 
@@ -415,7 +415,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
 	if(!ext)
 	{
 		fm.UnloadFile();
-		WriteLog("Нет расширения у файла:|%s|\n",fname);
+		FONLINE_LOG("Нет расширения у файла:|%s|\n",fname);
 		return 0;
 	}
 
@@ -450,7 +450,7 @@ int CSpriteManager::LoadSpriteAlt(char *fname,int PathType,SpriteInfo** ppInfo)
       lpinf = NULL;
     }
 		fm.UnloadFile();
-		WriteLog("Неизвестный формат файла:|%s|\n",ext);
+		FONLINE_LOG("Неизвестный формат файла:|%s|\n",ext);
 		return 0;
 	}
 
@@ -546,7 +546,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 	if(!initialized) return 0;
 	if(!fname[0]) return 0;
 
-//	WriteLog("Loading animation %s\n",fname);
+//	FONLINE_LOG("Loading animation %s\n",fname);
 
 	if(!fm.LoadFile(fname,PathType))
 		return 0;
@@ -694,7 +694,7 @@ int CSpriteManager::LoadAnimation(char *fname,int PathType,CritFrames* pframes)
 		}
 
 		fm.UnloadFile();
-//		WriteLog("%d frames loaded\n",frm_num*6);
+//		FONLINE_LOG("%d frames loaded\n",frm_num*6);
 		return 1;
 }
 
@@ -852,9 +852,9 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 		if(or==4) strcat(path,"4");
 		if(or==5) strcat(path,"5");
 
-	//	WriteLog("Loading animation %s\n",path);
+	//	FONLINE_LOG("Loading animation %s\n",path);
 		if(!fm.LoadFile(path,PathType)) return 0;
-	//	WriteLog("Loading offsets animation %s\n",path);
+	//	FONLINE_LOG("Loading offsets animation %s\n",path);
 
 		fm.SetCurrentPosition(0x4); //!Cvet
 		uint16_t frm_fps=fm.GetWord(); //!Cvet
@@ -999,7 +999,7 @@ int CSpriteManager::LoadAnimationD(char *fname,int PathType,CritFrames* pframes)
 		}
 
 		fm.UnloadFile();}
-//		WriteLog("%d frames loaded\n",frm_num*6);
+//		FONLINE_LOG("%d frames loaded\n",frm_num*6);
 		return 1;
 }
 
@@ -1021,7 +1021,7 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
 
 	strcpy(path,fname);
 
-//	WriteLog("Loading animation %s\n",path);
+//	FONLINE_LOG("Loading animation %s\n",path);
 	if(!fm.LoadFile(path,PathType)) return 0;
 
 //!Cvet +++++++++
@@ -1174,12 +1174,12 @@ int CSpriteManager::LoadAnyAnimation(char *fname,int PathType, AnyFrames* aanim,
     
 		spriteData[next_id++]=lpinf;
 		aanim->ind[frm]=next_id-1;
-//		WriteLog("Loading animation!%d\n",frm);
+//		FONLINE_LOG("Loading animation!%d\n",frm);
 	}
     // конец загрузки всех фрм на подготовленные поверхности	
 	fm.UnloadFile();
 
-//	WriteLog("%d frames loaded\n",frm_num);
+//	FONLINE_LOG("%d frames loaded\n",frm_num);
 	return 1;
 }
 
@@ -1365,7 +1365,7 @@ void CSpriteManager::DrawPrepPix(Pix_vec* prep_pix)
 //	lpDevice->SetIndices(lpIB,0);
 //	lpDevice->SetVertexShader(D3DFVF_MYVERTEX);
 
-//	WriteLog("p:%d\n",prep_pix->size());
+//	FONLINE_LOG("p:%d\n",prep_pix->size());
 }
 */
 
@@ -1703,7 +1703,7 @@ void CSpriteManager::PostRestore()
   assert(initialized);
   
 	//Создаем буфер вершин
-	WriteLog("Пересоздаю VB на %d спрайтов\n",maxSpriteCount);
+	FONLINE_LOG("Пересоздаю VB на %d спрайтов\n",maxSpriteCount);
 	HRESULT hr=lpDevice->CreateVertexBuffer(maxSpriteCount*4*sizeof(MYVERTEX),D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,
 		D3DFVF_MYVERTEX,D3DPOOL_DEFAULT,&lpVB);
 	if(hr!=D3D_OK){
@@ -1771,7 +1771,7 @@ int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t
   
 	if(CrAnim[anim_type][anim_ind1][anim_ind2]) return 1;
 
-	WriteLog("Загрузка анимации type=%d,ind1=%d,ind2=%d...",anim_type,anim_ind1,anim_ind2);
+	FONLINE_LOG("Загрузка анимации type=%d,ind1=%d,ind2=%d...",anim_type,anim_ind1,anim_ind2);
 
 	TICK loadA=GetTickCount();
 	char frm_ind1[]="_ABCDEFGHIJKLMN___R";
@@ -1779,12 +1779,12 @@ int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t
 	char path[1024];//12345678901234567890
 
 	sprintf(path,"%s%c%c.frm",crit_types[anim_type].c_str(),frm_ind1[anim_ind1],frm_ind2[anim_ind2]);
-	WriteLog("1 попытка |%s|...",path);
+	FONLINE_LOG("1 попытка |%s|...",path);
 	CrAnim[anim_type][anim_ind1][anim_ind2]=new CritFrames;
 	if(!LoadAnimation(path,PT_ART_CRITTERS,CrAnim[anim_type][anim_ind1][anim_ind2]))
 	{
 		sprintf(path,"%s%c%c.fr",crit_types[anim_type].c_str(),frm_ind1[anim_ind1],frm_ind2[anim_ind2]);
-		WriteLog("2 попытка |%s|...",path);
+		FONLINE_LOG("2 попытка |%s|...",path);
 		if(!LoadAnimationD(path,PT_ART_CRITTERS,CrAnim[anim_type][anim_ind1][anim_ind2]))
 		{
 		  CritFrames* frames = CrAnim[anim_type][anim_ind1][anim_ind2];
@@ -1794,11 +1794,11 @@ int CSpriteManager::LoadAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_t
         frames = NULL;
       }
 			
-			WriteLog("Анимация не найдена\n");
+			FONLINE_LOG("Анимация не найдена\n");
 			return 0;
 		}
 	}
-	WriteLog("OK - Время загрузки анимации %s =%d\n",path,GetTickCount()-loadA);
+	FONLINE_LOG("OK - Время загрузки анимации %s =%d\n",path,GetTickCount()-loadA);
 	return 1;
 }
 
@@ -1828,7 +1828,7 @@ int CSpriteManager::EraseAnimCr(CritterType anim_type, uint8_t anim_ind1, uint8_
     frames = NULL;
   }
   
-	WriteLog("Время удаления анимации =%d\n",GetTickCount()-loadA);
+	FONLINE_LOG("Время удаления анимации =%d\n",GetTickCount()-loadA);
 	return 1;
 }
 

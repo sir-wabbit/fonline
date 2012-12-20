@@ -72,14 +72,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInst, LPSTR lpCmdLi
 	ShowWindow(hWnd, SW_SHOWNORMAL);
 	UpdateWindow(hWnd);
 
-	WriteLog("Starting FOnline...\n");
+	FONLINE_LOG("Starting FOnline...\n");
 
 	srand(GetTickCount());
 
 	engine = new FOnlineEngine;
 
 	if (!engine->Init(hWnd)) {
-		WriteLog("Could not initialize the engine.\n");
+		FONLINE_LOG("Could not initialize the engine.\n");
 		DestroyWindow(hWnd);
 		return 0;
 	}
@@ -101,7 +101,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPreviousInst, LPSTR lpCmdLi
 			DispatchMessage(&msg);
 		}
 	}
-	WriteLog("\nFOnline Closed\n");
+	FONLINE_LOG("\nFOnline Closed\n");
 	CloseLogFile();
 
 	delete engine;

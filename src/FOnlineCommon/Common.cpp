@@ -151,7 +151,60 @@ void CloseLogFile() {
   }
 }
 
-void WriteLog(char* fmt, ...) {
+namespace {
+
+const char* strrchrn(const char* str, const char* chr) {
+  const char* p = str;
+  const char* l = NULL;
+  
+  while (*p) {
+    if (strchr(chr, *p)) {
+      l = p;
+    }
+    p++;
+  }
+  
+  return l;
+}
+char* strrchrn(char* str, const char* chr) {
+  // XXX[20.12.2012 alex]: a necessary evil
+  return (char*) strrchrn((const char*) str, chr);
+}
+
+}
+
+void WriteLogFull(const char* file, unsigned int line, const char* func, const char* fmt, ...) {
+  assert(file != NULL);
+  assert(func != NULL);
+  assert(fmt != NULL);
+
+  if (logFile == NULL) {
+    return;
+  }
+  
+  const char* fileName = strrchrn(file, "\\/");
+  if (fileName == NULL) {
+    fileName = file;
+  } else {
+    fileName += 1;
+  }
+
+  char buf[2048];
+
+  va_list list;
+
+  va_start(list, fmt);
+  vsnprintf(buf, sizeof(buf) - 1, fmt, list);
+  va_end(list);
+
+  fprintf(logFile, "%s[%u] %s -> %s\n", fileName, line, func, buf);
+  odprintf("%s[%u] %s -> %s\n", fileName, line, func, buf);
+
+  fflush(logFile);
+
+}
+
+void WriteLog(const char* fmt, ...) {
   assert(fmt != NULL);
 
   if (logFile == NULL) {

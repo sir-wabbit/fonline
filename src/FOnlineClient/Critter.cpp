@@ -292,9 +292,9 @@ void CCritter::SetAnimation()
 			break;
 		}
 	}
-	else WriteLog("Critter - SetAnimation - UnKnown Condition |%d|\n",cond);
+	else FONLINE_LOG("Critter - SetAnimation - UnKnown Condition |%d|\n",cond);
 
-//	WriteLog("SetAnimation - cond=%d,cond_ext=%d\n",cond,cond_ext);
+//	FONLINE_LOG("SetAnimation - cond=%d,cond_ext=%d\n",cond,cond_ext);
 }
 
 void CCritter::SetDirection(uint8_t dir)
@@ -430,12 +430,12 @@ void CCritter::ChangeCur_offs(short change_ox, short change_oy)
 	cur_ox+=change_ox;
 	cur_oy+=change_oy;
 
-//	WriteLog("==================================\n");
-//	WriteLog("cur_ox+=change_ox\n");
-//	WriteLog("%d+=%d\n",cur_ox,change_ox);
-//	WriteLog("cur_oy+=change_oy\n");
-//	WriteLog("%d+=%d\n",cur_oy,change_oy);
-//	WriteLog("==================================\n");
+//	FONLINE_LOG("==================================\n");
+//	FONLINE_LOG("cur_ox+=change_ox\n");
+//	FONLINE_LOG("%d+=%d\n",cur_ox,change_ox);
+//	FONLINE_LOG("cur_oy+=change_oy\n");
+//	FONLINE_LOG("%d+=%d\n",cur_oy,change_oy);
+//	FONLINE_LOG("==================================\n");
 	
 	drect.left += change_ox;
 	drect.right += change_ox;
@@ -449,12 +449,12 @@ void CCritter::SetCur_offs(short set_ox, short set_oy)
 	int diff_x=set_ox-cur_ox;
 	int diff_y=set_oy-cur_oy;
 
-//	WriteLog("----------------------------------\n");
-//	WriteLog("diff_x=cur_ox-set_ox\n");
-//	WriteLog("%d=%d-%d\n",diff_x,cur_ox,set_ox);
-//	WriteLog("diff_y=cur_oy-set_oy\n");
-//	WriteLog("%d=%d-%d\n",diff_y,cur_oy,set_oy);
-//	WriteLog("----------------------------------\n");
+//	FONLINE_LOG("----------------------------------\n");
+//	FONLINE_LOG("diff_x=cur_ox-set_ox\n");
+//	FONLINE_LOG("%d=%d-%d\n",diff_x,cur_ox,set_ox);
+//	FONLINE_LOG("diff_y=cur_oy-set_oy\n");
+//	FONLINE_LOG("%d=%d-%d\n",diff_y,cur_oy,set_oy);
+//	FONLINE_LOG("----------------------------------\n");
 
 //	cur_ox=diff_x;
 //	cur_oy=diff_y;

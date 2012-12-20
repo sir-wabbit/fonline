@@ -69,7 +69,7 @@ CHexField::CHexField()
 
 int CHexField::Init(CSpriteManager* lpsm)
 {
-	WriteLog("CHexField Initialization...\n");
+	FONLINE_LOG("CHexField Initialization...\n");
 
 	if(!lpsm)
 	{
@@ -106,7 +106,7 @@ int CHexField::Init(CSpriteManager* lpsm)
 
 	if(!(egg=lpSM->LoadSprite("egg.png",PT_ART_MISC))) return 0;
 
-	WriteLog("CHexField Initialization complete\n");
+	FONLINE_LOG("CHexField Initialization complete\n");
 	crtd=1;
 
 	MapLoaded=FALSE; //!Cvet
@@ -116,7 +116,7 @@ int CHexField::Init(CSpriteManager* lpsm)
 
 void CHexField::Clear()
 {
-	WriteLog("CHexField Clear...\n");
+	FONLINE_LOG("CHexField Clear...\n");
 
 	fm.Clear();
 	fm_map.Clear();
@@ -217,7 +217,7 @@ void CHexField::Clear()
 
 	crtd=0;
 
-	WriteLog("CHexField Clear complete\n");
+	FONLINE_LOG("CHexField Clear complete\n");
 }
 
 int CHexField::LoadList(char* lname,int PathType,char_map* pmap)
@@ -235,7 +235,7 @@ int CHexField::LoadList(char* lname,int PathType,char_map* pmap)
 		if(!pos)
 		{	
 			i++;
-			WriteLog("CHexField LoadList> в list файле найдена строка без имени файла: %s\n",str);
+			FONLINE_LOG("CHexField LoadList> Found a line with no filename in the list: %s\n",str);
 			continue; 
 		}
 		pos[4]=0;//отсекаем комментарии
@@ -251,7 +251,7 @@ int CHexField::LoadList(char* lname,int PathType,char_map* pmap)
 
 int CHexField::LoadMap(char* fname)
 {
-	WriteLog("Загрузка карты %s...\n",fname);
+	FONLINE_LOG("Loading map '%s'...\n",fname);
 	TICK gc=GetTickCount();
 
 	UnLoadMap(); //!Cvet
@@ -332,8 +332,8 @@ int CHexField::LoadMap(char* fname)
 
 	MapLoaded=TRUE;
 
-	WriteLog("карта загружена за %d ms\n",GetTickCount()-gc);
-//	WriteLog("ac1=%d ac2=%d ac3=%d ac4=%d ac5=%d ac6=%d ac7=%d acres=%d\n",ac1,ac2,ac3,ac4,ac5,ac6,ac7,acres);
+	FONLINE_LOG("Map loaded in %d ms.\n",GetTickCount()-gc);
+//	FONLINE_LOG("ac1=%d ac2=%d ac3=%d ac4=%d ac5=%d ac6=%d ac7=%d acres=%d\n",ac1,ac2,ac3,ac4,ac5,ac6,ac7,acres);
 	return 1;
 }
 
@@ -402,7 +402,7 @@ int CHexField::DropScript()
 		all_cnt+=cnt; //!Cvet
 	}
 
-	WriteLog("Scripts> %d\n",all_cnt); 
+	FONLINE_LOG("Scripts> %d\n",all_cnt); 
 	return 1;
 }
 
@@ -499,10 +499,10 @@ int CHexField::LoadObj()
 		}
 	}
 
-	WriteLog("Critters> %d\n",cr_cnt); //!Cvet
-	WriteLog("Items> %d\n",itm_cnt); //!Cvet
-	WriteLog("Scenery> %d\n",sc_cnt);
-	WriteLog("Walls> %d\n",wl_cnt);
+	FONLINE_LOG("Critters> %d\n",cr_cnt); //!Cvet
+	FONLINE_LOG("Items> %d\n",itm_cnt); //!Cvet
+	FONLINE_LOG("Scenery> %d\n",sc_cnt);
+	FONLINE_LOG("Walls> %d\n",wl_cnt);
 
 	hbegin=(hbmax-24-6)/12; //верхняя граница
 	hbegin+=hbegin%2;
@@ -534,7 +534,7 @@ int CHexField::LoadObj()
 
 	view2=new ViewField[v2h*v2w]; //создаем новую видимую область
 
-	WriteLog("hbegin=%d,hend=%d,wright=%d,wleft=%d\n",hbegin,hend,wright,wleft);
+	FONLINE_LOG("hbegin=%d,hend=%d,wright=%d,wleft=%d\n",hbegin,hend,wright,wleft);
 
 	return 1;
 }
@@ -636,7 +636,7 @@ int CHexField::ParseMiscObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,
 {
 //	uint32_t sub_type=SUB_MISC_MISC;
 
-//	WriteLog("misc - %d - %d,%d\n",id,x,y);
+//	FONLINE_LOG("misc - %d - %d,%d\n",id,x,y);
 
 	if((id>=33 && id<=48) || (id>=17 && id<=24)) fm_map.GoForward(16);
 
@@ -748,7 +748,7 @@ int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, uint16_t tile_fl
 
 		if(!res)
 		{
-			WriteLog("Ошибка - не удалось загрузить анимацию при добавлении итема\n");
+			FONLINE_LOG("Could not load animation while adding the player.\n");
 			
       if (newitm != NULL) {
         delete newitm;
@@ -789,7 +789,7 @@ void CHexField::ChangeObj(stat_obj* chn_sobj, HexTYPE x, HexTYPE y, uint16_t til
 
 	if(it_i==hex_field[y][x].itm_obj.end())
 	{
-		WriteLog("не найден объект на карте\n");
+		FONLINE_LOG("не найден объект на карте\n");
 		return;
 	}
 
@@ -1499,11 +1499,11 @@ int CHexField::Scroll()
 
 		//if(cnt_x)
 
-//WriteLog("право-верх	x=%d,y=%d\n",rt_x,rt_y);
-//WriteLog("право-низ		x=%d,y=%d\n",rb_x,rb_y);
-//WriteLog("лево-низ		x=%d,y=%d\n",lb_x,lb_y);
-//WriteLog("лево-верх		x=%d,y=%d\n",lt_x,lt_y);
-//WriteLog("центр			x=%d,y=%d\n",cnt_x,cnt_y);
+//FONLINE_LOG("право-верх	x=%d,y=%d\n",rt_x,rt_y);
+//FONLINE_LOG("право-низ		x=%d,y=%d\n",rb_x,rb_y);
+//FONLINE_LOG("лево-низ		x=%d,y=%d\n",lb_x,lb_y);
+//FONLINE_LOG("лево-верх		x=%d,y=%d\n",lt_x,lt_y);
+//FONLINE_LOG("центр			x=%d,y=%d\n",cnt_x,cnt_y);
 
 	//!Cvet ------
 
@@ -1535,15 +1535,15 @@ void CHexField::SetCrit(int x,int y,CCritter* pcrit)
 	SETFLAG(hex_field[y][x].flags,FT_PLAYER);
 
   // SpriteInfo* ii=lpSM->GetSpriteInfo(hex_field[y][x].lpcrit->cur_id);
-	WriteLog("x=%d,y=%d\n",x,y);
+	FONLINE_LOG("x=%d,y=%d\n",x,y);
 
 	if (!IsVisible(x, y, hex_field[y][x].lpcrit->cur_id)) {
-    WriteLog("Added not visible!\n");
+    FONLINE_LOG("Added not visible!\n");
 		hex_field[y][x].lpcrit->SetVisible(0);
 		pcrit->rit = -1;
 		return;
 	}
-  WriteLog("Added visible!\n");
+  FONLINE_LOG("Added visible!\n");
 
 	hex_field[y][x].lpcrit->SetVisible(1);
 
@@ -1570,12 +1570,12 @@ void CHexField::RemoveCrit(CCritter* pcrit)
 		if(it!=dtree.end())
 		{
 
-      WriteLog("R1=");
+      FONLINE_LOG("R1=");
       if (it->second != NULL) {
         delete it->second;
         it->second = NULL;
       }
-      WriteLog("R2...");
+      FONLINE_LOG("R2...");
 			dtree.erase(it);
 		}
 
@@ -1583,7 +1583,7 @@ void CHexField::RemoveCrit(CCritter* pcrit)
 
 	}
   // отладка сетевых сообщений
-  WriteLog("CritRemoved...\n");
+  FONLINE_LOG("CritRemoved...\n");
 }
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1625,9 +1625,9 @@ void CHexField::TransitCritter(CCritter* pcrit, int dir, int x, int y, bool null
 
 		if(it!=dtree.end())
 		{
-	WriteLog("R1=");
+	FONLINE_LOG("R1=");
 			SAFEDEL((*it).second);
-	WriteLog("R2...");
+	FONLINE_LOG("R2...");
 			dtree.erase(it);
 		}
 
@@ -1905,7 +1905,7 @@ int CHexField::UnLoadMap()
 
 	MapLoaded=FALSE;
 
-	WriteLog("UnloadMap...OK\n");
+	FONLINE_LOG("UnloadMap...OK\n");
 
 	return 1;
 }
@@ -2120,7 +2120,7 @@ int CHexField::FindStep(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTYPE
 	}
 */
 //	QueryPerformanceCounter((PLARGE_INTEGER)&fp2);
-//	WriteLog("================================fp=%d\n",(fp2-fp)/1000);
+//	FONLINE_LOG("================================fp=%d\n",(fp2-fp)/1000);
 	return FP_OK;
 }
 
@@ -2333,8 +2333,8 @@ int CHexField::FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTY
 		cury1i=(int)(cury1f);
 		if(cury1f-cury1i>=0.5f) cury1i++;
 
-//WriteLog("dist:%d\n",cur_dist);
-//WriteLog("x1:%d, y1:%d\n",curx1i,cury1i);
+//FONLINE_LOG("dist:%d\n",cur_dist);
+//FONLINE_LOG("x1:%d, y1:%d\n",curx1i,cury1i);
 
 		if(!(old_curx1i%2))
 		{
@@ -2475,7 +2475,7 @@ int CHexField::FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTY
 
 		hex_field[cury1i][curx1i].track=1;
 
-//WriteLog("x1:%d, y1:%d\n",curx1i,cury1i);
+//FONLINE_LOG("x1:%d, y1:%d\n",curx1i,cury1i);
 
 		if(curx1i==end_x && cury1i==end_y) return GetFarDir(start_x,start_y,end_x,end_y);
 
