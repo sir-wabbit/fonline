@@ -703,8 +703,14 @@ void FOnlineEngine::ParseInput()
 			cur_y=p.y-(r.top+22);
 		}
 */  
-    size_t modeWidth = screen_width[opt_screen_mode];
-    size_t modeHeight = screen_height[opt_screen_mode];
+    // FIXME[20.12.2012 alex]: better use unsigned int, but it causes
+    //   mouse to jump from top to the bottom of the window, since a
+    //   negative mouse coordinate is casted to unsigned int during
+    //   comparison with modeHeight and then it is assigned modeHeight 
+    //   value.
+    int modeWidth = screen_width[opt_screen_mode];
+    int modeHeight = screen_height[opt_screen_mode];
+    
 		if(cur_x > modeWidth) cur_x = modeWidth;
 		if(cur_x < 0) cur_x = 0;
 		if(cur_y > modeHeight) cur_y = modeHeight;
@@ -1003,8 +1009,13 @@ void FOnlineEngine::ParseInput()
 		cur_y=p.y-(r.top+22);
 	}*/
 
-  size_t modeWidth = screen_width[opt_screen_mode];
-  size_t modeHeight = screen_height[opt_screen_mode];
+  // FIXME[20.12.2012 alex]: better use unsigned int, but it causes
+  //   mouse to jump from top to the bottom of the window, since a
+  //   negative mouse coordinate is casted to unsigned int during
+  //   comparison with modeHeight and then it is assigned modeHeight 
+  //   value.
+  int modeWidth = screen_width[opt_screen_mode];
+  int modeHeight = screen_height[opt_screen_mode];
   if(cur_x > modeWidth) cur_x = modeWidth;
   if(cur_x < 0) cur_x = 0;
   if(cur_y > modeHeight) cur_y = modeHeight;
