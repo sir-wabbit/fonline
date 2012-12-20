@@ -11,7 +11,7 @@
 unsigned char readNextPortion(ACMDecompressor::Context* ctx); // read next block of data
 void prepareBits (ACMDecompressor::Context* ctx, int bits); // request bits
 int getBits (ACMDecompressor::Context* ctx, int bits); // request and return next bits
-int str_read(ACMDecompressor::Context* ctx, uint8_t** d_stream, int d_size, uint8_t* f_stream);
+int str_read(ACMDecompressor::Context* ctx, uint8_t** d_stream, size_t d_size, uint8_t* f_stream);
 
 void sub_4d420c (int *decBuff, int *someBuff, int someSize, int blocks);
 void sub_4d3fcc (short *decBuff, int *someBuff, int someSize, int blocks);
@@ -228,15 +228,17 @@ unsigned char readNextPortion(ACMDecompressor::Context* ctx) {
 	return *ctx->fileBuffPtr;
 }
 //!Cvet++++++++++++++++++++++++++++++
-int str_read(ACMDecompressor::Context* ctx, uint8_t** d_stream, int d_size, uint8_t* f_stream)
+int str_read(ACMDecompressor::Context* ctx, uint8_t** d_stream, size_t d_size, uint8_t* f_stream)
 {
 //	if(fileCur+d_size>fileLen) return 0; //!!!!доделать
 
-	if (ctx->fileCur + d_size > ctx->fileLen) d_size -= (ctx->fileLen - ctx->fileCur);
+	if (ctx->fileCur + d_size > ctx->fileLen) {
+	  d_size -= (ctx->fileLen - ctx->fileCur);
+	}
 
 	*d_stream=ctx->hFile+ctx->fileCur;
 
-	ctx->fileCur+=d_size;
+	ctx->fileCur += d_size;
 
 	return d_size;
 }

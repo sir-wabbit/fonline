@@ -233,9 +233,20 @@ public:
 	//int SaveKnownCitySQL(uint16_t city_num);
 	//int EraseKnownCitySQL(uint16_t city_num);
 
-	int IsFree(){if(GetTickCount()-info.start_bt>=info.break_time) return 1; return 0;};
-	int IsBusy(){if(GetTickCount()-info.start_bt>=info.break_time) return 0; return 1;};
-	void BreakTime(int ms){info.break_time=ms; info.start_bt=GetTickCount();};
+	int IsFree() {
+	  if (GetTickCount() >= info.break_time + info.start_bt) 
+	    return 1; 
+	  return 0;
+	}
+	int IsBusy() { 
+	  if (GetTickCount() >= info.break_time + info.start_bt)
+	    return 0;
+	  return 1;
+	}
+	void BreakTime(int ms) {
+	  info.break_time = ms;
+	  info.start_bt = GetTickCount();
+	}
 
 //	inline void Skill_Sneak_Change();
 //	inline void Skill_Sneak_Set();

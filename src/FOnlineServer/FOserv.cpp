@@ -421,7 +421,7 @@ void CServer::RunGameLoop()
 		lt_discon+=GetTickCount()-lt_ticks;
 
 	//!Cvet сбор статистики
-		uint32_t loop_cur=GetTickCount()-(ticks-100);
+		int32_t loop_cur=GetTickCount()-(ticks-100);
 		loop_time+=loop_cur;
 		loop_cycles++;
 		if(loop_cur > loop_max) loop_max=loop_cur;
