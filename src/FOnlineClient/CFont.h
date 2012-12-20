@@ -79,7 +79,7 @@ private:
 	LPDIRECT3DINDEXBUFFER8 lpIB;//буфер с индексами
 
 	//Буфер вершин в системной памяти для постоянно меняющихся спрайтов
-	MYVERTEX* lpWaitBuf;
+	Vertex* lpWaitBuf;
 
 	Font fonts[MAX_FONT];
 };

@@ -121,11 +121,11 @@ int CCritter::Move(uint8_t dir)
 	//если не находим анимацию на бег, то криттер идет пешком
 	if(movementType==MOVE_RUN)
 		if(!lpSM->CrAnim[type][1][20]) 
-			if(!lpSM->LoadAnimCr(type,1,20)) movementType=MOVE_WALK;
+			if(!lpSM->LoadCritterAnimation(type,1,20)) movementType=MOVE_WALK;
 
 	if(movementType==MOVE_WALK)
 		if(!lpSM->CrAnim[type][weapon][2]) 
-			if(!lpSM->LoadAnimCr(type,weapon,2)) return MOVE_ERROR;
+			if(!lpSM->LoadCritterAnimation(type,weapon,2)) return MOVE_ERROR;
 
 	if(movementType==MOVE_WALK)
 	{
@@ -165,7 +165,7 @@ void CCritter::Action(uint8_t action, uint32_t action_tick)
 	if(action==ANIM2_USE || action==ANIM2_SIT) weapon=1;
 
 	if(!lpSM->CrAnim[type][weapon][action]) 
-		if(!lpSM->LoadAnimCr(type,weapon,action)) return;
+		if(!lpSM->LoadCritterAnimation(type,weapon,action)) return;
 
 	cur_anim=lpSM->CrAnim[type][weapon][action];
 	cur_anim->__invariant();
@@ -187,7 +187,7 @@ void CCritter::Animate(uint8_t action, uint8_t num_frame)
 {
   __invariant();
 	if(!lpSM->CrAnim[type][weapon][action])
-		if(!lpSM->LoadAnimCr(type,weapon,action)) return;
+		if(!lpSM->LoadCritterAnimation(type,weapon,action)) return;
 		
   CritFrames* anim = lpSM->CrAnim[type][weapon][action];
   anim->__invariant();

@@ -52,7 +52,7 @@ CHexField::CHexField()
 	view2=NULL;
 	lpVBpr_tile=NULL;
 	lpVBpr_roof=NULL;
-	crtd=0;
+	initialized=0;
 	lpSM=NULL;
 	ShowHex=0;
 	ShowRain=0; //!Cvet
@@ -107,7 +107,7 @@ int CHexField::Init(CSpriteManager* lpsm)
 	if(!(egg=lpSM->LoadSprite("egg.png",PT_ART_MISC))) return 0;
 
 	FONLINE_LOG("CHexField Initialization complete\n");
-	crtd=1;
+	initialized=1;
 
 	MapLoaded=FALSE; //!Cvet
 
@@ -215,7 +215,7 @@ void CHexField::Clear()
 
 	MapLoaded=FALSE; //!Cvet
 
-	crtd=0;
+	initialized=0;
 
 	FONLINE_LOG("CHexField Clear complete\n");
 }
@@ -587,10 +587,10 @@ int CHexField::ParseItemObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,
 		lpinf=lpSM->GetSpriteInfo(spr_id);
 	}
 
-	if(lpinf->offs_y>(*hbmax)) (*hbmax)=lpinf->offs_y;
-	if( (lpinf->h-lpinf->offs_y) > (*hemax)) (*hemax)=lpinf->h-lpinf->offs_y;
-	if( ((lpinf->w >> 1)-lpinf->offs_x)>(*wrmax)) (*wrmax)=(lpinf->w >> 1)-lpinf->offs_x;
-	if( ((lpinf->w >> 1)+lpinf->offs_x)>(*wlmax)) (*wlmax)=(lpinf->w >> 1)+lpinf->offs_x;
+	if(lpinf->offsetY>(*hbmax)) (*hbmax)=lpinf->offsetY;
+	if( (lpinf->height-lpinf->offsetY) > (*hemax)) (*hemax)=lpinf->height-lpinf->offsetY;
+	if( ((lpinf->width >> 1)-lpinf->offsetX)>(*wrmax)) (*wrmax)=(lpinf->width >> 1)-lpinf->offsetX;
+	if( ((lpinf->width >> 1)+lpinf->offsetX)>(*wlmax)) (*wlmax)=(lpinf->width >> 1)+lpinf->offsetX;
 
 	ItemObj* newitm;
 	newitm=new ItemObj(spr_id,x,y,&hex_field[y][x].scr_x,&hex_field[y][x].scr_y);
@@ -674,10 +674,10 @@ int CHexField::ParseMiscObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,
 		lpinf=lpSM->GetSpriteInfo(spr_id);
 	}
 
-	if(lpinf->offs_y>(*hbmax)) (*hbmax)=lpinf->offs_y;
-	if( (lpinf->h-lpinf->offs_y) > (*hemax)) (*hemax)=lpinf->h-lpinf->offs_y;
-	if( ((lpinf->w >> 1)-lpinf->offs_x)>(*wrmax)) (*wrmax)=(lpinf->w >> 1)-lpinf->offs_x;
-	if( ((lpinf->w >> 1)+lpinf->offs_x)>(*wlmax)) (*wlmax)=(lpinf->w >> 1)+lpinf->offs_x;
+	if(lpinf->offsetY>(*hbmax)) (*hbmax)=lpinf->offsetY;
+	if( (lpinf->height-lpinf->offsetY) > (*hemax)) (*hemax)=lpinf->height-lpinf->offsetY;
+	if( ((lpinf->width >> 1)-lpinf->offsetX)>(*wrmax)) (*wrmax)=(lpinf->width >> 1)-lpinf->offsetX;
+	if( ((lpinf->width >> 1)+lpinf->offsetX)>(*wlmax)) (*wlmax)=(lpinf->width >> 1)+lpinf->offsetX;
 
 	MiscObj* newmsc;
 	newmsc=new MiscObj(spr_id);
@@ -738,13 +738,13 @@ int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, uint16_t tile_fl
 
 	if(add_sobj->p[OBJ_ANIM_ON_MAP])
 	{
-		newitm->anim=new AnyFrames;
+		newitm->animation=new AnyFrames;
 		int res=0;
 
 		if(add_sobj->type==OBJ_TYPE_DOOR)
-			res=lpSM->LoadAnyAnimation(scen_fnames[pic_id],PT_ART_SCENERY,newitm->anim);
+			res=lpSM->LoadAnyAnimation(scen_fnames[pic_id],PT_ART_SCENERY,newitm->animation);
 		else
-			res=lpSM->LoadAnyAnimation(item_fnames[pic_id],PT_ART_ITEMS,newitm->anim);
+			res=lpSM->LoadAnyAnimation(item_fnames[pic_id],PT_ART_ITEMS,newitm->animation);
 
 		if(!res)
 		{
@@ -776,7 +776,7 @@ int CHexField::AddObj(stat_obj* add_sobj, HexTYPE x, HexTYPE y, uint16_t tile_fl
 	if(IsVisible(x, y, spr_id))
 		dtree.insert(dtree_map::value_type(hex_field[y][x].pos+DRAW_ORDER_ITEM,
 			new PrepSprite(hex_field[y][x].scr_x+16,hex_field[y][x].scr_y+6,0,
-			&newitm->spr_id,&newitm->scr_x,&newitm->scr_y)));
+			&newitm->spriteId,&newitm->scr_x,&newitm->scr_y)));
 
 	return 1;
 }
@@ -787,9 +787,8 @@ void CHexField::ChangeObj(stat_obj* chn_sobj, HexTYPE x, HexTYPE y, uint16_t til
 	for(it_i=hex_field[y][x].itm_obj.begin();it_i!=hex_field[y][x].itm_obj.end();it_i++)
 		if((*it_i)->sobj->id==chn_sobj->id) break;
 
-	if(it_i==hex_field[y][x].itm_obj.end())
-	{
-		FONLINE_LOG("не найден объект на карте\n");
+	if(it_i==hex_field[y][x].itm_obj.end()) {
+		FONLINE_LOG("Could not find object#%d on the map.\n", chn_sobj->id);
 		return;
 	}
 
@@ -825,7 +824,7 @@ void CHexField::DelObj(stat_obj* del_sobj, HexTYPE x, HexTYPE y)
 		{
 		  dtree_map::iterator it_dt;
 			for(it_dt=dtree.find(hex_field[y][x].pos+DRAW_ORDER_ITEM);it_dt!=dtree.end();it_dt++)
-				if((*it_dt).second->lp_sprid==&(*it_i)->spr_id) break;
+				if((*it_dt).second->lp_sprid==&(*it_i)->spriteId) break;
 
 			if(it_dt!=dtree.end())
 			{
@@ -852,14 +851,14 @@ void CHexField::ProcessObj()
 	{
 		cur_obj=(*it_i);
 
-		if(cur_obj->cur_spr==cur_obj->need_spr) continue;
+		if(cur_obj->currentSprite==cur_obj->nextSprite) continue;
 
-		if(GetTickCount()-cur_obj->last_tick<cur_obj->anim->ticks/cur_obj->anim->cnt_frames) continue;
+		if(GetTickCount()-cur_obj->lastUpdate<cur_obj->animation->ticks/cur_obj->animation->cnt_frames) continue;
 		
-		if(cur_obj->cur_spr>cur_obj->need_spr) cur_obj->cur_spr--;
-		if(cur_obj->cur_spr<cur_obj->need_spr) cur_obj->cur_spr++;
+		if(cur_obj->currentSprite>cur_obj->nextSprite) cur_obj->currentSprite--;
+		if(cur_obj->currentSprite<cur_obj->nextSprite) cur_obj->currentSprite++;
 
-		cur_obj->SetAnimSpr(cur_obj->cur_spr);
+		cur_obj->SetAnimSpr(cur_obj->currentSprite);
 	}
 
 }
@@ -929,10 +928,10 @@ int CHexField::ParseScenObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,
 		lpinf=lpSM->GetSpriteInfo(spr_id);
 	}
 
-	if(lpinf->offs_y>(*hbmax)) (*hbmax)=lpinf->offs_y;
-	if( (lpinf->h-lpinf->offs_y) > (*hemax)) (*hemax)=lpinf->h-lpinf->offs_y;
-	if( ((lpinf->w >> 1)-lpinf->offs_x)>(*wrmax)) (*wrmax)=(lpinf->w >> 1)-lpinf->offs_x;
-	if( ((lpinf->w >> 1)+lpinf->offs_x)>(*wlmax)) (*wlmax)=(lpinf->w >> 1)+lpinf->offs_x;
+	if(lpinf->offsetY>(*hbmax)) (*hbmax)=lpinf->offsetY;
+	if( (lpinf->height-lpinf->offsetY) > (*hemax)) (*hemax)=lpinf->height-lpinf->offsetY;
+	if( ((lpinf->width >> 1)-lpinf->offsetX)>(*wrmax)) (*wrmax)=(lpinf->width >> 1)-lpinf->offsetX;
+	if( ((lpinf->width >> 1)+lpinf->offsetX)>(*wlmax)) (*wlmax)=(lpinf->width >> 1)+lpinf->offsetX;
 
 	ScenObj* newsc;
 	newsc=new ScenObj(spr_id);
@@ -982,10 +981,10 @@ int CHexField::ParseWallObj(uint32_t proto_id,uint32_t id,uint32_t x,uint32_t y,
 	}
 
 //обновляем максимальные размеры
-	if(lpinf->offs_y>(*hbmax)) (*hbmax)=lpinf->offs_y;
-	if( (lpinf->h-lpinf->offs_y) > (*hemax)) (*hemax)=lpinf->h-lpinf->offs_y;
-	if( ((lpinf->w >> 1)-lpinf->offs_x)>(*wrmax)) (*wrmax)=(lpinf->w >> 1)-lpinf->offs_x;
-	if( ((lpinf->w >> 1)+lpinf->offs_x)>(*wlmax)) (*wlmax)=(lpinf->w >> 1)+lpinf->offs_x;
+	if(lpinf->offsetY>(*hbmax)) (*hbmax)=lpinf->offsetY;
+	if( (lpinf->height-lpinf->offsetY) > (*hemax)) (*hemax)=lpinf->height-lpinf->offsetY;
+	if( ((lpinf->width >> 1)-lpinf->offsetX)>(*wrmax)) (*wrmax)=(lpinf->width >> 1)-lpinf->offsetX;
+	if( ((lpinf->width >> 1)+lpinf->offsetX)>(*wlmax)) (*wlmax)=(lpinf->width >> 1)+lpinf->offsetX;
 
 	for(int i=0;i<MAX_WALL_CNT;i++)
 		if(!hex_field[y][x].wall_id[i])
@@ -1166,13 +1165,13 @@ void CHexField::SetCenter2(int x, int y)
 			if(!hex_field[ny][nx].itm_obj.empty() && cmn_show_items)
 				for(item_vect::iterator ti=hex_field[ny][nx].itm_obj.begin();ti!=hex_field[ny][nx].itm_obj.end();ti++)
 				{
-					if(!IsVisible(nx, ny, (*ti)->spr_id)) continue;
+					if(!IsVisible(nx, ny, (*ti)->spriteId)) continue;
 					
 					//иначе заносим его в дерево. будет больше объектов надо будет все что в цикле в отдельную процедуру вывести
-					//dtree[hex_field[ny][nx].pos+DRAW_ORDER_SCEN]=new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,(*si)->spr_id);
+					//dtree[hex_field[ny][nx].pos+DRAW_ORDER_SCEN]=new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,(*si)->spriteId);
 					dtree.insert(dtree_map::value_type(hex_field[ny][nx].pos+DRAW_ORDER_ITEM,
 						new PrepSprite(hex_field[ny][nx].scr_x+16,hex_field[ny][nx].scr_y+6,0,
-						&(*ti)->spr_id,&(*ti)->scr_x,&(*ti)->scr_y)));
+						&(*ti)->spriteId,&(*ti)->scr_x,&(*ti)->scr_y)));
 				}
 			
 			if(hex_field[ny][nx].wall_id[0] && cmn_show_walls) {
@@ -1277,11 +1276,11 @@ int CHexField::IsVisible(int nx, int ny,uint16_t id)
 
 	SpriteInfo* lpinf=lpSM->GetSpriteInfo(id);
 	if(!lpinf) return 0;
-	int chx=hex_field[ny][nx].scr_x+16-(lpinf->w >> 1)+lpinf->offs_x;
-	int chy=hex_field[ny][nx].scr_y+6-lpinf->h+lpinf->offs_y;
+	int chx=hex_field[ny][nx].scr_x+16-(lpinf->width >> 1)+lpinf->offsetX;
+	int chy=hex_field[ny][nx].scr_y+6-lpinf->height+lpinf->offsetY;
 
 	//если спрайт не попадает на экран - не рисуем его
-	if(chx+lpinf->w+32<0 || chx-32>MODE_WIDTH || chy-24>MODE_HEIGHT || chy+lpinf->h+24<0) return 0;
+	if(chx+lpinf->width+32<0 || chx-32>MODE_WIDTH || chy-24>MODE_HEIGHT || chy+lpinf->height+24<0) return 0;
 		else return 1;
 }
 
@@ -1947,13 +1946,13 @@ ItemObj* CHexField::GetItemPixel(int pix_x, int pix_y)
 
 	for(item_vect::iterator it_i=all_obj.begin();it_i!=all_obj.end();it_i++)
 	{
-		sprinf=lpSM->GetSpriteInfo((*it_i)->spr_id);
+		sprinf=lpSM->GetSpriteInfo((*it_i)->spriteId);
 		if(!sprinf) continue;
 
-		if(pix_x>=(*(*it_i)->hex_scr_x+(*it_i)->scr_x+sprinf->offs_x+16+cmn_scr_ox-sprinf->w/2))
-			if(pix_x<=(*(*it_i)->hex_scr_x+(*it_i)->scr_x+sprinf->offs_x+16+cmn_scr_ox+sprinf->w/2))
-				if(pix_y>=(*(*it_i)->hex_scr_y+(*it_i)->scr_y+sprinf->offs_y+6+cmn_scr_oy-sprinf->h))
-					if(pix_y<=(*(*it_i)->hex_scr_y+(*it_i)->scr_y+sprinf->offs_y+6+cmn_scr_oy))
+		if(pix_x>=(*(*it_i)->hex_scr_x+(*it_i)->scr_x+sprinf->offsetX+16+cmn_scr_ox-sprinf->width/2))
+			if(pix_x<=(*(*it_i)->hex_scr_x+(*it_i)->scr_x+sprinf->offsetX+16+cmn_scr_ox+sprinf->width/2))
+				if(pix_y>=(*(*it_i)->hex_scr_y+(*it_i)->scr_y+sprinf->offsetY+6+cmn_scr_oy-sprinf->height))
+					if(pix_y<=(*(*it_i)->hex_scr_y+(*it_i)->scr_y+sprinf->offsetY+6+cmn_scr_oy))
 					{
 						return (*it_i);
 					}
@@ -2291,8 +2290,8 @@ int CHexField::FindTarget(HexTYPE start_x, HexTYPE start_y, HexTYPE end_x, HexTY
 		return cur_step;
 	}
 
-  float dx = ::abs(end_x - start_x);
-	float dy = ::abs(end_y - start_y);
+  float dx = (float) ::abs(end_x - start_x);
+	float dy = (float) ::abs(end_y - start_y);
 
 	float sx1f=1.0f;
 	float sy1f=1.0f;

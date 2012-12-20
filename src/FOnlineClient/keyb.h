@@ -18,7 +18,7 @@
 
 void InitKeyboard();
 void ClearKeyb();
-int GetChar(uint8_t DIK,char* str,int* position,uint16_t max,int lang,int shift); //!Cvet int* position
+int GetChar(uint16_t DIK,char* str,int* position,uint16_t max,int lang,int shift); //!Cvet int* position
 
 
 #endif //__KEYB_H__

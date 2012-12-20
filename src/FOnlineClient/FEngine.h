@@ -175,7 +175,7 @@ private:
 	uint16_t splash,cur,cur_right,cur_left,cur_up,cur_down,cur_ru,cur_lu,cur_rd,cur_ld;
 	int cur_x,cur_y;
 
-	int InitDInput();
+	int InitDirectInput();
 
 //	char* InpBuf;
 //	uint32_t inlen;

@@ -81,7 +81,7 @@ typedef std::vector<ScenObj*> scen_vect;
 
 struct ItemObj
 {
-	uint16_t spr_id;
+	uint16_t spriteId;
 
 //!Cvet +++++++++++++++++++++++
 	int hex_x;
@@ -94,30 +94,30 @@ struct ItemObj
 
 	stat_obj* sobj;
 
-	AnyFrames* anim;
-	short cur_spr;
-	short need_spr;
-	TICK last_tick;
+	AnyFrames* animation;
+	short currentSprite;
+	short nextSprite;
+	TICK lastUpdate;
 
-	ItemObj(): sobj(NULL),spr_id(0),hex_x(0),hex_y(0),scr_x(0),scr_y(0),hex_scr_x(NULL),hex_scr_y(NULL),anim(NULL),
-	cur_spr(0),need_spr(0),last_tick(0){};
+	ItemObj(): sobj(NULL),spriteId(0),hex_x(0),hex_y(0),scr_x(0),scr_y(0),hex_scr_x(NULL),hex_scr_y(NULL),animation(NULL),
+	currentSprite(0),nextSprite(0),lastUpdate(0){};
 	ItemObj(stat_obj* _sobj, uint16_t _spr_id, int _hex_x, int _hex_y, short _scr_x, short _scr_y, int* _hex_scr_x, int* _hex_scr_y):
-	sobj(_sobj),spr_id(_spr_id),hex_x(_hex_x),hex_y(_hex_y),scr_x(_scr_x),scr_y(_scr_y),hex_scr_x(_hex_scr_x),hex_scr_y(_hex_scr_y),anim(NULL),
-	cur_spr(0),need_spr(0),last_tick(0){};
+	sobj(_sobj),spriteId(_spr_id),hex_x(_hex_x),hex_y(_hex_y),scr_x(_scr_x),scr_y(_scr_y),hex_scr_x(_hex_scr_x),hex_scr_y(_hex_scr_y),animation(NULL),
+	currentSprite(0),nextSprite(0),lastUpdate(0){};
 	~ItemObj() {
-	  if (anim != NULL) {
-	    delete anim;
-	    anim = NULL;
+	  if (animation != NULL) {
+	    delete animation;
+	    animation = NULL;
 	  }
 	};
 
-	void SetAnimFromEnd(){cur_spr=anim->cnt_frames-1;need_spr=0;SetAnimSpr(cur_spr);};
-	void SetAnimFixFromEnd(){SetAnimFromEnd();need_spr=cur_spr;};
-	void SetAnimFromStart(){cur_spr=0;need_spr=anim->cnt_frames-1;SetAnimSpr(cur_spr);};
-	void SetAnimFixFromStart(){SetAnimFromStart();need_spr=cur_spr;};
-	void SetAnimSpr(short _cur_spr){cur_spr=_cur_spr;spr_id=anim->ind[cur_spr];SetAnimOffs();last_tick=GetTickCount();};
-	void SetAnimFixSpr(short _cur_spr){cur_spr=_cur_spr;need_spr=cur_spr;spr_id=anim->ind[cur_spr];SetAnimOffs();};
-	void SetAnimOffs(){scr_x=0;scr_y=0;for(int i=0;i<=cur_spr;i++){scr_x+=anim->next_x[i];scr_y+=anim->next_y[i];}};
+	void SetAnimFromEnd(){currentSprite=animation->cnt_frames-1;nextSprite=0;SetAnimSpr(currentSprite);};
+	void SetAnimFixFromEnd(){SetAnimFromEnd();nextSprite=currentSprite;};
+	void SetAnimFromStart(){currentSprite=0;nextSprite=animation->cnt_frames-1;SetAnimSpr(currentSprite);};
+	void SetAnimFixFromStart(){SetAnimFromStart();nextSprite=currentSprite;};
+	void SetAnimSpr(short _cur_spr){currentSprite=_cur_spr;spriteId=animation->ind[currentSprite];SetAnimOffs();lastUpdate=GetTickCount();};
+	void SetAnimFixSpr(short _cur_spr){currentSprite=_cur_spr;nextSprite=currentSprite;spriteId=animation->ind[currentSprite];SetAnimOffs();};
+	void SetAnimOffs(){scr_x=0;scr_y=0;for(int i=0;i<=currentSprite;i++){scr_x+=animation->next_x[i];scr_y+=animation->next_y[i];}};
 //!Cvet -----------------------
 };
 
@@ -125,10 +125,10 @@ typedef std::vector<ItemObj*> item_vect;
 /*
 struct MiscObj //!Cvet
 {
-	uint16_t spr_id;
+	uint16_t spriteId;
 
-	MiscObj(): spr_id(0){};
-	MiscObj(uint16_t _spr_id): spr_id(_spr_id){};
+	MiscObj(): spriteId(0){};
+	MiscObj(uint16_t _spr_id): spriteId(_spr_id){};
 };
 
 typedef vector<MiscObj*> misc_vect;
@@ -266,7 +266,7 @@ public:
 	
 	CHexField();
 private:
-	bool crtd;
+	bool initialized;
 
 	bool ShowRain; //!Cvet
 	uint16_t pic_drop; //!Cvet
