@@ -5,7 +5,10 @@
 #include <string.h>
 #include <assert.h>
 
+#ifdef _WIN32
 #include <dxerr8.h>
+
+namespace {
 
 VOID ToUTF16(LPCSTR lpText, LPWSTR lpWText, SIZE_T szWText) {
   assert(lpText != NULL);
@@ -43,10 +46,6 @@ int WINAPI MessageBoxU(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType) {
   ToUTF16(lpCaption, wCaption, sizeof(wCaption));
   ToUTF16(lpText, wText, sizeof(wText));
   return MessageBoxW(hWnd, wText, wCaption, uType);
-}
-
-char* FormatStdCError(errno_t errorCode) {
-  return strdup(strerror(errorCode));
 }
 
 char* FormatDirectXError(HRESULT errorCode) {
@@ -99,6 +98,13 @@ char* FormatLastWin32Error() {
   return result;
 }
 
+}  // anonymous namespace
+#endif  // _WIN32
+
+char* FormatStdCError(int errorCode) {
+  return strdup(strerror(errorCode));
+}
+
 void ReportErrorMessage(const char* hdr, const char* fmt, ...) {
   assert(hdr != NULL);
   assert(fmt != NULL);
@@ -111,6 +117,8 @@ void ReportErrorMessage(const char* hdr, const char* fmt, ...) {
   vsnprintf(buf, sizeof(buf) - 1, fmt, list);
   va_end(list);
 
-  MessageBoxU(NULL, buf, hdr, MB_OK|MB_ICONERROR);
+  #ifdef _WIN32
+    MessageBoxU(NULL, buf, hdr, MB_OK|MB_ICONERROR);
+  #endif  // _WIN32
   WriteLog("\n\nErrMsg> %s", buf);
 }
