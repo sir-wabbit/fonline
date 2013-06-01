@@ -1,7 +1,6 @@
 #ifndef _GAP_FDAT_CFILE_H
 #define _GAP_FDAT_CFILE_H
 
-//#include <windows.h>
 #include <stdio.h>
 #include <stdint.h>
 
@@ -18,6 +17,12 @@
 
 // size of buffer used during decompression and skipping
 #define BUFF_SIZE 0x40000
+
+#ifndef _WIN32
+	#define FILE_CURRENT SEEK_CUR
+	#define FILE_BEGIN SEEK_SET
+	#define FILE_END SEEK_END
+#endif
 
 // abstract class, parent to different File Handlers
 class IOStream {

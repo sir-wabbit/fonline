@@ -286,11 +286,17 @@ solution "FOnlineOpenSource"
     includedirs { "inc/zlib" }
     windowsLibDir("zlib")
     windowsBinary("zlib", "zlib.dll")
-    links "zlib"
+
+    configuration "windows"
+      links "zlib"
+    configuration "linux"
+      links "z"
+    configuration "*"
 
     links "LZSS"
 
     defines "DATARCHIVE_DLL"
+    defines "_FILE_OFFSET_BITS=64"
 
     includedirs { "src" }
     files { "src/DatArchive/**.cpp",

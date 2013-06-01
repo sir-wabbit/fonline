@@ -14,7 +14,7 @@
 #define GZIP_MODE1 0x0178
 #define GZIP_MODE2 0xDA78
 
-char *error_types[] = {
+const char *error_types[] = {
    "Cannot open file.",                       // ERR_CANNOT_OPEN_FILE
    "File invalid or truncated.",              // ERR_FILE_TRUNCATED
    "This file not supported.",                // ERR_FILE_NOT_SUPPORTED
@@ -38,19 +38,19 @@ void SwapBytes(void* ptr, size_t size) {
     char temp;
     temp = bytePtr[i];
     bytePtr[i] = bytePtr[size - 1 - i];
-    bytePtr[size - 1 - i] = temp;    
+    bytePtr[size - 1 - i] = temp;
   }
 }
 
 bool GetPath(std::string& result, const std::string& path) {
   size_t pos = path.find_last_of('\\');
-  
+
   if (pos == path.npos) {
     result = "";
   }
-  
+
   result = path.substr(0, pos + 1);
-  
+
   std::transform(result.begin(), result.end(), result.begin(), ::tolower);
 
   return true;
@@ -63,11 +63,11 @@ uint64_t FileSize(FILE* fd) {
   fseek(fd, 0, SEEK_END);
   long result = ftell(fd);
   fseek(fd, original, SEEK_SET);
-  
+
   if (result < 0) {
     return UINT64_MAX;
   }
-  
+
   return result;
 }
 
@@ -89,17 +89,17 @@ int ReadAll(FILE* fd, void* buf, size_t size) {
 int ReadLittleEndian(FILE* fd, void* buf, size_t size) {
   assert(fd != NULL);
   assert(buf != NULL);
-  
+
   int err = ReadAll(fd, buf, size);
-  
+
   if (err != 0) {
     return err;
   }
-  
+
   if (!IsLittleEndian()) {
     SwapBytes(buf, size);
   }
-  
+
   return 0;
 }
 
@@ -116,67 +116,67 @@ int ReadBigEndian(FILE* fd, void* buf, size_t size) {
   if (IsLittleEndian()) {
     SwapBytes(buf, size);
   }
-  
+
   return 0;
 }
 
 int DatReadTree(FILE* fd, DATArchiveInfo* archive) {
   assert(fd != NULL);
   assert(archive != NULL);
-  
+
   assert(sizeof(archive->TreeSize) == 4);
   assert(sizeof(archive->FileSizeFromDat) == 4);
   assert(sizeof(archive->FilesTotal) == 4);
-  
+
   uint64_t fileSize = FileSize(fd);
   if (fileSize == UINT64_MAX) {
     return ERR_CANNOT_OPEN_FILE;
   }
-  
+
   if (fileSize < 8) {
     return ERR_FILE_TRUNCATED;
   }
-  
+
   fseek(fd, -8, SEEK_END);
-  
+
   // Read tree size.
   if (ReadLittleEndian(fd, &archive->TreeSize, 4) != 0) {
     return ERR_CANNOT_OPEN_FILE;
   }
-  
+
   // Read total file size.
   if (ReadLittleEndian(fd, &archive->FileSizeFromDat, 4) != 0) {
     return ERR_CANNOT_OPEN_FILE;
   }
-  
+
   if (fileSize != archive->FileSizeFromDat) {
     return ERR_FILE_NOT_SUPPORTED;
   }
 
   fseek(fd, -((long) archive->TreeSize + 8), SEEK_END);
-  
+
   // Read total file count.
   if (ReadLittleEndian(fd, &archive->FilesTotal, 4) != 0) {
     return ERR_CANNOT_OPEN_FILE;
   }
-  
+
   // Minus file count size.
   archive->TreeSize -= 4;
-  
+
   if (archive->treePtr != NULL) {
     free(archive->treePtr);
     archive->treePtr = NULL;
   }
-  
+
   archive->treePtr = (uint8_t*) malloc(archive->TreeSize);
   if (archive->treePtr == NULL) {
     return ERR_ALLOC_MEMORY;
   }
-  
+
   if (ReadAll(fd, archive->treePtr, archive->TreeSize) != 0) {
     return ERR_CANNOT_OPEN_FILE;
   }
-  
+
   return 0;
 }
 
@@ -224,7 +224,7 @@ bool DatFindFile(DATArchiveInfo* archive, DATFileInfo* file, const std::string& 
 
   const uint8_t* ptr = archive->index[path];
   const uint8_t* endPtr = archive->treePtr + archive->TreeSize;
-  
+
   if (!ptr) {
     return false;
   }
@@ -287,7 +287,7 @@ bool DatArchive::Init(char* fileName) {
     error = ERR_CANNOT_OPEN_FILE;
     return false;
   }
-  
+
   if ((error = DatReadTree(fileStream, &archive)) != 0) {
     return false;
   }
@@ -309,9 +309,9 @@ DatArchive::~DatArchive()
 {
    if(fileStream != NULL) {
       fclose(fileStream);
-      fileStream = NULL;  
+      fileStream = NULL;
    }
-   
+
    if (archive.treePtr != NULL) {
       delete[] archive.treePtr;
       archive.treePtr = NULL;
@@ -340,7 +340,7 @@ bool DatArchive::DATOpenFile(char* fname) {
       return true;
     }
   }
-  
+
   return false;
 }
 //------------------------------------------------------------------------------
@@ -356,7 +356,7 @@ uint64_t DatArchive::DATGetFileSize(void) {
   if(fileStream == NULL) {
     return 0;
   }
-  
+
   return file.realSize;
 }
 //------------------------------------------------------------------------------
@@ -364,16 +364,16 @@ bool DatArchive::DATReadFile(void* lpBuffer, size_t nNumberOfBytesToRead, size_t
   if (fileStream == NULL) {
     return false;
   }
-  
+
   if (!lpBuffer) {
     return false;
   }
-  
+
   if (!nNumberOfBytesToRead) {
     lpNumberOfBytesRead = 0;
     return true;
   }
-  
+
   reader->read(lpBuffer, nNumberOfBytesToRead, (long*)lpNumberOfBytesRead);
   return true;
 }

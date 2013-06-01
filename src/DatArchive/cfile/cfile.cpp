@@ -21,16 +21,25 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
-    05 Sep 2002, ABel:
-        C file-hanlde functions replced by native Windows API ones
-*/
-
-#include <windows.h>
+//#include <windows.h>
 #include "cfile.hpp"
 
+#ifdef WIN32
+  #define ftell64(a) ftelli64(a)
+  #define fseek64(a,b,c) _fseeki64(a,b,c)
+  #define __int64 OffsetType
+#elif SPARC
+  #define ftell64(a) ftello(a)
+  #define fseek64(a,b,c) fseeko(a,b,c)
+  typedef off64_t OffsetType;
+#else // Linux and MacOS
+  #define ftell64(a) ftello(a)
+  #define fseek64(a,b,c) fseeko(a,b,c)
+  typedef off_t OffsetType;
+#endif
+
 int64_t CPlainFile::seek (int64_t dist, int from) {
-  _fseeki64(hFile, dist, from);
+  fseek64(hFile, dist, from);
   return ftell(hFile);
 	/*long absPos;
 	if (from == FILE_CURRENT)
@@ -281,7 +290,7 @@ void C_LZ_BlockFile::allocateBlocks() {
 	blocks[0]. filePos = 0;
 	blocks[0]. archPos = beginPos;
 	knownBlocks = 1;
-	
+
   fseek(hFile, oldFilePos, SEEK_SET);
 	//SetFilePointer (hFile, oldFilePos, NULL, FILE_BEGIN);
 }
