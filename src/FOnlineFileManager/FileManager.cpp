@@ -1,8 +1,11 @@
 #include "FileManager.hpp"
 
-#include <stdio.h>
 #include <sys/stat.h>
-#include <assert.h>
+
+#include <cstdio>
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
 
 #include <FOnlineCommon/Common.hpp>
 
@@ -19,7 +22,7 @@ long FileSize(FILE* file) {
   return result;
 }
 
-// Reads exactly given number of bytes from the file. 
+// Reads exactly given number of bytes from the file.
 // Returns -1 if there was some IO error.
 int ReadExactly(FILE* file, void* buf, size_t size) {
   assert(file != NULL);
@@ -38,7 +41,7 @@ int ReadExactly(FILE* file, void* buf, size_t size) {
 }
 
 // Loads contents of a file. If the file does not exist or
-// there is some other IO error, returns false. 
+// there is some other IO error, returns false.
 bool LoadFile(const char* path, void** buf, size_t* size) {
   assert(path != NULL);
   assert(buf != NULL);
@@ -80,7 +83,7 @@ bool LoadFile(const char* path, void** buf, size_t* size) {
 }
 
 int FileExists(const char *fileName) {
-  struct stat buffer;   
+  struct stat buffer;
   return (stat(fileName, &buffer) == 0);
 }
 
@@ -96,22 +99,22 @@ int FileExists(const char *fileName) {
 
 bool IsDir(const char* path) {
   struct stat buf;
-  
+
   // Empty path is equivalent to ".", must be true.
   if (path[0] == 0) {
       return true;
   }
-  
+
   if (stat(path, &buf) == 0) {
       return (buf.st_mode & S_IFDIR) != 0;
   }
-  
+
   return false;
 }
 
 }; // anonymous namespace
 
-char pathlst[][50]=
+const char* pathlst[50]=
 {
 	"art\\critters\\",
 	"art\\intrface\\",
@@ -136,7 +139,7 @@ char pathlst[][50]=
 	"sound\\sfx\\",
 
 	"text\\english\\game\\",
-	
+
   "maps\\",
   "maps\\wm_mask\\",
 };
@@ -162,18 +165,18 @@ int FileManager::Init(const char* masterDatPath, const char* critterDatPath, con
   assert(masterDatPath != NULL);
   assert(critterDatPath != NULL);
   assert(fonlineDatPath != NULL);
-  
+
   assert(masterDatPath[0] != 0);
   assert(critterDatPath[0] != 0);
   assert(fonlineDatPath[0] != 0);
-	
+
 	FONLINE_LOG("FileManager Initialization...\n");
-	
+
 	// FIXME[12.12.2012 alex]: copypasta
-	
+
 	master_dat[0] = 0;
 	strcat(master_dat, masterDatPath);
-	
+
 	if (!IsDir(master_dat)) {
     lpDAT.Init(master_dat);
 
@@ -187,10 +190,10 @@ int FileManager::Init(const char* masterDatPath, const char* critterDatPath, con
 
 	crit_dat[0] = 0;
 	strcat(crit_dat, critterDatPath);
-	
+
 	if (!IsDir(crit_dat)) {
 		lpDATcr.Init(crit_dat);
-		
+
 		if(lpDATcr.error==ERR_CANNOT_OPEN_FILE) {
 			ReportErrorMessage("FileManager Init>","файл %s не найден",crit_dat);
 			return 0;
@@ -232,7 +235,7 @@ int FileManager::LoadFile(char* fileName, int pathType)
 {
   assert(fileName != NULL);
   assert(initialized);
-	
+
 	UnloadFile();
 
 	char path[1024]="";
@@ -255,20 +258,20 @@ int FileManager::LoadFile(char* fileName, int pathType)
 			//попрбуем загрузить из critter_dat если это каталог
 			strcpy(path,crit_dat);
 			strcat(path,pfname);
-	
+
       if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
         return 1;
       } else {
         return 0; //а вот не вышло
       }
-		}	
+		}
 
 		if (lpDATcr.DATOpenFile(pfname) != false) {
-			fileSize = lpDATcr.DATGetFileSize();			
+			fileSize = lpDATcr.DATGetFileSize();
 
 			buffer = new uint8_t[fileSize+1];
 			size_t br;
-		
+
 			lpDATcr.DATReadFile(buffer,fileSize,&br);
 
 			buffer[fileSize]=0;
@@ -278,7 +281,7 @@ int FileManager::LoadFile(char* fileName, int pathType)
 		}
 
 	}
-	
+
 	if(!lpDAT.IsLoaded())
 	{
 	  FONLINE_LOG("Loading from normal FS.\n");
@@ -291,12 +294,12 @@ int FileManager::LoadFile(char* fileName, int pathType)
     } else return 0; //а вот не вышло
 	}
 
-	if (lpDAT.DATOpenFile(pfname) != false) {	
+	if (lpDAT.DATOpenFile(pfname) != false) {
 		fileSize = lpDAT.DATGetFileSize();
 
 		buffer = new uint8_t[fileSize+1];
 		size_t br;
-		
+
 		lpDAT.DATReadFile(buffer,fileSize,&br);
 
 		buffer[fileSize]=0;
