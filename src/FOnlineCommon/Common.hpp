@@ -8,10 +8,10 @@
     #define FONLINE_COMMON_API __declspec(dllimport)
   #endif
 #else
-  #define FONLINE_COMMON_API 
+  #define FONLINE_COMMON_API
 #endif
 
-#define FONLINE_LOG(fmt, ...) WriteLogFull(__FILE__, __LINE__, __FUNCTION__, fmt, __VA_ARGS__)
+#define FONLINE_LOG(fmt, ...) WriteLogFull(__FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__)
 
 FONLINE_COMMON_API int OpenLogFile(const char* fileName);
 FONLINE_COMMON_API void CloseLogFile();

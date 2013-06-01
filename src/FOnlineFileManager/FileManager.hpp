@@ -43,7 +43,7 @@
 #define PT_SERVER_MAPS	19
 #define PT_SERVER_MASKS	20
 
-FONLINE_FILEMANAGER_API char pathlst[][50];
+FONLINE_FILEMANAGER_API extern const char* pathlst[50];
 
 
 class FileManager {
@@ -73,7 +73,7 @@ public:
 
   FONLINE_FILEMANAGER_API FileManager();
   FONLINE_FILEMANAGER_API ~FileManager();
-  
+
 private:
   bool initialized;
 
