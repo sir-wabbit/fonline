@@ -3,12 +3,18 @@
 
 #include "Common.hpp"
 
-#include <Windows.h>
+#ifdef _WIN32
+  #include <Windows.h>
+#endif  // _WIN32
+
 #include <errno.h>
 
-FONLINE_COMMON_API char* FormatStdCError(errno_t errorCode);
-FONLINE_COMMON_API char* FormatDirectXError(HRESULT errorCode);
-FONLINE_COMMON_API char* FormatWin32Error(DWORD errCode);
-FONLINE_COMMON_API char* FormatLastWin32Error();
+FONLINE_COMMON_API char* FormatStdCError(int errorCode);
+
+#ifdef _WIN32
+  FONLINE_COMMON_API char* FormatWin32Error(DWORD errCode);
+  FONLINE_COMMON_API char* FormatLastWin32Error();
+  FONLINE_COMMON_API char* FormatDirectXError(HRESULT errorCode);
+#endif  // _WIN32
 
 #endif//FONLINE_COMMON_ERRORHANDLING_HPP_

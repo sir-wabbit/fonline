@@ -1,8 +1,10 @@
 #ifndef FO_BASE_BUFFER_HPP_
 #define FO_BASE_BUFFER_HPP_
 
-#include "Common.hpp"
 #include <stdint.h>
+#include <cstdlib>
+
+#include "Common.hpp"
 
 namespace fonline {
 
@@ -15,11 +17,11 @@ public:
 	FONLINE_COMMON_API void Reset();
 	FONLINE_COMMON_API void Write(const void* buf, size_t alen);
 	FONLINE_COMMON_API void Read(void *buf, size_t alen);
-	
+
 	// XXX[1.8.2012 alex]: new names
 	FONLINE_COMMON_API bool IsError() {return error;}
 	FONLINE_COMMON_API bool NeedProcess() {return (readPosition<writePosition);}
-	
+
 	FONLINE_COMMON_API void EnsureCapacity(size_t capacity);
 	FONLINE_COMMON_API void EnsureWriteCapacity(size_t dataSize);
 

@@ -1,14 +1,15 @@
 #include "Common.hpp"
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cstdarg>
+#include <cassert>
+#include <cctype>
+#include <cstring>
 
+#ifdef _WIN32
 #include <Windows.h>
 
 namespace {
-
 // A workaround for this bug:
 // http://connect.microsoft.com/VisualStudio/feedback/details/646050/prolem-with-chvalidator-in-ictype-c
 int _isspace(char ch) {
@@ -27,12 +28,11 @@ VOID ToUTF16(LPCSTR lpText, LPWSTR lpWText, SIZE_T szWText) {
   size_t wCaptionLen = MultiByteToWideChar(CP_UTF8, 0, lpText, szText, lpWText, szWText / sizeof(wchar_t) - 1);
   lpWText[wCaptionLen] = 0;
 }
-}
 
 void __cdecl odprintf(const char* format, ...) {
   assert(format != NULL);
 
-  va_list	args;
+  va_list args;
   int len;
 
   va_start(args, format);
@@ -59,7 +59,7 @@ void __cdecl odprintf(const char* format, ...) {
 void __cdecl wodprintf(const wchar_t* format, ...) {
   assert(format != NULL);
 
-  va_list	args;
+  va_list args;
   int len;
 
   va_start(args, format);
@@ -86,8 +86,8 @@ void __cdecl wodprintf(const wchar_t* format, ...) {
 
 void __cdecl uodprintf(const char* format, ...) {
   assert(format != NULL);
-  
-  va_list	args;
+
+  va_list args;
   int len;
 
   va_start(args, format);
@@ -97,12 +97,12 @@ void __cdecl uodprintf(const char* format, ...) {
     PSTR buf;
     PWSTR wbuf;
     size_t sz;
-    
+
     len += (1 + 2);
-    sz = len;    
+    sz = len;
     buf = (PSTR) malloc(sz);
     wbuf = (PWSTR) malloc(sz * sizeof(wchar_t));
-    
+
     if (buf && wbuf) {
       len = vsprintf_s(buf, len, format, args);
       if (len > 0) {
@@ -110,25 +110,51 @@ void __cdecl uodprintf(const char* format, ...) {
         buf[len++] = '\r';
         buf[len++] = '\n';
         buf[len] = 0;
-        
+
         ToUTF16(buf, wbuf, sz);
         OutputDebugStringW(wbuf);
       }
     }
-    
+
     if (wbuf != NULL) {
       ::free(wbuf);
       wbuf = NULL;
     }
-    
+
     if (buf != NULL) {
       ::free(buf);
       buf = NULL;
     }
-    
+
     va_end(args);
   }
 }
+
+}  // anonymous namespace
+#endif  // _WIN32
+
+namespace {
+// Searches for the last occurence of a character from the "chr" string in the "str" string.
+const char* strrchrn(const char* str, const char* chr) {
+  const char* p = str;
+  const char* l = NULL;
+
+  while (*p) {
+    if (strchr(chr, *p)) {
+      l = p;
+    }
+    p++;
+  }
+
+  return l;
+}
+
+// Searches for the last occurence of a character from the "chr" string in the "str" string.
+char* strrchrn(char* str, const char* chr) {
+  // XXX[20.12.2012 alex]: a necessary evil
+  return (char*) strrchrn((const char*) str, chr);
+}
+}  // anonymous namespace
 
 FILE* logFile = NULL;
 
@@ -151,28 +177,6 @@ void CloseLogFile() {
   }
 }
 
-namespace {
-
-const char* strrchrn(const char* str, const char* chr) {
-  const char* p = str;
-  const char* l = NULL;
-  
-  while (*p) {
-    if (strchr(chr, *p)) {
-      l = p;
-    }
-    p++;
-  }
-  
-  return l;
-}
-char* strrchrn(char* str, const char* chr) {
-  // XXX[20.12.2012 alex]: a necessary evil
-  return (char*) strrchrn((const char*) str, chr);
-}
-
-}
-
 void WriteLogFull(const char* file, unsigned int line, const char* func, const char* fmt, ...) {
   assert(file != NULL);
   assert(func != NULL);
@@ -181,7 +185,7 @@ void WriteLogFull(const char* file, unsigned int line, const char* func, const c
   if (logFile == NULL) {
     return;
   }
-  
+
   const char* fileName = strrchrn(file, "\\/");
   if (fileName == NULL) {
     fileName = file;
@@ -198,7 +202,10 @@ void WriteLogFull(const char* file, unsigned int line, const char* func, const c
   va_end(list);
 
   fprintf(logFile, "%s[%u] %s -> %s\n", fileName, line, func, buf);
-  odprintf("%s[%u] %s -> %s\n", fileName, line, func, buf);
+
+  #ifdef _WIN32
+    odprintf("%s[%u] %s -> %s\n", fileName, line, func, buf);
+  #endif  // _WIN32
 
   fflush(logFile);
 
@@ -220,8 +227,10 @@ void WriteLog(const char* fmt, ...) {
   va_end(list);
 
   fprintf(logFile, "%s", buf);
-  odprintf("%s", buf);
-  
+  #ifdef _WIN32
+    odprintf("%s", buf);
+  #endif  // _WIN32
+
   fflush(logFile);
-  
+
 }
