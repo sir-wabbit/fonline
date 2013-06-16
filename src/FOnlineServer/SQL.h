@@ -5,8 +5,8 @@
 	created:	end of 2006; updated: begin of 2007
 
 	author:		Anton Tsvetinsky and Evgeny Barabanov (binyan)
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 
 #include "main.h"
@@ -19,7 +19,7 @@ const uint8_t NPC_VAR_GLOBAL	=1;
 
 typedef std::set<char> true_char_set;
 
-class SQL  
+class SQL
 {
 public:
 
@@ -108,9 +108,9 @@ private:
   std::string host;
   std::string db;
 	UINT port;
-	
+
 	std::string unix_socket;
 	ULONG clientflag;
 };
 
-#endif //__SQL_H__
+#endif // __SQL_H__

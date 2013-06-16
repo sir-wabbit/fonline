@@ -5,8 +5,8 @@
 	created:	18:08:2004   23:02
 
 	author:		Oleg Mareskin
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 
 #include <stdint.h>

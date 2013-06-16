@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "FOserv.h"
+#include "FOServ.h"
 
 int CServer::LoadAllPlayers()
 {
 	LogExecStr("Загрузка игроков\n");
 	//узнаем кол-во записей всего
 	int find_cl=sql.CountTable("users","id")-1;
-		
+
 	sql.PrintTableInLog("users","*");
 
 	char str_login[MAX_LOGIN+1];
@@ -34,7 +34,7 @@ int CServer::LoadAllPlayers()
 				ncl->info.cond=COND_LIFE;
 				ncl->info.cond_ext=COND_LIFE_NONE;
 				ncl->info.st[ST_CURRENT_HP]=ncl->info.st[ST_MAX_LIFE]; //!!!!!!!!
-				
+
 				ncl->info.a_obj=&ncl->info.def_obj1;
 				ncl->info.a_obj_arm=&ncl->info.def_obj2;
 
@@ -394,7 +394,7 @@ void CServer::CreateParamsMaps()
 	object_map.insert(params_map::value_type("OBJ_WEAP_TA_DMG_MIN",		OBJ_WEAP_TA_DMG_MIN));
 	object_map.insert(params_map::value_type("OBJ_WEAP_TA_DMG_MAX",		OBJ_WEAP_TA_DMG_MAX));
 	object_map.insert(params_map::value_type("OBJ_WEAP_TA_MAX_DIST",	OBJ_WEAP_TA_MAX_DIST));
-	object_map.insert(params_map::value_type("OBJ_WEAP_TA_EFF_DIST",	OBJ_WEAP_TA_EFF_DIST));	
+	object_map.insert(params_map::value_type("OBJ_WEAP_TA_EFF_DIST",	OBJ_WEAP_TA_EFF_DIST));
 	object_map.insert(params_map::value_type("OBJ_WEAP_TA_ANIM2",		OBJ_WEAP_TA_ANIM2));
 	object_map.insert(params_map::value_type("OBJ_WEAP_TA_TIME",		OBJ_WEAP_TA_TIME));
 	object_map.insert(params_map::value_type("OBJ_WEAP_TA_AIM",			OBJ_WEAP_TA_AIM));
@@ -476,7 +476,7 @@ int CServer::UpdateVarsTemplate()
 				LogExecStr("несоответствие в данных\n");
 				continue;
 			}
-			
+
 			sql.Query("INSERT INTO `player_vars_templates` (var_num,count,min,max) "
 			"VALUES ('%d','%d','%d','%d');",tmp_int1,tmp_int2,tmp_int3,tmp_int4);
 			LogExecStr("добавлена\n");
@@ -770,16 +770,16 @@ void CServer::Process_CreateClient(CCritter* acl)
 			return;
 		}
 //проверка пола
-	if(acl->info.st[ST_GENDER]<0 || acl->info.st[ST_GENDER]>1) 
-	{ 
+	if(acl->info.st[ST_GENDER]<0 || acl->info.st[ST_GENDER]>1)
+	{
 		LogExecStr("Неправильные данные при регистрации игрока: ПОЛ\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,15);
 		return;
 	}
 //проверка возраста
-	if(acl->info.st[ST_AGE]<14 || acl->info.st[ST_AGE]>80) 
-	{ 
+	if(acl->info.st[ST_AGE]<14 || acl->info.st[ST_AGE]>80)
+	{
 		LogExecStr("Неправильные данные при регистрации игрока: ВОЗРАСТ\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,16);
@@ -960,7 +960,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 		//	delete (*it_cr).second;
 
 			cr.erase(it_cr);
-		} 
+		}
 		else if(!sql.LoadDataPlayer(&acl->info))
 		{
 		  LogExecStr("Could not load player's data.\n");
@@ -1006,7 +1006,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 				continue;
 			default: continue;
 			}
-					
+
 
 	BREAK_END;
 
@@ -1200,7 +1200,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 	//1 - работаем с предметом в руке
 	//2 - с слотом армор
 	//3 - кидаем на землю
-	
+
 	acl->bin >> idobj;
 	acl->bin >> num_slot;
 

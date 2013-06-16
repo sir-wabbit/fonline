@@ -60,15 +60,15 @@ public:
   FONLINE_FILEMANAGER_API void GoForward(uint32_t offs);
 
   FONLINE_FILEMANAGER_API int GetStr(char* str,uint32_t len);
-  FONLINE_FILEMANAGER_API uint8_t GetByte(); //!Cvet
+  FONLINE_FILEMANAGER_API uint8_t GetByte();
   FONLINE_FILEMANAGER_API uint16_t GetWord();
-  FONLINE_FILEMANAGER_API uint16_t GetRWord(); //!Cvet
+  FONLINE_FILEMANAGER_API uint16_t GetRWord();
   FONLINE_FILEMANAGER_API uint32_t GetDWord();
-  FONLINE_FILEMANAGER_API uint32_t GetRDWord(); //!Cvet
+  FONLINE_FILEMANAGER_API uint32_t GetRDWord();
   FONLINE_FILEMANAGER_API int Read(void* ptr, size_t size);
 
-  FONLINE_FILEMANAGER_API uint8_t* GetBufferPtr(){ return buffer; }; //!Cvet
-  FONLINE_FILEMANAGER_API uint32_t GetFileSize(){ return fileSize; }; //!Cvet
+  FONLINE_FILEMANAGER_API uint8_t* GetBufferPtr();
+  FONLINE_FILEMANAGER_API uint32_t GetFileSize();
 
 
   FONLINE_FILEMANAGER_API FileManager();

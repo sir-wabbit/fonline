@@ -24,23 +24,31 @@
 //#include <windows.h>
 #include "cfile.hpp"
 
-#ifdef WIN32
+#if defined(_MSVC_VER)
   #define ftell64(a) ftelli64(a)
   #define fseek64(a,b,c) _fseeki64(a,b,c)
-  #define __int64 OffsetType
-#elif SPARC
+  typedef __int64 OffsetType;
+#elif defined(__MINGW32__)
+  extern int __cdecl _fseeki64(FILE *, __int64, int);
+	extern __int64 __cdecl _ftelli64(FILE *);
+  #define ftell64(a) _ftelli64(a)
+  #define fseek64(a,b,c) _fseeki64(a,b,c)
+  typedef __int64 OffsetType;
+#elif defined(SPARC)
   #define ftell64(a) ftello(a)
   #define fseek64(a,b,c) fseeko(a,b,c)
   typedef off64_t OffsetType;
-#else // Linux and MacOS
+#elif defined(linux)
   #define ftell64(a) ftello(a)
   #define fseek64(a,b,c) fseeko(a,b,c)
   typedef off_t OffsetType;
+#else
+  #error "Unknown operating system"
 #endif
 
 int64_t CPlainFile::seek (int64_t dist, int from) {
   fseek64(hFile, dist, from);
-  return ftell(hFile);
+  return ftell64(hFile);
 	/*long absPos;
 	if (from == FILE_CURRENT)
 		absPos = tell() + dist;

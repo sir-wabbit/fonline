@@ -3,7 +3,7 @@
 *********************************************************************/
 
 #include "stdafx.h"
-#include "FOserv.h"
+#include "FOServ.h"
 
 int CServer::RefreshZoneMasks()
 {
@@ -119,7 +119,7 @@ int CServer::LoadAllMaps()
 	int tmp_wrd;
 	char tmp_str[64];
 	int tmp_int=0,city_num=0,encaunter_num=0;
-	
+
 	while(!feof(cf))
 	{
 		fscanf(cf,"%c",&ch);
@@ -240,7 +240,7 @@ int CServer::LoadAllMaps()
 
 		if(fm.LoadFile(fnam,PT_SERVER_MAPS))
 		{
-			
+
 		}
 		else
 		{
@@ -309,21 +309,21 @@ int CServer::LoadAllMaps()
 	transit_map[11][0x100079]=0;
 	SETFLAG(tile[11][0x10][0x79].flags,FT_TRANSIT);
 
-	transit_map[12][0x8E0054]=0x0B0300160073;
+	transit_map[12][0x8E0054]=0x0B0300160073ULL;
 	SETFLAG(tile[12][0x8E][0x54].flags,FT_TRANSIT);
-	transit_map[12][0x8E0055]=0x0B0300160073;
+	transit_map[12][0x8E0055]=0x0B0300160073ULL;
 	SETFLAG(tile[12][0x8E][0x55].flags,FT_TRANSIT);
-	transit_map[12][0x8E0056]=0x0B0300160073;
+	transit_map[12][0x8E0056]=0x0B0300160073ULL;
 	SETFLAG(tile[12][0x8E][0x56].flags,FT_TRANSIT);
-	transit_map[12][0x8E0057]=0x0B0300160073;
+	transit_map[12][0x8E0057]=0x0B0300160073ULL;
 	SETFLAG(tile[12][0x8E][0x57].flags,FT_TRANSIT);
-	transit_map[12][0x8E0058]=0x0B0300160073;
+	transit_map[12][0x8E0058]=0x0B0300160073ULL;
 	SETFLAG(tile[12][0x8E][0x58].flags,FT_TRANSIT);
-	transit_map[12][0x8E0059]=0x0B0300160073;
+	transit_map[12][0x8E0059]=0x0B0300160073ULL;
 	SETFLAG(tile[12][0x8E][0x59].flags,FT_TRANSIT);
-	transit_map[12][0x8E005A]=0x0B0300160073;
+	transit_map[12][0x8E005A]=0x0B0300160073ULL;
 	SETFLAG(tile[12][0x8E][0x5A].flags,FT_TRANSIT);
-	transit_map[12][0x8E005B]=0x0B0300160073;
+	transit_map[12][0x8E005B]=0x0B0300160073ULL;
 	SETFLAG(tile[12][0x8E][0x5B].flags,FT_TRANSIT);
 
 	transit_map[21][0xA0007B]=0;
@@ -385,12 +385,12 @@ int CServer::MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my)
 	{
 		LONGLONG find_transit=FindTransit(acl->info.map,mx,my);
 
-		if(find_transit!=0xFFFFFFFFFFFFFFFF)
+		if(find_transit!=0xFFFFFFFFFFFFFFFFULL)
 		{
-			uint16_t new_map= (find_transit & 0xFFFF0000000000) >> 40;
-			uint8_t new_ori= (find_transit & 0x0000FF00000000) >> 32;
-			HexTYPE new_x=(find_transit & 0x000000FFFF0000) >> 16;
-			HexTYPE new_y=(find_transit & 0x0000000000FFFF);
+			uint16_t new_map= (find_transit & 0xFFFF0000000000ULL) >> 40;
+			uint8_t new_ori= (find_transit & 0x0000FF00000000ULL) >> 32;
+			HexTYPE new_x=(find_transit & 0x000000FFFF0000ULL) >> 16;
+			HexTYPE new_y=(find_transit & 0x0000000000FFFFULL);
 
 			if(TransitCr(acl,new_map,new_x,new_y,new_ori)==TR_OK)
 			{
@@ -548,14 +548,14 @@ LONGLONG CServer::FindTransit(uint16_t num_map, HexTYPE num_x, HexTYPE num_y)
 
 	longlong_map::iterator it=transit_map[num_map].find(find_transit);
 
-	if(it==transit_map[num_map].end()) return 0xFFFFFFFFFF;
+	if(it==transit_map[num_map].end()) return 0xFFFFFFFFFFULL;
 
 	if(!(*it).second) return (*it).second; //global
 
-	if((((*it).second >> 40) & 0xFFFF)	>= MAX_MAPS) return 0xFFFFFFFFFFFFFFFF;
-	if((((*it).second >> 32) & 0xFF)	> 5)		 return 0xFFFFFFFFFFFFFFFF;
-	if((((*it).second >> 16) & 0xFFFF)	>= MAXHEXX) return 0xFFFFFFFFFFFFFFFF;
-	if(((*it).second		 & 0xFFFF)	>= MAXHEXY) return 0xFFFFFFFFFFFFFFFF;
+	if((((*it).second >> 40) & 0xFFFF)	>= MAX_MAPS) return 0xFFFFFFFFFFFFFFFFULL;
+	if((((*it).second >> 32) & 0xFF)	> 5)		 return 0xFFFFFFFFFFFFFFFFULL;
+	if((((*it).second >> 16) & 0xFFFF)	>= MAXHEXX) return 0xFFFFFFFFFFFFFFFFULL;
+	if(((*it).second		 & 0xFFFF)	>= MAXHEXY) return 0xFFFFFFFFFFFFFFFFULL;
 
 	return (*it).second; //local
 }
@@ -1476,7 +1476,3 @@ void CServer::GM_GroupStopMove(CCritter* rule_acl)
 
 	SendA_GlobalInfo(rule_acl->group_move,GM_INFO_PARAM);
 }
-
-//==============================================================================================================================
-//******************************************************************************************************************************
-//==============================================================================================================================

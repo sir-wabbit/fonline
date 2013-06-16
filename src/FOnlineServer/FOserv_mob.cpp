@@ -3,7 +3,7 @@
 *********************************************************************/
 
 #include "stdafx.h"
-#include "FOserv.h"
+#include "FOServ.h"
 
 int CServer::MOBs_LoadAllGroups()
 {
@@ -75,9 +75,9 @@ int CServer::MOBs_LoadAllGroups()
 
 /*
 	FILE* cf;
-	
 
-	
+
+
 	if(!(cf=fopen(mob_path, "rt")))
 	{
 		LogExecStr("Файл не найден |%s|\n",mob_path);
@@ -265,7 +265,7 @@ void CServer::MOBs_Proccess()
 				continue;
 			}
 
-	
+
 		//действия моба
 			//Crit_MoveRandom(mob);
 			// XXX[31.7.2012 alex]: should probably do it with Lua
@@ -279,7 +279,7 @@ void CServer::MOBs_Proccess()
 			}
 
 			asIScriptFunction* mainFunc = ss->GetGlobalFunctionByDecl("void main2(int mob)");
-			
+
 			if(!mainFunc)
 			{
 				LogExecStr("e2\n");

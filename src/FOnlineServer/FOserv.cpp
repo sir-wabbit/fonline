@@ -5,8 +5,8 @@
 
 	author:		Oleg Mareskin
 	add/edit:	Denis Balihin, Anton Tsvetinsky
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 
 
@@ -105,7 +105,7 @@ void CServer::ClearClients() //!Cvet edit
 
 	//!Cvet сохраняем данные клиентов !!!!!!!!!!!!!!!!dest
 	SaveAllDataPlayers();
-	
+
 	//!Cvet удаляем объекты
 	for(dyn_map::iterator it2=all_obj.begin();it2!=all_obj.end();it2++)
 	{
@@ -146,7 +146,7 @@ int CServer::ConnectClient(SOCKET serv)
 
     SOCKADDR_IN from;
 	int addrsize=sizeof(from);
-	
+
 	SOCKET NewCl=accept(serv,(sockaddr*)&from,&addrsize);
 
 	if(NewCl==INVALID_SOCKET) { LogExecStr("INVALID_SOCKET №%d\n",NewCl); return 0; }
@@ -186,7 +186,7 @@ int CServer::ConnectClient(SOCKET serv)
 	}
 
 	ncl->state=STATE_CONN;
-	
+
 	cl.insert(cl_map::value_type(ncl->info.idchannel,ncl));
 
    	NumClients++; //инкремент кол-ва подключенных клиентов
@@ -319,7 +319,7 @@ void CServer::RunGameLoop()
 		FD_ZERO(&write_set);
 		FD_ZERO(&exc_set);
 		FD_SET(s,&read_set);
-	
+
 		for(cl_map::iterator it=cl.begin();it!=cl.end();it++)
 		{
 			c=(*it).second;
@@ -404,15 +404,15 @@ void CServer::RunGameLoop()
 		lt_ticks=GetTickCount();
 		lt_output+=lt_ticks-lt_ticks2;
 
-	//Убирание отключенных клиентов 
+	//Убирание отключенных клиентов
 		for(cl_map::iterator it=cl.begin();it!=cl.end();)
 		{
 			c=(*it).second;
 			it++;
-			if(c->state==STATE_DISCONNECT) 
+			if(c->state==STATE_DISCONNECT)
 			{
 				DisconnectClient(c->info.idchannel);
-				continue; 
+				continue;
 			}
 		}
 
@@ -468,8 +468,8 @@ void CServer::Process(CCritter* acl) // Лист Событий
 		if(acl->bin.NeedProcess())
 		{
 			acl->bin >> msg;
-		
-			switch(msg) 
+
+			switch(msg)
 			{
 			case NETMSG_LOGIN:
 				Process_GetLogIn(acl);
@@ -494,8 +494,8 @@ void CServer::Process(CCritter* acl) // Лист Событий
 		while(acl->bin.NeedProcess())
 		{
 			acl->bin >> msg;
-		
-			switch(msg) 
+
+			switch(msg)
 			{
 			case NETMSG_SEND_GIVE_ME_MAP:
 				Send_Map(acl,acl->info.map);
@@ -525,8 +525,8 @@ void CServer::Process(CCritter* acl) // Лист Событий
 	while(acl->bin.NeedProcess())
 	{
 		acl->bin >> msg;
-		
-		switch(msg) 
+
+		switch(msg)
 		{
 		case NETMSG_TEXT:
 			Process_GetText(acl);
@@ -770,7 +770,7 @@ void CServer::Process_GetText(CCritter* acl)
 		{
 			GM_GroupStartMove(acl);
 			strcpy(self_str,"To Global - OK");
-		}	
+		}
 		else
 			strcpy(self_str,"To Global - FALSE");
 
@@ -798,12 +798,12 @@ void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
 	char SelfStr[MAX_TEXT+255+1]="";
 	char VicStr[MAX_TEXT+255+1]="";
 	char AllStr[MAX_TEXT+255+1]="";
-	
+
 	CCritter* victim=NULL;
 	param=GetParam(aparam,&next);
 
 //	LogExecStr("ProcessSocial: %s\n",param?param:"NULL");
-	
+
 	if(param && param[0] && GetPossParams(socid)!=SOC_NOPARAMS)
 	{
 		my_strlwr(param);
@@ -814,7 +814,7 @@ void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
 		else
 			{
 				victim=LocateByPartName(param);
-				if(!victim) 
+				if(!victim)
 					GetSocVicErrStr(socid,SelfStr,&sender->info);
 				else
 					GetSocVicStr(socid,SelfStr,VicStr,AllStr,&sender->info,&victim->info);
@@ -870,7 +870,7 @@ CCritter* CServer::LocateByPartName(char* name)
 	{
 		c=(*it).second;
 
-		if(PartialRight(name,c->info.name)) 
+		if(PartialRight(name,c->info.name))
 		{
 			found=1;
 			break;
@@ -946,7 +946,7 @@ int CServer::Init()
 
 	UINT port;
 	port=GetPrivateProfileInt("server","port",4000,".\\foserv.cfg");
-	
+
 	SOCKADDR_IN sin;
 	sin.sin_family=AF_INET;
 	sin.sin_port=htons(port);
@@ -1027,7 +1027,7 @@ int CServer::Init()
 	}
 
 //	LogExecStr("Создаем объекты\n");
-	
+
 //	CreateObjToPl(101,1200);
 //	CreateObjToPl(102,1100);
 //	CreateObjToPl(102,1200);
@@ -1061,7 +1061,7 @@ SockEND:
 	closesocket(s);
 	ClearClients();
 	return 0;
-	
+
 }
 
 void CServer::Finish()
@@ -1114,7 +1114,7 @@ char* CServer::GetParam(char* cmdstr,char** next)
 	 *next=NULL;
 	 return NULL;
 	}
-	
+
 	char* ret=NULL;
 	int stop=0;
 	int i;
@@ -1138,7 +1138,7 @@ char* CServer::GetParam(char* cmdstr,char** next)
 	stop=i+1;
 	for(i=stop;cmdstr[i];i++)
 		if(cmdstr[i]!=' ') break;
-	
+
 	*next=cmdstr[i]?cmdstr+i:NULL;
 	return ret;
 }
@@ -1166,7 +1166,7 @@ int CServer::PartialRight(char* str,char* et)
 
 	for(int i=0;str[i];i++)
 		if(!et[i] || str[i]!=et[i]) return 0;
-		
+
 	return res;
 }
 
@@ -1193,7 +1193,7 @@ int CServer::DistFast(int dx, int dy)
 {
 	if(dx<0) dx=-dx;
 	if(dy<0) dy=-dy;
-	if(dx<dy) return (123*dy+51*dx)/128;  
+	if(dx<dy) return (123*dy+51*dx)/128;
 	else return (123*dx+51*dy)/128;
 }
 
@@ -1206,5 +1206,3 @@ void CServer::SetCheat(CCritter* acl, char* cheat_message)
 {
 	sql.AddCheat(acl->info.id,cheat_message);
 }
-
-//!Cvet ------------------------------------

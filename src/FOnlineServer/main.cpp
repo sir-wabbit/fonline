@@ -6,12 +6,12 @@
 	author:		Oleg Mareskin
 	add/edit:	Denis Balihin, Anton Tsvetinsky
 
-	purpose:	
+	purpose:
 *********************************************************************/
 
 
 #include "main.h"
-#include "FOserv.h"
+#include "FOServ.h"
 
 #include <wchar.h>
 #include <iostream>
@@ -34,26 +34,26 @@ DWORD WINAPI GameLoopThread(void *);
 #ifndef FOSERVICE_VERSION
 
 	BOOL CALLBACK DlgProc(HWND hwndDlg,UINT msg,WPARAM wParam,LPARAM lParam);
-	
+
 	void UpdateInfo();
-	
+
 	HINSTANCE hInstance;//дескриптор
 	HWND hWnd;
 	HWND hDlg=NULL;
-	
+
 	CServer* serv;
-	
+
 	int APIENTRY WinMain(HINSTANCE hCurrentInst, HINSTANCE hPreviousInst,LPSTR lpCmdLine,int nCmdShow)
 	{
 		MSG msg;//сообщения
-	
+
 		LoadLibrary("RICHED32.dll");
-		
+
 		hInstance = hCurrentInst;
 
 		hDlg = CreateDialogW(hInstance, MAKEINTRESOURCEW(IDD_DLG), NULL, DlgProc);
 		hUpdateEvent=CreateEvent(NULL,1,0,NULL);
-		
+
 
 		serv=new CServer;
 
@@ -72,12 +72,12 @@ DWORD WINAPI GameLoopThread(void *);
 		}
 
 		SAFEDEL(serv);
-		_CrtDumpMemoryLeaks();
+		//_CrtDumpMemoryLeaks();
 		SimpleLeakDetector::PrintAllLeaks();
 
 		return 0;
 	}
-	
+
 	void UpdateInfo()
 	{
 		wchar_t text[300];
@@ -133,34 +133,34 @@ DWORD WINAPI GameLoopThread(void *);
     cr.cpMax = -1;
 
     SendDlgItemMessageW(hDlg, IDC_EXECLOG, EM_EXSETSEL, 0, (LPARAM)&cr);
-    SendDlgItemMessageW(hDlg, IDC_EXECLOG, EM_REPLACESEL, 0, (LPARAM) text); 
+    SendDlgItemMessageW(hDlg, IDC_EXECLOG, EM_REPLACESEL, 0, (LPARAM) text);
   }
-  
+
 	void LogExecStr(char* fmt, ...) {
 		if(bQuit) return;
-		
+
 		char buf[2048];
     va_list args;
     va_start(args, fmt);
     size_t len = vsnprintf(buf, sizeof(buf) - 1, fmt, args);
     va_end(args);
-    
+
     wchar_t wbuf[2048];
     size_t wlen = MultiByteToWideChar(CP_UTF8, 0, buf, len, wbuf, sizeof(wbuf) / sizeof(wchar_t) - 1);
     wbuf[wlen] = 0;
-    
+
 		AppendToLogEditBox(wbuf);
 	}
 
 	DWORD WINAPI GameLoopThread(void *)
 	{
 		if(!serv->Init()) goto GAMELOOPEND;
-		
-		serv->RunGameLoop();
-	
-		serv->Finish();    
 
-	GAMELOOPEND:	
+		serv->RunGameLoop();
+
+		serv->Finish();
+
+	GAMELOOPEND:
 		hGameThread=NULL;
 		ExitThread(0);
 		return 0;
@@ -175,18 +175,18 @@ DWORD WINAPI GameLoopThread(void *);
 	CServer serv;
 	HANDLE hLogFile=NULL;
 
-	SERVICE_STATUS          FOServiceStatus;  
-	SERVICE_STATUS_HANDLE   FOServiceStatusHandle; 
-	 
-	VOID  WINAPI FOServiceStart (uint32_t argc, LPTSTR *argv); 
-	VOID  WINAPI FOServiceCtrlHandler (uint32_t opcode); 
-	 
+	SERVICE_STATUS          FOServiceStatus;
+	SERVICE_STATUS_HANDLE   FOServiceStatusHandle;
+
+	VOID  WINAPI FOServiceStart (uint32_t argc, LPTSTR *argv);
+	VOID  WINAPI FOServiceCtrlHandler (uint32_t opcode);
+
 	VOID _CRTAPI1 main()
 	{
-		SC_HANDLE SCManager = OpenSCManager( 
-			NULL,                    // local machine 
-			NULL,                    // ServicesActive database 
-		    SC_MANAGER_ALL_ACCESS);  // 
+		SC_HANDLE SCManager = OpenSCManager(
+			NULL,                    // local machine
+			NULL,                    // ServicesActive database
+		    SC_MANAGER_ALL_ACCESS);  //
 
 		if(!SCManager) return;
 
@@ -204,18 +204,18 @@ DWORD WINAPI GameLoopThread(void *);
 			MessageBox(NULL,"Registering FOserver service: OK.\nStart service from the control panel","Registering",MB_OK|MB_ICONEXCLAMATION);
 			return;
 		}
-		LPQUERY_SERVICE_CONFIG lpqscBuf; 
-	    uint32_t dwBytesNeeded; 
+		LPQUERY_SERVICE_CONFIG lpqscBuf;
+	    uint32_t dwBytesNeeded;
 
-	    lpqscBuf = (LPQUERY_SERVICE_CONFIG) LocalAlloc(LPTR, 4096); 
-	 
-	    // Get and print the information configuration. 
-	 
-	    if (!QueryServiceConfig(SCServ,lpqscBuf,4096,&dwBytesNeeded)) 
+	    lpqscBuf = (LPQUERY_SERVICE_CONFIG) LocalAlloc(LPTR, 4096);
+
+	    // Get and print the information configuration.
+
+	    if (!QueryServiceConfig(SCServ,lpqscBuf,4096,&dwBytesNeeded))
 	    {
 			CloseServiceHandle(SCServ);
 			CloseServiceHandle(SCManager);
-			LocalFree(lpqscBuf);     
+			LocalFree(lpqscBuf);
 			return;
 	    }
 		int last=0;
@@ -224,64 +224,64 @@ DWORD WINAPI GameLoopThread(void *);
 		lpqscBuf->lpBinaryPathName[last+1]=0;
 		SetCurrentDirectory(lpqscBuf->lpBinaryPathName);
 		CloseServiceHandle(SCManager);
-		LocalFree(lpqscBuf);     
+		LocalFree(lpqscBuf);
 
-		SERVICE_TABLE_ENTRY   DispatchTable[] = 
-	    { 
-	        { TEXT("FOService"), FOServiceStart}, 
-	        { NULL, NULL }, 
+		SERVICE_TABLE_ENTRY   DispatchTable[] =
+	    {
+	        { TEXT("FOService"), FOServiceStart},
+	        { NULL, NULL },
 	    };
 
 		StartServiceCtrlDispatcher( DispatchTable);
 	}
 
-	void WINAPI FOServiceStart (uint32_t argc, LPTSTR *argv)  
+	void WINAPI FOServiceStart (uint32_t argc, LPTSTR *argv)
 	{
-	    FOServiceStatus.dwServiceType        = SERVICE_WIN32_OWN_PROCESS; 
-	    FOServiceStatus.dwCurrentState       = SERVICE_START_PENDING; 
-	    FOServiceStatus.dwControlsAccepted   = SERVICE_ACCEPT_STOP; 
-	    FOServiceStatus.dwWin32ExitCode      = 0; 
-	    FOServiceStatus.dwServiceSpecificExitCode = 0; 
-	    FOServiceStatus.dwCheckPoint         = 0; 
+	    FOServiceStatus.dwServiceType        = SERVICE_WIN32_OWN_PROCESS;
+	    FOServiceStatus.dwCurrentState       = SERVICE_START_PENDING;
+	    FOServiceStatus.dwControlsAccepted   = SERVICE_ACCEPT_STOP;
+	    FOServiceStatus.dwWin32ExitCode      = 0;
+	    FOServiceStatus.dwServiceSpecificExitCode = 0;
+	    FOServiceStatus.dwCheckPoint         = 0;
 
-	    FOServiceStatus.dwWaitHint           = 0; 
+	    FOServiceStatus.dwWaitHint           = 0;
 
-	    FOServiceStatusHandle = RegisterServiceCtrlHandler( 
-	        TEXT("FOService"), 
-	        FOServiceCtrlHandler); 
-	 
-	    if (!FOServiceStatusHandle) 
-	    { 
+	    FOServiceStatusHandle = RegisterServiceCtrlHandler(
+	        TEXT("FOService"),
+	        FOServiceCtrlHandler);
+
+	    if (!FOServiceStatusHandle)
+	    {
 	        return;
-	    } 
-	 
+	    }
+
 		hGameThread=CreateThread(NULL,0,GameLoopThread,NULL,0,&dwGameThreadID);
-	 
-	    // Initialization complete - report running status. 
-	    FOServiceStatus.dwCurrentState       = SERVICE_RUNNING; 
-	    FOServiceStatus.dwCheckPoint         = 0; 
-	    FOServiceStatus.dwWaitHint           = 0; 
-	 
+
+	    // Initialization complete - report running status.
+	    FOServiceStatus.dwCurrentState       = SERVICE_RUNNING;
+	    FOServiceStatus.dwCheckPoint         = 0;
+	    FOServiceStatus.dwWaitHint           = 0;
+
 	    SetServiceStatus (FOServiceStatusHandle, &FOServiceStatus);
 
-	    return; 
-	} 
-	
-	VOID WINAPI FOServiceCtrlHandler (uint32_t Opcode)  
-	{ 
-	    switch(Opcode) 
+	    return;
+	}
+
+	VOID WINAPI FOServiceCtrlHandler (uint32_t Opcode)
+	{
+	    switch(Opcode)
 	    {
-		case SERVICE_CONTROL_STOP: 
-	
-	        // Do whatever it takes to stop here. 
-	            FOServiceStatus.dwWin32ExitCode = 0; 
-	            FOServiceStatus.dwCurrentState  = SERVICE_STOP_PENDING; 
-	            FOServiceStatus.dwCheckPoint    = 0; 
-	            FOServiceStatus.dwWaitHint      = 0; 
-	 
-	            SetServiceStatus (FOServiceStatusHandle, 
+		case SERVICE_CONTROL_STOP:
+
+	        // Do whatever it takes to stop here.
+	            FOServiceStatus.dwWin32ExitCode = 0;
+	            FOServiceStatus.dwCurrentState  = SERVICE_STOP_PENDING;
+	            FOServiceStatus.dwCheckPoint    = 0;
+	            FOServiceStatus.dwWaitHint      = 0;
+
+	            SetServiceStatus (FOServiceStatusHandle,
 	                &FOServiceStatus);
-	
+
 				FOQuit=1;
 				bQuit=1;
 				//CloseHandle(hLogFile);
@@ -290,23 +290,23 @@ DWORD WINAPI GameLoopThread(void *);
 					WaitForSingleObject(hGameThread,5000);
 				CloseHandle(hGameThread);
 
-	            FOServiceStatus.dwWin32ExitCode = 0; 
-	            FOServiceStatus.dwCurrentState  = SERVICE_STOPPED; 
-	            FOServiceStatus.dwCheckPoint    = 0; 
-	            FOServiceStatus.dwWaitHint      = 0; 
+	            FOServiceStatus.dwWin32ExitCode = 0;
+	            FOServiceStatus.dwCurrentState  = SERVICE_STOPPED;
+	            FOServiceStatus.dwCheckPoint    = 0;
+	            FOServiceStatus.dwWaitHint      = 0;
 
-	            SetServiceStatus (FOServiceStatusHandle, 
+	            SetServiceStatus (FOServiceStatusHandle,
 	                &FOServiceStatus);
 
-	            return; 
-	         case SERVICE_CONTROL_INTERROGATE: 
-	        // Fall through to send current status. 
+	            return;
+	         case SERVICE_CONTROL_INTERROGATE:
+	        // Fall through to send current status.
 	            break;
 	        default:
 				break;
 	    }
-	 
-	    // Send current status. 
+
+	    // Send current status.
 	    SetServiceStatus (FOServiceStatusHandle,  &FOServiceStatus);
 
 	    return;
@@ -339,9 +339,9 @@ DWORD WINAPI GameLoopThread(void *);
 
 		char str[2048];
 		char str2[2048];
-	
+
 	    va_list list;
-	
+
 	    va_start(list, frmt);
 	    wvsprintf(str2, frmt, list);
 	    va_end(list);
@@ -363,7 +363,7 @@ DWORD WINAPI GameLoopThread(void *);
 	uint32_t WINAPI GameLoopThread(void *)
 	{
 		if(!LogStart()) goto GAMELOOPEND; //!Cvet
-	
+
 		LogExecStr("Version of Server: %d\n",FOSERVICE_VERSION);
 
 		if(!serv.Init()) goto GAMELOOPEND;
@@ -410,8 +410,8 @@ DWORD WINAPI GameLoopThread(void *);
 		serv.Finish();
 
 		LogFinish(); //!Cvet
-		
-	GAMELOOPEND:	
+
+	GAMELOOPEND:
 		hGameThread=NULL;
 		ExitThread(0);
 		return 0;

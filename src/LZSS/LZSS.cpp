@@ -23,10 +23,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */ 
- 
+ */
+
 #include <string.h>
- 
+
 #include "LZSS.hpp"
 
 // Number of bits for index and length respectively.
@@ -74,16 +74,16 @@ void Decode(Context* ctx) {
 
   while (1) {
     command >>= 1;
-    
+
     if ((command & 0xFF00) == 0) {
       if ( (c = GetByte(ctx)) == -1)
         break;
       command = 0xFF00 + c;
     }
-    
+
     if ( (c = GetByte(ctx)) == -1)
       break;
-    
+
     if (command & 1) {
       ctx->window [current_position] = c;
       current_position = MOD_WINDOW (current_position + 1);
@@ -94,7 +94,7 @@ void Decode(Context* ctx) {
         break;
       match_position += ((c & 0xF0) << 4);
       match_length = (c & 0xF) + BREAK_EVEN;
-      
+
       for (size_t i = 0; i <= match_length; i++) {
         c = ctx->window [MOD_WINDOW (match_position + i)];
         ctx->window [current_position] = c;
@@ -117,7 +117,7 @@ CunLZSS::~CunLZSS() {
     delete (ctx->window);
     ctx->window = NULL;
   }
-  
+
   if (ctx->outBuf) {
     delete (ctx->outBuf);
     ctx->outBuf = NULL;

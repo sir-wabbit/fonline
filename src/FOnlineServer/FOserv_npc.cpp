@@ -3,7 +3,7 @@
 *********************************************************************/
 
 #include "stdafx.h"
-#include "FOserv.h"
+#include "FOServ.h"
 
 namespace {
 
@@ -42,10 +42,10 @@ void CServer::NPC_ClearAll() {
     if (it->second->i_npc != NULL) {
       ClearNpcInfo(it->second->i_npc);
     }
-  
+
     SAFEDEL(it->second);
   }
-  
+
   pc.clear();
 }
 
@@ -56,7 +56,7 @@ int CServer::NPC_LoadAll()
 	CCritter* npc=NULL;
 
 	sprintf(file_name,"%slist_npc.npc", PATH_NPC);
-	
+
 	FILE* cf2;
 
 	if((cf2=fopen(file_name, "rt"))==NULL)
@@ -72,7 +72,7 @@ int CServer::NPC_LoadAll()
 	while(!feof(cf2))
 	{
 		fscanf(cf2,"%c",&ch);
-		
+
 		if(ch!='#') continue;
 
 		LogExecStr("Инициализация НПЦ:...");
@@ -177,7 +177,7 @@ int CServer::NPC_LoadAll()
 			LogExecStr("Файл не найден |%s|\n", file_name);
 			return 0;
 		}
-		
+
 		while(!feof(cf))
 		{
 			fscanf(cf, "%s", &p_tmp1);
@@ -340,7 +340,7 @@ int CServer::NPC_LoadAll()
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_demand->type=DEMAND_VAR;
-								
+
 						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); LogExecStr("Неизвестная переменная %s\n", read_str2); return 0;}
 								new_demand->var_name=read_str2;
 								new_demand->oper=read_str3[0];
@@ -353,7 +353,7 @@ int CServer::NPC_LoadAll()
 								fscanf(cf, "%d", &read_int2); //значение
 
 								new_demand->type=DEMAND_PVAR;
-								
+
 								new_demand->var_num=read_int;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int2;
@@ -446,7 +446,7 @@ int CServer::NPC_LoadAll()
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_result->type=RESULT_VAR;
-								
+
 						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); LogExecStr("Неизвестная переменная %s\n", read_str2); return 0;}
 								new_result->var_name=read_str2;
 								new_result->oper=read_str3[0];
@@ -459,7 +459,7 @@ int CServer::NPC_LoadAll()
 								fscanf(cf, "%d", &read_int2); //значение
 
 								new_result->type=RESULT_PVAR;
-								
+
 								new_result->var_num=read_int;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int2;
@@ -525,7 +525,7 @@ int CServer::NPC_LoadAll()
 			}
 
 			fclose(cf);
-		} 
+		}
 		else
 		{
 			LogExecStr("Файл не найден\n");
@@ -583,7 +583,7 @@ int CServer::NPC_LoadAll()
 
 		LogExecStr("Диалог:%d, текст №%d, время на прочтение:%d, нет ответа:%d\n", dlg->id, dlg->id_text,
 			dlg->time_break, dlg->not_answer);
-		
+
 		for(answers_list::iterator it_a=dlg->answers.begin(); it_a!=dlg->answers.end(); it_a++)
 		{
 			answ=(*it_a);
@@ -624,13 +624,13 @@ int CServer::NPC_LoadAll()
 
 void CServer::NPC_Remove(CCritter* npc)
 {
-	
+
 }
 
 void CServer::NPC_Process(CCritter* npc)
 {
 	return;
-	
+
 	if(npc->info.cond!=COND_LIFE) return;
 	if(npc->vis_cl.empty()) return;
 	if (npc->info.break_time + npc->info.start_bt > GetTickCount()) {
@@ -664,7 +664,7 @@ void CServer::NPC_Process(CCritter* npc)
 		break;*/
 	default:
 	case MR_FALSE:
-		SetCheat(npc,"Process_Move - попытка походить в занятую клетку");	
+		SetCheat(npc,"Process_Move - попытка походить в занятую клетку");
 		break;
 	}
 
@@ -694,7 +694,7 @@ int CServer::NPC_Dialog_Compile(CCritter* npc, CCritter* acl, npc_dialog* new_dl
 	{
 	//смотрим требование
 		if(!NPC_Check_demand(npc,acl,(*it_a))) cmp_dlg->answers.erase(it_a);
-		
+
 		if(it_a==cmp_dlg->answers.end()) break;
 	}
 
@@ -760,7 +760,7 @@ void CServer::NPC_Use_result(CCritter* npc, CCritter* acl, answer* use_answ)
 			continue;
 		case RESULT_STAT:
 			if((*it_r)->oper=='+')		 acl->info.st[(*it_r)->param]+=(*it_r)->count;
-			else if((*it_r)->oper=='-') acl->info.st[(*it_r)->param]-=(*it_r)->count; 
+			else if((*it_r)->oper=='-') acl->info.st[(*it_r)->param]-=(*it_r)->count;
 			else if((*it_r)->oper=='*') acl->info.st[(*it_r)->param]*=(*it_r)->count;
 			else if((*it_r)->oper=='/') acl->info.st[(*it_r)->param]/=(*it_r)->count;
 			else if((*it_r)->oper=='=') acl->info.st[(*it_r)->param] =(*it_r)->count;
@@ -897,7 +897,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
-		
+
 	//компануем диалог
 		if(!NPC_Dialog_Compile(npc,acl,(*it_d).second))
 		{
@@ -952,9 +952,9 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 		}
 	}
 //нпц занят
-	else 
+	else
 	{
-		NPC_Dialog_Close(npc,acl,NPC_SAY_IMBYSY); 
+		NPC_Dialog_Close(npc,acl,NPC_SAY_IMBYSY);
 		return;
 	}
 

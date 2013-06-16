@@ -377,4 +377,3 @@ bool DatArchive::DATReadFile(void* lpBuffer, size_t nNumberOfBytesToRead, size_t
   reader->read(lpBuffer, nNumberOfBytesToRead, (long*)lpNumberOfBytesRead);
   return true;
 }
-//------------------------------------------------------------------------------

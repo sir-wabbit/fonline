@@ -10,7 +10,7 @@
     ; go to the build directory
     ; open fonline-open-source.sln
     ; build it
-    
+
 # TODO
 * Fix all the warnings (200+).
 * Fix all the FIXMEs.

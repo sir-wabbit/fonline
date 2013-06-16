@@ -11,7 +11,7 @@ int SocialsCount=0;
 void LoadSocials(MYSQL* mysql)
 {
 	LogExecStr("Loading socials...\n");
-	
+
 	/*if(mysql_query(mysql,"select * from socials"))
 	{
 		LogExecStr("SQL error: %s\n",mysql_error(mysql));
@@ -21,7 +21,7 @@ void LoadSocials(MYSQL* mysql)
 	MYSQL_RES* res=mysql_store_result(mysql);
 
 	SocialsCount=(int)mysql_num_rows(res);
-	
+
 	if(SocialsCount)
 	{
 		socials=new soc_def[SocialsCount];
@@ -45,7 +45,7 @@ void LoadSocials(MYSQL* mysql)
 
 	mysql_free_result(res);*/
 
-  //// HACK[22.9.2012 alex]: do not laod socials 
+  //// HACK[22.9.2012 alex]: do not laod socials
 	if(SocialsCount); SocLoaded=1;
 }
 
@@ -314,16 +314,16 @@ int PartialRight(char* str,char* et)
 
 	for(int i=0;str[i];i++)
 		if(!et[i] || str[i]!=et[i]) return 0;
-		
+
 	return res;
 }
 
 int GetSocialId(char* cmd)
 {
-	if(!SocLoaded) return -1;	
+	if(!SocLoaded) return -1;
 
 	LogExecStr("TrySocial: %s\n",cmd);
-	
+
 	for(int i=0;i<SocialsCount;i++)
 		if(PartialRight(cmd,socials[i].cmd)) {LogExecStr("TrySocial found: %s\n",socials[i].cmd);return i;}
 
@@ -348,7 +348,7 @@ void GetSocSelfStr(int socid, char* SelfStr, char* AllStr, crit_info* self)
 	strcpy(SelfStr,"**");
 	strcpy(AllStr,"**");
 	if(!SocLoaded) return;
-	
+
 	ParseSymbolStr(socials[socid].SelfSelf,SelfStr+2,self,NULL);
 	ParseSymbolStr(socials[socid].SelfAll,AllStr+2,self,NULL);
 	strcat(SelfStr,"**");
@@ -361,7 +361,7 @@ void GetSocVicStr(int socid, char* SelfStr, char* VicStr, char* AllStr, crit_inf
 	strcpy(VicStr,"**");
 	strcpy(AllStr,"**");
 	if(!SocLoaded) return;
-	
+
 	ParseSymbolStr(socials[socid].VictimSelf,SelfStr+2,self,victim);
 	ParseSymbolStr(socials[socid].VictimVictim,VicStr+2,self,victim);
 	ParseSymbolStr(socials[socid].VictimAll,AllStr+2,self,victim);
@@ -374,7 +374,7 @@ void GetSocVicErrStr(int socid, char* SelfStr, crit_info* self)
 {
 	strcpy(SelfStr,"**");
 	if(!SocLoaded) return;
-	
+
 	ParseSymbolStr(socials[socid].VictimErr,SelfStr+2,self,NULL);
 	strcat(SelfStr,"**");
 }
@@ -383,6 +383,6 @@ int GetPossParams(int socid)
 {
 	if(!socials[socid].SelfSelf[0] && !socials[socid].VictimSelf[0]) return SOC_NOPARAMS;
 	if(!socials[socid].SelfSelf[0]) return SOC_NOSELF;
-	
+
 	return SOC_PARAMSOK;
 }
