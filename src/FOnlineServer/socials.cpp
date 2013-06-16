@@ -1,5 +1,11 @@
 
 #include "stdafx.h"
+
+#include <string.h>
+#include <stdio.h>
+
+#include <FOnlineCommon/Common.hpp>
+
 #include "socials.h"
 #include "main.h"
 
@@ -10,11 +16,11 @@ int SocialsCount=0;
 
 void LoadSocials(MYSQL* mysql)
 {
-	LogExecStr("Loading socials...\n");
+	FONLINE_LOG("Loading socials...\n");
 
 	/*if(mysql_query(mysql,"select * from socials"))
 	{
-		LogExecStr("SQL error: %s\n",mysql_error(mysql));
+		FONLINE_LOG("SQL error: %s\n",mysql_error(mysql));
 		return;
 	}
 
@@ -72,8 +78,7 @@ char str_h[][20]={"ему", "ей", "ему", "им"};
 char str_j[][20]={"ним", "ней", "ним", "ними"};
 char str_k[][20]={"нем", "ней", "нем", "них"};
 
-LPSTR MakeName(LPSTR str,LPSTR str2)
-{
+char* MakeName(char* str, char* str2) {
 	strcpy(str2,str);
 	str2[0]-=0x20;
 	return str2;
@@ -322,12 +327,12 @@ int GetSocialId(char* cmd)
 {
 	if(!SocLoaded) return -1;
 
-	LogExecStr("TrySocial: %s\n",cmd);
+	FONLINE_LOG("TrySocial: %s\n",cmd);
 
 	for(int i=0;i<SocialsCount;i++)
-		if(PartialRight(cmd,socials[i].cmd)) {LogExecStr("TrySocial found: %s\n",socials[i].cmd);return i;}
+		if(PartialRight(cmd,socials[i].cmd)) {FONLINE_LOG("TrySocial found: %s\n",socials[i].cmd);return i;}
 
-	LogExecStr("TrySocial: not found!\n");
+	FONLINE_LOG("TrySocial: not found!\n");
 	return -1;
 }
 

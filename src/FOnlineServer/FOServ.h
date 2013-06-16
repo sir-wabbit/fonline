@@ -18,7 +18,6 @@
 #include "SQL.h"
 #include "Critter.h"
 #include <FOnlineFileManager/FileManager.hpp>
-#include <SimpleLeakDetector/SimpleLeakDetector.hpp>
 
 #define PATH_OBJECTS ".\\objects\\"
 #define PATH_NPC ".\\npc\\"
@@ -482,7 +481,7 @@ class CServer
 
 	int TransitCr(CCritter* acl, int to_map, int to_x, int to_y, int to_ori);
 
-	LONGLONG FindTransit(uint16_t num_map, HexTYPE num_x, HexTYPE num_y);
+	uint64_t FindTransit(uint16_t num_map, HexTYPE num_x, HexTYPE num_y);
 	longlong_map transit_map[MAX_MAPS];
 
 	map_str_map map_str;
@@ -510,7 +509,7 @@ class CServer
 
 	bool Active; // включен сервер
 
-	SOCKET s; // socket
+	int s; // socket
 	fd_set read_set,write_set,exc_set;
 
 	void ClearClients(); //Del all
@@ -518,7 +517,7 @@ class CServer
 
 	void RemoveCritter(CritterID id);
 	void DisconnectClient(CritterID idchannel); //!Cvet Disconnect Client by id
-	int ConnectClient(SOCKET serv); //add new Client
+	int ConnectClient(int serv); //add new Client
 
 	int Input(CCritter* acl);
 	int Output(CCritter* acl);
@@ -554,14 +553,14 @@ class CServer
 	FileManager fm;
 
 //Игровое время
-	SYSTEMTIME sys_time;
+	//SYSTEMTIME sys_time;
 	uint16_t Game_Time;
 	uint8_t Game_Day;
 	uint8_t Game_Month;
 	uint16_t Game_Year;
 
 //Слежение за читерством
-	void SetCheat(CCritter* acl, char* cheat_message);
+	void SetCheat(CCritter* acl, const char* cheat_message);
 //!Cvet ------------------------
 
 public:

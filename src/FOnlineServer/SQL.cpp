@@ -7,7 +7,15 @@
 *********************************************************************/
 
 #include "stdafx.h"
+
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <wchar.h>
+
 #include <IniFile/IniFile.hpp>
+
 #include "SQL.h"
 
 SQL::SQL()
@@ -24,7 +32,7 @@ int SQL::Init_mySQL()
 {
 	if(Active==true) return 1;
 
-	LogExecStr("mySQL init begin\n");
+	FONLINE_LOG("mySQL init begin\n");
 
   std::string load_char;
 
@@ -36,11 +44,11 @@ int SQL::Init_mySQL()
 
 	//if(load_char[0]=='@')
 	//{
-	//	LogExecStr("mySQL true_char failed. see foserv.cfg!\nmySQL init FALSE\n");
+	//	FONLINE_LOG("mySQL true_char failed. see foserv.cfg!\nmySQL init false\n");
 	//	return 0;
 	//}
 
-	LogExecStr("Разрешенные символы:|%s|. Все остальные будут заменяться на пробел.\n",load_char.c_str());
+	FONLINE_LOG("Разрешенные символы:|%s|. Все остальные будут заменяться на пробел.\n",load_char.c_str());
 
 	for (size_t i = 0; i < load_char.size(); i++) {
 	  true_char.insert(true_char_set::value_type(load_char[i]));
@@ -49,7 +57,7 @@ int SQL::Init_mySQL()
 	mySQL=mysql_init(NULL);
 	if(!mySQL)
 	{
-		LogExecStr("ошибка инициализации\n");
+		FONLINE_LOG("ошибка инициализации\n");
 		return 0;
 	}
 
@@ -62,16 +70,16 @@ int SQL::Init_mySQL()
   this->port = GetValue<int>(ini, "SQL.port", 3306);
   this->clientflag = GetValue<int>(ini, "SQL.clientflag", 0);
 
-  LogExecStr("Accepted characters : %s\n", load_char.c_str());
-  LogExecStr("User : %s\n", user.c_str());
-  LogExecStr("Password : %s\n", passwd.c_str());
-  LogExecStr("Host : %s\n", host.c_str());
-  LogExecStr("DB : %s\n", db.c_str());
-  LogExecStr("Socket : %s\n", unix_socket.c_str());
+  FONLINE_LOG("Accepted characters : %s\n", load_char.c_str());
+  FONLINE_LOG("User : %s\n", user.c_str());
+  FONLINE_LOG("Password : %s\n", passwd.c_str());
+  FONLINE_LOG("Host : %s\n", host.c_str());
+  FONLINE_LOG("DB : %s\n", db.c_str());
+  FONLINE_LOG("Socket : %s\n", unix_socket.c_str());
 
 	if(!mysql_real_connect(mySQL, host.c_str(), user.c_str(), passwd.c_str(), db.c_str(), port, unix_socket.c_str(), clientflag))
 	{
-		LogExecStr("%s\n",mysql_error(mySQL));
+		FONLINE_LOG("%s\n",mysql_error(mySQL));
 		return 0;
 	}
 
@@ -358,64 +366,63 @@ int SQL::Init_mySQL()
 
 	Active=true;
 
-	LogExecStr("mySQL init OK\n");
+	FONLINE_LOG("mySQL init OK\n");
 
 	return 1;
 }
 
-void SQL::Finish_mySQL()
-{
+void SQL::Finish_mySQL() {
 	mysql_close(mySQL);
 	mySQL=NULL;
 
 	Active=false;
 }
 
-int SQL::Query(char* query, ...)
-{
+int SQL::Query(const char* query, ...) {
 	char str[2048];
 
 	va_list list;
 	va_start(list, query);
-	wvsprintf(str, query, list);
+	vsnprintf(str, sizeof(str), query, list);
 	va_end(list);
 
-	if(mysql_query(mySQL, str))
-	{
-		LogExecStr("mySQL Query |%s| error: %s\n", str, mysql_error(mySQL));
+	if (mysql_query(mySQL, str)) {
+		FONLINE_LOG("mySQL Query |%s| error: %s\n", str, mysql_error(mySQL));
 		return 0;
 	}
-    return 1;
+
+  return 1;
 }
 
 int SQL::Check(char* str)
 {
-	int i=0;
-	bool cheat_fix=false;
+	int i = 0;
+	bool cheat_fix = false;
 
-	while(str[i])
-	{
-		if(!true_char.count(str[i]))
-		{
-			str[i]=0x20;
-			cheat_fix=true;
+	while (str[i]) {
+		if (!true_char.count(str[i])) {
+			str[i] = 0x20;
+			cheat_fix = true;
 		}
+
 		i++;
 	}
 
-	if(cheat_fix==true) return 1;
+	if (cheat_fix == true) {
+		return 1;
+	}
 
 	return 0;
 }
 
-int SQL::GetInt(char* table, char* find_row, char* row, char* row_vol)
+int SQL::GetInt(const char* table, const char* find_row, const char* row, const char* row_vol)
 {
 	char stradd[256];
 	sprintf(stradd,"SELECT `%s` FROM `%s` WHERE `%s`='%s'", find_row, table, row, row_vol);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL GetInt1 error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL GetInt1 error: %s\n", mysql_error(mySQL));
 		return 0xFFFFFFFF;
 	}
 
@@ -428,14 +435,14 @@ int SQL::GetInt(char* table, char* find_row, char* row, char* row_vol)
 	return atoi(mySQL_row[0]);
 }
 
-int SQL::GetInt(char* table, char* find_row, char* row, int row_vol)
+int SQL::GetInt(const char* table, const char* find_row, const char* row, int row_vol)
 {
 	char stradd[256];
 	sprintf(stradd,"SELECT `%s` FROM `%s` WHERE `%s`='%d'", find_row, table, row, row_vol);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL GetInt2 error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL GetInt2 error: %s\n", mysql_error(mySQL));
 		return 0xFFFFFFFF;
 	}
 
@@ -448,76 +455,76 @@ int SQL::GetInt(char* table, char* find_row, char* row, int row_vol)
 	return atoi(mySQL_row[0]);
 }
 
-BOOL SQL::GetChar(char* table, char* find_row, char* row, char* row_vol, char* result)
+bool SQL::GetChar(const char* table, const char* find_row, const char* row, const char* row_vol, char* result)
 {
 	char stradd[256];
 	sprintf(stradd,"SELECT `%s` FROM `%s` WHERE `%s`='%s'", find_row, table, row, row_vol);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL GetChar1 error: %s\n", mysql_error(mySQL));
-		return FALSE;
+		FONLINE_LOG("mySQL GetChar1 error: %s\n", mysql_error(mySQL));
+		return false;
 	}
 
-	if(!(mySQL_res=mysql_store_result(mySQL))) return FALSE;
+	if(!(mySQL_res=mysql_store_result(mySQL))) return false;
 
-	if(!mysql_num_rows(mySQL_res)) return FALSE;
+	if(!mysql_num_rows(mySQL_res)) return false;
 
 	mySQL_row=mysql_fetch_row(mySQL_res);
 
 	strcpy(result,mySQL_row[0]);
 
-	return TRUE;
+	return true;
 }
 
-BOOL SQL::GetChar(char* table, char* find_row, char* row, int row_vol, char* result)
+bool SQL::GetChar(const char* table, const char* find_row, const char* row, int row_vol, char* result)
 {
 	char stradd[256];
 	sprintf(stradd,"SELECT `%s` FROM `%s` WHERE `%s`='%d'", find_row, table, row, row_vol);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL GetChar2 error: %s\n", mysql_error(mySQL));
-		return FALSE;
+		FONLINE_LOG("mySQL GetChar2 error: %s\n", mysql_error(mySQL));
+		return false;
 	}
 
-	if(!(mySQL_res=mysql_store_result(mySQL))) return FALSE;
+	if(!(mySQL_res=mysql_store_result(mySQL))) return false;
 
-	if(!mysql_num_rows(mySQL_res)) return FALSE;
+	if(!mysql_num_rows(mySQL_res)) return false;
 
 	mySQL_row=mysql_fetch_row(mySQL_res);
 
 	strcpy(result,mySQL_row[0]);
 
-	return TRUE;
+	return true;
 }
 
-BOOL SQL::CheckUser(char* name)
+bool SQL::CheckUser(const char* name)
 {
 	char stradd[256];
 	sprintf(stradd,"SELECT `id` FROM `users` WHERE `login`='%s'", name);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL CheckUser error: %s\n", mysql_error(mySQL));
-		return FALSE;
+		FONLINE_LOG("mySQL CheckUser error: %s\n", mysql_error(mySQL));
+		return false;
 	}
 
-	if(!(mySQL_res=mysql_store_result(mySQL))) return FALSE;
+	if(!(mySQL_res=mysql_store_result(mySQL))) return false;
 
-	if(!mysql_num_rows(mySQL_res)) return FALSE;
+	if(!mysql_num_rows(mySQL_res)) return false;
 
-	return TRUE;
+	return true;
 }
 
-int SQL::CheckUserPass(char* name, char* pass)
+int SQL::CheckUserPass(const char* name, const char* pass)
 {
 	char stradd[256];
 	sprintf(stradd,"SELECT `id` FROM `users` WHERE `login`='%s' AND `pass`='%s'", name, pass);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL CheckUserPass error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL CheckUserPass error: %s\n", mysql_error(mySQL));
 		return 0;
 	}
 
@@ -530,14 +537,14 @@ int SQL::CheckUserPass(char* name, char* pass)
 	return atoi(mySQL_row[0]);
 }
 
-int SQL::CountRows(char* table, char* column, char* count_vol)
+int SQL::CountRows(const char* table, const char* column, const char* count_vol)
 {
 	char stradd[256];
 	sprintf(stradd,"SELECT * FROM `%s` WHERE `%s`='%s'", table, column, count_vol);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL CountRows error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL CountRows error: %s\n", mysql_error(mySQL));
 		return 0;
 	}
 
@@ -546,14 +553,14 @@ int SQL::CountRows(char* table, char* column, char* count_vol)
 	return mysql_num_rows(mySQL_res);
 }
 
-int SQL::CountRows(char* table, char* column, int count_vol)
+int SQL::CountRows(const char* table, const char* column, int count_vol)
 {
 	char stradd[256];
 	sprintf(stradd,"SELECT * FROM `%s` WHERE `%s`='%d'", table, column, count_vol);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL CountRows error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL CountRows error: %s\n", mysql_error(mySQL));
 		return 0;
 	}
 
@@ -564,18 +571,18 @@ int SQL::CountRows(char* table, char* column, int count_vol)
 
 int SQLLastInsertId(MYSQL* mySQL) {
   if (mysql_query(mySQL, "SELECT LAST_INSERT_ID()")) {
-    LogExecStr("Could not query last insert id: %s\n", mysql_error(mySQL));
+    FONLINE_LOG("Could not query last insert id: %s\n", mysql_error(mySQL));
     return 0;
   }
 
   MYSQL_RES* result = NULL;
   if (!(result = mysql_store_result(mySQL))) {
-    LogExecStr("Could not query last insert id: %s\n", mysql_error(mySQL));
+    FONLINE_LOG("Could not query last insert id: %s\n", mysql_error(mySQL));
     return 0;
   }
 
   if (!mysql_num_rows(result)) {
-    LogExecStr("Could not query last insert id: %s\n", mysql_error(mySQL));
+    FONLINE_LOG("Could not query last insert id: %s\n", mysql_error(mySQL));
     return 0;
   }
 
@@ -584,18 +591,18 @@ int SQLLastInsertId(MYSQL* mySQL) {
   return atoi(row[0]);
 }
 
-int SQLGetPlayerId(MYSQL* mySQL, std::string login) {
+int SQLGetPlayerId(MYSQL* mySQL, const std::string& login) {
   char buf[256];
-  _snprintf(buf, sizeof(buf) - 1, "SELECT * FROM `users` WHERE `login`='%s'", login.c_str());
+  snprintf(buf, sizeof(buf) - 1, "SELECT * FROM `users` WHERE `login`='%s'", login.c_str());
 
   if (mysql_query(mySQL, buf)) {
-    LogExecStr("Could not query player id: %s\n", mysql_error(mySQL));
+    FONLINE_LOG("Could not query player id: %s\n", mysql_error(mySQL));
     return 0;
   }
 
   MYSQL_RES* result = NULL;
   if (!(result = mysql_store_result(mySQL))) {
-    LogExecStr("Could not query player id: %s\n", mysql_error(mySQL));
+    FONLINE_LOG("Could not query player id: %s\n", mysql_error(mySQL));
     return 0;
   }
 
@@ -603,7 +610,7 @@ int SQLGetPlayerId(MYSQL* mySQL, std::string login) {
   if (numRows == 0) {
     return 0;
   } else if (numRows > 1) {
-    LogExecStr("Too many players with the same login (%s): %s\n", login.c_str(), mysql_error(mySQL));
+    FONLINE_LOG("Too many players with the same login (%s): %s\n", login.c_str(), mysql_error(mySQL));
     return 0;
   }
 
@@ -627,7 +634,7 @@ int SQL::SaveDataPlayer(crit_info* info)
 {
 	if(!CodeParams(stats,skills,perks,info))
 	{
-		LogExecStr("!!!WORNING!!! SQL. Ошибка кодировки данных криттера\n");
+		FONLINE_LOG("!!!WORNING!!! SQL. Ошибка кодировки данных криттера\n");
 		return 0;
 	}
 
@@ -650,7 +657,7 @@ int SQL::LoadDataPlayer(crit_info* info)
 	sprintf(str, "SELECT * FROM users WHERE login='%s'", info->login);
 	if(mysql_query(mySQL, str))
 	{
-		LogExecStr("mySQL LoadDataPlayer error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL LoadDataPlayer error: %s\n", mysql_error(mySQL));
 		return 0;
 	}
 
@@ -706,7 +713,7 @@ int SQL::SaveDataNPC(crit_info* info)
 {
 	if(!CodeParams(stats,skills,perks,info))
 	{
-		LogExecStr("!!!WORNING!!! SQL. Ошибка кодировки данных криттера\n");
+		FONLINE_LOG("!!!WORNING!!! SQL. Ошибка кодировки данных криттера\n");
 		return 0;
 	}
 
@@ -727,7 +734,7 @@ int SQL::LoadDataNPC(crit_info* info)
 	sprintf(str, "SELECT * FROM npc WHERE id='%d'", info->id);
 	if(mysql_query(mySQL, str))
 	{
-		LogExecStr("mySQL LoadDataNPC error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL LoadDataNPC error: %s\n", mysql_error(mySQL));
 		return 0;
 	}
 
@@ -768,7 +775,7 @@ void SQL::DeleteDataNPC(crit_info* info)
 	Query("DELETE FROM npc WHERE id='%d'",info->id);
 }
 
-int SQL::CheckVarNPC(CritterID npc_id, std::string var_name, CritterID player_id, char oper, int count)
+int SQL::CheckVarNPC(CritterID npc_id, const std::string& var_name, CritterID player_id, char oper, int count)
 {
 	char uniq_name[80];
 
@@ -778,7 +785,7 @@ int SQL::CheckVarNPC(CritterID npc_id, std::string var_name, CritterID player_id
 		sprintf(uniq_name,"%d_%s",npc_id,var_name.c_str());
 	else
 	{
-		LogExecStr("Неизвестная переменная %s у %d при попытке проверки\n",var_name.c_str(),npc_id);
+		FONLINE_LOG("Неизвестная переменная %s у %d при попытке проверки\n",var_name.c_str(),npc_id);
 		return 0;
 	}
 
@@ -791,12 +798,12 @@ int SQL::CheckVarNPC(CritterID npc_id, std::string var_name, CritterID player_id
 		sprintf(str_f, "SELECT * FROM `npc_vars_templates` WHERE `npc_id`='%d' AND `name`='%s'", npc_id, var_name.c_str());
 		if(mysql_query(mySQL, str_f))
 		{
-			LogExecStr("mySQL CheckVarNPC error: %s\n", mysql_error(mySQL));
+			FONLINE_LOG("mySQL CheckVarNPC error: %s\n", mysql_error(mySQL));
 			return 0;
 		}
 
-		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("Проверка - Ошибка в записи переменной\n"); return 0; }
-		if(!mysql_num_rows(mySQL_res)) { LogExecStr("Проверка - Шаблон переменной не найден\n"); return 0; }
+		if(!(mySQL_res=mysql_store_result(mySQL))) { FONLINE_LOG("Проверка - Ошибка в записи переменной\n"); return 0; }
+		if(!mysql_num_rows(mySQL_res)) { FONLINE_LOG("Проверка - Шаблон переменной не найден\n"); return 0; }
 		mySQL_row=mysql_fetch_row(mySQL_res);
 
 		int var_count=atoi(mySQL_row[3]);
@@ -816,7 +823,7 @@ int SQL::CheckVarNPC(CritterID npc_id, std::string var_name, CritterID player_id
 	return 0;
 }
 
-void SQL::ChangeVarNPC(CritterID npc_id, std::string var_name, CritterID player_id, char oper, int count)
+void SQL::ChangeVarNPC(CritterID npc_id, const std::string& var_name, CritterID player_id, char oper, int count)
 {
 	char uniq_name[80];
 
@@ -826,7 +833,7 @@ void SQL::ChangeVarNPC(CritterID npc_id, std::string var_name, CritterID player_
 		sprintf(uniq_name,"%d_%s",npc_id,var_name.c_str());
 	else
 	{
-		LogExecStr("Неизвестная переменная %s у %d при попытке изменения\n",var_name.c_str(),npc_id);
+		FONLINE_LOG("Неизвестная переменная %s у %d при попытке изменения\n",var_name.c_str(),npc_id);
 		return;
 	}
 
@@ -844,12 +851,12 @@ void SQL::ChangeVarNPC(CritterID npc_id, std::string var_name, CritterID player_
 		sprintf(str_f, "SELECT * FROM npc_vars_templates WHERE npc_id='%d' AND name='%s'", npc_id, var_name.c_str());
 		if(mysql_query(mySQL, str_f))
 		{
-			LogExecStr("mySQL ChangeVarNPC error: %s\n", mysql_error(mySQL));
+			FONLINE_LOG("mySQL ChangeVarNPC error: %s\n", mysql_error(mySQL));
 			return;
 		}
 
-		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("Изменение - Ошибка в записи переменной\n"); return; }
-		if(!mysql_num_rows(mySQL_res)) { LogExecStr("Изменение - Шаблон переменной не найден\n"); return; }
+		if(!(mySQL_res=mysql_store_result(mySQL))) { FONLINE_LOG("Изменение - Ошибка в записи переменной\n"); return; }
+		if(!mysql_num_rows(mySQL_res)) { FONLINE_LOG("Изменение - Шаблон переменной не найден\n"); return; }
 		mySQL_row=mysql_fetch_row(mySQL_res);
 
 		int var_count=atoi(mySQL_row[3]);
@@ -880,7 +887,7 @@ int SQL::CheckVar(CritterID crid, uint16_t var_num, char oper, int count)
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL CheckVar error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL CheckVar error: %s\n", mysql_error(mySQL));
 		return 0;
 	}
 
@@ -903,12 +910,12 @@ int SQL::CheckVar(CritterID crid, uint16_t var_num, char oper, int count)
 		sprintf(str_f, "SELECT * FROM `player_vars_templates` WHERE `var_num`='%d'", var_num);
 		if(mysql_query(mySQL, str_f))
 		{
-			LogExecStr("mySQL CheckVar2 error: %s\n", mysql_error(mySQL));
+			FONLINE_LOG("mySQL CheckVar2 error: %s\n", mysql_error(mySQL));
 			return 0;
 		}
 
-		if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("Проверка2 - Ошибка в записи переменной\n"); return 0; }
-		if(!mysql_num_rows(mySQL_res)) { LogExecStr("Проверка2 - Шаблон переменной не найден\n"); return 0; }
+		if(!(mySQL_res=mysql_store_result(mySQL))) { FONLINE_LOG("Проверка2 - Ошибка в записи переменной\n"); return 0; }
+		if(!mysql_num_rows(mySQL_res)) { FONLINE_LOG("Проверка2 - Шаблон переменной не найден\n"); return 0; }
 		mySQL_row=mysql_fetch_row(mySQL_res);
 
 		int var_count=atoi(mySQL_row[2]);
@@ -945,7 +952,7 @@ void SQL::ChangeVar(CritterID crid, uint16_t var_num, char oper, int count)
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL ChangeVar error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL ChangeVar error: %s\n", mysql_error(mySQL));
 		return;
 	}
 
@@ -958,12 +965,12 @@ void SQL::ChangeVar(CritterID crid, uint16_t var_num, char oper, int count)
 			sprintf(str_f, "SELECT * FROM `player_vars_templates` WHERE `var_num`='%d'", var_num);
 			if(mysql_query(mySQL, str_f))
 			{
-				LogExecStr("mySQL ChangeVar2 error: %s\n", mysql_error(mySQL));
+				FONLINE_LOG("mySQL ChangeVar2 error: %s\n", mysql_error(mySQL));
 				return;
 			}
 
-			if(!(mySQL_res=mysql_store_result(mySQL))) { LogExecStr("Установка вары - Ошибка в записи переменной\n"); return; }
-			if(!mysql_num_rows(mySQL_res)) { LogExecStr("Установка вары - Шаблон переменной не найден\n"); return; }
+			if(!(mySQL_res=mysql_store_result(mySQL))) { FONLINE_LOG("Установка вары - Ошибка в записи переменной\n"); return; }
+			if(!mysql_num_rows(mySQL_res)) { FONLINE_LOG("Установка вары - Шаблон переменной не найден\n"); return; }
 			mySQL_row=mysql_fetch_row(mySQL_res);
 
 			int var_count=atoi(mySQL_row[2]);
@@ -1004,7 +1011,7 @@ void SQL::ChangeVar(CritterID crid, uint16_t var_num, char oper, int count)
 		return;
 	}
 
-	LogExecStr("mySQL ChangeVar error mysql_store_result\n");
+	FONLINE_LOG("mySQL ChangeVar error mysql_store_result\n");
 }
 
 int SQL::CheckQuest(CritterID crid, uint16_t quest_num, char choose, int count)
@@ -1028,7 +1035,7 @@ int SQL::CheckQuest(CritterID crid, uint16_t quest_num, char choose, int count)
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL CheckQuest error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL CheckQuest error: %s\n", mysql_error(mySQL));
 		return 0;
 	}
 
@@ -1072,7 +1079,7 @@ void SQL::ChangeQuest(CritterID crid, uint16_t quest_num, char choose, int count
 
 	if(mysql_query(mySQL,stradd))
 	{
-		LogExecStr("mySQL ChangeQuest error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL ChangeQuest error: %s\n", mysql_error(mySQL));
 		return;
 	}
 
@@ -1092,13 +1099,11 @@ void SQL::ChangeQuest(CritterID crid, uint16_t quest_num, char choose, int count
 	}
 }
 
-int SQL::CodeParams(char* stats, char* skills, char* perks, crit_info* info)
-{
-	int cc;
+int SQL::CodeParams(char* stats, char* skills, char* perks, crit_info* info) {
 	char tmpstr[6];
 
-	stats[0]=0;
-	for(cc=0; cc<ALL_STATS; cc++)
+	stats[0] = 0;
+	for(int cc = 0; cc < ALL_STATS; cc++)
 	{
 		if(info->st[cc]>9999) info->st[cc]=0;
 
@@ -1106,34 +1111,32 @@ int SQL::CodeParams(char* stats, char* skills, char* perks, crit_info* info)
 
 		strcat(stats,tmpstr);
 	}
-//	LogExecStr("stats:%s\n",stats);
+//	FONLINE_LOG("stats:%s\n",stats);
 
 	skills[0]=0;
-	for(cc=0; cc<ALL_SKILLS; cc++)
-	{
+	for(int cc = 0; cc < ALL_SKILLS; cc++) {
 		if(info->sk[cc]>300) info->sk[cc]=299;
 
 		sprintf(tmpstr,"%03d",info->sk[cc]);
 
 		strcat(skills,tmpstr);
 	}
-//	LogExecStr("skills:%s\n",skills);
+//	FONLINE_LOG("skills:%s\n",skills);
 
 	perks[0]=0;
-	for(cc=0; cc<ALL_PERKS; cc++)
-	{
+	for(int cc = 0; cc < ALL_PERKS; cc++) {
 		if(info->pe[cc]>9) info->pe[cc]=0;
 
 		sprintf(tmpstr,"%d",info->pe[cc]);
 
 		strcat(perks,tmpstr);
 	}
-//	LogExecStr("perks:%s\n",perks);
+//	FONLINE_LOG("perks:%s\n",perks);
 
 	return 1;
 }
 
-int SQL::DecodeParams(char* stats, char* skills, char* perks, crit_info* info)
+int SQL::DecodeParams(const char* stats, const char* skills, const char* perks, crit_info* info)
 {
 	int cc;
 	char tmpstr[6];
@@ -1362,7 +1365,7 @@ int SQL::LoadDataObject(dyn_obj* obj, uint8_t obj_type)
 
 	if(mysql_query(mySQL, str))
 	{
-		LogExecStr("mySQL LoadDataObject error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL LoadDataObject error: %s\n", mysql_error(mySQL));
 		return 0;
 	}
 
@@ -1441,12 +1444,12 @@ void SQL::DeleteDataObject(dyn_obj* obj)
 	}
 }
 
-void SQL::AddCheat(CritterID user_id, char* text_cheat)
+void SQL::AddCheat(CritterID user_id, const char* text_cheat)
 {
 	Query("INSERT INTO `users_cheat` (user_id,text_cheat) VALUES ('%d','%s');",user_id,text_cheat);
 }
 
-int SQL::CountTable(char* table, char* row)
+int SQL::CountTable(const char* table, const char* row)
 {
 	if(!Query("SELECT %s FROM %s", row, table)) return 0;
 
@@ -1456,33 +1459,32 @@ int SQL::CountTable(char* table, char* row)
 }
 
 
-void SQL::PrintTableInLog(char* table, char* rows)
+void SQL::PrintTableInLog(const char* table, const char* rows)
 {
-	LogExecStr("Выводим таблицу: %s\n", table);
+	FONLINE_LOG("Выводим таблицу: %s\n", table);
 
 	if(!Query("SELECT %s FROM %s",rows,table)) return;
 
 	if(!(mySQL_res=mysql_store_result(mySQL))) return;
 
-	LogExecStr("Всего записей: %d \n",mysql_num_rows(mySQL_res));
+	FONLINE_LOG("Всего записей: %d \n",mysql_num_rows(mySQL_res));
 
 	while((mySQL_row=mysql_fetch_row(mySQL_res)))
 	{
 		for (unsigned int pt = 0; pt < mysql_num_fields(mySQL_res); pt++)
-			LogExecStr("%s - ",mySQL_row[pt]);
-		LogExecStr(" | \n ");
+			FONLINE_LOG("%s - ",mySQL_row[pt]);
+		FONLINE_LOG(" | \n ");
 	}
 
 }
 
-void SQL::WriteLog(char* str)
+void SQL::WriteLog(const char* str)
 {
 	char stradd[2176];
 	sprintf(stradd,"INSERT INTO `log` (log) VALUES ('%s');", str);
 
 	if(mysql_query(mySQL,stradd))
 	{
-		logging=1;
-		LogExecStr("mySQL WriteLog error: %s\n", mysql_error(mySQL));
+		FONLINE_LOG("mySQL WriteLog error: %s\n", mysql_error(mySQL));
 	}
 }

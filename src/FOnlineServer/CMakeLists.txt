@@ -21,5 +21,5 @@ set(TEST_CXX
 )
 
 add_executable(FOnlineServer ${APP_CXX} ${APP_HXX})
-target_link_libraries(FOnlineServer FOnlineCommon FOnlineFileManager IniFile mysql)
+target_link_libraries(FOnlineServer FOnlineCommon FOnlineFileManager IniFile mysqlclient)
 include_directories(..)

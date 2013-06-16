@@ -11,6 +11,8 @@
   #define FONLINE_COMMON_API
 #endif
 
+#include <stdint.h>
+
 #define FONLINE_LOG(fmt, ...) WriteLogFull(__FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__)
 
 FONLINE_COMMON_API int OpenLogFile(const char* fileName);
@@ -18,5 +20,8 @@ FONLINE_COMMON_API void CloseLogFile();
 FONLINE_COMMON_API void WriteLogFull(const char* file, unsigned int line, const char* func, const char* fmt, ...);
 FONLINE_COMMON_API void WriteLog(const char* fmt, ...);
 FONLINE_COMMON_API void ReportErrorMessage(const char* hdr, const char* fmt, ...);
+
+FONLINE_COMMON_API double Timestamp();
+FONLINE_COMMON_API int64_t GetMilliseconds();
 
 #endif  // FONLINE_BASE_FO_BASE_HPP_

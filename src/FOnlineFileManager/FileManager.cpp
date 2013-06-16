@@ -234,7 +234,7 @@ void FileManager::UnloadFile() {
   }
 }
 
-int FileManager::LoadFile(char* fileName, int pathType)
+int FileManager::LoadFile(const char* fileName, int pathType)
 {
   assert(fileName != NULL);
   assert(initialized);
@@ -244,18 +244,18 @@ int FileManager::LoadFile(char* fileName, int pathType)
 	char path[1024]="";
 	char pfname[1024]="";
 
-	strcpy(pfname,pathlst[pathType]);
-	strcat(pfname,fileName);
+	strcpy(pfname, pathlst[pathType]);
+	strcat(pfname, fileName);
 
-	strcpy(path,fo_dat);
-	strcat(path,pfname);
+	strcpy(path, fo_dat);
+	strcat(path, pfname);
 
 	//данные fo
   if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
     return 1;
   }
 
-	if(pathType==PT_ART_CRITTERS) {
+	if (pathType == PT_ART_CRITTERS) {
 		if (!lpDATcr.IsLoaded()) {
 		  FONLINE_LOG("Loading from normal FS.\n");
 			//попрбуем загрузить из critter_dat если это каталог

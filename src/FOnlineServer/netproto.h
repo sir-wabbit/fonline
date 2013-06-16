@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <set>
 #include <map>
+#include <string>
 
 // Для работы с двоичными константами.
 #define BIN__N(x) (x) | x>>3 | x>>6 | x>>9

@@ -33,19 +33,19 @@ public:
 	int Init_mySQL();
 	void Finish_mySQL();
 
-	int Query(char* query, ...);
+	int Query(const char* query, ...);
 	int Check(char* str);
 
-	int GetInt(char* table, char* find_row, char* row, char* row_vol);
-	int GetInt(char* table, char* find_row, char* row, int row_vol);
-	BOOL GetChar(char* table, char* find_row, char* row, char* row_vol, char* result);
-	BOOL GetChar(char* table, char* find_row, char* row, int row_vol, char* result);
+	int GetInt(const char* table, const char* find_row, const char* row, const char* row_vol);
+	int GetInt(const char* table, const char* find_row, const char* row, int row_vol);
+	bool GetChar(const char* table, const char* find_row, const char* row, const char* row_vol, char* result);
+	bool GetChar(const char* table, const char* find_row, const char* row, int row_vol, char* result);
 
-	BOOL CheckUser(char* name);
-	int CheckUserPass(char* name, char* pass);
+	bool CheckUser(const char* name);
+	int CheckUserPass(const char* name, const char* pass);
 
-	int CountRows(char* table, char* column, char* count_vol);
-	int CountRows(char* table, char* column, int count_vol);
+	int CountRows(const char* table, const char* column, const char* count_vol);
+	int CountRows(const char* table, const char* column, int count_vol);
 
 //игроки
 	int NewPlayer(crit_info* info);
@@ -60,8 +60,8 @@ public:
 	void DeleteDataNPC(crit_info* info);
 
 //переменные нпц
-	int CheckVarNPC(CritterID npc_id, std::string var_name, CritterID player_id, char oper, int count);
-	void ChangeVarNPC(CritterID npc_id, std::string var_name, CritterID player_id, char oper, int count);
+	int CheckVarNPC(CritterID npc_id, const std::string& var_name, CritterID player_id, char oper, int count);
+	void ChangeVarNPC(CritterID npc_id, const std::string& var_name, CritterID player_id, char oper, int count);
 
 //переменные игроков
 	int CheckVar(CritterID crid, uint16_t var_num, char oper, int count);
@@ -82,19 +82,19 @@ public:
 	void DeleteDataObject(dyn_obj* obj);
 
 //работа с таблицей читов
-	void AddCheat(CritterID user_id, char* text_cheat);
+	void AddCheat(CritterID user_id, const char* text_cheat);
 
 //сервис
-	void WriteLog(char* str);
+	void WriteLog(const char* str);
 
 
-	int CountTable(char* table, char* row);
-	void PrintTableInLog(char* table, char* rows);
+	int CountTable(const char* table, const char* row);
+	void PrintTableInLog(const char* table, const char* rows);
 
 private:
 
 	int CodeParams(char* stats, char* skills, char* perks, crit_info* info);
-	int DecodeParams(char* stats, char* skills, char* perks, crit_info* info);
+	int DecodeParams(const char* stats, const char* skills, const char* perks, crit_info* info);
 
 	bool Active;
 	true_char_set true_char;
@@ -107,10 +107,10 @@ private:
   std::string passwd;
   std::string host;
   std::string db;
-	UINT port;
+	uint16_t port;
 
 	std::string unix_socket;
-	ULONG clientflag;
+	uint32_t clientflag;
 };
 
 #endif // __SQL_H__

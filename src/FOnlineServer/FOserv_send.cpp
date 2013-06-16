@@ -3,6 +3,10 @@
 *********************************************************************/
 
 #include "stdafx.h"
+
+#include <stdio.h>
+#include <string.h>
+
 #include "FOServ.h"
 
 void CServer::Send_AddCritter(CCritter* acl, crit_info* pinfo) //Oleg + Cvet edit
@@ -26,7 +30,7 @@ void CServer::Send_AddCritter(CCritter* acl, crit_info* pinfo) //Oleg + Cvet edi
 	for(int i=0;i<5;i++)
 		acl->bout.Write(pinfo->cases[i],MAX_NAME);
 
-//	LogExecStr("Посылаю данные id=%d о обноружении id=%d\n", acl->info.id, pinfo->id);
+//	FONLINE_LOG("Посылаю данные id=%d о обноружении id=%d\n", acl->info.id, pinfo->id);
 }
 
 void CServer::Send_RemoveCritter(CCritter* acl, CritterID remid) //Oleg
@@ -35,7 +39,7 @@ void CServer::Send_RemoveCritter(CCritter* acl, CritterID remid) //Oleg
 
 	acl->bout << msg;
 	acl->bout << remid;
-//LogExecStr("Посылаю данные id=%d о скрывании id=%d\n", acl->info.id, remid);
+//FONLINE_LOG("Посылаю данные id=%d о скрывании id=%d\n", acl->info.id, remid);
 }
 
 void CServer::Send_LoadMap(CCritter* acl)
@@ -85,14 +89,14 @@ void CServer::SendA_Move(CCritter* acl, uint16_t move_params)
 			c->bout << acl->info.x;
 			c->bout << acl->info.y;
 
-//LogExecStr("Посылаю данные id=%d о ходе игроком id=%d\n",c->info.id, acl->info.id);
+//FONLINE_LOG("Посылаю данные id=%d о ходе игроком id=%d\n",c->info.id, acl->info.id);
 		}
 	}
 }
 
 void CServer::SendA_Action(CCritter* acl, uint8_t num_action, uint8_t rate_action)
 {
-//LogExecStr("Send_Action - BEGIN %d\n",acl->info.id);
+//FONLINE_LOG("Send_Action - BEGIN %d\n",acl->info.id);
 	if(!acl->vis_cl.empty())
 	{
 		MessageType msg=NETMSG_CRITTER_ACTION;
@@ -117,10 +121,10 @@ void CServer::SendA_Action(CCritter* acl, uint8_t num_action, uint8_t rate_actio
 			c->bout << rate_action;
 			c->bout << acl->info.ori;
 
-//LogExecStr("Посылаю данные id=%d о действии id=%d\n", c->info.id, acl->info.id);
+//FONLINE_LOG("Посылаю данные id=%d о действии id=%d\n", c->info.id, acl->info.id);
 		}
 	}
-//LogExecStr("Send_Action - END\n");
+//FONLINE_LOG("Send_Action - END\n");
 }
 
 void CServer::Send_AddObjOnMap(CCritter* acl, dyn_obj* o)
@@ -276,12 +280,12 @@ void CServer::Send_WearObject(CCritter* acl, dyn_obj* send_obj)
 
 void CServer::Send_Map(CCritter* acl, uint16_t map_num)
 {
-	LogExecStr("Отправка карты №%d игроку ID №%d...",map_num,acl->info.id);
+	FONLINE_LOG("Отправка карты №%d игроку ID №%d...",map_num,acl->info.id);
 
 	//acl->bout << map_size;
 	//acl->bout.Write(
 
-	LogExecStr("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void CServer::Send_XY(CCritter* acl)
@@ -292,7 +296,7 @@ void CServer::Send_XY(CCritter* acl)
 	acl->bout << acl->info.x;
 	acl->bout << acl->info.y;
 	acl->bout << acl->info.ori;
-//LogExecStr("Try connect! Send_XY id=%d\n", acl->info.id);
+//FONLINE_LOG("Try connect! Send_XY id=%d\n", acl->info.id);
 }
 
 void CServer::Send_AllParams(CCritter* acl, uint8_t type_param)
@@ -398,7 +402,7 @@ void CServer::Send_Talk(CCritter* acl, npc_dialog* send_dialog)
 
 void CServer::Send_GlobalInfo(CCritter* acl, uint8_t info_flags)
 {
-	LogExecStr("Посылаю данные о глобале...");
+	FONLINE_LOG("Посылаю данные о глобале...");
 
 	MessageType msg=NETMSG_GLOBAL_INFO;
 
@@ -467,7 +471,7 @@ void CServer::Send_GlobalInfo(CCritter* acl, uint8_t info_flags)
 
 	acl->bout << (uint8_t)(0xAA);
 
-	LogExecStr("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void CServer::SendA_GlobalInfo(gmap_group* group, uint8_t info_flags)
@@ -487,8 +491,17 @@ void CServer::Send_GameTime(CCritter* acl)
 {
 	MessageType msg=NETMSG_GAME_TIME;
 
-	GetSystemTime(&sys_time);
-	Game_Time=(sys_time.wHour*60+sys_time.wMinute)*TIME_MULTIPLER;
+	#if defined(_WIN32)
+		SYSTEMTIME sys_time;
+		GetSystemTime(&sys_time);
+		Game_Time = (sys_time.wHour * 60 + sys_time.wMinute) * TIME_MULTIPLER;
+	#else
+		time_t timer;
+		time(&timer);
+		struct tm * timeinfo = localtime(&timer);
+
+		Game_Time = (timeinfo->tm_hour * 60 + timeinfo->tm_min) * TIME_MULTIPLER;
+	#endif
 
 	Game_Day=15;
 	Game_Month=5;
@@ -507,7 +520,7 @@ void CServer::Send_Text(CCritter* to_acl, char* s_str, uint8_t say_param)
 
 	MessageType msg=NETMSG_CRITTERTEXT;
 
-	uint16_t s_len=strlen(s_str);
+	uint16_t s_len = strlen(s_str);
 
 	to_acl->bout << msg;
 	to_acl->bout << to_acl->info.id;
