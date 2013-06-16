@@ -1,9 +1,15 @@
 #include "stdafx.h"
+
+#include <stdio.h>
+#include <string.h>
+
+#include <FOnlineCommon/Common.hpp>
+
 #include "FOServ.h"
 
 int CServer::LoadAllPlayers()
 {
-	LogExecStr("Загрузка игроков\n");
+	FONLINE_LOG("Загрузка игроков\n");
 	//узнаем кол-во записей всего
 	int find_cl=sql.CountTable("users","id")-1;
 
@@ -20,7 +26,7 @@ int CServer::LoadAllPlayers()
 			if(num_cl==sql.GetInt("users","id","id",num_cl))
 			{
 				CCritter* ncl=new CCritter;
-				ncl->s=NULL;
+				ncl->s = 0;
 				ncl->info.id=num_cl;
 				ncl->state=STATE_DISCONNECT;
 				sql.GetChar("users","login","id",num_cl,&str_login[0]);
@@ -51,7 +57,7 @@ int CServer::LoadAllPlayers()
 			num_cl++;
 		}
 
-	LogExecStr("Загрузка игроков прошло успешно\n");
+	FONLINE_LOG("Загрузка игроков прошло успешно\n");
 	return 1;
 }
 
@@ -72,7 +78,7 @@ void CServer::SaveAllDataPlayers()
 
 void CServer::GenWear(dyn_obj* wear_obj, bool use_obj)
 {
-//	wear_obj->tick-=GetTickCount()-wear_obj->last_tick;
+//	wear_obj->tick-=GetMilliseconds()-wear_obj->last_tick;
 //	if(use_obj)
 //		wear_obj->tick-=wear_obj->object->p[17]/2000; //штраф за использование
 //	wear_obj->last_tick=wear_obj->tick;
@@ -411,13 +417,13 @@ void CServer::CreateParamsMaps()
 
 int CServer::UpdateVarsTemplate()
 {
-	LogExecStr("Обновление шаблонов переменных игроков\n");
+	FONLINE_LOG("Обновление шаблонов переменных игроков\n");
 
 	FILE *cf;
 
 	if(!(cf=fopen("data\\server\\data\\vars.txt","rt")))
 	{
-		LogExecStr("\tФайл vars не найден\n");
+		FONLINE_LOG("\tФайл vars не найден\n");
 		return 1;
 	}
 
@@ -431,65 +437,65 @@ int CServer::UpdateVarsTemplate()
 
 		if(ch=='#')
 		{
-			LogExecStr("\tНовая переменная...");
+			FONLINE_LOG("\tНовая переменная...");
 			if(!fscanf(cf,"%d",&tmp_int1))
 			{
 				err_update++;
-				LogExecStr("ошибка чтения\n");
+				FONLINE_LOG("ошибка чтения\n");
 				continue;
 			}
-			LogExecStr("номер=%d...",tmp_int1);
+			FONLINE_LOG("номер=%d...",tmp_int1);
 
 			if(sql.CountRows("player_vars_templates","var_num",tmp_int1))
 			{
-				LogExecStr("уже создана\n");
+				FONLINE_LOG("уже создана\n");
 				continue;
 			}
 
 			if(!fscanf(cf,"%d",&tmp_int2))
 			{
 				err_update++;
-				LogExecStr("ошибка чтения\n");
+				FONLINE_LOG("ошибка чтения\n");
 				continue;
 			}
-			LogExecStr("стартовое значение=%d...",tmp_int2);
+			FONLINE_LOG("стартовое значение=%d...",tmp_int2);
 
 			if(!fscanf(cf,"%d",&tmp_int3))
 			{
 				err_update++;
-				LogExecStr("ошибка чтения\n");
+				FONLINE_LOG("ошибка чтения\n");
 				continue;
 			}
-			LogExecStr("min=%d...",tmp_int3);
+			FONLINE_LOG("min=%d...",tmp_int3);
 
 			if(!fscanf(cf,"%d",&tmp_int4))
 			{
 				err_update++;
-				LogExecStr("ошибка чтения\n");
+				FONLINE_LOG("ошибка чтения\n");
 				continue;
 			}
-			LogExecStr("max=%d...",tmp_int4);
+			FONLINE_LOG("max=%d...",tmp_int4);
 
 			if(tmp_int3>tmp_int4 || tmp_int2<tmp_int3 || tmp_int2>tmp_int4)
 			{
 				err_update++;
-				LogExecStr("несоответствие в данных\n");
+				FONLINE_LOG("несоответствие в данных\n");
 				continue;
 			}
 
 			sql.Query("INSERT INTO `player_vars_templates` (var_num,count,min,max) "
 			"VALUES ('%d','%d','%d','%d');",tmp_int1,tmp_int2,tmp_int3,tmp_int4);
-			LogExecStr("добавлена\n");
+			FONLINE_LOG("добавлена\n");
 		}
 	}
 
-	LogExecStr("Обновление шаблонов переменных игроков прошло успешно\n");
+	FONLINE_LOG("Обновление шаблонов переменных игроков прошло успешно\n");
 	return err_update;
 }
 
 void CServer::Skill_Sneak_Change(CCritter* acl)
 {
-	acl->info.pe[PE_HIDE_MODE]=acl->info.pe[PE_HIDE_MODE]?FALSE:TRUE;
+	acl->info.pe[PE_HIDE_MODE]=acl->info.pe[PE_HIDE_MODE]?false:true;
 	Send_Param(acl,TYPE_PERK,PE_HIDE_MODE);
 	SetVisCr(acl);
 }
@@ -498,7 +504,7 @@ void CServer::Skill_Sneak_Set(CCritter* acl)
 {
 	if(acl->info.pe[PE_HIDE_MODE]) return;
 
-	acl->info.pe[PE_HIDE_MODE]=TRUE;
+	acl->info.pe[PE_HIDE_MODE]=true;
 	Send_Param(acl,TYPE_PERK,PE_HIDE_MODE);
 	SetVisCr(acl);
 }
@@ -507,14 +513,14 @@ void CServer::Skill_Sneak_UnSet(CCritter* acl)
 {
 	if(!acl->info.pe[PE_HIDE_MODE]) return;
 
-	acl->info.pe[PE_HIDE_MODE]=FALSE;
+	acl->info.pe[PE_HIDE_MODE]=false;
 	Send_Param(acl,TYPE_PERK,PE_HIDE_MODE);
 	SetVisCr(acl);
 }
 
 int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CritterID target_id)
 {
-//LogExecStr("Выполняется действие №1: АТАКА...");
+//FONLINE_LOG("Выполняется действие №1: АТАКА...");
 	//находим атакуемого
 	if(acl->info.id==target_id) return 0;
 	cl_map::iterator it=map_cr[acl->info.map].find(target_id);
@@ -524,7 +530,7 @@ int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CritterID target_id)
 	if(t_acl->info.cond==COND_DEAD) return 0;
 	//находим дистанцию
 	uint16_t dist=(uint16_t) sqrt(pow(acl->info.x-t_acl->info.x,2.0)+pow(acl->info.y-t_acl->info.y,2.0));
-//LogExecStr("дистанция до цели =%d...",dist);
+//FONLINE_LOG("дистанция до цели =%d...",dist);
 	//проверяем дистанцию
 	int wpn_max_dist=0;
 	int wpn_eff_dist=0;
@@ -580,7 +586,7 @@ int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CritterID target_id)
 //	int dmg=max_dmg*((100-DR-ammo_DR)/100);
 //	if(dmg<min_dmg) dmg=min_dmg;
 
-//LogExecStr("лифе олд =%d...",t_acl->info.st[ST_CURRENT_HP]);
+//FONLINE_LOG("лифе олд =%d...",t_acl->info.st[ST_CURRENT_HP]);
 	int t_cur_hp=t_acl->info.st[ST_CURRENT_HP];
 	int t_max_hp=t_acl->info.st[ST_MAX_LIFE];
 
@@ -591,7 +597,7 @@ int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CritterID target_id)
 
 	//t_acl->info.st[ST_CURRENT_HP]=t_cur_hp;
 	CHANGE_STAT(t_acl,ST_CURRENT_HP,=,t_cur_hp);
-//LogExecStr("лифе нев =%d...",t_acl->info.st[ST_CURRENT_HP]);
+//FONLINE_LOG("лифе нев =%d...",t_acl->info.st[ST_CURRENT_HP]);
 
 	//обновляем ориентацию атакуемого
 //	uint8_t new_ori=acl->info.ori+3;
@@ -609,7 +615,7 @@ int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CritterID target_id)
 	SendA_Action(acl,ACT_USE_OBJ,rate_object);
 	if(!t_acl->info.st[ST_CURRENT_HP]) //отыгрываем смерть
 	{
-//LogExecStr("смерть\n",dmg);
+//FONLINE_LOG("смерть\n",dmg);
 		//устанавливаем флаг смерти игроку
 		t_acl->info.cond=COND_DEAD;
 		if(attack_front==true)
@@ -662,8 +668,8 @@ int CServer::Act_Attack(CCritter* acl, uint8_t rate_object, CritterID target_id)
 
 void CServer::Process_CreateClient(CCritter* acl)
 {
-	LogExecStr("РЕГИСТРАЦИЯ ИГРОКА\n");
-	TICK tickStart=GetTickCount();
+	FONLINE_LOG("РЕГИСТРАЦИЯ ИГРОКА\n");
+	TICK tickStart=GetMilliseconds();
 
 	int bi;
 
@@ -710,7 +716,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data forProcess_CreateCCritter from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data forProcess_CreateCCritter from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,8);
 		return;
@@ -719,7 +725,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 //ПРОВЕРКА ДАННЫХ
 	if(sql.Check(acl->info.login) || sql.Check(acl->info.pass))
 	{
-		LogExecStr("Запрещенные символы при регистрации игрока: LOGIN или PASSWORD\n");
+		FONLINE_LOG("Запрещенные символы при регистрации игрока: LOGIN или PASSWORD\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,1);
 		return;
@@ -727,19 +733,19 @@ void CServer::Process_CreateClient(CCritter* acl)
 	//проверка на длинну логина
 	if(strlen(acl->info.login)<MIN_LOGIN || strlen(acl->info.login)>MAX_LOGIN)
 	{
-		LogExecStr("Неправильные данные при регистрации игрока: LOGIN\n");
+		FONLINE_LOG("Неправильные данные при регистрации игрока: LOGIN\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,1);
 		return;
 	}
 
-//	LogExecStr("logn:|%s|\n",acl->info.login);
-//	LogExecStr("pass:|%s|\n",acl->info.pass);
+//	FONLINE_LOG("logn:|%s|\n",acl->info.login);
+//	FONLINE_LOG("pass:|%s|\n",acl->info.pass);
 
 //проверка на наличие созданного по такому логину игрока
 	if(sql.CheckUser(acl->info.login))
 	{
-	  LogExecStr("No such user found.\n");
+	  FONLINE_LOG("No such user found.\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,3);
 		return;
@@ -747,7 +753,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 //проверка на длинну пасса
 	if(strlen(acl->info.pass)<MIN_LOGIN || strlen(acl->info.pass)>MAX_LOGIN)
 	{
-		LogExecStr("Неправильные данные при регистрации игрока: PASS\n");
+		FONLINE_LOG("Неправильные данные при регистрации игрока: PASS\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,2);
 		return;
@@ -755,7 +761,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 //проверка на длинну имени
 	if(strlen(acl->info.name)<MIN_NAME || strlen(acl->info.name)>MAX_NAME)
 	{
-		LogExecStr("Неправильные данные при регистрации игрока: NAME\n");
+		FONLINE_LOG("Неправильные данные при регистрации игрока: NAME\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,13);
 		return;
@@ -764,7 +770,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 	for(bi=0; bi<5; bi++)
 		if(strlen(acl->info.cases[bi])<MIN_NAME || strlen(acl->info.cases[bi])>MAX_NAME)
 		{
-			LogExecStr("Неправильные данные при регистрации игрока: CASES%d\n",bi);
+			FONLINE_LOG("Неправильные данные при регистрации игрока: CASES%d\n",bi);
 			acl->state=STATE_DISCONNECT;
 			Send_LoginMsg(acl,14);
 			return;
@@ -772,7 +778,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 //проверка пола
 	if(acl->info.st[ST_GENDER]<0 || acl->info.st[ST_GENDER]>1)
 	{
-		LogExecStr("Неправильные данные при регистрации игрока: ПОЛ\n");
+		FONLINE_LOG("Неправильные данные при регистрации игрока: ПОЛ\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,15);
 		return;
@@ -780,7 +786,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 //проверка возраста
 	if(acl->info.st[ST_AGE]<14 || acl->info.st[ST_AGE]>80)
 	{
-		LogExecStr("Неправильные данные при регистрации игрока: ВОЗРАСТ\n");
+		FONLINE_LOG("Неправильные данные при регистрации игрока: ВОЗРАСТ\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,16);
 		return;
@@ -794,7 +800,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 		(acl->info.st[ST_AGILITY	]<1)||(acl->info.st[ST_AGILITY		]>10)||
 		(acl->info.st[ST_LUCK		]<1)||(acl->info.st[ST_LUCK			]>10))
 		{
-			LogExecStr("Неправильные данные при регистрации игрока: SPECIAL №%d\n", bi);
+			FONLINE_LOG("Неправильные данные при регистрации игрока: SPECIAL №%d\n", bi);
 			acl->state=STATE_DISCONNECT;
 			Send_LoginMsg(acl,5);
 			return;
@@ -803,7 +809,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 		acl->info.st[ST_CHARISMA]+acl->info.st[ST_INTELLECT]+
 		acl->info.st[ST_AGILITY]+acl->info.st[ST_LUCK])!=40)
 		{
-			LogExecStr("Неправильные данные при регистрации игрока: SPECIAL сумма\n");
+			FONLINE_LOG("Неправильные данные при регистрации игрока: SPECIAL сумма\n");
 			acl->state=STATE_DISCONNECT;
 			Send_LoginMsg(acl,5);
 			return;
@@ -847,7 +853,7 @@ void CServer::Process_CreateClient(CCritter* acl)
 
 	if(!sql.NewPlayer(&acl->info))
 	{
-		LogExecStr("!!!WORNING!!!: траблы с mySQL - неудалось сохранить игрока\n");
+		FONLINE_LOG("!!!WORNING!!!: траблы с mySQL - неудалось сохранить игрока\n");
 		sql.DeleteDataPlayer(&acl->info);
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,8);
@@ -861,18 +867,18 @@ void CServer::Process_CreateClient(CCritter* acl)
 	//отключение клиента
 	acl->state=STATE_DISCONNECT;
 
-	LogExecStr("РЕГИСТРАЦИЯ ИГРОКА ПРОШЛА УСПЕШНО ЗА %d МСЕК\n", GetTickCount()-tickStart);
+	FONLINE_LOG("РЕГИСТРАЦИЯ ИГРОКА ПРОШЛА УСПЕШНО ЗА %d МСЕК\n", GetMilliseconds()-tickStart);
 }
 
 void CServer::Process_GetLogIn(CCritter* acl)
 {
-	LogExecStr("Клиент логиниться...");
+	FONLINE_LOG("Клиент логиниться...");
 
 	acl->bin.Read(acl->info.login,MAX_LOGIN);
 	acl->bin.Read(acl->info.pass,MAX_LOGIN);
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data for Process_GetLogIn from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data for Process_GetLogIn from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,8);
 		return;
@@ -880,7 +886,7 @@ void CServer::Process_GetLogIn(CCritter* acl)
 
 	if(acl->state!=STATE_CONN)
 	{
-		LogExecStr("CCritter not STATE_CONN for Process_GetLogIn from SockID %d!\n",acl->s);
+		FONLINE_LOG("CCritter not STATE_CONN for Process_GetLogIn from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,8);
 		return;
@@ -889,14 +895,14 @@ void CServer::Process_GetLogIn(CCritter* acl)
 	//проверка на длинну логина и пасса
 	if(strlen(acl->info.login)<MIN_LOGIN || strlen(acl->info.login)>MAX_LOGIN)
 	{
-	  LogExecStr("Login is either too short or too long.\n");
+	  FONLINE_LOG("Login is either too short or too long.\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,1);
 		return;
 	}
 	if(strlen(acl->info.pass)<MIN_LOGIN || strlen(acl->info.pass)>MAX_LOGIN)
 	{
-	  LogExecStr("Password is either too short or too long.\n");
+	  FONLINE_LOG("Password is either too short or too long.\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,2);
 		return;
@@ -904,14 +910,14 @@ void CServer::Process_GetLogIn(CCritter* acl)
 	//проверка запрещенных символов
 	if(sql.Check(acl->info.login) || sql.Check(acl->info.pass))
 	{
-		LogExecStr("Запрещенные символы при логине игрока: LOGIN или PASSWORD\n");
+		FONLINE_LOG("Запрещенные символы при логине игрока: LOGIN или PASSWORD\n");
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
 
 	if(!(acl->info.id=sql.CheckUserPass(acl->info.login,acl->info.pass)))
 	{
-		LogExecStr("Неправильный логин|%s| или пароль|%s|\n",acl->info.login,acl->info.pass);
+		FONLINE_LOG("Неправильный логин|%s| или пароль|%s|\n",acl->info.login,acl->info.pass);
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,9);
 		return;
@@ -920,7 +926,7 @@ void CServer::Process_GetLogIn(CCritter* acl)
 	int map=0;
 	if((map=sql.GetInt("users","map","id",acl->info.id))==0xFFFFFFFF)
 	{
-	  LogExecStr("Could not read player's map from DB.\n");
+	  FONLINE_LOG("Could not read player's map from DB.\n");
 		acl->state=STATE_DISCONNECT;
 		Send_LoginMsg(acl,8);
 		return;
@@ -934,12 +940,12 @@ void CServer::Process_GetLogIn(CCritter* acl)
 
 	Send_LoadMap(acl);
 
-	LogExecStr("OK\n");
+	FONLINE_LOG("OK\n");
 }
 
 void CServer::Process_MapLoaded(CCritter* acl)
 {
-	LogExecStr("Карта загружена. Отправка данных игроку...");
+	FONLINE_LOG("Карта загружена. Отправка данных игроку...");
 
 	BREAK_BEGIN
 		cl_map::iterator it_cr=cr.find(acl->info.id);
@@ -963,7 +969,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 		}
 		else if(!sql.LoadDataPlayer(&acl->info))
 		{
-		  LogExecStr("Could not load player's data.\n");
+		  FONLINE_LOG("Could not load player's data.\n");
 			acl->state=STATE_DISCONNECT;
 			Send_LoginMsg(acl,8);
 			return;
@@ -976,7 +982,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 
 		if(AddCrToMap(acl,acl->info.map,acl->info.x,acl->info.y)!=TR_OK) //чтоб друг другу на головы не высаживались
 		{
-		  LogExecStr("Could not add critter to map.\n");
+		  FONLINE_LOG("Could not add critter to map.\n");
 			Send_LoginMsg(acl,11);
 			acl->state=STATE_DISCONNECT;
 			return;
@@ -1015,7 +1021,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 		Send_GlobalInfo(acl,GM_INFO_ALL);
 
 		acl->state=STATE_GAME;
-		LogExecStr("Global OK\n");
+		FONLINE_LOG("Global OK\n");
 		return;
 	}
 
@@ -1063,7 +1069,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 
 	acl->state=STATE_GAME;
 
-	LogExecStr("Local OK\n");
+	FONLINE_LOG("Local OK\n");
 }
 
 void CServer::UseDefObj(CCritter* acl, uint8_t slot)
@@ -1113,11 +1119,11 @@ void CServer::Process_Move(CCritter* acl)
 
 	uint8_t dir=FLAG(move_params,BIN8(00000111));
 
-//	LogExecStr("Process_Move move_params=%d, dir=%d, how_move=%d\n",move_params,dir,how_move);
+//	FONLINE_LOG("Process_Move move_params=%d, dir=%d, how_move=%d\n",move_params,dir,how_move);
 
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data for Process_Move from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data for Process_Move from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
@@ -1206,14 +1212,14 @@ void CServer::Process_ChangeObject(CCritter* acl)
 
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data for Process_ChangeObject from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data for Process_ChangeObject from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
 
 	if(!acl->info.map) return;
 
-//LogExecStr("Process_ChangeObject id=%d, num_slot=%d\n", idobj, num_slot);
+//FONLINE_LOG("Process_ChangeObject id=%d, num_slot=%d\n", idobj, num_slot);
 
 	Skill_Sneak_UnSet(acl);
 
@@ -1285,7 +1291,7 @@ void CServer::Process_ChangeObject(CCritter* acl)
 
 void CServer::Process_UseObject(CCritter* acl)
 {
-//LogExecStr("Process_UseObject...");
+//FONLINE_LOG("Process_UseObject...");
 
 	uint8_t c_type_target;
 	uint32_t t_id;
@@ -1299,11 +1305,11 @@ void CServer::Process_UseObject(CCritter* acl)
 	acl->bin >> c_action;
 	acl->bin >> c_rate_object;
 
-//LogExecStr("Цель ID=%d, Тайл Х=%d, Тайл У=%d, Ориентация=%d, Режим использования=%d...",t_id,t_x,t_y,c_ori,t_action);
+//FONLINE_LOG("Цель ID=%d, Тайл Х=%d, Тайл У=%d, Ориентация=%d, Режим использования=%d...",t_id,t_x,t_y,c_ori,t_action);
 
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data for Process_UseObject from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data for Process_UseObject from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
@@ -1318,7 +1324,7 @@ void CServer::Process_UseObject(CCritter* acl)
 
 	if(acl->info.cond!=COND_LIFE)
 	{
-		LogExecStr("!WORNING! - читерство - попытка применить объект мертвым игроком. ид=|%d|\n",acl->info.id);
+		FONLINE_LOG("!WORNING! - читерство - попытка применить объект мертвым игроком. ид=|%d|\n",acl->info.id);
 		return;
 	}
 //Оружие
@@ -1360,7 +1366,7 @@ void CServer::Process_UseObject(CCritter* acl)
 
 		//не выходит ли изза границ режим использования
 		//	if(c_action>acl->info.a_obj->object->p[129])
-		//		{ LogExecStr("ОШИБКА - режим использования выходит изза границ\n"); return; }
+		//		{ FONLINE_LOG("ОШИБКА - режим использования выходит изза границ\n"); return; }
 
 			break;
 		case OBJ_TYPE_DRUG:
@@ -1380,7 +1386,7 @@ void CServer::Process_UseObject(CCritter* acl)
 
 	}
 	else
-		LogExecStr("!!!!!!!");
+		FONLINE_LOG("!!!!!!!");
 }
 
 void CServer::Process_PickObject(CCritter* acl)
@@ -1395,7 +1401,7 @@ void CServer::Process_PickObject(CCritter* acl)
 
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data for Process_PickObject from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data for Process_PickObject from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
@@ -1477,7 +1483,7 @@ void CServer::Process_UseSkill(CCritter* acl)
 
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data for Process_UseSkill from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data for Process_UseSkill from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
@@ -1523,7 +1529,7 @@ void CServer::Process_Dir(CCritter* acl) //!Cvet переделал
 
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data forProcess_Dir from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data forProcess_Dir from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
@@ -1555,7 +1561,7 @@ void CServer::Process_Dir(CCritter* acl) //!Cvet переделал
 			c->bout << acl->info.id;
 			c->bout << new_dir;
 
-//LogExecStr("Посылаю данные id=%d о действии id=%d\n", c->info.id, acl->info.id);
+//FONLINE_LOG("Посылаю данные id=%d о действии id=%d\n", c->info.id, acl->info.id);
 		}
 	}
 }

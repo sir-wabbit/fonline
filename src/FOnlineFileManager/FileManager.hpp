@@ -52,7 +52,7 @@ public:
   FONLINE_FILEMANAGER_API int Init(const char* masterDatPath, const char* critterDatPath, const char* fonlineDatPath);
   FONLINE_FILEMANAGER_API void Clear();
   FONLINE_FILEMANAGER_API void UnloadFile();
-  FONLINE_FILEMANAGER_API int LoadFile(char* fname, int PathType);
+  FONLINE_FILEMANAGER_API int LoadFile(const char* fname, int PathType);
 
   FONLINE_FILEMANAGER_API int GetFullPath(char* fname, int PathType, char* get_path); //!Cvet полный путь к файлу
 

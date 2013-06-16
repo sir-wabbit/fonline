@@ -7,25 +7,22 @@
 *********************************************************************/
 
 #include "stdafx.h"
+
+#include <string.h>
+#include <stdio.h>
+
 #include "Critter.h"
 
-CCritter::CCritter():
-i_npc(NULL),
-i_mob(NULL),
-group_move(NULL),
-target(NULL)
-{
-	s=-1;
+CCritter::CCritter(): i_npc(NULL), i_mob(NULL), group_move(NULL), target(NULL) {
+	s = -1;
 }
 
-CCritter::~CCritter()
-{
+CCritter::~CCritter() {
 	SAFEDEL(i_npc);
 	SAFEDEL(i_mob);
 }
 
-int CCritter::InitClient()
-{
+int CCritter::InitClient() {
 	GenParam();
 	GenLook();
 

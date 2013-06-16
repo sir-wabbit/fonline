@@ -104,21 +104,3 @@ char* FormatLastWin32Error() {
 char* FormatStdCError(int errorCode) {
   return strdup(strerror(errorCode));
 }
-
-void ReportErrorMessage(const char* hdr, const char* fmt, ...) {
-  assert(hdr != NULL);
-  assert(fmt != NULL);
-
-  char buf[2048];
-
-  va_list list;
-
-  va_start(list, fmt);
-  vsnprintf(buf, sizeof(buf) - 1, fmt, list);
-  va_end(list);
-
-  #ifdef _WIN32
-    MessageBoxU(NULL, buf, hdr, MB_OK|MB_ICONERROR);
-  #endif  // _WIN32
-  WriteLog("\n\nErrMsg> %s", buf);
-}

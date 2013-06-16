@@ -17,6 +17,12 @@
 #include "netproto.h"
 #include <zlib.h>
 #include <FOnlineCommon/buffer.hpp>
+
+#ifndef _WIN32
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <netinet/ip.h>
+#endif
 //#include "sql.h"
 
 
@@ -106,7 +112,7 @@ struct npc_dialog
 	uint32_t id_text;
 	answers_list answers;
 
-	UINT time_break; //время на прочтение диалога игроком
+	uint32_t time_break; //время на прочтение диалога игроком
 	uint8_t not_answer; //что делать если нет ответа
 };
 
@@ -203,8 +209,8 @@ public:
 	int InitNPC();
 	int InitMOB();
 
-	SOCKET s; // Socket id
-	SOCKADDR_IN from;
+	int s; // Socket id
+	sockaddr_in from;
 
   fonline::Buffer bin; // буфер входящий
 	fonline::Buffer bout; // буфер исходящий
@@ -224,8 +230,8 @@ public:
 
 	CCritter* target;
 
-	inline void GenParam();
-	inline void GenLook();
+	void GenParam();
+	void GenLook();
 
 	int CheckKnownCity(uint16_t city_num){if(known_cities.count(city_num)) return 1; return 0;};
 	int AddKnownCity(uint16_t city_num){if(known_cities.count(city_num)) return 0; known_cities.insert(city_num); return 1;};
@@ -235,18 +241,18 @@ public:
 	//int EraseKnownCitySQL(uint16_t city_num);
 
 	int IsFree() {
-	  if (GetTickCount() >= info.break_time + info.start_bt)
+	  if (GetMilliseconds() >= info.break_time + info.start_bt)
 	    return 1;
 	  return 0;
 	}
 	int IsBusy() {
-	  if (GetTickCount() >= info.break_time + info.start_bt)
+	  if (GetMilliseconds() >= info.break_time + info.start_bt)
 	    return 0;
 	  return 1;
 	}
 	void BreakTime(int ms) {
 	  info.break_time = ms;
-	  info.start_bt = GetTickCount();
+	  info.start_bt = GetMilliseconds();
 	}
 
 //	inline void Skill_Sneak_Change();

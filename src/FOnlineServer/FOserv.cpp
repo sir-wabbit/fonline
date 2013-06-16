@@ -1,20 +1,67 @@
 #include "stdafx.h"
 
-/********************************************************************
-	created:	18:08:2004   23:48; edited: 2006,2007
-
-	author:		Oleg Mareskin
-	add/edit:	Denis Balihin, Anton Tsvetinsky
-
-	purpose:
-*********************************************************************/
-
-
 #include "FOServ.h"
 
 #include "main.h"
 #include "socials.h"
 
+//#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#ifndef _WIN32
+	#include <unistd.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <netinet/ip.h>
+#endif
+
+#include <string>
+#include <algorithm>
+
+#include <IniFile/IniFile.hpp>
+
+namespace {
+
+char* strlwr(char* str) {
+	while (*str) {
+		*str = ::tolower(*str);
+		str++;
+	}
+}
+
+char* strupr(char* str) {
+	while (*str) {
+		*str = ::toupper(*str);
+		str++;
+	}
+}
+
+int stricmp(const char* str1, const char* str2) {
+	while (*str1 && *str2) {
+		if (::tolower(*str1) > ::tolower(*str2)) {
+			return 1;
+		} else if (::tolower(*str1) > ::tolower(*str2)) {
+			return -1;
+		} else {
+			return 0;
+		}
+
+		str1++, str2++;
+	}
+
+	if (*str1) {
+		return 1;
+	} else if (*str2) {
+		return -1;
+	} else {
+		return 0;
+	}
+}
+
+}  // namespace anonymous
 
 void *zlib_alloc(void *opaque, unsigned int items, unsigned int size);
 void zlib_free(void *opaque, void *address);
@@ -71,7 +118,7 @@ const cmdlist_def cmdlist[]=
 };
 //!Cvet ----
 
-HANDLE hDump;
+//HANDLE hDump;
 
 CServer* CServer::self=NULL; //!Cvet
 
@@ -93,7 +140,6 @@ CServer::~CServer()
 {
 	Finish();
 	SAFEDELA(outBUF);
-	CloseHandle(hDump);
 
 	self=NULL; //!Cvet
 }
@@ -117,10 +163,10 @@ void CServer::ClearClients() //!Cvet edit
 	cl_map::iterator it;
 	for(it=cl.begin();it!=cl.end();it++)
 	{
-		if((*it).second->s!=NULL)
+		if((*it).second->s != -1)
 		{
-			closesocket((*it).second->s);
-			deflateEnd(&(*it).second->zstrm);
+			::close((*it).second->s);
+			::deflateEnd(&(*it).second->zstrm);
 		}
 		delete (*it).second;
 	}
@@ -133,106 +179,93 @@ void CServer::ClearClients() //!Cvet edit
 	}
 	pc.clear();
 
-	NumClients=0;
-#ifndef FOSERVICE_VERSION
-	SetEvent(hUpdateEvent);
-#endif
+	NumClients = 0;
 }
 
 //!Cvet ++++ изменил много чего
-int CServer::ConnectClient(SOCKET serv)
-{
-	LogExecStr("Попытка соеденить нового клиента...");
+int CServer::ConnectClient(int serv) {
+	FONLINE_LOG("Попытка соеденить нового клиента...");
 
-    SOCKADDR_IN from;
-	int addrsize=sizeof(from);
+  sockaddr_in from;
+	socklen_t addrsize = sizeof(from);
+	int NewCl = ::accept(serv, (sockaddr*) &from, &addrsize);
 
-	SOCKET NewCl=accept(serv,(sockaddr*)&from,&addrsize);
-
-	if(NewCl==INVALID_SOCKET) { LogExecStr("INVALID_SOCKET №%d\n",NewCl); return 0; }
-
-	CCritter* ncl=new CCritter;
-	ncl->s=NewCl;
-	ncl->from=from;
-
-    ncl->zstrm.zalloc = zlib_alloc;
-    ncl->zstrm.zfree = zlib_free;
-    ncl->zstrm.opaque = NULL;
-
-	if(deflateInit(&ncl->zstrm,Z_DEFAULT_COMPRESSION)!=Z_OK)
-	{
-		LogExecStr("DeflateInit error forSockID=%d\n",NewCl);
-		ncl->state=STATE_DISCONNECT; //!!!!!
+	if (NewCl == -1) {
+		FONLINE_LOG("Invalid socket #%d\n", NewCl);
 		return 0;
 	}
 
-	int free_place=-1;
-	for(int i=0;i<MAX_CCritterS;i++) //проверяем есть ли свободный канал Для Игрока
-	{
-		if(!busy[i])
-		{
-			free_place=i; //опре-ся не занятый номер канала
-			ncl->info.idchannel=i;
-			busy[ncl->info.idchannel]=1;
+	CCritter* ncl = new CCritter;
+	ncl->s = NewCl;
+	ncl->from = from;
+
+  ncl->zstrm.zalloc = zlib_alloc;
+  ncl->zstrm.zfree = zlib_free;
+  ncl->zstrm.opaque = NULL;
+
+	if (deflateInit(&ncl->zstrm, Z_DEFAULT_COMPRESSION) != Z_OK) {
+		FONLINE_LOG("DeflateInit error forSockID=%d\n",NewCl);
+		ncl->state = STATE_DISCONNECT; //!!!!!
+		return 0;
+	}
+
+	int free_place = -1;
+	for(int i = 0; i < MAX_CCritterS; i++) {//проверяем есть ли свободный канал Для Игрока
+		if (!busy[i]) {
+			free_place = i; //опре-ся не занятый номер канала
+			ncl->info.idchannel = i;
+			busy[ncl->info.idchannel] = 1;
 			break;
 		}
 	}
 
-	if(free_place==-1)
-	{
-		LogExecStr("Нет свободного канала\n",NewCl);
-		ncl->state=STATE_DISCONNECT;
+	if(free_place == -1) {
+		FONLINE_LOG("Нет свободного канала\n", NewCl);
+		ncl->state = STATE_DISCONNECT;
 		return 0;
 	}
 
-	ncl->state=STATE_CONN;
+	ncl->state = STATE_CONN;
 
-	cl.insert(cl_map::value_type(ncl->info.idchannel,ncl));
+	cl.insert(cl_map::value_type(ncl->info.idchannel, ncl));
 
-   	NumClients++; //инкремент кол-ва подключенных клиентов
+ 	NumClients++; //инкремент кол-ва подключенных клиентов
 
-	LogExecStr("OK. Канал=%d. Всего клиентов в игре: %d\n",ncl->info.idchannel,NumClients);
-
-#ifndef FOSERVICE_VERSION
-	SetEvent(hUpdateEvent);
-#endif
+	FONLINE_LOG("OK. Канал=%d. Всего клиентов в игре: %d\n", ncl->info.idchannel, NumClients);
 
 	return 1;
 }
 
-void CServer::DisconnectClient(CritterID idchannel)
-{
-	LogExecStr("Disconnecting a client with the channel id =  %d...", idchannel);
+void CServer::DisconnectClient(CritterID idchannel) {
+	FONLINE_LOG("Disconnecting a client with the channel id =  %d...", idchannel);
 
 	cl_map::iterator it_ds=cl.find(idchannel);
 	if(it_ds==cl.end())
 	{
-		LogExecStr("WARNING: Could not find the client.\n");
+		FONLINE_LOG("WARNING: Could not find the client.\n");
 		return;
 	}
 
-	closesocket((*it_ds).second->s);
-	deflateEnd(&(*it_ds).second->zstrm);
+	::close((*it_ds).second->s);
+	::deflateEnd(&(*it_ds).second->zstrm);
 
 	//Освобождение канала
 	busy[idchannel]=0;
 
-	if((*it_ds).second->info.cond!=COND_NOT_IN_GAME)
-	{
-		SETFLAG((*it_ds).second->info.flags,FCRIT_DISCONNECT);
+	if ((*it_ds).second->info.cond != COND_NOT_IN_GAME) {
+		SETFLAG((*it_ds).second->info.flags, FCRIT_DISCONNECT);
 
-		if((*it_ds).second->info.map)
-			SendA_Action((*it_ds).second,ACT_DISCONNECT,NULL);
-		else
-			SendA_GlobalInfo((*it_ds).second->group_move,GM_INFO_CRITS);
+		if((*it_ds).second->info.map) {
+			SendA_Action((*it_ds).second, ACT_DISCONNECT, 0);
+		} else {
+			SendA_GlobalInfo((*it_ds).second->group_move, GM_INFO_CRITS);
+		}
 
 		sql.SaveDataPlayer(&(*it_ds).second->info);
-	}
-	else
-	{
-		LogExecStr(".1.");
+	} else {
+		FONLINE_LOG(".1.");
 		SAFEDEL((*it_ds).second); //!!!!!!!!BUG??? ВАЙ???!!!!
-		LogExecStr(".2.");
+		FONLINE_LOG(".2.");
 	}
 
 	//Удаление клиента из списка
@@ -240,15 +273,15 @@ void CServer::DisconnectClient(CritterID idchannel)
 
 	NumClients--;
 
-	LogExecStr("Отсоединение завершено. Всего клиентов в игре: %d\n",NumClients);
+	FONLINE_LOG("Отсоединение завершено. Всего клиентов в игре: %d\n",NumClients);
 }
 
 void CServer::RemoveCritter(CritterID id)
 {
-	LogExecStr("Удаляем криттера id=%d\n",id);
+	FONLINE_LOG("Удаляем криттера id=%d\n",id);
 
 	cl_map::iterator it=cr.find(id);
-	if(it==cr.end()) { LogExecStr("!!!WORNING!!! RemoveCritter - клиент не найден id=%d\n",id); return; } // Значит не нашел обьекта на карте
+	if(it==cr.end()) { FONLINE_LOG("!!!WORNING!!! RemoveCritter - клиент не найден id=%d\n",id); return; } // Значит не нашел обьекта на карте
 
 	if((*it).second->info.map)
 	{
@@ -261,11 +294,7 @@ void CServer::RemoveCritter(CritterID id)
 
 //	NumCritters--;
 
-	LogExecStr("Криттер удален\n");
-
-#ifndef FOSERVICE_VERSION
-	SetEvent(hUpdateEvent);
-#endif
+	FONLINE_LOG("Криттер удален\n");
 }
 //!Cvet ----
 
@@ -280,9 +309,9 @@ void CServer::RunGameLoop()
 	tv.tv_usec=0;
 	CCritter* c;
 
-	ticks=GetTickCount();
+	ticks=GetMilliseconds();
 
-	LogExecStr("***   Starting Game loop   ***\n");
+	FONLINE_LOG("***   Starting Game loop   ***\n");
 
 //!Cvet сбор статистики +++
 	loop_time=0;
@@ -313,7 +342,7 @@ void CServer::RunGameLoop()
 
 	while(!FOQuit)
 	{
-		ticks=GetTickCount()+100;
+		ticks=GetMilliseconds()+100;
 
 		FD_ZERO(&read_set);
 		FD_ZERO(&write_set);
@@ -333,7 +362,7 @@ void CServer::RunGameLoop()
 
 		select(0,&read_set,&write_set,&exc_set,&tv);
 
-		lt_ticks=GetTickCount();
+		lt_ticks=GetMilliseconds();
 		lt_FDsel+=lt_ticks-(ticks-100);
 
 	//Новое подключение клиента
@@ -343,7 +372,7 @@ void CServer::RunGameLoop()
 		}
 
 		lt_ticks2=lt_ticks;
-		lt_ticks=GetTickCount();
+		lt_ticks=GetMilliseconds();
 		lt_conn+=lt_ticks-lt_ticks2;
 
 	//!Cvet Прием данных от клиентов
@@ -352,14 +381,14 @@ void CServer::RunGameLoop()
 			c=(*it).second;
 			if((FD_ISSET(c->s,&read_set))&&(c->state!=STATE_DISCONNECT)) {
 				if(!Input(c)) {
-				  LogExecStr("Could not recieve data from a client.\n");
+				  FONLINE_LOG("Could not recieve data from a client.\n");
 				  c->state=STATE_DISCONNECT;
 				}
 		  }
 		}
 
 		lt_ticks2=lt_ticks;
-		lt_ticks=GetTickCount();
+		lt_ticks=GetMilliseconds();
 		lt_input+=lt_ticks-lt_ticks2;
 
 	//Обработка данных клиентов
@@ -372,7 +401,7 @@ void CServer::RunGameLoop()
 		}
 
 		lt_ticks2=lt_ticks;
-		lt_ticks=GetTickCount();
+		lt_ticks=GetMilliseconds();
 		lt_proc_cl+=lt_ticks-lt_ticks2;
 
 	//Обработка НПЦ
@@ -383,14 +412,14 @@ void CServer::RunGameLoop()
 		}
 
 		lt_ticks2=lt_ticks;
-		lt_ticks=GetTickCount();
+		lt_ticks=GetMilliseconds();
 		lt_proc_pc+=lt_ticks-lt_ticks2;
 
 	//Обработка Мобов
 		MOBs_Proccess();
 
 	//	lt_ticks2=lt_ticks;
-	//	lt_ticks=GetTickCount();
+	//	lt_ticks=GetMilliseconds();
 	//	lt_proc_pc+=lt_ticks-lt_ticks2;
 
 	//Посылка данных клиентов
@@ -401,7 +430,7 @@ void CServer::RunGameLoop()
 		}
 
 		lt_ticks2=lt_ticks;
-		lt_ticks=GetTickCount();
+		lt_ticks=GetMilliseconds();
 		lt_output+=lt_ticks-lt_ticks2;
 
 	//Убирание отключенных клиентов
@@ -416,41 +445,39 @@ void CServer::RunGameLoop()
 			}
 		}
 
-		GM_Process(ticks-GetTickCount());
+		GM_Process(ticks-GetMilliseconds());
 
-		lt_discon+=GetTickCount()-lt_ticks;
+		lt_discon+=GetMilliseconds()-lt_ticks;
 
 	//!Cvet сбор статистики
-		int32_t loop_cur=GetTickCount()-(ticks-100);
+		int32_t loop_cur=GetMilliseconds()-(ticks-100);
 		loop_time+=loop_cur;
 		loop_cycles++;
 		if(loop_cur > loop_max) loop_max=loop_cur;
 		if(loop_cur < loop_min) loop_min=loop_cur;
 
 	//если быстро справились, то спим
-		delta=ticks-GetTickCount();
+		delta=ticks-GetMilliseconds();
 		if(delta>0)
 		{
-			Sleep(delta);
+			usleep(delta * 1000);
 		}
-		else lags_count++;//LogExecStr("\nLag for%d ms\n",-delta);
+		else lags_count++;//FONLINE_LOG("\nLag for%d ms\n",-delta);
 	}
 
-	//LogExecStr("***   Finishing Game loop   ***\n\n");
+	//FONLINE_LOG("***   Finishing Game loop   ***\n\n");
 }
 
-int CServer::Input(CCritter* acl)
-{
-	UINT len=recv(acl->s,inBUF,2048,0);
-	if(len==SOCKET_ERROR || !len) // если клиент отвалился
-	{
-		LogExecStr("SOCKET_ERROR forSockID=%d\n",acl->s);
+int CServer::Input(CCritter* acl) {
+	int len = recv(acl->s, inBUF, 2048, 0);
+	if (len < 0 || !len) {// если клиент отвалился
+		FONLINE_LOG("SOCKET_ERROR forSockID=%d\n", acl->s);
 		return 0;
 	}
 
 	if(len==2048 || (acl->bin.writePosition+len>=acl->bin.capacity))
 	{
-		LogExecStr("FLOOD_CONTROL forSockID=%d\n",acl->s);
+		FONLINE_LOG("FLOOD_CONTROL forSockID=%d\n",acl->s);
 		return 0; // если флудит игрок
 	}
 
@@ -478,7 +505,7 @@ void CServer::Process(CCritter* acl) // Лист Событий
 				Process_CreateClient(acl);
 				break;
 			default:
-				LogExecStr("Неправильное MSG: %d от SockID %d при приеме LOGIN или CREATE_CCritter!\n",msg,acl->s);
+				FONLINE_LOG("Неправильное MSG: %d от SockID %d при приеме LOGIN или CREATE_CCritter!\n",msg,acl->s);
 				acl->state=STATE_DISCONNECT;
 				Send_LoginMsg(acl,8);
 				acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
@@ -504,7 +531,7 @@ void CServer::Process(CCritter* acl) // Лист Событий
 				Process_MapLoaded(acl);
 				break;
 			default:
-				LogExecStr("Неправильное MSG: %d от SockID %d при STATE_LOGINOK!\n",msg,acl->s);
+				FONLINE_LOG("Неправильное MSG: %d от SockID %d при STATE_LOGINOK!\n",msg,acl->s);
 		//		acl->state=STATE_DISCONNECT;
 		//		Send_LoginMsg(acl,8);
 		//		acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
@@ -568,7 +595,7 @@ void CServer::Process(CCritter* acl) // Лист Событий
 			Process_RuleGlobal(acl);
 			break;
 		default:
-			LogExecStr("Wrong MSG: %d from SockID %d при приеме игровых сообщений!\n",msg,acl->s);
+			FONLINE_LOG("Wrong MSG: %d from SockID %d при приеме игровых сообщений!\n",msg,acl->s);
 			//acl->state=STATE_DISCONNECT;
 			acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
 			return;
@@ -587,7 +614,7 @@ void CServer::Process_GetText(CCritter* acl)
 // 	if(acl->state!=STATE_GAME)
 	if(acl->bin.IsError() || len>MAX_TEXT)
 	{
-		LogExecStr("Wrong MSG data forProcess_GetText from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data forProcess_GetText from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
@@ -597,12 +624,12 @@ void CServer::Process_GetText(CCritter* acl)
 
 	if(acl->bin.IsError())
 	{
-		LogExecStr("Wrong MSG data forProcess_GetText - partial recv from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data forProcess_GetText - partial recv from SockID %d!\n",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
 
-//	LogExecStr("GetText: %s\n",str);
+//	FONLINE_LOG("GetText: %s\n",str);
 
 	char* param;
 	char* next;
@@ -681,9 +708,9 @@ void CServer::Process_GetText(CCritter* acl)
 				strcpy(self_str, "Покричу, только скажи что?!");
 			else
 			{
-				sprintf(self_str, "Вы закричали: !!!%s!!!",my_strupr(next));
-				sprintf(o_str, "%s закричал%s: !!!%s!!!",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"а",my_strupr(next));
-			//	sprintf(self_str, "!!!%s!!!",my_strupr(next));
+				sprintf(self_str, "Вы закричали: !!!%s!!!",strupr(next));
+				sprintf(o_str, "%s закричал%s: !!!%s!!!",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"а",strupr(next));
+			//	sprintf(self_str, "!!!%s!!!",strupr(next));
 			//	sprintf(o_str, "!!!%s!!!",next);
 			}
 
@@ -697,7 +724,7 @@ void CServer::Process_GetText(CCritter* acl)
 //				strcpy(self_str, "Что орем?!");
 //			else
 //			{
-//				sprintf(self_str, "Вы заорали: !!!%s!!!",my_strupr(next));							//!Cvet изм. .gender=='m'
+//				sprintf(self_str, "Вы заорали: !!!%s!!!",strupr(next));							//!Cvet изм. .gender=='m'
 //				sprintf(o_str, "%s заорал%s: !!!%s!!!",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"а",next);
 //			}
 //			break;
@@ -720,9 +747,9 @@ void CServer::Process_GetText(CCritter* acl)
 				strcpy(self_str, "Че шептать будем?...");
 			else
 			{
-				sprintf(self_str, "Вы прошептали: ...%s...",my_strlwr(next));							//!Cvet изм. .gender=='m'
-				sprintf(o_str, "%s прошептал%s: ...%s...",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"а",my_strlwr(next));
-			//	sprintf(self_str, "...%s...",my_strlwr(next));
+				sprintf(self_str, "Вы прошептали: ...%s...",strlwr(next));							//!Cvet изм. .gender=='m'
+				sprintf(o_str, "%s прошептал%s: ...%s...",MakeName(acl->info.name,mname),(acl->info.st[ST_GENDER]==0)?"":"а",strlwr(next));
+			//	sprintf(self_str, "...%s...",strlwr(next));
 			//	sprintf(o_str, "...%s...",next);
 			}
 
@@ -749,7 +776,7 @@ void CServer::Process_GetText(CCritter* acl)
 		}
 		break;
 	case CMD_EXIT: //выход ~exit
-		LogExecStr("CMD_EXIT for %s\n",acl->info.name);
+		FONLINE_LOG("CMD_EXIT for %s\n",acl->info.name);
 		acl->state=STATE_DISCONNECT;
 		break;
 	case CMD_CRITID: //узнать ИД криттера по его имени ~id name -> crid/"false"
@@ -783,7 +810,7 @@ void CServer::Process_GetText(CCritter* acl)
 	}
 //!Cvet ------------------------------------------
 
-//	LogExecStr("self: %s\not: %s\n",self_str,o_str);
+//	FONLINE_LOG("self: %s\not: %s\n",self_str,o_str);
 }
 
 void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
@@ -802,11 +829,11 @@ void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
 	CCritter* victim=NULL;
 	param=GetParam(aparam,&next);
 
-//	LogExecStr("ProcessSocial: %s\n",param?param:"NULL");
+//	FONLINE_LOG("ProcessSocial: %s\n",param?param:"NULL");
 
 	if(param && param[0] && GetPossParams(socid)!=SOC_NOPARAMS)
 	{
-		my_strlwr(param);
+		strlwr(param);
 		if(!strcmp(param,"я") && GetPossParams(socid)!=SOC_NOSELF)
 		{
 			GetSocSelfStr(socid,SelfStr,AllStr,&sender->info);
@@ -823,7 +850,7 @@ void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
 	else
 		GetSocNoStr(socid,SelfStr,AllStr,&sender->info);
 
-//	LogExecStr("self: %s\nvic: %s\nall: %s\n",SelfStr,VicStr,AllStr);
+//	FONLINE_LOG("self: %s\nvic: %s\nall: %s\n",SelfStr,VicStr,AllStr);
 	self_len=strlen(SelfStr);
 	vic_len=strlen(VicStr);
 	all_len=strlen(AllStr);
@@ -892,32 +919,31 @@ int CServer::Output(CCritter* acl)
 		outBUF=new char[outLEN];
 	}
 
-	acl->zstrm.next_in=(UCHAR*)acl->bout.data;
+	acl->zstrm.next_in=(unsigned char*)acl->bout.data;
 	acl->zstrm.avail_in=acl->bout.writePosition;
-	acl->zstrm.next_out=(UCHAR*)outBUF;
+	acl->zstrm.next_out=(unsigned char*)outBUF;
 	acl->zstrm.avail_out=outLEN;
 
-	DWORD br;
-	WriteFile(hDump,acl->bout.data,acl->bout.writePosition,&br,NULL);
+	//DWORD br;
+	//WriteFile(hDump,acl->bout.data,acl->bout.writePosition,&br,NULL);
 
 	if(deflate(&acl->zstrm,Z_SYNC_FLUSH)!=Z_OK)
 	{
-		LogExecStr("Deflate error forSockID=%d\n",acl->s);
-		acl->state=STATE_DISCONNECT;
+		FONLINE_LOG("Deflate error forSockID=%d\n",acl->s);
+		acl->state = STATE_DISCONNECT;
 		return 0;
 	}
 
-	int tosend=acl->zstrm.next_out-(UCHAR*)outBUF;
-	LogExecStr("idchannel=%d, send %d->%d bytes\n",acl->info.idchannel,acl->bout.writePosition,tosend);
-	int sendpos=0;
-	while(sendpos<tosend)
-	{
-		int bsent=send(acl->s,outBUF+sendpos,tosend-sendpos,0);
-		sendpos+=bsent;
-		if(bsent==SOCKET_ERROR)
-		{
-			LogExecStr("SOCKET_ERROR whilesend forSockID=%d\n",acl->s);
-			acl->state=STATE_DISCONNECT;
+	int tosend = acl->zstrm.next_out-(unsigned char*)outBUF;
+	FONLINE_LOG("idchannel=%d, send %d->%d bytes\n",acl->info.idchannel,acl->bout.writePosition,tosend);
+	int sendpos = 0;
+	while(sendpos < tosend) {
+		int bsent = send(acl->s, outBUF + sendpos, tosend - sendpos, 0);
+		sendpos += bsent;
+
+		if (bsent < 0) {
+			FONLINE_LOG("SOCKET_ERROR whilesend forSockID=%d\n", acl->s);
+			acl->state = STATE_DISCONNECT;
 			return 0;
 		}
 	}
@@ -927,44 +953,45 @@ int CServer::Output(CCritter* acl)
 	return 1;
 }
 
-int CServer::Init()
-{
-	if(Active) return 1;
-
-	Active=0;
-
-	LogExecStr("***   Starting initialization   ****\n");
-
-	hDump=CreateFile(".\\dump.dat",GENERIC_WRITE,FILE_SHARE_READ,NULL,CREATE_ALWAYS,0,NULL);
-	WSADATA WsaData;
-	if(WSAStartup(0x0101,&WsaData))
-	{
-		LogExecStr("WSAStartup error!");
-		goto SockEND;
+int CServer::Init() {
+	if (Active) {
+		return 1;
 	}
-	s=socket(AF_INET,SOCK_STREAM,0);
 
-	UINT port;
-	port=GetPrivateProfileInt("server","port",4000,".\\foserv.cfg");
+	Active = 0;
 
-	SOCKADDR_IN sin;
+	FONLINE_LOG("***   Starting initialization   ****\n");
+
+	//WSADATA WsaData;
+	//if (WSAStartup(0x0101, &WsaData))	{
+	//	FONLINE_LOG("WSAStartup error!");
+	//	goto SockEND;
+	//}
+	s = socket(AF_INET, SOCK_STREAM, 0);
+
+	IniFile::RecordMap settings;
+	if (!IniFile::LoadINI(".\\foserv.cfg", settings)) {
+    return false;
+  }
+	//port=GetPrivateProfileInt("server","port",4000,".\\foserv.cfg");
+	uint16_t port = IniFile::GetValue(settings, "server.port", 4000);
+
+	sockaddr_in sin;
 	sin.sin_family=AF_INET;
 	sin.sin_port=htons(port);
 	sin.sin_addr.s_addr=INADDR_ANY;
 
-	LogExecStr("Starting local server on port %d: ",port);
+	FONLINE_LOG("Starting local server on port %d: ",port);
 
-	if(bind(s,(sockaddr*)&sin,sizeof(sin))==SOCKET_ERROR)
-	{
-		LogExecStr("Bind error!");
+	if (bind(s, (sockaddr*) &sin, sizeof(sin)) < 0) {
+		FONLINE_LOG("Bind error!");
 		goto SockEND;
 	}
 
-	LogExecStr("OK\n");
+	FONLINE_LOG("OK\n");
 
-	if(listen(s,5)==SOCKET_ERROR)
-	{
-		LogExecStr("listen error!");
+	if (listen(s, 5) < 0) {
+		FONLINE_LOG("listen error!");
 		goto SockEND;
 	}
 
@@ -974,59 +1001,54 @@ int CServer::Init()
 	LoadSocials(sql.mySQL);
 
 //!Cvet ++++++++++++++++++++++++++++++++++++++++
-	LogExecStr("cr=%d\n",sizeof(CCritter));
-	LogExecStr("ci=%d\n",sizeof(crit_info));
-	LogExecStr("mi=%d\n",sizeof(mob_info));
+	FONLINE_LOG("cr=%d\n",sizeof(CCritter));
+	FONLINE_LOG("ci=%d\n",sizeof(crit_info));
+	FONLINE_LOG("mi=%d\n",sizeof(mob_info));
 
 	//if(!InitScriptSystem())
 	//{
-	//	LogExecStr("Script System Init FALSE\n");
+	//	FONLINE_LOG("Script System Init FALSE\n");
 	//	goto SockEND;
 	//}
 
 	CreateParamsMaps();
 
 	//шаблоны варов игроков
-	if(UpdateVarsTemplate()) goto SockEND;
+	if (UpdateVarsTemplate()) goto SockEND;
 
 	//файл-менеджер
-	if(!fm.Init()) goto SockEND;
+	if (!fm.Init()) goto SockEND;
 
 	//карты
-	if(!LoadAllMaps()) goto SockEND;
+	if (!LoadAllMaps()) goto SockEND;
 
 	//загрузка объектов
-	if(!LoadAllStaticObjects())
-	{
-		LogExecStr("Загрузка статических объектов прошла со сбоями!!!\n");
+	if (!LoadAllStaticObjects()) {
+		FONLINE_LOG("Загрузка статических объектов прошла со сбоями!!!\n");
 		goto SockEND;
 	}
 	//создаем всех клиентов
-	if(!LoadAllPlayers())
-	{
-		LogExecStr("Создание игроков прошли со сбоями!!!\n");
+	if (!LoadAllPlayers()) {
+		FONLINE_LOG("Создание игроков прошли со сбоями!!!\n");
 		goto SockEND;
 	}
 	//создаем всю динамику
-	if(!LoadAllObj())
-	{
-		LogExecStr("Создание динамических объектов прошла со сбоями!!!\n");
+	if (!LoadAllObj()) {
+		FONLINE_LOG("Создание динамических объектов прошла со сбоями!!!\n");
 		goto SockEND;
 	}
 	//загружаем НПЦ
-	if(!NPC_LoadAll())
-	{
-		LogExecStr("Загрузка НПЦ прошла со сбоями!!!\n");
+	if (!NPC_LoadAll()) {
+		FONLINE_LOG("Загрузка НПЦ прошла со сбоями!!!\n");
 		goto SockEND;
 	}
 	//загружаем мобов
-	if(!MOBs_LoadAllGroups())
-	{
-		LogExecStr("Загрузка Мобов прошла со сбоями!!!\n");
+	if (!MOBs_LoadAllGroups()) {
+		FONLINE_LOG("Загрузка Мобов прошла со сбоями!!!\n");
 		goto SockEND;
 	}
 
-//	LogExecStr("Создаем объекты\n");
+//	FONLINE_LOG("Создаем объекты\n");
 
 //	CreateObjToPl(101,1200);
 //	CreateObjToPl(102,1100);
@@ -1054,11 +1076,11 @@ int CServer::Init()
 //	sql.PrintTableInLog("objects","*");
 
 	Active=1;
-	LogExecStr("***   Initializing complete   ****\n\n");
+	FONLINE_LOG("***   Initializing complete   ****\n\n");
 	return 1;
 
 SockEND:
-	closesocket(s);
+	::close(s);
 	ClearClients();
 	return 0;
 
@@ -1068,7 +1090,7 @@ void CServer::Finish()
 {
 	if(!Active) return;
 
-	closesocket(s);
+	::close(s);
 
 	//FinishScriptSystem();
 	NPC_ClearAll();
@@ -1077,14 +1099,14 @@ void CServer::Finish()
 	UnloadSocials();
 	sql.Finish_mySQL();
 
-	LogExecStr("Server stopped\n");
+	FONLINE_LOG("Server stopped\n");
 
 	Active=0;
 }
 
 int CServer::GetCmdNum(char* cmd, uint8_t access_level)
 {
-//	my_strlwr(cmd);
+//	strlwr(cmd);
 
 //	if(!strcmp(cmd,cmdlist[CMD_EXIT].cmd))
 //		return CMD_EXIT;
@@ -1143,7 +1165,7 @@ char* CServer::GetParam(char* cmdstr,char** next)
 	return ret;
 }
 
-char* CServer::my_strlwr(char* str)
+/*char* CServer::strlwr(char* str)
 {
 	strlwr(str);
 	for(int i=0;str[i];i++)
@@ -1151,13 +1173,13 @@ char* CServer::my_strlwr(char* str)
 	return str;
 }
 
-char* CServer::my_strupr(char* str)
+char* CServer::strupr(char* str)
 {
 	strupr(str);
 	for(int i=0;str[i];i++)
 		if(str[i]>='а' && str[i]<='я') str[i]-=0x20;
 	return str;
-}
+}*/
 
 
 int CServer::PartialRight(char* str,char* et)
@@ -1189,20 +1211,17 @@ void zlib_free(void *opaque, void *address)
 }
 
 //!Cvet ++++++++++++++++++++++++++++++++++++
-int CServer::DistFast(int dx, int dy)
-{
-	if(dx<0) dx=-dx;
-	if(dy<0) dy=-dy;
-	if(dx<dy) return (123*dy+51*dx)/128;
-	else return (123*dx+51*dy)/128;
+int CServer::DistFast(int dx, int dy) {
+	if (dx < 0) dx = -dx;
+	if (dy < 0) dy = -dy;
+	if (dx < dy) return (123 * dy + 51 * dx) / 128;
+	else return (123 * dx + 51 * dy) / 128;
 }
 
-int CServer::DistSqrt(int dx, int dy)
-{
-	return (int) sqrt((double) dx*dx + (double) dy*dy);
+int CServer::DistSqrt(int dx, int dy) {
+	return (int) sqrt((double) dx * dx + (double) dy * dy);
 }
 
-void CServer::SetCheat(CCritter* acl, char* cheat_message)
-{
-	sql.AddCheat(acl->info.id,cheat_message);
+void CServer::SetCheat(CCritter* acl, const char* cheat_message) {
+	sql.AddCheat(acl->info.id, cheat_message);
 }

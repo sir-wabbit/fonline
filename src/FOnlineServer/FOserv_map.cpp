@@ -3,17 +3,22 @@
 *********************************************************************/
 
 #include "stdafx.h"
+
+#include <stdio.h>
+#include <string.h>
+
+#include <FOnlineCommon/Common.hpp>
+
 #include "FOServ.h"
 
 int CServer::RefreshZoneMasks()
 {
-	LogExecStr("Обновление карт зон...");
+	FONLINE_LOG("Обновление карт зон...");
 	int zx,zy;
 	bool not_all=false;
 
-	if(!fm.LoadFile("maps_westland.bmp",PT_SERVER_MASKS)) not_all=true;
-	else
-	{
+	if (!fm.LoadFile("maps_westland.bmp", PT_SERVER_MASKS)) not_all=true;
+	else {
 		for(zx=0;zx<GM_MAXZONEX;++zx)
 			for(zy=0;zy<GM_MAXZONEY;++zy)
 				if(GetZoneColor(&fm,zx,zy)==0xFF0000)
@@ -79,11 +84,11 @@ int CServer::RefreshZoneMasks()
 
 	if(not_all==true)
 	{
-		LogExecStr("прошло со сбоями\n");
+		FONLINE_LOG("прошло со сбоями\n");
 		return 0;
 	}
 
-	LogExecStr("OK\n");
+	FONLINE_LOG("OK\n");
 	return 1;
 }
 
@@ -101,18 +106,18 @@ int CServer::LoadAllMaps()
 {
 	if(!RefreshZoneMasks()) return 0;
 
-	LogExecStr("Загрузка карт\n");
+	FONLINE_LOG("Загрузка карт\n");
 
   // FIXME[24.11.2012 alex]: load with FileManager
 	FILE *cf;
 
 	if(!(cf=fopen("maps\\data_maps.txt","rt")))
 	{
-		LogExecStr("\tФайл data_maps не найден\n");
+		FONLINE_LOG("\tФайл data_maps не найден\n");
 		return 0;
 	}
 
-	LogExecStr("\tГлобальная карта...");
+	FONLINE_LOG("\tГлобальная карта...");
 
 	char ch;
 
@@ -127,19 +132,19 @@ int CServer::LoadAllMaps()
 		if(ch=='@')
 		{
 			fscanf(cf,"%d",&city_num); //citynum
-			if(city_num<0 || city_num>=MAX_CITIES) { LogExecStr("error - неверный номер города\n"); return 0; }
+			if(city_num<0 || city_num>=MAX_CITIES) { FONLINE_LOG("error - неверный номер города\n"); return 0; }
 			city[city_num].num=city_num;
 
 			fscanf(cf,"%d",&tmp_int); //x
-			if(tmp_int<0 || tmp_int>=GM_MAXX) { LogExecStr("error - неверная координата Х города\n"); return 0; }
+			if(tmp_int<0 || tmp_int>=GM_MAXX) { FONLINE_LOG("error - неверная координата Х города\n"); return 0; }
 			city[city_num].wx=tmp_int;
 
 			fscanf(cf,"%d",&tmp_int); //y
-			if(tmp_int<0 || tmp_int>=GM_MAXY) { LogExecStr("error - неверная координата Y города\n"); return 0; }
+			if(tmp_int<0 || tmp_int>=GM_MAXY) { FONLINE_LOG("error - неверная координата Y города\n"); return 0; }
 			city[city_num].wy=tmp_int;
 
 			fscanf(cf,"%d",&tmp_int); //radius
-			if(tmp_int<=0 || tmp_int>=GM_ZONE_LEN) { LogExecStr("error - неверный радиус города\n"); return 0; }
+			if(tmp_int<=0 || tmp_int>=GM_ZONE_LEN) { FONLINE_LOG("error - неверный радиус города\n"); return 0; }
 			city[city_num].radius=tmp_int;
 
 			while(!feof(cf))
@@ -148,30 +153,30 @@ int CServer::LoadAllMaps()
 				if(ch=='@') break;
 				if(ch!='#') continue;
 
-				fscanf(cf,"%d%s",&tmp_wrd,&tmp_str);
-				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { LogExecStr("error - данные о локальной карте неверны. номер карты.\n"); return 0; }
+				fscanf(cf,"%d%s", &tmp_wrd, tmp_str);
+				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { FONLINE_LOG("error - данные о локальной карте неверны. номер карты.\n"); return 0; }
 				map[tmp_wrd].num=tmp_wrd;
 				map_info* cur_map=&map[tmp_wrd];
 
 				map_str.insert(map_str_map::value_type(tmp_wrd,std::string(tmp_str)));
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=MAXHEXX) { LogExecStr("error - данные о локальной карте неверны. старт Х.\n"); return 0; }
+				if(tmp_wrd>=MAXHEXX) { FONLINE_LOG("error - данные о локальной карте неверны. старт Х.\n"); return 0; }
 				cur_map->start_hex_x=tmp_wrd;
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=MAXHEXY) { LogExecStr("error - данные о локальной карте неверны. старт Y.\n"); return 0; }
+				if(tmp_wrd>=MAXHEXY) { FONLINE_LOG("error - данные о локальной карте неверны. старт Y.\n"); return 0; }
 				cur_map->start_hex_y=tmp_wrd;
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=6) { LogExecStr("error - данные о локальной карте неверны. старт Ori.\n"); return 0; }
+				if(tmp_wrd>=6) { FONLINE_LOG("error - данные о локальной карте неверны. старт Ori.\n"); return 0; }
 				cur_map->start_ori=tmp_wrd;
 
 				cur_map->city=&city[city_num];
 
 				city[city_num].maps.push_back(cur_map);
 			}
-			if(feof(cf)) { LogExecStr("error - неожиданный конец файла\n"); return 0; }
+			if(feof(cf)) { FONLINE_LOG("error - неожиданный конец файла\n"); return 0; }
 
 			gm_zone[GM_ZONE(city[city_num].wx)][GM_ZONE(city[city_num].wy)].cities.push_back(&city[city_num]);
 		}
@@ -179,21 +184,21 @@ int CServer::LoadAllMaps()
 		{
 			fscanf(cf,"%d",&encaunter_num); //encaunter num
 			if(encaunter_num<0 || encaunter_num>=MAX_ENCAUNTERS)
-				{ LogExecStr("error - неверный номер энкаунтера\n"); return 0; }
+				{ FONLINE_LOG("error - неверный номер энкаунтера\n"); return 0; }
 			encaunter[encaunter_num].num=encaunter_num;
 
 			fscanf(cf,"%d",&tmp_wrd); //district
 			if(tmp_wrd==0 || tmp_wrd>(DISTRICT_WESTLAND|DISTRICT_MOUNTAINS|DISTRICT_FOREST|DISTRICT_OCEAN))
-				{ LogExecStr("error - неверная местность энкаунтера\n"); return 0; }
+				{ FONLINE_LOG("error - неверная местность энкаунтера\n"); return 0; }
 			encaunter[encaunter_num].district=tmp_wrd;
 
 			fscanf(cf,"%d",&tmp_wrd); //max_groups
 			if(tmp_wrd==0 || tmp_wrd>=ENCAUNTERS_MAX_GROUPS)
-				{ LogExecStr("error - неверные данные по максимальныйм группам в энкаунтере.\n"); return 0; }
+				{ FONLINE_LOG("error - неверные данные по максимальныйм группам в энкаунтере.\n"); return 0; }
 			encaunter[encaunter_num].max_groups=tmp_wrd;
 
-			fscanf(cf,"%d%s",&tmp_wrd,&tmp_str);
-				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { LogExecStr("error - данные о локальной карте неверны. номер карты.\n"); return 0; }
+			fscanf(cf,"%d%s",&tmp_wrd, tmp_str);
+				if(tmp_wrd==0 || tmp_wrd>=MAX_MAPS) { FONLINE_LOG("error - данные о локальной карте неверны. номер карты.\n"); return 0; }
 
 			map_str.insert(map_str_map::value_type(tmp_wrd,std::string(tmp_str)));
 			map[tmp_wrd].num=tmp_wrd;
@@ -204,39 +209,39 @@ int CServer::LoadAllMaps()
 			for(int i=0;i<encaunter[encaunter_num].max_groups;++i)
 			{
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=MAXHEXX) { LogExecStr("error - данные о энкаунтере неверны. старт Х.\n"); return 0; }
+				if(tmp_wrd>=MAXHEXX) { FONLINE_LOG("error - данные о энкаунтере неверны. старт Х.\n"); return 0; }
 				encaunter[encaunter_num].start_hx[i]=tmp_wrd;
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=MAXHEXY) { LogExecStr("error - данные о энкаунтере неверны. старт Y.\n"); return 0; }
+				if(tmp_wrd>=MAXHEXY) { FONLINE_LOG("error - данные о энкаунтере неверны. старт Y.\n"); return 0; }
 				encaunter[encaunter_num].start_hy[i]=tmp_wrd;
 
 				fscanf(cf,"%d",&tmp_wrd);
-				if(tmp_wrd>=6) { LogExecStr("error - данные о энкаунтере неверны. старт Ori.\n"); return 0; }
+				if(tmp_wrd>=6) { FONLINE_LOG("error - данные о энкаунтере неверны. старт Ori.\n"); return 0; }
 				encaunter[encaunter_num].start_ori[i]=tmp_wrd;
 			}
 
 			while(!feof(cf))
 			{
-				fscanf(cf,"%c",&ch);
+				fscanf(cf,"%c", &ch);
 				if(ch=='%') break;
 			}
 
 			encaunters_free.insert(encaunter_num);
 
-			if(ch!='%') { LogExecStr("error - неожиданный конец файла2\n"); return 0; }
+			if(ch!='%') { FONLINE_LOG("error - неожиданный конец файла2\n"); return 0; }
 		}
 	}
 
-	LogExecStr("ОК\n");
-	LogExecStr("\tЛокальные:\n");
+	FONLINE_LOG("ОК\n");
+	FONLINE_LOG("\tЛокальные:\n");
 
 	char fnam[32];
 
 	for(map_str_map::iterator it_m=map_str.begin();it_m!=map_str.end();it_m++)
 	{
 		strcpy(fnam,(*it_m).second.c_str());
-		LogExecStr("\t%s...",fnam);
+		FONLINE_LOG("\t%s...",fnam);
 
 		if(fm.LoadFile(fnam,PT_SERVER_MAPS))
 		{
@@ -244,14 +249,14 @@ int CServer::LoadAllMaps()
 		}
 		else
 		{
-			LogExecStr("FALSE\n");
+			FONLINE_LOG("false\n");
 			return 0;
 		}
 
-		LogExecStr("OK\n");
+		FONLINE_LOG("OK\n");
 	}
 
-	LogExecStr("Загрузка карт прошла успешно\n");
+	FONLINE_LOG("Загрузка карт прошла успешно\n");
 
 	/*
 	transit_map[11][0x10006D]=0x0C01008C0057;
@@ -383,7 +388,7 @@ int CServer::MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my)
 
 	if(FLAG(tile[acl->info.map][mx][my].flags,FT_TRANSIT))
 	{
-		LONGLONG find_transit=FindTransit(acl->info.map,mx,my);
+		uint64_t find_transit=FindTransit(acl->info.map,mx,my);
 
 		if(find_transit!=0xFFFFFFFFFFFFFFFFULL)
 		{
@@ -413,7 +418,7 @@ int CServer::MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my)
 
 	SETFLAG(tile[acl->info.map][mx][my].flags,FT_PLAYER);
 
-	//LogExecStr("x=%d,y=%d\n",acl->info.x,acl->info.y);
+	//FONLINE_LOG("x=%d,y=%d\n",acl->info.x,acl->info.y);
 
 	return MR_STEP;
 }
@@ -457,9 +462,9 @@ int CServer::AddCrToMap(CCritter* acl, uint16_t tmap, HexTYPE tx, HexTYPE ty)
 				}
 			}
 
-LogExecStr(".1.");
+FONLINE_LOG(".1.");
 			SAFEDEL((*it_cr).second);
-LogExecStr(".2.");
+FONLINE_LOG(".2.");
 			map_cr[tmap].erase(it_cr);
 		}
 		else
@@ -539,9 +544,9 @@ LogExecStr(".2.");
 	return TR_OK;
 }
 
-LONGLONG CServer::FindTransit(uint16_t num_map, HexTYPE num_x, HexTYPE num_y)
+uint64_t CServer::FindTransit(uint16_t num_map, HexTYPE num_x, HexTYPE num_y)
 {
-	LONGLONG find_transit=0;
+	uint64_t find_transit=0;
 
 	find_transit+=num_x << 16;
 	find_transit+=num_y;
@@ -594,7 +599,7 @@ void CServer::LMapGarbager(uint16_t num_map)
 		{
 			//GM_EncaunterFree(map[num_map].encaunter);
 			MOBs_EraseFromMap(num_map);
-			if(!map_cr[num_map].empty()) LogExecStr("Ошибка - Локация не очистилась после энкаунтера!!!\n");
+			if(!map_cr[num_map].empty()) FONLINE_LOG("Ошибка - Локация не очистилась после энкаунтера!!!\n");
 
 			map[num_map].encaunter->count_groups=0;
 			encaunters_busy.erase(map[num_map].encaunter->num);
@@ -619,7 +624,7 @@ void CServer::SetVisCr(CCritter* acl)
 
 		if(!c->info.map)
 		{
-			LogExecStr("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+			FONLINE_LOG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 			if(DelClFromVisVec(acl,c)) Send_RemoveCritter(c,acl->info.id);
 			continue;
 		}
@@ -919,9 +924,9 @@ void CServer::Process_RuleGlobal(CCritter* acl)
 		break;
 	case GM_RULE_COMMAND_TOLOCAL:
 		if(!param1)
-			GM_GroupToEncaunter(acl,NULL);
+			GM_GroupToEncaunter(acl, 0);
 		else
-			GM_GroupToCity(acl,param1,param2);
+			GM_GroupToCity(acl, param1, param2);
 		break;
 	case GM_RULE_COMMAND_SETSPEED:
 		GM_GroupSetSpeed(acl,param1);
@@ -936,7 +941,7 @@ void CServer::GM_Process(int max_time)
 {
 	if(max_time<=0) return;
 
-	uint32_t cur_time=GetTickCount();
+	uint32_t cur_time=GetMilliseconds();
 	int cur_zone=0;
 
 	while(true)
@@ -958,15 +963,15 @@ void CServer::GM_Process(int max_time)
 					//encaunter
 					if(cur_time-cur_group->last_encaunter>=ENCAUNTERS_TIME)
 					{
-						LogExecStr("gen enc+\n");
+						FONLINE_LOG("gen enc+\n");
 						int num_encaunter=0;
-						if(!(num_encaunter=GM_GroupToEncaunter(cur_group->rule,NULL))) cur_group->last_encaunter=GetTickCount();
+						if(!(num_encaunter=GM_GroupToEncaunter(cur_group->rule, 0))) cur_group->last_encaunter=GetMilliseconds();
 						else
 						{
 							MOBs_AddToEncaunter(num_encaunter,0);
 							//GM_GroupToEncaunter(cur_group->rule,NULL)
 						}
-						LogExecStr("gen enc-\n");
+						FONLINE_LOG("gen enc-\n");
 					}
 				}
 
@@ -985,9 +990,9 @@ void CServer::GM_Process(int max_time)
 		}
 
 		cur_zone++;
-		if(cur_zone>=GM_MAXZONEX*GM_MAXZONEY || GetTickCount()-cur_time>max_time)
+		if(cur_zone>=GM_MAXZONEX*GM_MAXZONEY || GetMilliseconds()-cur_time>max_time)
 		{
-			//LogExecStr("cur_zone=%d,time=%d(max:%d)\n",cur_zone,GetTickCount()-cur_time,max_time);
+			//FONLINE_LOG("cur_zone=%d,time=%d(max:%d)\n",cur_zone,GetMilliseconds()-cur_time,max_time);
 			break;
 		}
 	}
@@ -1144,7 +1149,7 @@ void CServer::GM_GroupStartMove(CCritter* rule_acl)
 	rule_acl->group_move->speedx=0;
 	rule_acl->group_move->speedy=0;
 
-	rule_acl->group_move->last_encaunter=GetTickCount();
+	rule_acl->group_move->last_encaunter=GetMilliseconds();
 
 	rule_acl->group_move->rule=rule_acl;
 	SETFLAG(rule_acl->info.flags,FCRIT_RULEGROUP);
@@ -1166,7 +1171,7 @@ void CServer::GM_GroupStartMove(CCritter* rule_acl)
 
 			cr=(*it_cr).second;
 
-			if(TransitCr(cr,0,0,0,0)!=TR_OK){ LogExecStr("Tr1 FALSE\n"); continue;}
+			if(TransitCr(cr,0,0,0,0)!=TR_OK){ FONLINE_LOG("Tr1 false\n"); continue;}
 
 			cr->group_move=&rule_acl->group;
 

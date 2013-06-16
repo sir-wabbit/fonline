@@ -3,9 +3,38 @@
 *********************************************************************/
 
 #include "stdafx.h"
+
+#include <stdio.h>
+#include <string.h>
+
+#include <FOnlineCommon/Common.hpp>
+#include <IniFile/IniFile.hpp>
+
 #include "FOServ.h"
 
 namespace {
+
+int stricmp(const char* str1, const char* str2) {
+	while (*str1 && *str2) {
+		if (::tolower(*str1) > ::tolower(*str2)) {
+			return 1;
+		} else if (::tolower(*str1) > ::tolower(*str2)) {
+			return -1;
+		} else {
+			return 0;
+		}
+
+		str1++, str2++;
+	}
+
+	if (*str1) {
+		return 1;
+	} else if (*str2) {
+		return -1;
+	} else {
+		return 0;
+	}
+}
 
 void ClearNpcInfo(npc_info* info) {
   for(dialogs_map::iterator dlgIt = info->dialogs.begin(); dlgIt!=info->dialogs.end(); ++dlgIt) {
@@ -61,7 +90,7 @@ int CServer::NPC_LoadAll()
 
 	if((cf2=fopen(file_name, "rt"))==NULL)
 	{
-		LogExecStr("Файл не найден |%s|\n", file_name);
+		FONLINE_LOG("Файл не найден |%s|\n", file_name);
 		return 0;
 	}
 
@@ -75,15 +104,15 @@ int CServer::NPC_LoadAll()
 
 		if(ch!='#') continue;
 
-		LogExecStr("Инициализация НПЦ:...");
+		FONLINE_LOG("Инициализация НПЦ:...");
 
 		if(fscanf(cf2,"%d%s",&npc_id,&npc_name[0])!=2)
 		{
-			LogExecStr("ошибка в чтении данных\n");
+			FONLINE_LOG("ошибка в чтении данных\n");
 			return 0;
 		}
 
-		LogExecStr("%s...",npc_name);
+		FONLINE_LOG("%s...",npc_name);
 
 		npc=new CCritter;
 		npc->i_npc=new npc_info;
@@ -92,7 +121,7 @@ int CServer::NPC_LoadAll()
 
 		if(npc_id<NPC_MIN_ID || npc_id>NPC_MAX_ID)
 		{
-			LogExecStr("неверный ID\n");
+			FONLINE_LOG("неверный ID\n");
 			return 0;
 		}
 
@@ -100,40 +129,59 @@ int CServer::NPC_LoadAll()
 
 		if(sql.CountRows("npc","id",npc->info.id))
 		{
-			LogExecStr("найден в базе...");
+			FONLINE_LOG("найден в базе...");
 
 			if(!sql.LoadDataNPC(&npc->info))
 			{
-				LogExecStr("Ошибка при загрузке основных параметров из БД\n");
+				FONLINE_LOG("Ошибка при загрузке основных параметров из БД\n");
 				return 0;
 			}
 		}
 		else
 		{
-			LogExecStr("в файле |%s|...",file_name);
+			FONLINE_LOG("в файле |%s|...",file_name);
 
 			bool Err_load=false;
 
 			Err_load=false;
+
+			using namespace IniFile;
+
+		  RecordMap mapInfo;
+		  LoadINI(file_name, mapInfo);
+
 		//основные параметры
 		//	if((npc->info.id		=GetPrivateProfileInt("info","id"		,-1,file_name))==-1) Err_load=true;
-			if((npc->info.base_type	=GetPrivateProfileInt("info","base_type",-1,file_name))==-1) Err_load=true;
-			if((npc->info.map		=GetPrivateProfileInt("info","map"		,-1,file_name))==-1) Err_load=true;
-			if((npc->info.x			=GetPrivateProfileInt("info","x"		,-1,file_name))==-1) Err_load=true;
-			if((npc->info.y			=GetPrivateProfileInt("info","y"		,-1,file_name))==-1) Err_load=true;
-			if((npc->info.ori		=GetPrivateProfileInt("info","ori"		,-1,file_name))==-1) Err_load=true;
+			if ((npc->info.base_type	= GetValue<int>(mapInfo, "info.base_type", -1)) == -1) Err_load=true;
+			if ((npc->info.map = GetValue<int>(mapInfo, "info.map", -1)) == -1) Err_load=true;
+			if ((npc->info.x = GetValue<int>(mapInfo, "info.x", -1)) == -1) Err_load=true;
+			if ((npc->info.y = GetValue<int>(mapInfo, "info.y", -1)) == -1) Err_load=true;
+			if ((npc->info.ori = GetValue<int>(mapInfo, "info.ori", -1)) == -1) Err_load=true;
 
-			GetPrivateProfileString("info","name"	,"e",npc->info.name		,MAX_NAME,file_name);
+			std::string tmp;
+
+			tmp = GetValue<std::string>(mapInfo, "info.name", "e");
+			tmp.copy(npc->info.name, MAX_NAME, 0);
 			if(npc->info.name[0]		=='e') Err_load=true;
-			GetPrivateProfileString("info","cases0"	,"e",npc->info.cases[0]	,MAX_NAME,file_name);
+
+			tmp = GetValue<std::string>(mapInfo, "info.cases0", "e");
+			tmp.copy(npc->info.cases[0], MAX_NAME, 0);
 			if(npc->info.cases[0][0]	=='e') Err_load=true;
-			GetPrivateProfileString("info","cases1"	,"e",npc->info.cases[1]	,MAX_NAME,file_name);
+
+			tmp = GetValue<std::string>(mapInfo, "info.cases1", "e");
+			tmp.copy(npc->info.cases[1], MAX_NAME, 0);
 			if(npc->info.cases[1][0]	=='e') Err_load=true;
-			GetPrivateProfileString("info","cases2"	,"e",npc->info.cases[2]	,MAX_NAME,file_name);
+
+			tmp = GetValue<std::string>(mapInfo, "info.cases2", "e");
+			tmp.copy(npc->info.cases[2], MAX_NAME, 0);
 			if(npc->info.cases[2][0]	=='e') Err_load=true;
-			GetPrivateProfileString("info","cases3"	,"e",npc->info.cases[3]	,MAX_NAME,file_name);
+
+			tmp = GetValue<std::string>(mapInfo, "info.cases3", "e");
+			tmp.copy(npc->info.cases[3], MAX_NAME, 0);
 			if(npc->info.cases[3][0]	=='e') Err_load=true;
-			GetPrivateProfileString("info","cases4"	,"e",npc->info.cases[4]	,MAX_NAME,file_name);
+
+			tmp = GetValue<std::string>(mapInfo, "info.cases4", "e");
+			tmp.copy(npc->info.cases[4], MAX_NAME, 0);
 			if(npc->info.cases[4][0]	=='e') Err_load=true;
 
 		//объекты
@@ -163,7 +211,7 @@ int CServer::NPC_LoadAll()
 
 			if(Err_load==true)
 			{
-				LogExecStr("Ошибка при загрузке основных параметров из файла\n");
+				FONLINE_LOG("Ошибка при загрузке основных параметров из файла\n");
 				return 0;
 			}
 		}
@@ -174,13 +222,13 @@ int CServer::NPC_LoadAll()
 		int p_tmpi=0;
 		if((cf=fopen(file_name, "rt"))==NULL)
 		{
-			LogExecStr("Файл не найден |%s|\n", file_name);
+			FONLINE_LOG("Файл не найден |%s|\n", file_name);
 			return 0;
 		}
 
 		while(!feof(cf))
 		{
-			fscanf(cf, "%s", &p_tmp1);
+			fscanf(cf, "%s", p_tmp1);
 			if(!stricmp(p_tmp1,"[vars]"))
 			{
 				char var_name[30];
@@ -190,11 +238,11 @@ int CServer::NPC_LoadAll()
 
 				while(!feof(cf))
 				{
-					fscanf(cf, "%s", &p_tmp1);
+					fscanf(cf, "%s", p_tmp1);
 					if(!stricmp(p_tmp1,"[end_vars]")) break;
 				//имя
 			//		if(sql.GetInt("npc_vars_templates","COUNT(*)","name",p_tmp1))
-			//			{ LogExecStr("Ошибка в переменных - реиндитификация\n"); return 0; }
+			//			{ FONLINE_LOG("Ошибка в переменных - реиндитификация\n"); return 0; }
 					strcpy(var_name,p_tmp1);
 
 				//count
@@ -202,15 +250,15 @@ int CServer::NPC_LoadAll()
 					var_count=p_tmpi;
 
 				//min
-					fscanf(cf, "%s%d", &p_tmp1, &p_tmpi);
+					fscanf(cf, "%s%d", p_tmp1, &p_tmpi);
 					var_min=p_tmpi;
 
 				//max
-					fscanf(cf, "%s%d", &p_tmp1, &p_tmpi);
+					fscanf(cf, "%s%d", p_tmp1, &p_tmpi);
 					var_max=p_tmpi;
 
 					if(var_count<var_min || var_count>var_max)
-						{ LogExecStr("Ошибка в переменных - неверные данные\n"); return 0; }
+						{ FONLINE_LOG("Ошибка в переменных - неверные данные\n"); return 0; }
 
 					sql.Query("INSERT INTO npc_vars_templates (npc_id,name,count,min,max) VALUES('%d','%s','%d','%d','%d')",
 						npc->info.id,var_name,var_count,var_min,var_max);
@@ -228,16 +276,16 @@ int CServer::NPC_LoadAll()
 		char read_str2[100];
 		char read_str3[100];
 		char ch[20];
-		BOOL read_proc=FALSE;
+		bool read_proc = false;
 
 		if((cf=fopen(file_name, "rt"))!=NULL)
 		{
 			while(!feof(cf))
 			{
-				fscanf(cf, "%c", &ch);
+				fscanf(cf, "%c", ch);
 				if(ch[0]=='&')
 				{
-					read_proc=TRUE;
+					read_proc=true;
 					break;
 				}
 			}
@@ -255,18 +303,18 @@ int CServer::NPC_LoadAll()
 				fscanf(cf, "%d", &read_int);
 				dlg->id_text=read_int;
 			//действия при неответе
-				fscanf(cf, "%s", &read_str);
+				fscanf(cf, "%s", read_str);
 				dlg->not_answer=0;
 			//время на прочтение
 				fscanf(cf, "%d", &read_int);
 				if(read_int) dlg->time_break=read_int;
 //ДИАЛОГИ----------------------------------------------------------------------------------------
-				fscanf(cf, "%c", &ch);
+				fscanf(cf, "%c", ch);
 				if(ch[0]=='@') continue;
 				else if(ch[0]=='&') break;
 				else if(ch[0]!='#')
 				{
-					read_proc=FALSE;
+					read_proc=false;
 					break;
 				}
 //ОТВЕТЫ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -280,7 +328,7 @@ int CServer::NPC_LoadAll()
 					fscanf(cf, "%d", &read_int);
 					answ->id_text=read_int;
 //ОТВЕТЫ----------------------------------------------------------------------------------------
-					fscanf(cf, "%c", &ch);
+					fscanf(cf, "%c", ch);
 //УСЛОВИЯ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 					if(ch[0]=='u')
 					{
@@ -288,60 +336,60 @@ int CServer::NPC_LoadAll()
 						params_map::iterator it_d;
 						while(!feof(cf))
 						{
-							fscanf(cf, "%c", &ch);
+							fscanf(cf, "%c", ch);
 							if(ch[0]!='*') break;
 							new_demand=new demand;
 						//название требования
-							fscanf(cf, "%s", &read_str);
+							fscanf(cf, "%s", read_str);
 
 							if(!stricmp(read_str,"stat"))
 							{
-								fscanf(cf, "%s", &read_str2); //название стата
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
+								fscanf(cf, "%s", read_str2); //название стата
+								fscanf(cf, "%1s", read_str3); //оператор сравнения
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_demand->type=DEMAND_STAT;
 								it_d=stats_map.find(read_str2);
-								if(it_d==stats_map.end()) {SAFEDEL(new_demand); LogExecStr("Неизвестный стат %s\n", read_str2); return 0;}
+								if(it_d==stats_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный стат %s\n", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
 							}
 							else if(!stricmp(read_str,"skill"))
 							{
-								fscanf(cf, "%s", &read_str2); //название скилла
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
+								fscanf(cf, "%s", read_str2); //название скилла
+								fscanf(cf, "%1s", read_str3); //оператор сравнения
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_demand->type=DEMAND_SKILL;
 								it_d=skills_map.find(read_str2);
-								if(it_d==skills_map.end()) {SAFEDEL(new_demand); LogExecStr("Неизвестный скилл %s\n", read_str2); return 0;}
+								if(it_d==skills_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный скилл %s\n", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
 							}
 							else if(!stricmp(read_str,"perk"))
 							{
-								fscanf(cf, "%s", &read_str2); //название перка
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
+								fscanf(cf, "%s", read_str2); //название перка
+								fscanf(cf, "%1s", read_str3); //оператор сравнения
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_demand->type=DEMAND_PERK;
 								it_d=perks_map.find(read_str2);
-								if(it_d==perks_map.end()) {SAFEDEL(new_demand); LogExecStr("Неизвестный перк %s\n", read_str2); return 0;}
+								if(it_d==perks_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный перк %s\n", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
 							}
 							else if(!stricmp(read_str,"var"))
 							{
-								fscanf(cf, "%s", &read_str2); //название переменной
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
+								fscanf(cf, "%s", read_str2); //название переменной
+								fscanf(cf, "%1s", read_str3); //оператор сравнения
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_demand->type=DEMAND_VAR;
 
-						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); LogExecStr("Неизвестная переменная %s\n", read_str2); return 0;}
+						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); FONLINE_LOG("Неизвестная переменная %s\n", read_str2); return 0;}
 								new_demand->var_name=read_str2;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
@@ -349,7 +397,7 @@ int CServer::NPC_LoadAll()
 							else if(!stricmp(read_str,"pvar"))
 							{
 								fscanf(cf, "%d", &read_int); //номер переменной
-								fscanf(cf, "%1s", &read_str3); //оператор сравнения
+								fscanf(cf, "%1s", read_str3); //оператор сравнения
 								fscanf(cf, "%d", &read_int2); //значение
 
 								new_demand->type=DEMAND_PVAR;
@@ -373,7 +421,7 @@ int CServer::NPC_LoadAll()
 							else if(!stricmp(read_str,"item"))
 							{
 								fscanf(cf, "%d", &read_int); //номер итема
-								fscanf(cf, "%1s", &read_str2); //оператор сравнения
+								fscanf(cf, "%1s", read_str2); //оператор сравнения
 
 								SAFEDEL(new_demand);
 								continue;
@@ -381,7 +429,7 @@ int CServer::NPC_LoadAll()
 							else
 							{
 								SAFEDEL(new_demand);
-								LogExecStr("Неизвестное условие %s\n", read_str);
+								FONLINE_LOG("Неизвестное условие %s\n", read_str);
 								continue;
 							}
 							answ->demands.push_back(new_demand);
@@ -395,59 +443,59 @@ int CServer::NPC_LoadAll()
 						params_map::iterator it_r;
 						while(!feof(cf))
 						{
-							fscanf(cf, "%c", &ch);
+							fscanf(cf, "%c", ch);
 							if(ch[0]!='*') break;
 							new_result=new result;
 						//название результата
-							fscanf(cf, "%s", &read_str);
+							fscanf(cf, "%s", read_str);
 							if(!stricmp(read_str,"stat"))
 								{
-								fscanf(cf, "%s", &read_str2); //название стата
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
+								fscanf(cf, "%s", read_str2); //название стата
+								fscanf(cf, "%1s", read_str3); //оператор присваивания
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_result->type=RESULT_STAT;
 								it_r=stats_map.find(read_str2);
-								if(it_r==stats_map.end()) {SAFEDEL(new_result); LogExecStr("Неизвестный стат %s\n", read_str2); return 0;}
+								if(it_r==stats_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный стат %s\n", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
 							}
 							else if(!stricmp(read_str,"skill"))
 							{
-								fscanf(cf, "%s", &read_str2); //название скилла
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
+								fscanf(cf, "%s", read_str2); //название скилла
+								fscanf(cf, "%1s", read_str3); //оператор присваивания
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_result->type=RESULT_SKILL;
 								it_r=skills_map.find(read_str2);
-								if(it_r==skills_map.end()) {SAFEDEL(new_result); LogExecStr("Неизвестный скилл %s\n", read_str2); return 0;}
+								if(it_r==skills_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный скилл %s\n", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
 							}
 							else if(!stricmp(read_str,"perk"))
 							{
-								fscanf(cf, "%s", &read_str2); //название перка
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
+								fscanf(cf, "%s", read_str2); //название перка
+								fscanf(cf, "%1s", read_str3); //оператор присваивания
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_result->type=RESULT_PERK;
 								it_r=perks_map.find(read_str2);
-								if(it_r==perks_map.end()) {SAFEDEL(new_result); LogExecStr("Неизвестный перк %s\n", read_str2); return 0;}
+								if(it_r==perks_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный перк %s\n", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
 							}
 							else if(!stricmp(read_str,"var"))
 							{
-								fscanf(cf, "%s", &read_str2); //название переменной
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
+								fscanf(cf, "%s", read_str2); //название переменной
+								fscanf(cf, "%1s", read_str3); //оператор присваивания
 								fscanf(cf, "%d", &read_int); //значение
 
 								new_result->type=RESULT_VAR;
 
-						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); LogExecStr("Неизвестная переменная %s\n", read_str2); return 0;}
+						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); FONLINE_LOG("Неизвестная переменная %s\n", read_str2); return 0;}
 								new_result->var_name=read_str2;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
@@ -455,7 +503,7 @@ int CServer::NPC_LoadAll()
 							else if(!stricmp(read_str,"pvar"))
 							{
 								fscanf(cf, "%d", &read_int); //название переменной
-								fscanf(cf, "%1s", &read_str3); //оператор присваивания
+								fscanf(cf, "%1s", read_str3); //оператор присваивания
 								fscanf(cf, "%d", &read_int2); //значение
 
 								new_result->type=RESULT_PVAR;
@@ -479,7 +527,7 @@ int CServer::NPC_LoadAll()
 							else if(!stricmp(read_str,"item"))
 							{
 								fscanf(cf, "%d", &read_int); //номер итема
-								fscanf(cf, "%2s", &read_str2); //оператор присваивания
+								fscanf(cf, "%2s", read_str2); //оператор присваивания
 
 								SAFEDEL(new_result);
 								continue;
@@ -494,7 +542,7 @@ int CServer::NPC_LoadAll()
 							else
 							{
 								SAFEDEL(new_result);
-								LogExecStr("Неизвестный результат %s\n", read_str);
+								FONLINE_LOG("Неизвестный результат %s\n", read_str);
 								continue;
 							}
 							answ->results.push_back(new_result);
@@ -504,7 +552,7 @@ int CServer::NPC_LoadAll()
 				//проверки
 					if(feof(cf))
 					{
-						read_proc=FALSE;
+						read_proc=false;
 						break;
 					}
 					if(ch[0]=='#')
@@ -517,7 +565,7 @@ int CServer::NPC_LoadAll()
 						dlg->answers.push_back(answ);
 						break;
 					}
-					read_proc=FALSE;
+					read_proc=false;
 					break;
 				}
 				npc->i_npc->dialogs[dlg->id]=dlg;
@@ -528,33 +576,33 @@ int CServer::NPC_LoadAll()
 		}
 		else
 		{
-			LogExecStr("Файл не найден\n");
+			FONLINE_LOG("Файл не найден\n");
 			return 0;
 		}
 
 		if(!read_proc)
 		{
-			LogExecStr("Ошибка при инициализации\n");
+			FONLINE_LOG("Ошибка при инициализации\n");
 			return 0;
 		}
 
 		if(!sql.CountRows("npc","id",npc->info.id))
 			if(!sql.NewNPC(&npc->info))
 			{
-				LogExecStr("Ошибка регистрации НПЦ\n");
+				FONLINE_LOG("Ошибка регистрации НПЦ\n");
 				return 0;
 			}
 
 		if(AddCrToMap(npc,npc->info.map,npc->info.x,npc->info.y)!=TR_OK)
 		{
-			LogExecStr("Не удалось высадить НПЦ\n");
+			FONLINE_LOG("Не удалось высадить НПЦ\n");
 			return 0;
 		}
 
 		pc[npc->info.id]=npc;
 		cr[npc->info.id]=npc;
 
-		LogExecStr("OK\n");
+		FONLINE_LOG("OK\n");
 	}
 
 	fclose(cf2);
@@ -562,61 +610,61 @@ int CServer::NPC_LoadAll()
 	return 1;
 /*
 //Отладка
-	LogExecStr("\n");
-	LogExecStr("Отладочная инфа:\n");
+	FONLINE_LOG("\n");
+	FONLINE_LOG("Отладочная инфа:\n");
 
-	LogExecStr("Имя:%s, к0:%s, к2:%s, к3:%s, к4:%s\n", npc->info.name, npc->info.cases[0],
+	FONLINE_LOG("Имя:%s, к0:%s, к2:%s, к3:%s, к4:%s\n", npc->info.name, npc->info.cases[0],
 		npc->info.cases[1], npc->info.cases[2], npc->info.cases[3], npc->info.cases[4]);
-	LogExecStr("id:%d, карта:%d, x:%d, y:%d, ориентация:%d, тип нпц:%d\n", npc->info.id,
+	FONLINE_LOG("id:%d, карта:%d, x:%d, y:%d, ориентация:%d, тип нпц:%d\n", npc->info.id,
 		npc->info.map, npc->info.x, npc->info.y, npc->info.ori, npc->info.base_type);
 
 	npc_dialog* dlg=NULL;
 	answer* answ=NULL;
 
-	LogExecStr("Всего диалогов: %d\n", npc->i_npc->dialogs.size());
+	FONLINE_LOG("Всего диалогов: %d\n", npc->i_npc->dialogs.size());
 
 	for(dialogs_map::iterator it=npc->i_npc->dialogs.begin(); it!=npc->i_npc->dialogs.end(); it++)
 	{
-		LogExecStr("\n");
+		FONLINE_LOG("\n");
 
 		dlg=(*it).second;
 
-		LogExecStr("Диалог:%d, текст №%d, время на прочтение:%d, нет ответа:%d\n", dlg->id, dlg->id_text,
+		FONLINE_LOG("Диалог:%d, текст №%d, время на прочтение:%d, нет ответа:%d\n", dlg->id, dlg->id_text,
 			dlg->time_break, dlg->not_answer);
 
 		for(answers_list::iterator it_a=dlg->answers.begin(); it_a!=dlg->answers.end(); it_a++)
 		{
 			answ=(*it_a);
-			LogExecStr("Основной текст:%d, линк:%d, блокировка:%d, ", answ->id_text,
+			FONLINE_LOG("Основной текст:%d, линк:%d, блокировка:%d, ", answ->id_text,
 				answ->link_dialog, answ->lock_answered);
 
 			if(answ->demand.size())
 			{
-				LogExecStr("требования |");
+				FONLINE_LOG("требования |");
 
 				for(demand_map::iterator it_dm=answ->demand.begin(); it_dm!=answ->demand.end(); it_dm++)
-					LogExecStr(" %d > %d |", (*it_dm).first, (*it_dm).second);
+					FONLINE_LOG(" %d > %d |", (*it_dm).first, (*it_dm).second);
 			}
 			else
-				LogExecStr("требований нет");
+				FONLINE_LOG("требований нет");
 
-			LogExecStr(", ");
+			FONLINE_LOG(", ");
 
 			if(answ->overpatching.size())
 			{
-				LogExecStr("результат |");
+				FONLINE_LOG("результат |");
 
 				for(overpatching_map::iterator it_op=answ->overpatching.begin(); it_op!=answ->overpatching.end(); it_op++)
-					LogExecStr(" %d > %d |", (*it_op).first, (*it_op).second);
+					FONLINE_LOG(" %d > %d |", (*it_op).first, (*it_op).second);
 			}
 			else
-				LogExecStr("результатов нет");
+				FONLINE_LOG("результатов нет");
 
-			LogExecStr("\n");
+			FONLINE_LOG("\n");
 		}
 	}
 
-	LogExecStr("\n");
+	FONLINE_LOG("\n");
 
 	return 1;
 */
@@ -633,7 +681,7 @@ void CServer::NPC_Process(CCritter* npc)
 
 	if(npc->info.cond!=COND_LIFE) return;
 	if(npc->vis_cl.empty()) return;
-	if (npc->info.break_time + npc->info.start_bt > GetTickCount()) {
+	if (npc->info.break_time + npc->info.start_bt > GetMilliseconds()) {
 	  return;
 	}
 
@@ -664,11 +712,11 @@ void CServer::NPC_Process(CCritter* npc)
 		break;*/
 	default:
 	case MR_FALSE:
-		SetCheat(npc,"Process_Move - попытка походить в занятую клетку");
+		SetCheat(npc, "Process_Move - попытка походить в занятую клетку");
 		break;
 	}
 
-	npc->info.start_bt=GetTickCount();
+	npc->info.start_bt=GetMilliseconds();
 	npc->info.break_time=2000;
 }
 
@@ -852,19 +900,19 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 	{
 		if(!send_dialog)
 		{
-			LogExecStr("Диалог - Ошибка. Пустой указатель на предыдущий диалог\n");
+			FONLINE_LOG("Диалог - Ошибка. Пустой указатель на предыдущий диалог\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 		if(send_dialog->id==0 || send_dialog->id==1)
 		{
-			LogExecStr("Диалог - Ошибка. ID диалога равна %d\n", send_dialog->id);
+			FONLINE_LOG("Диалог - Ошибка. ID диалога равна %d\n", send_dialog->id);
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 		if(num_answer+1 > send_dialog->answers.size())
 		{
-			LogExecStr("Диалог - Ошибка. Ответ первышает максимальное значение ответов\n");
+			FONLINE_LOG("Диалог - Ошибка. Ответ первышает максимальное значение ответов\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
@@ -872,7 +920,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 		it_a=send_dialog->answers.begin()+num_answer;
 		if(!(*it_a))
 		{
-			LogExecStr("Диалог - Ошибка. Пустой указатель ответа\n");
+			FONLINE_LOG("Диалог - Ошибка. Пустой указатель ответа\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
@@ -893,7 +941,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 		it_d=npc->i_npc->dialogs.find((*it_a)->link);
 		if(it_d==npc->i_npc->dialogs.end())
 		{
-			LogExecStr("Диалог - Ошибка. Не найден диалог по ответу\n");
+			FONLINE_LOG("Диалог - Ошибка. Не найден диалог по ответу\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
@@ -901,7 +949,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 	//компануем диалог
 		if(!NPC_Dialog_Compile(npc,acl,(*it_d).second))
 		{
-			LogExecStr("Диалог - Ошибка. Неудалось скомпоновать диалог\n");
+			FONLINE_LOG("Диалог - Ошибка. Неудалось скомпоновать диалог\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
@@ -939,14 +987,14 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 
 		if(it_d==npc->i_npc->dialogs.end())
 		{
-			LogExecStr("Диалог - Ошибка. Не найден диалог по предустановкам\n");
+			FONLINE_LOG("Диалог - Ошибка. Не найден диалог по предустановкам\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 	//компануем диалог
 		if(!NPC_Dialog_Compile(npc,acl,(*it_d).second))
 		{
-			LogExecStr("Диалог - Ошибка. Неудалось скомпоновать диалог\n");
+			FONLINE_LOG("Диалог - Ошибка. Неудалось скомпоновать диалог\n");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}

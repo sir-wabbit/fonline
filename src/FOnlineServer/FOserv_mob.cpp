@@ -3,12 +3,18 @@
 *********************************************************************/
 
 #include "stdafx.h"
+
+#include <string.h>
+#include <stdio.h>
+
+#include <IniFile/IniFile.hpp>
+
 #include "FOServ.h"
 
 int CServer::MOBs_LoadAllGroups()
 {
 
-	LogExecStr("Загрузка групп мобов\n");
+	FONLINE_LOG("Загрузка групп мобов\n");
 
 	char ch1;
 	int num_group=0;
@@ -24,7 +30,7 @@ int CServer::MOBs_LoadAllGroups()
 
 	if(!(cf1=fopen(data_name, "rt")))
 	{
-		LogExecStr("Файл не найден |%s|\n",data_name);
+		FONLINE_LOG("Файл не найден |%s|\n",data_name);
 		return 0;
 	}
 
@@ -36,20 +42,20 @@ int CServer::MOBs_LoadAllGroups()
 
 		if(ch1!='@') continue;
 
-		LogExecStr("\tНайдена группа, номер:");
+		FONLINE_LOG("\tНайдена группа, номер:");
 
 		fscanf(cf1,"%d",&num_group);
 		if(num_group<=0 || num_group>=MOBS_MAX_GROUPS)
 		{
-			LogExecStr("неправильный номер группы\n");
+			FONLINE_LOG("неправильный номер группы\n");
 			return 0;
 		}
-		LogExecStr("%d...",num_group);
+		FONLINE_LOG("%d...",num_group);
 
 		cur_group=&mobs_gr[num_group];
 		if(cur_group->num)
 		{
-			LogExecStr("дублирование группы\n");
+			FONLINE_LOG("дублирование группы\n");
 			return 0;
 		}
 		cur_group->num=num_group;
@@ -63,15 +69,15 @@ int CServer::MOBs_LoadAllGroups()
 			if(ch1=='@') break;
 			if(ch1!='#') continue;
 
-			mob_name[0]=NULL;
+			mob_name[0] = 0;
 			fscanf(cf1,"%s",&mob_name[0]);
 			if(!mob_name[0])
 			{
-				LogExecStr("не удалось прочитать имя моба\n");
+				FONLINE_LOG("не удалось прочитать имя моба\n");
 				return 0;
 			}
 
-			LogExecStr("%s...",mob_name);
+			FONLINE_LOG("%s...",mob_name);
 
 /*
 	FILE* cf;
@@ -80,7 +86,7 @@ int CServer::MOBs_LoadAllGroups()
 
 	if(!(cf=fopen(mob_path, "rt")))
 	{
-		LogExecStr("Файл не найден |%s|\n",mob_path);
+		FONLINE_LOG("Файл не найден |%s|\n",mob_path);
 		return 0;
 	}
 
@@ -90,13 +96,18 @@ int CServer::MOBs_LoadAllGroups()
 			prep_mob_map::iterator it_fm=prep_mob.find(std::string(mob_name));
 			if(it_fm==prep_mob.end())
 			{
-				LogExecStr("Загрузка прототипа...");
+				FONLINE_LOG("Загрузка прототипа...");
 
 				CCritter* pmob=new CCritter;
 				pmob->i_mob=new mob_info;
 
 				char mob_path[256];
 				sprintf(mob_path,"%s%s.mob",PATH_MOB,mob_name);
+
+				using namespace IniFile;
+
+			  RecordMap mobInfo;
+			  LoadINI(mob_path, mobInfo);
 
 				bool Err_load=false;
 
@@ -106,24 +117,54 @@ int CServer::MOBs_LoadAllGroups()
 				pmob->info.y=0;
 				pmob->info.ori=0;
 
-				if((pmob->info.base_type=GetPrivateProfileInt("info","base_type",-1,mob_path))==-1) Err_load=true;
+				if ((pmob->info.base_type = GetValue<int>(mobInfo, "info.base_type", -1)) == -1) {
+					Err_load = true;
+				}
 
-				if((pmob->i_mob->base_cond=GetPrivateProfileInt("info","mob_info",-1,mob_path))==-1) Err_load=true;
-				pmob->i_mob->cond=pmob->i_mob->base_cond;
-				pmob->i_mob->name=std::string(mob_name);
+				if ((pmob->i_mob->base_cond = GetValue<int>(mobInfo, "info.mob_info", -1)) == -1) {
+					Err_load = true;
+				}
 
-				GetPrivateProfileString("info","name"	,"e",pmob->info.name		,MAX_NAME,mob_path);
-				if(pmob->info.name[0]		=='e') Err_load=true;
-				GetPrivateProfileString("info","cases0"	,"e",pmob->info.cases[0]	,MAX_NAME,mob_path);
-				if(pmob->info.cases[0][0]	=='e') Err_load=true;
-				GetPrivateProfileString("info","cases1"	,"e",pmob->info.cases[1]	,MAX_NAME,mob_path);
-				if(pmob->info.cases[1][0]	=='e') Err_load=true;
-				GetPrivateProfileString("info","cases2"	,"e",pmob->info.cases[2]	,MAX_NAME,mob_path);
-				if(pmob->info.cases[2][0]	=='e') Err_load=true;
-				GetPrivateProfileString("info","cases3"	,"e",pmob->info.cases[3]	,MAX_NAME,mob_path);
-				if(pmob->info.cases[3][0]	=='e') Err_load=true;
-				GetPrivateProfileString("info","cases4"	,"e",pmob->info.cases[4]	,MAX_NAME,mob_path);
-				if(pmob->info.cases[4][0]	=='e') Err_load=true;
+				pmob->i_mob->cond = pmob->i_mob->base_cond;
+				pmob->i_mob->name = std::string(mob_name);
+
+				std::string tmp;
+
+				tmp = GetValue<std::string>(mobInfo, "info.name", "e");
+				tmp.copy(pmob->info.name, MAX_NAME, 0);
+				if (pmob->info.name[0] == 'e') {
+					Err_load = true;
+				}
+
+				tmp = GetValue<std::string>(mobInfo, "info.cases0", "e");
+				tmp.copy(pmob->info.cases[0], MAX_NAME, 0);
+				if (pmob->info.cases[0][0] == 'e') {
+					Err_load = true;
+				}
+
+				tmp = GetValue<std::string>(mobInfo, "info.cases1", "e");
+				tmp.copy(pmob->info.cases[1], MAX_NAME, 0);
+				if (pmob->info.cases[1][0] == 'e') {
+					Err_load = true;
+				}
+
+				tmp = GetValue<std::string>(mobInfo, "info.cases2", "e");
+				tmp.copy(pmob->info.cases[2], MAX_NAME, 0);
+				if (pmob->info.cases[2][0] == 'e') {
+					Err_load = true;
+				}
+
+				tmp = GetValue<std::string>(mobInfo, "info.cases3", "e");
+				tmp.copy(pmob->info.cases[3], MAX_NAME, 0);
+				if (pmob->info.cases[3][0] == 'e') {
+					Err_load = true;
+				}
+
+				tmp = GetValue<std::string>(mobInfo, "info.cases4", "e");
+				tmp.copy(pmob->info.cases[4], MAX_NAME, 0);
+				if (pmob->info.cases[4][0] == 'e') {
+					Err_load = true;
+				}
 
 			//объекты
 				UseDefObj(pmob,DOBJ_SLOT_HAND1);
@@ -150,24 +191,24 @@ int CServer::MOBs_LoadAllGroups()
 
 				if(Err_load==true)
 				{
-					LogExecStr("Ошибка при загрузке основных параметров из файла\n");
+					FONLINE_LOG("Ошибка при загрузке основных параметров из файла\n");
 					SAFEDEL(pmob);
 					return 0;
 				}
 
 				prep_mob.insert(prep_mob_map::value_type(std::string(mob_name),pmob));
 
-				LogExecStr("OK...");
+				FONLINE_LOG("OK...");
 			}
 
 			it_fm=prep_mob.find(std::string(mob_name));
 			if(it_fm==prep_mob.end())
 			{
-				LogExecStr("Ошибка - не найден прототип\n");
+				FONLINE_LOG("Ошибка - не найден прототип\n");
 				return 0;
 			}
 
-			LogExecStr("прототип найден...");
+			FONLINE_LOG("прототип найден...");
 
 			mob=new CCritter;
 			mob->i_mob=new mob_info;
@@ -186,22 +227,22 @@ int CServer::MOBs_LoadAllGroups()
 			cur_mob_id++;
 			count_group++;
 
-			LogExecStr("OK...");
+			FONLINE_LOG("OK...");
 		}
 
 		if(ch1!='@')
 		{
-			LogExecStr("оибка чтения\n");
+			FONLINE_LOG("Read error.\n");
 			return 0;
 		}
 
 		if(!count_group || count_group>GM_MAX_GROUP)
 		{
-			LogExecStr("нулевая группа или превышает лимит\n");
+			FONLINE_LOG("нулевая группа или превышает лимит\n");
 			return 0;
 		}
 
-		LogExecStr("группа загружена\n");
+		FONLINE_LOG("группа загружена\n");
 
 		cur_group->mobs_count=count_group;
 		cur_group->mobs_level=0;
@@ -211,7 +252,7 @@ int CServer::MOBs_LoadAllGroups()
 
 	fclose(cf1);
 
-	LogExecStr("Загрузка групп мобов прошла успешно\n");
+	FONLINE_LOG("Загрузка групп мобов прошла успешно\n");
 
 	return 1;
 }
@@ -261,7 +302,7 @@ void CServer::MOBs_Proccess()
 			}
 			else
 			{
-				LogExecStr("!!!!MOB COND ERROR |%d|\n",mob->info.cond);
+				FONLINE_LOG("!!!!MOB COND ERROR |%d|\n",mob->info.cond);
 				continue;
 			}
 
@@ -273,7 +314,7 @@ void CServer::MOBs_Proccess()
 
 			if(!(ctx=ss->CreateContext()))
 			{
-				LogExecStr("e1\n");
+				FONLINE_LOG("e1\n");
 				ctx->Release();
 				continue;
 			}
@@ -282,14 +323,14 @@ void CServer::MOBs_Proccess()
 
 			if(!mainFunc)
 			{
-				LogExecStr("e2\n");
+				FONLINE_LOG("e2\n");
 				ctx->Release();
 				continue;
 			}
 
 			if(ctx->Prepare(mainFunc)<0)
 			{
-				LogExecStr("e3\n");
+				FONLINE_LOG("e3\n");
 				ctx->Release();
 				continue;
 			}
@@ -298,7 +339,7 @@ void CServer::MOBs_Proccess()
 
 			if(ctx->Execute()<0)
 			{
-				LogExecStr("e4\n");
+				FONLINE_LOG("e4\n");
 				ctx->Release();
 				continue;
 			}
@@ -310,7 +351,7 @@ void CServer::MOBs_Proccess()
 
 int CServer::MOBs_AddToEncaunter(uint16_t num_encaunter, uint8_t mobs_level)
 {
-LogExecStr("Высаживаем мобов==========================================\n");
+FONLINE_LOG("Высаживаем мобов==========================================\n");
 	encaunter_info* cur_encaunter=&encaunter[num_encaunter];
 	uint16_t num_map=cur_encaunter->emap->num;
 
@@ -338,7 +379,7 @@ LogExecStr("Высаживаем мобов=====================================
 			cur_encaunter->start_hx[cur_encaunter->count_groups],
 			cur_encaunter->start_hx[cur_encaunter->count_groups])!=TR_OK)
 		{
-			LogExecStr("Не удалось высадить моба!!!\n");
+			FONLINE_LOG("Не удалось высадить моба!!!\n");
 			continue;
 		}
 
@@ -350,8 +391,8 @@ LogExecStr("Высаживаем мобов=====================================
 	mobs_group_busy.insert(cur_mobs->num);
 	mobs_group_free.erase(cur_mobs->num);
 
-LogExecStr("x=%d,y=%d\n",cur_encaunter->start_hx[cur_encaunter->count_groups-1],cur_encaunter->start_hx[cur_encaunter->count_groups-1]);
-LogExecStr("Высадили мобов++++++++++++++++++++++++++++++++++++++++++++\n");
+FONLINE_LOG("x=%d,y=%d\n",cur_encaunter->start_hx[cur_encaunter->count_groups-1],cur_encaunter->start_hx[cur_encaunter->count_groups-1]);
+FONLINE_LOG("Высадили мобов++++++++++++++++++++++++++++++++++++++++++++\n");
 	return 1;
 }
 
@@ -359,7 +400,7 @@ void CServer::MOBs_EraseFromMap(uint16_t num_map)
 {
 	if(!num_map && num_map>=MAX_MAPS)
 	{
-		LogExecStr("Ошибка - Попытка удалить мобов на несуществующей карте |%d|\n",num_map);
+		FONLINE_LOG("Ошибка - Попытка удалить мобов на несуществующей карте |%d|\n",num_map);
 		return;
 	}
 
@@ -387,7 +428,7 @@ void CServer::MOBs_RefreshGroup(uint16_t num_group)
 {
 	if(!num_group && num_group>=MOBS_MAX_GROUPS)
 	{
-		LogExecStr("Ошибка - Попытка обновить несуществующую группу |%d|\n",num_group);
+		FONLINE_LOG("Ошибка - Попытка обновить несуществующую группу |%d|\n",num_group);
 		return;
 	}
 
@@ -397,7 +438,7 @@ void CServer::MOBs_RefreshGroup(uint16_t num_group)
 	for(cl_map::iterator it_m=cur_group->mobs.begin();it_m!=cur_group->mobs.end();++it_m)
 	{
 		cur_mob=(*it_m).second;
-		if(cur_mob->info.map) LogExecStr("Ошибка - Не удаленный моб после очистки карты от мобов\n");
+		if(cur_mob->info.map) FONLINE_LOG("Ошибка - Не удаленный моб после очистки карты от мобов\n");
 
 		prep_mob_map::iterator it_pm = prep_mob.find(cur_mob->i_mob->name);
 		if(it_pm==prep_mob.end()) continue;

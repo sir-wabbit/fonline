@@ -87,7 +87,7 @@ void CServer::ClearStaticObjects() {
 
 int CServer::LoadAllStaticObjects()
 {
-	LogExecStr("Загрузка статических объектов...");
+	FONLINE_LOG("Загрузка статических объектов...");
 
 	FILE *cf;
 	FILE *cf2;
@@ -97,7 +97,7 @@ int CServer::LoadAllStaticObjects()
 
 	if((cf=fopen("objects\\all_obj.st","rt"))==NULL)
 	{
-		LogExecStr("Файл all_obj.st не найден\n");
+		FONLINE_LOG("Файл all_obj.st не найден\n");
 		return 0;
 	}
 
@@ -114,7 +114,7 @@ int CServer::LoadAllStaticObjects()
 		sprintf(tmpc,"objects\\%d.st",tmpi);
 		if((cf2=fopen(tmpc,"rt"))==NULL)
 		{
-			LogExecStr("Файл |%s| не найден\n",tmpc);
+			FONLINE_LOG("Файл |%s| не найден\n",tmpc);
 			return 0;
 		}
 
@@ -122,25 +122,25 @@ int CServer::LoadAllStaticObjects()
 		new_obj= new stat_obj;
 
 		new_obj->id=tmpi;
-		fscanf(cf2,"%s",&tmpc);
+		fscanf(cf2,"%s", tmpc);
 		it_o=object_map.find(tmpc);
 		if(it_o==object_map.end())
 		{
 		  delete new_obj;
-			LogExecStr("Параметр |%s| не найден",tmpc);
+			FONLINE_LOG("Параметр |%s| не найден",tmpc);
 			return 0;
 		}
 		new_obj->type=(*it_o).second;
 
 		while(!feof(cf2))
 		{
-			fscanf(cf2,"%s%d",&tmpc,&tmpi);
+			fscanf(cf2,"%s%d",tmpc,&tmpi);
 
 			it_o=object_map.find(tmpc);
 			if(it_o==object_map.end())
 			{
 			  delete new_obj;
-				LogExecStr("Параметр |%s| не найден",tmpc);
+				FONLINE_LOG("Параметр |%s| не найден",tmpc);
 				return 0;
 			}
 			new_obj->p[(*it_o).second]=tmpi;
@@ -154,14 +154,14 @@ int CServer::LoadAllStaticObjects()
 
 	fclose(cf);
 
-	LogExecStr("OK (%d объектов)\n",cnt_obj);
+	FONLINE_LOG("OK (%d объектов)\n",cnt_obj);
 
 	return 1;
 }
 
 int CServer::LoadAllObj() //загрузка динамических объектов из mySQL
 {
-/*	LogExecStr("Загрузка динамических объектов\n");
+/*	FONLINE_LOG("Загрузка динамических объектов\n");
 	//узнаем кол-во записей всего
 	int find_obj=sql.CountTable("objects","id");
 
@@ -204,7 +204,7 @@ int CServer::LoadAllObj() //загрузка динамических объек
 			num_obj++;
 		}
 
-	LogExecStr("Загрузка динамических объектов прошла успешно\n");
+	FONLINE_LOG("Загрузка динамических объектов прошла успешно\n");
 */
 	return 1;
 }
@@ -238,7 +238,7 @@ void CServer::CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, uint16_t 
 	new_obj->ACC_HEX.y=c_y;
 
 	new_obj->time_wear=new_obj->object->p[OBJ_LIVETIME]*1000000;
-	new_obj->last_tick=GetTickCount();
+	new_obj->last_tick=GetMilliseconds();
 
 	if(!sql.NewObject(new_obj,cur_obj_id))
 	{
@@ -252,7 +252,7 @@ void CServer::CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, uint16_t 
 
 	cur_obj_id++;
 
-LogExecStr("Item Create to TL =%d\n",cur_obj_id);
+FONLINE_LOG("Item Create to TL =%d\n",cur_obj_id);
 }
 
 void CServer::CreateObjToPl(CritterID c_pl_idchannel, uint16_t num_st_obj)
@@ -270,7 +270,7 @@ void CServer::CreateObjToPl(CritterID c_pl_idchannel, uint16_t num_st_obj)
 	new_obj->type=new_obj->object->type;
 
 	new_obj->time_wear=new_obj->object->p[OBJ_LIVETIME]*1000000;
-	new_obj->last_tick=GetTickCount();
+	new_obj->last_tick=GetMilliseconds();
 
 	cl_map::iterator it=cl.find(c_pl_idchannel);
 	if(it==cl.end())
@@ -295,7 +295,7 @@ void CServer::CreateObjToPl(CritterID c_pl_idchannel, uint16_t num_st_obj)
 
 	cur_obj_id++;
 
-LogExecStr("Item Create to PL =%d\n",cur_obj_id);
+FONLINE_LOG("Item Create to PL =%d\n",cur_obj_id);
 }
 
 void CServer::DeleteObj(uint32_t id_obj)
@@ -355,7 +355,7 @@ void CServer::TransferDynObjPlTl(CCritter* acl, dyn_obj* obj)
 {
 	AddObjIntoListInd(acl,obj->id);
 
-	obj->ACC_CRITTER.id=NULL;
+	obj->ACC_CRITTER.id = 0;
 
 	if(obj->ACC_CRITTER.slot==DOBJ_SLOT_HAND1) UseDefObj(acl,DOBJ_SLOT_HAND1);
 	if(obj->ACC_CRITTER.slot==DOBJ_SLOT_ARMOR) UseDefObj(acl,DOBJ_SLOT_ARMOR);

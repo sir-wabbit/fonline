@@ -14,14 +14,9 @@
 extern int bQuit;
 extern int FOQuit;
 extern int NumClients;
-extern HANDLE hUpdateEvent;
 
 #define MAX_BUF_LEN 4096
 
 extern uint32_t start_srv_time;
-extern int logging;
-int LogStart(); //!Cvet
-void LogFinish(); //!Cvet
-void LogExecStr(char* frmt, ...);
 
 #endif //__MAIN_H__

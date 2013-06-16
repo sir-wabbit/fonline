@@ -11,15 +11,15 @@
 
 #define FD_SETSIZE 1024
 
-#include <windows.h>
+//#include <windows.h>
 #include <mysql/mysql.h>
 
 #include "math.h" //!Cvet
 
-#define random(a) (rand()*a/(RAND_MAX+1))
+//#define random(a) (rand()*a/(RAND_MAX+1))
 
 #ifndef FOSERVICE_VERSION
-	#include <richedit.h>
+	//#include <richedit.h>
 	#include "resource.h"
 	//#include <crtdbg.h>
 #endif
