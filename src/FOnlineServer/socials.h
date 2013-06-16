@@ -1,6 +1,8 @@
 #ifndef _SOCIALS_H_
 #define _SOCIALS_H_
 
+#include <mysql/mysql.h>
+
 #include "netproto.h"
 
 struct soc_def

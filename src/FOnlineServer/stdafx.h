@@ -9,20 +9,10 @@
 	purpose:
 *********************************************************************/
 
-#define FD_SETSIZE 1024
+//#define FD_SETSIZE 1024
 
 //#include <windows.h>
-#include <mysql/mysql.h>
-
 #include "math.h" //!Cvet
-
-//#define random(a) (rand()*a/(RAND_MAX+1))
-
-#ifndef FOSERVICE_VERSION
-	//#include <richedit.h>
-	#include "resource.h"
-	//#include <crtdbg.h>
-#endif
 
 #pragma warning (disable : 4786)
 
