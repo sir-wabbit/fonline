@@ -103,7 +103,7 @@ const uint8_t NPC_SAY_IHATEYOU	=8;
 #define SAY_NORM	0
 #define SAY_SHOUT	1
 #define SAY_EMOTE	2
-#define SAY_WHISP	3 
+#define SAY_WHISP	3
 #define SAY_SOCIAL	4
 
 //состояния криттеров
@@ -810,7 +810,7 @@ struct crit_info
 
 	//инфа по объектам
 	dyn_map obj; //!Cvet карта динамических объектов
-	//int Slot1, Slot2, ArmorSlot; 
+	//int Slot1, Slot2, ArmorSlot;
 	dyn_obj* a_obj; //активный объект в руках
 	dyn_obj* a_obj_arm; //активный объект в слоте армор
 
@@ -988,7 +988,7 @@ struct crit_info
 
 #define NETMSG_ADD_OBJECT_ON_MAP 21 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 // params:
 // HexTYPE x;
 // HexTYPE y;
@@ -996,7 +996,7 @@ struct crit_info
 // uint16_t tile_flags;
 #define NETMSG_CHANGE_OBJECT_ON_MAP 22 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 // params:
 // HexTYPE x;
 // HexTYPE y;
@@ -1004,7 +1004,7 @@ struct crit_info
 // uint16_t tile_flags;
 #define NETMSG_REMOVE_OBJECT_FROM_MAP 23 //!Cvet
 //////////////////////////////////////////////////////////////////////////
-// 
+//
 // params:
 // HexTYPE x;
 // HexTYPE y;

@@ -2,8 +2,8 @@
 	created:	end of 2006; updated: begin of 2007
 
 	author:		Anton Tsvetinsky and Evgeny Barabanov binyan
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 
 #include "stdafx.h"
@@ -58,10 +58,10 @@ int SQL::Init_mySQL()
   this->host = GetValue<std::string>(ini, "SQL.host", "localhost");
   this->db = GetValue<std::string>(ini, "SQL.db", "");
   this->unix_socket = GetValue<std::string>(ini, "SQL.unix_socket", "");
-  
+
   this->port = GetValue<int>(ini, "SQL.port", 3306);
   this->clientflag = GetValue<int>(ini, "SQL.clientflag", 0);
-  
+
   LogExecStr("Accepted characters : %s\n", load_char.c_str());
   LogExecStr("User : %s\n", user.c_str());
   LogExecStr("Password : %s\n", passwd.c_str());
@@ -567,7 +567,7 @@ int SQLLastInsertId(MYSQL* mySQL) {
     LogExecStr("Could not query last insert id: %s\n", mysql_error(mySQL));
     return 0;
   }
-  
+
   MYSQL_RES* result = NULL;
   if (!(result = mysql_store_result(mySQL))) {
     LogExecStr("Could not query last insert id: %s\n", mysql_error(mySQL));
@@ -587,7 +587,7 @@ int SQLLastInsertId(MYSQL* mySQL) {
 int SQLGetPlayerId(MYSQL* mySQL, std::string login) {
   char buf[256];
   _snprintf(buf, sizeof(buf) - 1, "SELECT * FROM `users` WHERE `login`='%s'", login.c_str());
-  
+
   if (mysql_query(mySQL, buf)) {
     LogExecStr("Could not query player id: %s\n", mysql_error(mySQL));
     return 0;
@@ -985,7 +985,7 @@ void SQL::ChangeVar(CritterID crid, uint16_t var_num, char oper, int count)
 
 			return;
 		}
-		
+
 		if(oper=='=')
 		{
 			if(var_num<=10000)
@@ -1077,7 +1077,7 @@ void SQL::ChangeQuest(CritterID crid, uint16_t quest_num, char choose, int count
 	}
 
 	if(!(mySQL_res=mysql_store_result(mySQL))) return;
-	
+
 	my_ulonglong num_rows = 0;
 	if (!(num_rows = mysql_num_rows(mySQL_res))) {
 	  return;
@@ -1461,7 +1461,7 @@ void SQL::PrintTableInLog(char* table, char* rows)
 	LogExecStr("Выводим таблицу: %s\n", table);
 
 	if(!Query("SELECT %s FROM %s",rows,table)) return;
-	
+
 	if(!(mySQL_res=mysql_store_result(mySQL))) return;
 
 	LogExecStr("Всего записей: %d \n",mysql_num_rows(mySQL_res));
@@ -1469,7 +1469,7 @@ void SQL::PrintTableInLog(char* table, char* rows)
 	while((mySQL_row=mysql_fetch_row(mySQL_res)))
 	{
 		for (unsigned int pt = 0; pt < mysql_num_fields(mySQL_res); pt++)
-			LogExecStr("%s - ",mySQL_row[pt]); 
+			LogExecStr("%s - ",mySQL_row[pt]);
 		LogExecStr(" | \n ");
 	}
 

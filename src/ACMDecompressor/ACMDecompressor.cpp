@@ -103,7 +103,7 @@ short Table2 [125] =
 //		000 001 002 003 004  010 011 012 013 014 ...
 //		100 101 102 103 104 ...
 //		200 ...
-//		... 
+//		...
 unsigned char Table3 [121] =
 		{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A,
 		 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A,
@@ -164,7 +164,7 @@ bool Init(Context* ctx, uint8_t* fileHandle, uint32_t fileLenght, int &channels,
 		int decBuf_size = 0;
 		if (ctx->packAttrs)
 			decBuf_size = 3*ctx->someSize / 2 - 2;
-		
+
 		ctx->blocks = 0x800 / ctx->someSize - 2;
 		if (ctx->blocks < 1) ctx->blocks = 1;
 		ctx->totBlSize = ctx->blocks * ctx->someSize;
@@ -183,7 +183,7 @@ bool Init(Context* ctx, uint8_t* fileHandle, uint32_t fileLenght, int &channels,
 		Close(ctx);
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -292,7 +292,7 @@ int createAmplitudeDictionary(ACMDecompressor::Context* ctx) {
 }
 void unpackValues(ACMDecompressor::Context* ctx) {
 	if (!ctx->packAttrs) return;
-	
+
 	int counter = ctx->packAttrs2;
 	int* someBuffPtr = ctx->someBuff;
 

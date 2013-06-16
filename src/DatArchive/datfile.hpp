@@ -4,8 +4,39 @@
 #include <map>
 #include <string>
 #include <stdio.h>
-#define __STDC_LIMIT_MACROS
+#include <stddef.h>
 #include <stdint.h>
+
+#if ULONG_MAX == 4294967295UL
+# ifndef UINT64_C
+#   define UINT64_C(n) n ## ULL
+# endif
+# ifndef PRIu64
+#   define PRIu64 "llu"
+# endif
+# ifndef PRIx64
+#   define PRIx64 "llx"
+# endif
+# ifndef PRIX64
+#   define PRIX64 "llX"
+# endif
+#else
+# ifndef UINT64_C
+#   define UINT64_C(n) n ## UL
+# endif
+# ifndef PRIu64
+#   define PRIu64 "lu"
+# endif
+# ifndef PRIx64
+#   define PRIx64 "lx"
+# endif
+# ifndef PRIX64
+#   define PRIX64 "lX"
+# endif
+#endif
+#ifndef UINT64_MAX
+# define UINT64_MAX UINT64_C(18446744073709551615)
+#endif
 
 #include "DatArchive.hpp"
 
@@ -29,9 +60,9 @@ struct DATArchiveInfo {
   uint32_t FileSizeFromDat;
   uint32_t TreeSize;
   uint32_t FilesTotal;
-  
+
   uint8_t* treePtr;
-  
+
   IndexMap index;
 };
 
@@ -51,7 +82,7 @@ class DatArchive {
 public:
   DATARCHIVE_API DatArchive();
   DATARCHIVE_API virtual ~DatArchive();
-  
+
   DATARCHIVE_API bool Init(char* filename);
   DATARCHIVE_API bool IsLoaded();
 
@@ -59,12 +90,12 @@ public:
   DATARCHIVE_API uint64_t DATGetFileSize();
   DATARCHIVE_API bool DATReadFile(void* buffer, size_t numberOfBytesToRead, size_t* numberOfBytesRead);
   DATARCHIVE_API bool DATSetFilePointer(int64_t offset, uint32_t moveMethod);
-  
+
   unsigned int error;
-  
-private:  
+
+private:
   FILE* fileStream;
-  
+
   DATArchiveInfo archive;
   DATFileInfo file;
 

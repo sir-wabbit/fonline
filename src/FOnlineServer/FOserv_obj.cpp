@@ -3,7 +3,7 @@
 *********************************************************************/
 
 #include "stdafx.h"
-#include "FOserv.h"
+#include "FOServ.h"
 
 void CServer::SetVisibleObj(CCritter* acl)
 {
@@ -81,7 +81,7 @@ void CServer::ClearStaticObjects() {
   for(stat_map::iterator it=all_s_obj.begin(); it!=all_s_obj.end(); it++) {
     SAFEDEL((*it).second);
   }
-  
+
   all_s_obj.clear();
 }
 
@@ -151,7 +151,7 @@ int CServer::LoadAllStaticObjects()
 		fclose(cf2);
 		cnt_obj++;
 	}
-	
+
 	fclose(cf);
 
 	LogExecStr("OK (%d объектов)\n",cnt_obj);
@@ -173,7 +173,7 @@ int CServer::LoadAllObj() //загрузка динамических объек
 			if(num_obj==sql.GetInt("objects","id","id",num_obj))
 			{
 				dyn_obj* new_obj=new dyn_obj;
-				
+
 				new_obj->id=num_obj;
 				sql.LoadDataObject(new_obj);
 				new_obj->object=all_s_obj[sql.GetInt("objects","num_st","id",new_obj->id)];
@@ -366,7 +366,7 @@ void CServer::TransferDynObjPlTl(CCritter* acl, dyn_obj* obj)
 	obj->ACC_HEX.map=acl->info.map;
 	obj->ACC_HEX.x=acl->info.x;
 	obj->ACC_HEX.y=acl->info.y;
-	
+
 	sql.SaveDataObject(obj);
 
 	SendA_Action(acl,ACT_DROP_OBJ,0);

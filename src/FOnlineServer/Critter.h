@@ -2,19 +2,20 @@
 	created:	17:03:2007   08:32;
 
 	author:		Anton Tsvetinsky
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 
 #ifndef __CCRITTER_H__
 #define __CCRITTER_H__
 
+#include <string>
 #include <vector>
 #include <list>
 #include <map>
 
 #include "netproto.h"
-#include <zlib/zlib.h>
+#include <zlib.h>
 #include <FOnlineCommon/buffer.hpp>
 //#include "sql.h"
 
@@ -234,11 +235,11 @@ public:
 	//int EraseKnownCitySQL(uint16_t city_num);
 
 	int IsFree() {
-	  if (GetTickCount() >= info.break_time + info.start_bt) 
-	    return 1; 
+	  if (GetTickCount() >= info.break_time + info.start_bt)
+	    return 1;
 	  return 0;
 	}
-	int IsBusy() { 
+	int IsBusy() {
 	  if (GetTickCount() >= info.break_time + info.start_bt)
 	    return 0;
 	  return 1;

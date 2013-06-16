@@ -161,6 +161,9 @@ FileManager::~FileManager() {
   initialized = 0;
 }
 
+uint8_t* FileManager::GetBufferPtr(){ return buffer; };
+uint32_t FileManager::GetFileSize(){ return fileSize; };
+
 int FileManager::Init(const char* masterDatPath, const char* critterDatPath, const char* fonlineDatPath) {
   assert(masterDatPath != NULL);
   assert(critterDatPath != NULL);

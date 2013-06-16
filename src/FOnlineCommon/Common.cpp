@@ -6,8 +6,30 @@
 #include <cctype>
 #include <cstring>
 
+#ifdef __MINGW32__
+int _vscprintf (const char * format, va_list pargs) {
+  int retval;
+  va_list argcopy;
+  va_copy(argcopy, pargs);
+  retval = vsnprintf(NULL, 0, format, argcopy);
+  va_end(argcopy);
+  return retval;
+}
+
+int _vscwprintf (const wchar_t * format, va_list pargs) {
+  int retval;
+  va_list argcopy;
+  va_copy(argcopy, pargs);
+  retval = vsnwprintf(NULL, 0, format, argcopy);
+  va_end(argcopy);
+  return retval;
+}
+#define vsprintf_s vsnprintf
+#define vswprintf_s vsnwprintf
+#endif
+
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 
 namespace {
 // A workaround for this bug:

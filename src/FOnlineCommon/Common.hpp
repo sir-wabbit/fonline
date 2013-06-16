@@ -19,4 +19,4 @@ FONLINE_COMMON_API void WriteLogFull(const char* file, unsigned int line, const 
 FONLINE_COMMON_API void WriteLog(const char* fmt, ...);
 FONLINE_COMMON_API void ReportErrorMessage(const char* hdr, const char* fmt, ...);
 
-#endif//FONLINE_BASE_FO_BASE_HPP_
+#endif  // FONLINE_BASE_FO_BASE_HPP_

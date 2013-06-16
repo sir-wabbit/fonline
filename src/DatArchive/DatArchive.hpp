@@ -13,4 +13,4 @@
 
 #include "datfile.hpp"
 
-#endif//DATARCHIVE_DATARCHIVE_HPP_
+#endif  // DATARCHIVE_DATARCHIVE_HPP_

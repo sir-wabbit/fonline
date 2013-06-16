@@ -57,16 +57,19 @@ void Buffer::Read(void *buf, size_t alen)
 	readPosition+=alen;
 }
 
+bool Buffer::IsError() {return error;}
+bool Buffer::NeedProcess() {return (readPosition<writePosition);}
+
 void Buffer::EnsureCapacity(size_t capacity) {
   if (capacity > this->capacity) {
     size_t newCapacity = 3 * capacity / 2;
     char* newData = reinterpret_cast<char*>(::malloc(newCapacity));
-    
+
     if (this->data != NULL) {
       ::memcpy(newData, this->data, this->capacity);
       ::free(this->data);
     }
-    
+
     this->data = newData;
     this->capacity = newCapacity;
   }

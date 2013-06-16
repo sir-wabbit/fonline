@@ -18,7 +18,7 @@
 // size of buffer used during decompression and skipping
 #define BUFF_SIZE 0x40000
 
-#ifndef _WIN32
+#ifndef FILE_CURRENT
 	#define FILE_CURRENT SEEK_CUR
 	#define FILE_BEGIN SEEK_SET
 	#define FILE_END SEEK_END

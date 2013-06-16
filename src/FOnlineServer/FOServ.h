@@ -6,8 +6,8 @@
 
 	author:		Oleg Mareskin
 	add/edit:	Denis Balihin, Anton Tsvetinsky
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 
 #include "stdafx.h"
@@ -15,7 +15,7 @@
 #include "netproto.h"
 
 //!Cvet ++++
-#include "sql.h"
+#include "SQL.h"
 #include "Critter.h"
 #include <FOnlineFileManager/FileManager.hpp>
 #include <SimpleLeakDetector/SimpleLeakDetector.hpp>
@@ -132,7 +132,7 @@ struct gmap_zone
 	gmap_group_vec groups;
 
 	city_vec cities;
-	
+
 	uint16_t district;
 	uint16_t mobs_power;
 
@@ -163,13 +163,13 @@ struct encaunter_info
 	~encaunter_info(){
 	  // Apparently map info is not owned by encAunter_info,
 	  // thus no need to free it.
-	  
+
 	  //if (emap != NULL) {
 	  //  delete emap;
 	  //  emap = NULL;
 	  //}
 	};
-	
+
 };
 
 struct gmap_dot
@@ -181,7 +181,7 @@ struct gmap_dot
 
 typedef std::map<uint16_t, std::string> map_str_map;
 
-typedef std::map<DHexTYPE, LONGLONG> longlong_map;
+typedef std::map<DHexTYPE, int64_t> longlong_map;
 
 typedef std::map<DHexTYPE, dyn_map*> dyn_map_map; //контейнер контейнеров
 
@@ -191,10 +191,15 @@ typedef std::map<DHexTYPE, dyn_map*> dyn_map_map; //контейнер конт�
 
 //!Cvet +++++++++++++++++++++++++++++++++++++++++++
 //макросы для работы с параметрами
-#define CHANGE_STAT(CCritter,stat,oper,count) {CCritter##->info.st[(stat)]##oper##(count);\
-if(CCritter##->info.st[(stat)]>9999) CCritter##->info.st[(stat)]=9999;\
-if(FLAG(CCritter##->info.flags,FCRIT_PLAYER)&&!FLAG(CCritter##->info.flags,FCRIT_DISCONNECT))\
-Send_Param(CCritter,TYPE_STAT,(stat));}
+#define CHANGE_STAT(CCritter,stat,oper,count) \
+	{ \
+		CCritter -> info.st[(stat)] oper (count); \
+		if (CCritter -> info.st[(stat)] > 9999) CCritter -> info.st[(stat)] = 9999;\
+		if (FLAG(CCritter -> info.flags, FCRIT_PLAYER) && !FLAG(CCritter -> info.flags, FCRIT_DISCONNECT)) { \
+			Send_Param(CCritter,TYPE_STAT,(stat)); \
+		} \
+	}
+
 #define CHANGE_SKILL(CCritter,skill,oper,count) {CCritter##->info.sk[(skill)]##oper##(count);\
 if(CCritter##->info.sk[(skill)]>999) CCritter##->info.sk[(skill)]=999;\
 if(FLAG(CCritter##->info.flags,FCRIT_PLAYER)&&!FLAG(CCritter##->info.flags,FCRIT_DISCONNECT))\
@@ -264,7 +269,7 @@ class CServer
 	params_map skills_map;
 	params_map perks_map;
 	params_map object_map;
-	
+
 	int UpdateVarsTemplate();
 
 //Работа с параметрами
@@ -514,7 +519,7 @@ class CServer
 	void RemoveCritter(CritterID id);
 	void DisconnectClient(CritterID idchannel); //!Cvet Disconnect Client by id
 	int ConnectClient(SOCKET serv); //add new Client
-	
+
 	int Input(CCritter* acl);
 	int Output(CCritter* acl);
 	void Process(CCritter* acl);
@@ -568,7 +573,7 @@ public:
 	int loop_cycles;
 	int loop_min;
 	int loop_max;
-	
+
 	int lt_FDsel;
 	int lt_conn;
 	int lt_input;
@@ -598,4 +603,4 @@ public:
 };
 
 
-#endif //__FOSERV_H__
+#endif // __FOSERV_H__

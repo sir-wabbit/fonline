@@ -3,7 +3,7 @@
 *********************************************************************/
 
 #include "stdafx.h"
-#include "FOserv.h"
+#include "FOServ.h"
 
 void CServer::Send_AddCritter(CCritter* acl, crit_info* pinfo) //Oleg + Cvet edit
 {
@@ -78,7 +78,7 @@ void CServer::SendA_Move(CCritter* acl, uint16_t move_params)
 				continue;
 			}
 
-			c->bout << msg; 
+			c->bout << msg;
 			c->bout << acl->info.id;
 			c->bout << move_params;
 
@@ -323,7 +323,7 @@ void CServer::Send_AllParams(CCritter* acl, uint8_t type_param)
 		acl->bout << msg;
 		acl->bout << type_param;
 		acl->bout << all_send_params;
-		
+
 		switch (type_param)
 		{
 		case TYPE_STAT:

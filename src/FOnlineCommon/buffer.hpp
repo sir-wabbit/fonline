@@ -19,8 +19,8 @@ public:
 	FONLINE_COMMON_API void Read(void *buf, size_t alen);
 
 	// XXX[1.8.2012 alex]: new names
-	FONLINE_COMMON_API bool IsError() {return error;}
-	FONLINE_COMMON_API bool NeedProcess() {return (readPosition<writePosition);}
+	FONLINE_COMMON_API bool IsError();
+	FONLINE_COMMON_API bool NeedProcess();
 
 	FONLINE_COMMON_API void EnsureCapacity(size_t capacity);
 	FONLINE_COMMON_API void EnsureWriteCapacity(size_t dataSize);
@@ -45,4 +45,4 @@ public:
 
 }; // namespace fonline
 
-#endif//FO_BASE_BUFFER_HPP_
+#endif  // FO_BASE_BUFFER_HPP_

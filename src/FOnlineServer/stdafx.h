@@ -5,8 +5,8 @@
 	created:	18:08:2004   22:42
 
 	author:		Oleg Mareskin
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 
 #define FD_SETSIZE 1024
@@ -21,7 +21,7 @@
 #ifndef FOSERVICE_VERSION
 	#include <richedit.h>
 	#include "resource.h"
-	#include <crtdbg.h>
+	//#include <crtdbg.h>
 #endif
 
 #pragma warning (disable : 4786)

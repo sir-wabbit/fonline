@@ -2,8 +2,8 @@
 	created:	10:02:2007   15:22;
 
 	author:		Anton Tsvetinsky
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 
 #include "stdafx.h"
