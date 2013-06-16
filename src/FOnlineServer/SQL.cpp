@@ -6,6 +6,8 @@
 	purpose:
 *********************************************************************/
 
+#include "SQL.h"
+
 #include "stdafx.h"
 
 #include <stdarg.h>
@@ -16,10 +18,7 @@
 
 #include <IniFile/IniFile.hpp>
 
-#include "SQL.h"
-
-SQL::SQL()
-{
+SQL::SQL() {
 	Active=false;
 }
 

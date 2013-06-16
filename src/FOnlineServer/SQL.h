@@ -13,6 +13,8 @@
 #include "netproto.h"
 #include "Critter.h"
 
+#include <mysql/mysql.h>
+
 //Переменные НПЦ
 const uint8_t NPC_VAR_LOCAL	=0;
 const uint8_t NPC_VAR_GLOBAL	=1;
