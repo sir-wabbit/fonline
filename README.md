@@ -1,22 +1,16 @@
-# FOnline-Open-Source
+# FOnline open source
 
-**fonline-open-source** is an open source implementation of the Fallout Online released under GPL.
+This is an open source implementation of the Fallout Online released under GPL.
 
-# Compilation
-**fonline-open-source** comes with a premake4 makefile and it is a matter of few console commands and clicks to compile it.
+# Issues
+* Client doesn't compile on linux yet since it uses DirectX.
+* I have not even tried compiling NPC editor and Map editor.
 
-    premake4 clean
-    premake4 vs2008
-    ; go to the build directory
-    ; open fonline-open-source.sln
-    ; build it
+# Compilation on Linux and other Unixes:
+   
+    mkdir build
+    cmake ..
+    make
 
-# TODO
-* Fix all the warnings (200+).
-* Fix all the FIXMEs.
-* Refactor dat archive support / file manager.
-* Some better way to handle external dependencies.
-* Enable extra warnings.
-* Reduce the amount of platform specific stuff.
-* Use SDL
-* DirectX -> OpenGL
+# Compilation on Windows:
+Use cmake-gui, hopefully it works. If it doesn't, try using the premake makefile.
