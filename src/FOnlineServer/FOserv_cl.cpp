@@ -415,81 +415,80 @@ void CServer::CreateParamsMaps()
 	object_map.insert(params_map::value_type("OBJ_AMMO_DD",				OBJ_AMMO_DD));
 }
 
-int CServer::UpdateVarsTemplate()
-{
-	FONLINE_LOG("Обновление шаблонов переменных игроков\n");
+int CServer::UpdateVarsTemplate() {
+	FONLINE_LOG("Updating player variable templates.");
 
-	FILE *cf;
+	FILE * cf = fopen("data/server/data/vars.txt","rt");
 
-	if(!(cf=fopen("data\\server\\data\\vars.txt","rt")))
-	{
-		FONLINE_LOG("\tФайл vars не найден\n");
+	if (cf == NULL) {
+		FONLINE_LOG("Could not find 'vars' file.");
 		return 1;
 	}
 
 	char ch;
-	int tmp_int1=0,tmp_int2=0,tmp_int3=0,tmp_int4=0;
-	int err_update=0;
+	int tmp_int1 = 0;
+	int tmp_int2 = 0;
+	int tmp_int3 = 0;
+	int tmp_int4 = 0;
+	int err_update = 0;
 
-	while(!feof(cf))
-	{
-		fscanf(cf,"%c",&ch);
+	while (!feof(cf)) {
+		fscanf(cf, "%c", &ch);
 
-		if(ch=='#')
-		{
-			FONLINE_LOG("\tНовая переменная...");
-			if(!fscanf(cf,"%d",&tmp_int1))
-			{
-				err_update++;
-				FONLINE_LOG("ошибка чтения\n");
+		if (ch == '#') {
+			FONLINE_LOG("New variable.");
+			if (!fscanf(cf, "%d", &tmp_int1)) {
+				err_update += 1;
+				FONLINE_LOG("Parse error.");
 				continue;
 			}
-			FONLINE_LOG("номер=%d...",tmp_int1);
+			FONLINE_LOG("Id = %d...", tmp_int1);
 
-			if(sql.CountRows("player_vars_templates","var_num",tmp_int1))
-			{
-				FONLINE_LOG("уже создана\n");
-				continue;
-			}
-
-			if(!fscanf(cf,"%d",&tmp_int2))
-			{
-				err_update++;
-				FONLINE_LOG("ошибка чтения\n");
-				continue;
-			}
-			FONLINE_LOG("стартовое значение=%d...",tmp_int2);
-
-			if(!fscanf(cf,"%d",&tmp_int3))
-			{
-				err_update++;
-				FONLINE_LOG("ошибка чтения\n");
-				continue;
-			}
-			FONLINE_LOG("min=%d...",tmp_int3);
-
-			if(!fscanf(cf,"%d",&tmp_int4))
-			{
-				err_update++;
-				FONLINE_LOG("ошибка чтения\n");
-				continue;
-			}
-			FONLINE_LOG("max=%d...",tmp_int4);
-
-			if(tmp_int3>tmp_int4 || tmp_int2<tmp_int3 || tmp_int2>tmp_int4)
-			{
-				err_update++;
-				FONLINE_LOG("несоответствие в данных\n");
+			if (sql.CountRows("player_vars_templates", "var_num", tmp_int1)) {
+				FONLINE_LOG("Already created.");
 				continue;
 			}
 
-			sql.Query("INSERT INTO `player_vars_templates` (var_num,count,min,max) "
-			"VALUES ('%d','%d','%d','%d');",tmp_int1,tmp_int2,tmp_int3,tmp_int4);
-			FONLINE_LOG("добавлена\n");
+			if (!fscanf(cf, "%d", &tmp_int2)) {
+				err_update += 1;
+				FONLINE_LOG("Parse error.");
+				continue;
+			}
+			FONLINE_LOG("Init value = %d.", tmp_int2);
+
+			if (!fscanf(cf, "%d", &tmp_int3)) {
+				err_update += 1;
+				FONLINE_LOG("Parse error.");
+				continue;
+			}
+			FONLINE_LOG("Min value = %d.",tmp_int3);
+
+			if (!fscanf(cf, "%d", &tmp_int4)) {
+				err_update += 1;
+				FONLINE_LOG("Parse error.");
+				continue;
+			}
+			FONLINE_LOG("Max value = %d.", tmp_int4);
+
+			if (tmp_int3 > tmp_int4 || tmp_int2 < tmp_int3 || tmp_int2 > tmp_int4) {
+				err_update += 1;
+				FONLINE_LOG("Inconsistent values.");
+				continue;
+			}
+
+			sql.Query("INSERT INTO `player_vars_templates` "
+				      "(var_num,count,min,max) "
+			          "VALUES ('%d','%d','%d','%d');",
+			          tmp_int1, tmp_int2, tmp_int3, tmp_int4);
+			FONLINE_LOG("Variable created.");
 		}
 	}
 
-	FONLINE_LOG("Обновление шаблонов переменных игроков прошло успешно\n");
+	if (err_update == 0) {
+		FONLINE_LOG("Player variable templates were updated successfully.");
+	} else {
+		FONLINE_LOG("Player variable templates were updated with some errors.");
+	}
 	return err_update;
 }
 
