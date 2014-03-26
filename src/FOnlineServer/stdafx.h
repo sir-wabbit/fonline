@@ -1,47 +1,34 @@
-#ifndef __STDAFX_H__
-#define __STDAFX_H__
+#pragma once
 
-/********************************************************************
-	created:	18:08:2004   22:42
-
-	author:		Oleg Mareskin
-
-	purpose:
-*********************************************************************/
-
-//#define FD_SETSIZE 1024
-
-//#include <windows.h>
-#include "math.h" //!Cvet
+#include <cstddef>
 
 #pragma warning (disable : 4786)
 
-#define SAFEREL(x) {if(x) (x)->Release();(x)=NULL;}
-#define SAFEDEL(x) {if(x) delete (x);(x)=NULL;}
-#define SAFEDELA(x) {if(x) delete[] (x);(x)=NULL;}
+template<class T> void SafeRelease(T*& x) {
+  if (x != NULL) {
+    x->Release();
+    x = NULL;
+  }
+}
+template<class T> void SafeDelete(T*& x) {
+  if (x != NULL) {
+    delete x;
+    x = NULL;
+  }
+}
+template<class T> void SafeDeleteArray(T*& x) {
+  if (x != NULL) {
+    delete[] x;
+    x = NULL;
+  }
+}
 
-//!Cvet ++++
-//для работы с двоичными константами
-//#define BIN__N(x) (x) | x>>3 | x>>6 | x>>9
-//#define BIN__B(x) (x) & 0xf | (x)>>12 & 0xf0
-//#define BIN8(v) (BIN__B(BIN__N(0x##v)))
-
-//#define BIN16(bin16,bin8)	((BIN8(bin16)<<8)|(BIN8(bin8)))
-
-//для работы с битами (по игре - флагами)
-#define BITS(x,y) ((x)&(y))
-#define FLAG BITS
-
-#define SET_BITS(x,y) (x)=(x)|(y)
-#define SETFLAG SET_BITS
-
-//#define UNSET_BITS(x,y) {if((x)&(y)) (x)=(x)^(y);}
-#define UNSET_BITS(x,y) (x)=((x)|(y))^(y)
-#define UNSETFLAG UNSET_BITS
-
-//
-#define BREAK_BEGIN do{
-#define BREAK_END }while(0)
-//!Cvet ----
-
-#endif //__STDAFX_H__
+template<class T, class U> T GetBits(T const val, U const mask) {
+  return T(val & mask);
+}
+template<class T, class U> T SetBits(T& val, U const mask) {
+  val = T(val | mask);
+}
+template<class T, class U> T ClearBits(T& val, U const mask) {
+  val = T((val | mask) ^ mask);
+}

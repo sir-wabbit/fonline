@@ -61,10 +61,10 @@ void CServer::Send_LoginMsg(CCritter* acl, uint8_t LogMsg)
 
 void CServer::SendA_Move(CCritter* acl, uint16_t move_params)
 {
-  acl->info.ori=FLAG(move_params,BIN8(00000111));
+  acl->info.ori=GetBits(move_params,BIN8(00000111));
 
-  if(FLAG(move_params,0x38)==0x38) //проверка по окончании пути
-    if(FLAG(acl->info.flags,FCRIT_PLAYER)) Send_XY(acl);
+  if(GetBits(move_params,0x38)==0x38) //проверка по окончании пути
+    if(GetBits(acl->info.flags,FCRIT_PLAYER)) Send_XY(acl);
 
   if(!acl->vis_cl.empty())
   {
@@ -415,7 +415,7 @@ void CServer::Send_GlobalInfo(CCritter* acl, uint8_t info_flags)
   acl->bout << msg;
   acl->bout << info_flags;
 
-  if(FLAG(info_flags,GM_INFO_CITIES))
+  if(GetBits(info_flags,GM_INFO_CITIES))
   {
     uint16_t count_cities=acl->known_cities.size();
     acl->bout << count_cities;
@@ -432,7 +432,7 @@ void CServer::Send_GlobalInfo(CCritter* acl, uint8_t info_flags)
     }
   }
 
-  if(FLAG(info_flags,GM_INFO_CRITS))
+  if(GetBits(info_flags,GM_INFO_CRITS))
   {
     uint8_t count_group=acl->group_move->crit_move.size();
 
@@ -447,15 +447,15 @@ void CServer::Send_GlobalInfo(CCritter* acl, uint8_t info_flags)
 
       acl->bout.Write(c->info.name,MAX_NAME);
 
-      if(acl==c) SETFLAG(c->info.flags,FCRIT_CHOSEN);
+      if(acl==c) SetBits(c->info.flags,FCRIT_CHOSEN);
 
       acl->bout << c->info.flags;
 
-      UNSETFLAG(c->info.flags,FCRIT_CHOSEN);
+      ClearBits(c->info.flags,FCRIT_CHOSEN);
     }
   }
 
-  if(FLAG(info_flags,GM_INFO_PARAM))
+  if(GetBits(info_flags,GM_INFO_PARAM))
   {
     int speed_x=(acl->group_move->speedx*1000000);
     int speed_y=(acl->group_move->speedy*1000000);
@@ -481,7 +481,7 @@ void CServer::SendA_GlobalInfo(gmap_group* group, uint8_t info_flags)
   {
     c=(*it_cr).second;
 
-    if(!FLAG(c->info.flags,FCRIT_PLAYER) || c->state!=STATE_GAME) continue;
+    if(!GetBits(c->info.flags,FCRIT_PLAYER) || c->state!=STATE_GAME) continue;
 
     Send_GlobalInfo(c,info_flags);
   }
@@ -547,7 +547,7 @@ void CServer::SendA_Text(CCritter* from_acl, cl_map* to_cr, char* s_str, char* o
 
       if(c==from_acl) continue;
 
-      if(!FLAG(c->info.flags,FCRIT_PLAYER) || FLAG(c->info.flags,FCRIT_DISCONNECT)) continue;
+      if(!GetBits(c->info.flags,FCRIT_PLAYER) || GetBits(c->info.flags,FCRIT_DISCONNECT)) continue;
 
       c->bout << msg;
       c->bout << from_acl->info.id;

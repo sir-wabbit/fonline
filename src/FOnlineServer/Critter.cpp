@@ -18,8 +18,8 @@ CCritter::CCritter(): i_npc(NULL), i_mob(NULL), group_move(NULL), target(NULL) {
 }
 
 CCritter::~CCritter() {
-  SAFEDEL(i_npc);
-  SAFEDEL(i_mob);
+  SafeDelete(i_npc);
+  SafeDelete(i_mob);
 }
 
 int CCritter::InitClient() {

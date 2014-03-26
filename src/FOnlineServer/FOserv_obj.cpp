@@ -3,6 +3,7 @@
 *********************************************************************/
 
 #include "stdafx.h"
+#include <math.h>
 #include "FOServ.h"
 
 void CServer::SetVisibleObj(CCritter* acl)
@@ -79,7 +80,7 @@ int CServer::DelObjFromListInd(CCritter* acl, uint32_t del_ind)
 
 void CServer::ClearStaticObjects() {
   for(stat_map::iterator it=all_s_obj.begin(); it!=all_s_obj.end(); it++) {
-  SAFEDEL((*it).second);
+  SafeDelete((*it).second);
   }
 
   all_s_obj.clear();
