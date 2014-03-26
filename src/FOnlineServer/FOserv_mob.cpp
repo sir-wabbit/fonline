@@ -192,7 +192,7 @@ int CServer::MOBs_LoadAllGroups()
         if(Err_load==true)
         {
           FONLINE_LOG("Ошибка при загрузке основных параметров из файла");
-          SAFEDEL(pmob);
+          SafeDelete(pmob);
           return 0;
         }
 
@@ -410,11 +410,11 @@ void CServer::MOBs_EraseFromMap(uint16_t num_map)
     cur_mob=(*it_m).second;
     it_m++;
 
-    if(!FLAG(cur_mob->info.flags,FCRIT_MOB)) continue;
+    if(!GetBits(cur_mob->info.flags,FCRIT_MOB)) continue;
 
     map_cr[num_map].erase(cur_mob->info.id);
     cur_mob->info.map=0;
-    UNSETFLAG(tile[num_map][cur_mob->info.x][cur_mob->info.y].flags,FT_PLAYER);
+    ClearBits(tile[num_map][cur_mob->info.x][cur_mob->info.y].flags,FT_PLAYER);
   }
 
   MOBs_RefreshGroup(cur_mob->i_mob->num_group);

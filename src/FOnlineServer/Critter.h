@@ -6,8 +6,7 @@
   purpose:
 *********************************************************************/
 
-#ifndef __CCRITTER_H__
-#define __CCRITTER_H__
+#pragma once
 
 #include <string>
 #include <vector>
@@ -266,5 +265,3 @@ public:
 private:
 
 };
-
-#endif //__CCRITTER_H__

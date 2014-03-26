@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include <FOnlineCommon/Common.hpp>
 #include <IniFile/IniFile.hpp>
@@ -44,21 +45,21 @@ void ClearNpcInfo(npc_info* info) {
       answer* answ = *answerIt;
 
       for (demand_list::iterator demandIt = answ->demands.begin(); demandIt != answ->demands.end(); ++demandIt) {
-      SAFEDEL(*demandIt);
+        SafeDelete(*demandIt);
       }
       answ->demands.clear();
 
       for (result_list::iterator resultIt = answ->results.begin(); resultIt != answ->results.end(); ++resultIt) {
-      SAFEDEL(*resultIt);
+        SafeDelete(*resultIt);
       }
       answ->results.clear();
 
-      SAFEDEL(answ);
+      SafeDelete(answ);
     }
 
     dialog->answers.clear();
 
-    SAFEDEL(dlgIt->second);
+    SafeDelete(dlgIt->second);
   }
 
   info->dialogs.clear();
@@ -72,7 +73,7 @@ void CServer::NPC_ClearAll() {
       ClearNpcInfo(it->second->i_npc);
     }
 
-    SAFEDEL(it->second);
+    SafeDelete(it->second);
   }
 
   pc.clear();
@@ -352,7 +353,7 @@ int CServer::NPC_LoadAll()
 
                 new_demand->type=DEMAND_STAT;
                 it_d=stats_map.find(read_str2);
-                if(it_d==stats_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный стат %s", read_str2); return 0;}
+                if(it_d==stats_map.end()) {SafeDelete(new_demand); FONLINE_LOG("Неизвестный стат %s", read_str2); return 0;}
                 new_demand->param=(*it_d).second;
                 new_demand->oper=read_str3[0];
                 new_demand->count=read_int;
@@ -365,7 +366,7 @@ int CServer::NPC_LoadAll()
 
                 new_demand->type=DEMAND_SKILL;
                 it_d=skills_map.find(read_str2);
-                if(it_d==skills_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный скилл %s", read_str2); return 0;}
+                if(it_d==skills_map.end()) {SafeDelete(new_demand); FONLINE_LOG("Неизвестный скилл %s", read_str2); return 0;}
                 new_demand->param=(*it_d).second;
                 new_demand->oper=read_str3[0];
                 new_demand->count=read_int;
@@ -378,7 +379,7 @@ int CServer::NPC_LoadAll()
 
                 new_demand->type=DEMAND_PERK;
                 it_d=perks_map.find(read_str2);
-                if(it_d==perks_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный перк %s", read_str2); return 0;}
+                if(it_d==perks_map.end()) {SafeDelete(new_demand); FONLINE_LOG("Неизвестный перк %s", read_str2); return 0;}
                 new_demand->param=(*it_d).second;
                 new_demand->oper=read_str3[0];
                 new_demand->count=read_int;
@@ -391,7 +392,7 @@ int CServer::NPC_LoadAll()
 
                 new_demand->type=DEMAND_VAR;
 
-            //    if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); FONLINE_LOG("Неизвестная переменная %s", read_str2); return 0;}
+            //    if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SafeDelete(new_result); FONLINE_LOG("Неизвестная переменная %s", read_str2); return 0;}
                 new_demand->var_name=read_str2;
                 new_demand->oper=read_str3[0];
                 new_demand->count=read_int;
@@ -425,12 +426,12 @@ int CServer::NPC_LoadAll()
                 fscanf(cf, "%d", &read_int); //номер итема
                 fscanf(cf, "%1s", read_str2); //оператор сравнения
 
-                SAFEDEL(new_demand);
+                SafeDelete(new_demand);
                 continue;
               }
               else
               {
-                SAFEDEL(new_demand);
+                SafeDelete(new_demand);
                 FONLINE_LOG("Неизвестное условие %s", read_str);
                 continue;
               }
@@ -458,7 +459,7 @@ int CServer::NPC_LoadAll()
 
                 new_result->type=RESULT_STAT;
                 it_r=stats_map.find(read_str2);
-                if(it_r==stats_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный стат %s", read_str2); return 0;}
+                if(it_r==stats_map.end()) {SafeDelete(new_result); FONLINE_LOG("Неизвестный стат %s", read_str2); return 0;}
                 new_result->param=(*it_r).second;
                 new_result->oper=read_str3[0];
                 new_result->count=read_int;
@@ -471,7 +472,7 @@ int CServer::NPC_LoadAll()
 
                 new_result->type=RESULT_SKILL;
                 it_r=skills_map.find(read_str2);
-                if(it_r==skills_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный скилл %s", read_str2); return 0;}
+                if(it_r==skills_map.end()) {SafeDelete(new_result); FONLINE_LOG("Неизвестный скилл %s", read_str2); return 0;}
                 new_result->param=(*it_r).second;
                 new_result->oper=read_str3[0];
                 new_result->count=read_int;
@@ -484,7 +485,7 @@ int CServer::NPC_LoadAll()
 
                 new_result->type=RESULT_PERK;
                 it_r=perks_map.find(read_str2);
-                if(it_r==perks_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный перк %s", read_str2); return 0;}
+                if(it_r==perks_map.end()) {SafeDelete(new_result); FONLINE_LOG("Неизвестный перк %s", read_str2); return 0;}
                 new_result->param=(*it_r).second;
                 new_result->oper=read_str3[0];
                 new_result->count=read_int;
@@ -497,7 +498,7 @@ int CServer::NPC_LoadAll()
 
                 new_result->type=RESULT_VAR;
 
-            //    if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); FONLINE_LOG("Неизвестная переменная %s", read_str2); return 0;}
+            //    if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SafeDelete(new_result); FONLINE_LOG("Неизвестная переменная %s", read_str2); return 0;}
                 new_result->var_name=read_str2;
                 new_result->oper=read_str3[0];
                 new_result->count=read_int;
@@ -531,19 +532,19 @@ int CServer::NPC_LoadAll()
                 fscanf(cf, "%d", &read_int); //номер итема
                 fscanf(cf, "%2s", read_str2); //оператор присваивания
 
-                SAFEDEL(new_result);
+                SafeDelete(new_result);
                 continue;
               }
               else if(!stricmp(read_str,"lock"))
               {
                 fscanf(cf, "%d", &read_int); //время блокировки
 
-                SAFEDEL(new_result);
+                SafeDelete(new_result);
                 continue;
               }
               else
               {
-                SAFEDEL(new_result);
+                SafeDelete(new_result);
                 FONLINE_LOG("Неизвестный результат %s", read_str);
                 continue;
               }
@@ -762,7 +763,7 @@ int CServer::NPC_Check_demand(CCritter* npc, CCritter* acl, answer* check_answ)
     switch ((*it_d)->type)
     {
     case DEMAND_NONE:
-      //SAFEDEL((*it_d));
+      //SafeDelete((*it_d));
       //check_answ->demands.erase(it_d);
       continue;
     case DEMAND_STAT:
@@ -805,7 +806,7 @@ void CServer::NPC_Use_result(CCritter* npc, CCritter* acl, answer* use_answ)
     switch ((*it_r)->type)
     {
     case RESULT_NONE:
-      //SAFEDEL((*it_r));
+      //SafeDelete((*it_r));
       //check_answ->demands.erase(it_r);
       continue;
     case RESULT_STAT:

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include <FOnlineCommon/Common.hpp>
 
@@ -22,9 +23,9 @@ int CServer::RefreshZoneMasks()
     for(zx=0;zx<GM_MAXZONEX;++zx)
       for(zy=0;zy<GM_MAXZONEY;++zy)
         if(GetZoneColor(&fm,zx,zy)==0xFF0000)
-          SETFLAG(gm_zone[zx][zy].district,DISTRICT_WESTLAND);
+          SetBits(gm_zone[zx][zy].district,DISTRICT_WESTLAND);
         else
-          UNSETFLAG(gm_zone[zx][zy].district,DISTRICT_WESTLAND);
+          ClearBits(gm_zone[zx][zy].district,DISTRICT_WESTLAND);
   }
 
   if(!fm.LoadFile("maps_mountain.bmp",PT_SERVER_MASKS)) not_all=true;
@@ -33,9 +34,9 @@ int CServer::RefreshZoneMasks()
     for(zx=0;zx<GM_MAXZONEX;++zx)
       for(zy=0;zy<GM_MAXZONEY;++zy)
         if(GetZoneColor(&fm,zx,zy)==0xFF0000)
-          SETFLAG(gm_zone[zx][zy].district,DISTRICT_MOUNTAINS);
+          SetBits(gm_zone[zx][zy].district,DISTRICT_MOUNTAINS);
         else
-          UNSETFLAG(gm_zone[zx][zy].district,DISTRICT_MOUNTAINS);
+          ClearBits(gm_zone[zx][zy].district,DISTRICT_MOUNTAINS);
   }
 
   if(!fm.LoadFile("maps_forest.bmp",PT_SERVER_MASKS)) not_all=true;
@@ -44,9 +45,9 @@ int CServer::RefreshZoneMasks()
     for(zx=0;zx<GM_MAXZONEX;++zx)
       for(zy=0;zy<GM_MAXZONEY;++zy)
         if(GetZoneColor(&fm,zx,zy)==0xFF0000)
-          SETFLAG(gm_zone[zx][zy].district,DISTRICT_FOREST);
+          SetBits(gm_zone[zx][zy].district,DISTRICT_FOREST);
         else
-          UNSETFLAG(gm_zone[zx][zy].district,DISTRICT_FOREST);
+          ClearBits(gm_zone[zx][zy].district,DISTRICT_FOREST);
   }
 
   if(!fm.LoadFile("maps_ocean.bmp",PT_SERVER_MASKS)) not_all=true;
@@ -55,9 +56,9 @@ int CServer::RefreshZoneMasks()
     for(zx=0;zx<GM_MAXZONEX;++zx)
       for(zy=0;zy<GM_MAXZONEY;++zy)
         if(GetZoneColor(&fm,zx,zy)==0xFF0000)
-          SETFLAG(gm_zone[zx][zy].district,DISTRICT_OCEAN);
+          SetBits(gm_zone[zx][zy].district,DISTRICT_OCEAN);
         else
-          UNSETFLAG(gm_zone[zx][zy].district,DISTRICT_OCEAN);
+          ClearBits(gm_zone[zx][zy].district,DISTRICT_OCEAN);
   }
 
   if(!fm.LoadFile("mobs_power.bmp",PT_SERVER_MASKS)) not_all=true;
@@ -260,93 +261,93 @@ int CServer::LoadAllMaps()
 
   /*
   transit_map[11][0x10006D]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x6D].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x6D].flags,FT_TRANSIT);
   transit_map[11][0x10006E]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x6E].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x6E].flags,FT_TRANSIT);
   transit_map[11][0x10006F]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x6F].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x6F].flags,FT_TRANSIT);
   transit_map[11][0x100070]=0x0C01008C00057;
-  SETFLAG(tile[11][0x10][0x70].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x70].flags,FT_TRANSIT);
   transit_map[11][0x100071]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x71].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x71].flags,FT_TRANSIT);
   transit_map[11][0x100072]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x72].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x72].flags,FT_TRANSIT);
   transit_map[11][0x100073]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x73].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x73].flags,FT_TRANSIT);
   transit_map[11][0x100074]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x74].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x74].flags,FT_TRANSIT);
   transit_map[11][0x100075]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x75].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x75].flags,FT_TRANSIT);
   transit_map[11][0x100076]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x76].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x76].flags,FT_TRANSIT);
   transit_map[11][0x100077]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x77].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x77].flags,FT_TRANSIT);
   transit_map[11][0x100078]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x78].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x78].flags,FT_TRANSIT);
   transit_map[11][0x100079]=0x0C01008C0057;
-  SETFLAG(tile[11][0x10][0x79].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x79].flags,FT_TRANSIT);
 */
 
   transit_map[11][0x10006D]=0;
-  SETFLAG(tile[11][0x10][0x6D].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x6D].flags,FT_TRANSIT);
   transit_map[11][0x10006E]=0;
-  SETFLAG(tile[11][0x10][0x6E].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x6E].flags,FT_TRANSIT);
   transit_map[11][0x10006F]=0;
-  SETFLAG(tile[11][0x10][0x6F].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x6F].flags,FT_TRANSIT);
   transit_map[11][0x100070]=0;
-  SETFLAG(tile[11][0x10][0x70].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x70].flags,FT_TRANSIT);
   transit_map[11][0x100071]=0;
-  SETFLAG(tile[11][0x10][0x71].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x71].flags,FT_TRANSIT);
   transit_map[11][0x100072]=0;
-  SETFLAG(tile[11][0x10][0x72].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x72].flags,FT_TRANSIT);
   transit_map[11][0x100073]=0;
-  SETFLAG(tile[11][0x10][0x73].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x73].flags,FT_TRANSIT);
   transit_map[11][0x100074]=0;
-  SETFLAG(tile[11][0x10][0x74].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x74].flags,FT_TRANSIT);
   transit_map[11][0x100075]=0;
-  SETFLAG(tile[11][0x10][0x75].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x75].flags,FT_TRANSIT);
   transit_map[11][0x100076]=0;
-  SETFLAG(tile[11][0x10][0x76].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x76].flags,FT_TRANSIT);
   transit_map[11][0x100077]=0;
-  SETFLAG(tile[11][0x10][0x77].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x77].flags,FT_TRANSIT);
   transit_map[11][0x100078]=0;
-  SETFLAG(tile[11][0x10][0x78].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x78].flags,FT_TRANSIT);
   transit_map[11][0x100079]=0;
-  SETFLAG(tile[11][0x10][0x79].flags,FT_TRANSIT);
+  SetBits(tile[11][0x10][0x79].flags,FT_TRANSIT);
 
   transit_map[12][0x8E0054]=0x0B0300160073ULL;
-  SETFLAG(tile[12][0x8E][0x54].flags,FT_TRANSIT);
+  SetBits(tile[12][0x8E][0x54].flags,FT_TRANSIT);
   transit_map[12][0x8E0055]=0x0B0300160073ULL;
-  SETFLAG(tile[12][0x8E][0x55].flags,FT_TRANSIT);
+  SetBits(tile[12][0x8E][0x55].flags,FT_TRANSIT);
   transit_map[12][0x8E0056]=0x0B0300160073ULL;
-  SETFLAG(tile[12][0x8E][0x56].flags,FT_TRANSIT);
+  SetBits(tile[12][0x8E][0x56].flags,FT_TRANSIT);
   transit_map[12][0x8E0057]=0x0B0300160073ULL;
-  SETFLAG(tile[12][0x8E][0x57].flags,FT_TRANSIT);
+  SetBits(tile[12][0x8E][0x57].flags,FT_TRANSIT);
   transit_map[12][0x8E0058]=0x0B0300160073ULL;
-  SETFLAG(tile[12][0x8E][0x58].flags,FT_TRANSIT);
+  SetBits(tile[12][0x8E][0x58].flags,FT_TRANSIT);
   transit_map[12][0x8E0059]=0x0B0300160073ULL;
-  SETFLAG(tile[12][0x8E][0x59].flags,FT_TRANSIT);
+  SetBits(tile[12][0x8E][0x59].flags,FT_TRANSIT);
   transit_map[12][0x8E005A]=0x0B0300160073ULL;
-  SETFLAG(tile[12][0x8E][0x5A].flags,FT_TRANSIT);
+  SetBits(tile[12][0x8E][0x5A].flags,FT_TRANSIT);
   transit_map[12][0x8E005B]=0x0B0300160073ULL;
-  SETFLAG(tile[12][0x8E][0x5B].flags,FT_TRANSIT);
+  SetBits(tile[12][0x8E][0x5B].flags,FT_TRANSIT);
 
   transit_map[21][0xA0007B]=0;
-  SETFLAG(tile[21][0xA0][0x7B].flags,FT_TRANSIT);
+  SetBits(tile[21][0xA0][0x7B].flags,FT_TRANSIT);
   transit_map[21][0xA0007D]=0;
-  SETFLAG(tile[21][0xA0][0x7D].flags,FT_TRANSIT);
+  SetBits(tile[21][0xA0][0x7D].flags,FT_TRANSIT);
   transit_map[21][0xA0007E]=0;
-  SETFLAG(tile[21][0xA0][0x7E].flags,FT_TRANSIT);
+  SetBits(tile[21][0xA0][0x7E].flags,FT_TRANSIT);
   transit_map[21][0xA0007F]=0;
-  SETFLAG(tile[21][0xA0][0x7F].flags,FT_TRANSIT);
+  SetBits(tile[21][0xA0][0x7F].flags,FT_TRANSIT);
   transit_map[21][0xA00080]=0;
-  SETFLAG(tile[21][0xA0][0x80].flags,FT_TRANSIT);
+  SetBits(tile[21][0xA0][0x80].flags,FT_TRANSIT);
   transit_map[21][0xA00081]=0;
-  SETFLAG(tile[21][0xA0][0x81].flags,FT_TRANSIT);
+  SetBits(tile[21][0xA0][0x81].flags,FT_TRANSIT);
   transit_map[21][0xA00082]=0;
-  SETFLAG(tile[21][0xA0][0x82].flags,FT_TRANSIT);
+  SetBits(tile[21][0xA0][0x82].flags,FT_TRANSIT);
   transit_map[21][0xA00083]=0;
-  SETFLAG(tile[21][0xA0][0x83].flags,FT_TRANSIT);
+  SetBits(tile[21][0xA0][0x83].flags,FT_TRANSIT);
 
   proc_zone_x=0;
   proc_zone_y=0;
@@ -372,8 +373,8 @@ int CServer::TransitCr(CCritter* acl, int to_map, int to_x, int to_y, int to_ori
 
   acl->info.ori=to_ori;
 
-  if(FLAG(acl->info.flags,FCRIT_PLAYER)) sql.SaveDataPlayer(&acl->info);
-  if(FLAG(acl->info.flags,FCRIT_NPC )) sql.SaveDataNPC(&acl->info);
+  if(GetBits(acl->info.flags,FCRIT_PLAYER)) sql.SaveDataPlayer(&acl->info);
+  if(GetBits(acl->info.flags,FCRIT_NPC )) sql.SaveDataNPC(&acl->info);
 
   return TR_OK;
 }
@@ -382,11 +383,11 @@ int CServer::MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my)
 {
   if(mx>=MAXHEXX || my>=MAXHEXY) return MR_FALSE;
 
-  if(FLAG(tile[acl->info.map][mx][my].flags,FT_NOWAY)) return MR_FALSE;
+  if(GetBits(tile[acl->info.map][mx][my].flags,FT_NOWAY)) return MR_FALSE;
 
-  UNSETFLAG(tile[acl->info.map][acl->info.x][acl->info.y].flags,FT_PLAYER);
+  ClearBits(tile[acl->info.map][acl->info.x][acl->info.y].flags,FT_PLAYER);
 
-  if(FLAG(tile[acl->info.map][mx][my].flags,FT_TRANSIT))
+  if(GetBits(tile[acl->info.map][mx][my].flags,FT_TRANSIT))
   {
     uint64_t find_transit=FindTransit(acl->info.map,mx,my);
 
@@ -406,7 +407,7 @@ int CServer::MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my)
           return MR_TOGLOBAL;
         }
 
-        if(FLAG(acl->info.flags,FT_PLAYER)) Send_LoadMap(acl);
+        if(GetBits(acl->info.flags,FT_PLAYER)) Send_LoadMap(acl);
 
         return MR_TRANSIT;
       }
@@ -416,7 +417,7 @@ int CServer::MoveToTile(CCritter* acl, HexTYPE mx, HexTYPE my)
   acl->info.x=mx;
   acl->info.y=my;
 
-  SETFLAG(tile[acl->info.map][mx][my].flags,FT_PLAYER);
+  SetBits(tile[acl->info.map][mx][my].flags,FT_PLAYER);
 
   //FONLINE_LOG("x=%d,y=%d",acl->info.x,acl->info.y);
 
@@ -463,7 +464,7 @@ int CServer::AddCrToMap(CCritter* acl, uint16_t tmap, HexTYPE tx, HexTYPE ty)
       }
 
 FONLINE_LOG(".1.");
-      SAFEDEL((*it_cr).second);
+      SafeDelete((*it_cr).second);
 FONLINE_LOG(".2.");
       map_cr[tmap].erase(it_cr);
     }
@@ -487,7 +488,7 @@ FONLINE_LOG(".2.");
   cl_map::iterator it_cr=map_cr[tmap].find(acl->info.id);
   if(it_cr!=map_cr[tmap].end())
   {
-    UNSETFLAG(tile[tmap][(*it_cr).second->info.x][(*it_cr).second->info.y].flags,FT_PLAYER);
+    ClearBits(tile[tmap][(*it_cr).second->info.x][(*it_cr).second->info.y].flags,FT_PLAYER);
     DelClFromAllVisVec((*it_cr).second,tmap);
     delete (*it_cr).second;
     map_cr[tmap].erase(it_cr);
@@ -495,7 +496,7 @@ FONLINE_LOG(".2.");
 
   bool find_place=false;
 
-  if(!FLAG(tile[tmap][tx][ty].flags,FT_NOWAY)) find_place=true;
+  if(!GetBits(tile[tmap][tx][ty].flags,FT_NOWAY)) find_place=true;
 
   if(find_place==false)
   {
@@ -516,7 +517,7 @@ FONLINE_LOG(".2.");
       if(tx+(sx[i])<0 || tx+(sx[i])>=MAXHEXX) continue;
       if(ty+(sy[i])<0 || ty+(sy[i])>=MAXHEXY) continue;
 
-      if(!FLAG(tile[tmap][tx+(sx[i])][ty+(sy[i])].flags,FT_NOWAY))
+      if(!GetBits(tile[tmap][tx+(sx[i])][ty+(sy[i])].flags,FT_NOWAY))
       {
         find_place=true;
         break;
@@ -531,7 +532,7 @@ FONLINE_LOG(".2.");
     else return TR_FALSE;
   }
 
-  SETFLAG(tile[tmap][tx][ty].flags,FT_PLAYER);
+  SetBits(tile[tmap][tx][ty].flags,FT_PLAYER);
 
   map_cr[tmap].insert(cl_map::value_type(acl->info.id,acl));
 
@@ -578,7 +579,7 @@ void CServer::EraseCrFromMap(CCritter* acl, int num_map, int hex_x, int hex_y)
   it_cr=map_cr[num_map].find(acl->info.id);
   if(it_cr!=map_cr[num_map].end()) map_cr[num_map].erase(it_cr);
 
-  UNSETFLAG(tile[num_map][hex_x][hex_y].flags,FT_PLAYER);
+  ClearBits(tile[num_map][hex_x][hex_y].flags,FT_PLAYER);
 
   DelClFromAllVisVec(acl,num_map);
 
@@ -593,7 +594,7 @@ void CServer::LMapGarbager(uint16_t num_map)
   {
     cl_map::iterator it_cr;
     for(it_cr=map_cr[num_map].begin();it_cr!=map_cr[num_map].end();++it_cr)
-      if(FLAG((*it_cr).second->info.flags,FCRIT_PLAYER) || FLAG((*it_cr).second->info.flags,FCRIT_NPC)) break;
+      if(GetBits((*it_cr).second->info.flags,FCRIT_PLAYER) || GetBits((*it_cr).second->info.flags,FCRIT_NPC)) break;
 
     if(it_cr==map_cr[num_map].end())
     {
@@ -633,32 +634,26 @@ void CServer::SetVisCr(CCritter* acl)
     dist=DistFast(acl->info.x-c->info.x,acl->info.y-c->info.y);
 
   //для себя
-    BREAK_BEGIN
+    do {
+      if(!GetBits(acl->info.flags,FCRIT_PLAYER)) break;
 
-      if(!FLAG(acl->info.flags,FCRIT_PLAYER)) break;
-
-      if(c->info.pe[PE_HIDE_MODE])
-      {
+      if(c->info.pe[PE_HIDE_MODE]) {
         vis=acl->info.look-(c->info.sk[SK_SNEAK]-acl->info.sk[SK_SNEAK]/4)/10;
         if(vis<8) vis=8;
         //if(vis<MIN_VISIBLE_CRIT) vis=MIN_VISIBLE_CRIT;
-      }
-      else
+      } else {
         vis=acl->info.look;
-
-      if(vis>=dist)
-      {
-        if(AddClIntoVisVec(c,acl)) Send_AddCritter(acl,&c->info);
       }
-      else
-      {
+
+      if(vis>=dist) {
+        if(AddClIntoVisVec(c,acl)) Send_AddCritter(acl,&c->info);
+      } else {
         if(DelClFromVisVec(c,acl)) Send_RemoveCritter(acl,c->info.id);
       }
-
-    BREAK_END;
+    } while(0);
 
   //для оппонента
-    if(!FLAG(c->info.flags,FCRIT_PLAYER)) continue;
+    if(!GetBits(c->info.flags,FCRIT_PLAYER)) continue;
 
     c->GenLook();
 
@@ -707,7 +702,7 @@ int CServer::DelClFromAllVisVec(CCritter* del_cl, uint16_t num_map)
     if((*it).second==del_cl) continue;
 
     if(DelClFromVisVec((*it).second,del_cl))
-      if(FLAG((*it).second->info.flags,FCRIT_PLAYER) && !FLAG((*it).second->info.flags,FCRIT_DISCONNECT))
+      if(GetBits((*it).second->info.flags,FCRIT_PLAYER) && !GetBits((*it).second->info.flags,FCRIT_DISCONNECT))
         Send_RemoveCritter((*it).second,del_cl->info.id);
   }
 
@@ -789,12 +784,12 @@ void CServer::InsertObjOnMap(dyn_obj* ins_obj, MapTYPE omap, HexTYPE ox, HexTYPE
   switch(ins_obj->object->type)
   {
   case OBJ_TYPE_DOOR:
-    SETFLAG(tile[omap][ox][oy].flags,FT_DOOR_CLOSE);
+    SetBits(tile[omap][ox][oy].flags,FT_DOOR_CLOSE);
     break;
   case OBJ_TYPE_CONTAINER:
     break;
   default:
-    SETFLAG(tile[omap][ox][oy].flags,FT_TILECONT);
+    SetBits(tile[omap][ox][oy].flags,FT_TILECONT);
     break;
   }
 /*
@@ -823,7 +818,7 @@ void CServer::EraseObjFromMap(dyn_obj* ers_obj)
   dyn_map_map::iterator it_tile_objects=objects_map[ers_obj->ACC_HEX.map].find(hex_ind);
   if(it_tile_objects==objects_map[ers_obj->ACC_HEX.map].end())
   {
-    UNSETFLAG(tile[ers_obj->ACC_HEX.map][ers_obj->ACC_HEX.x][ers_obj->ACC_HEX.y].flags,FT_TILECONT);
+    ClearBits(tile[ers_obj->ACC_HEX.map][ers_obj->ACC_HEX.x][ers_obj->ACC_HEX.y].flags,FT_TILECONT);
     ers_obj->ACC_HEX.map=0;
     ers_obj->ACC_HEX.x=0;
     ers_obj->ACC_HEX.y=0;
@@ -835,7 +830,7 @@ void CServer::EraseObjFromMap(dyn_obj* ers_obj)
 
   if(tile_objects->empty())
   {
-    UNSETFLAG(tile[ers_obj->ACC_HEX.map][ers_obj->ACC_HEX.x][ers_obj->ACC_HEX.y].flags,FT_TILECONT);
+    ClearBits(tile[ers_obj->ACC_HEX.map][ers_obj->ACC_HEX.x][ers_obj->ACC_HEX.y].flags,FT_TILECONT);
 
     objects_map[ers_obj->ACC_HEX.map].erase(hex_ind);
     delete tile_objects;
@@ -1078,7 +1073,7 @@ int CServer::GM_GroupMove(gmap_group* group, uint32_t time)
     group->speedx=0;
     group->speedy=0;
 
-  //  if(!FLAG(cur_group->rule->info.flags,FCRIT_PLAYER) && GM_GroupEndMove(cur_group->rule))
+  //  if(!GetBits(cur_group->rule->info.flags,FCRIT_PLAYER) && GM_GroupEndMove(cur_group->rule))
   //  {
   //    cur_zone->groups.erase(it_g);
   //    if(it_g==cur_zone->groups.end()) break;
@@ -1100,12 +1095,12 @@ void CServer::GM_GroupAddToZone(gmap_group* group, int zx, int zy)
   for(cl_map::iterator it_cr=group->crit_move.begin();it_cr!=group->crit_move.end();++it_cr)
   {
     cr=(*it_cr).second;
-  //  if(!FLAG((*it_cr)->info.flags,FCRIT_PLAYER)) continue;
+  //  if(!GetBits((*it_cr)->info.flags,FCRIT_PLAYER)) continue;
 
     for(city_vec::iterator it_ci=cur_zone->cities.begin();it_ci!=cur_zone->cities.end();++it_ci)
     {
       if(cr->AddKnownCity((*it_ci)->num))
-        if(!FLAG(cr->info.flags,FCRIT_DISCONNECT))
+        if(!GetBits(cr->info.flags,FCRIT_DISCONNECT))
           Send_GlobalInfo(cr,GM_INFO_CITIES);
     }
   }
@@ -1152,9 +1147,9 @@ void CServer::GM_GroupStartMove(CCritter* rule_acl)
   rule_acl->group_move->last_encaunter=GetMilliseconds();
 
   rule_acl->group_move->rule=rule_acl;
-  SETFLAG(rule_acl->info.flags,FCRIT_RULEGROUP);
+  SetBits(rule_acl->info.flags,FCRIT_RULEGROUP);
 
-  if(FLAG(rule_acl->info.flags,FCRIT_PLAYER))
+  if(GetBits(rule_acl->info.flags,FCRIT_PLAYER))
   {
     rule_acl->group_move->players++;
     if(rule_acl->state==STATE_GAME) Send_LoadMap(rule_acl);
@@ -1178,9 +1173,9 @@ void CServer::GM_GroupStartMove(CCritter* rule_acl)
       cr->info.world_x=cr->group_move->xi;
       cr->info.world_x=cr->group_move->yi;
 
-      UNSETFLAG(cr->info.flags,FCRIT_RULEGROUP);
+      ClearBits(cr->info.flags,FCRIT_RULEGROUP);
 
-      if(FLAG(cr->info.flags,FCRIT_PLAYER))
+      if(GetBits(cr->info.flags,FCRIT_PLAYER))
       {
         cr->group_move->players++;
         if(cr->state==STATE_GAME) Send_LoadMap(cr);
@@ -1221,23 +1216,23 @@ int CServer::GM_GroupToMap(CCritter* rule_acl, uint16_t map_num, HexTYPE shx, He
       GM_GroupToGemmate(cr);
     }
 
-    if(FLAG(cr->info.flags,FCRIT_PLAYER))
+    if(GetBits(cr->info.flags,FCRIT_PLAYER))
     {
       Send_LoadMap(cr);
     }
 
-    if(FLAG(cr->info.flags,FCRIT_NPC))
+    if(GetBits(cr->info.flags,FCRIT_NPC))
     {
       SetVisCr(cr);
     }
 
-    if(FLAG(cr->info.flags,FCRIT_MOB))
+    if(GetBits(cr->info.flags,FCRIT_MOB))
     {
       SetVisCr(cr);
     }
   }
 
-  if(FLAG(rule_acl->info.flags,FCRIT_PLAYER))
+  if(GetBits(rule_acl->info.flags,FCRIT_PLAYER))
   {
     Send_LoadMap(rule_acl);
   }
@@ -1373,7 +1368,7 @@ int CServer::GM_GroupToGemmate(CCritter* rule_acl)
   if(rule_acl->info.map) return 0;
   if(!rule_acl->group_move) return 0;
 
-  if(FLAG(rule_acl->info.flags,FCRIT_PLAYER))
+  if(GetBits(rule_acl->info.flags,FCRIT_PLAYER))
     rule_acl->group_move->players--;
   cl_map::iterator it_cr=rule_acl->group_move->crit_move.find(rule_acl->info.id);
   if(it_cr!=rule_acl->group_move->crit_move.end())
@@ -1397,7 +1392,7 @@ int CServer::GM_GroupToGemmate(CCritter* rule_acl)
   rule_acl->group_move->speedy=0;
 
   rule_acl->group_move->rule=rule_acl;
-  SETFLAG(rule_acl->info.flags,FCRIT_RULEGROUP);
+  SetBits(rule_acl->info.flags,FCRIT_RULEGROUP);
 
   GM_GroupAddToZone(rule_acl->group_move,GM_ZONE(rule_acl->group_move->xi),GM_ZONE(rule_acl->group_move->yi));
 

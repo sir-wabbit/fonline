@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include <FOnlineCommon/Common.hpp>
 
@@ -946,7 +947,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
 {
   FONLINE_LOG("Карта загружена. Отправка данных игроку...");
 
-  BREAK_BEGIN
+  do {
     cl_map::iterator it_cr=cr.find(acl->info.id);
     if(it_cr!=cr.end())
     {
@@ -989,8 +990,8 @@ void CServer::Process_MapLoaded(CCritter* acl)
 
     cr.insert(cl_map::value_type(acl->info.id,acl));
 
-    SETFLAG(acl->info.flags,FCRIT_PLAYER);
-    UNSETFLAG(acl->info.flags,FCRIT_DISCONNECT);
+    SetBits(acl->info.flags, FCRIT_PLAYER);
+    ClearBits(acl->info.flags, FCRIT_DISCONNECT);
 
     UseDefObj(acl,DOBJ_SLOT_HAND1);
     UseDefObj(acl,DOBJ_SLOT_ARMOR);
@@ -1011,9 +1012,7 @@ void CServer::Process_MapLoaded(CCritter* acl)
         continue;
       default: continue;
       }
-
-
-  BREAK_END;
+  } while(0);
 
   if(!acl->info.map)
   {
@@ -1035,9 +1034,9 @@ void CServer::Process_MapLoaded(CCritter* acl)
 
   Send_GameTime(acl);
 
-  SETFLAG(acl->info.flags,FCRIT_CHOSEN);
-  Send_AddCritter(acl,&acl->info);
-  UNSETFLAG(acl->info.flags,FCRIT_CHOSEN);
+  SetBits(acl->info.flags, FCRIT_CHOSEN);
+  Send_AddCritter(acl, &acl->info);
+  ClearBits(acl->info.flags, FCRIT_CHOSEN);
 
   Send_AllParams(acl,TYPE_STAT ); //отправка всех статов игроку
   Send_AllParams(acl,TYPE_SKILL); //отправка всех скиллов игроку
@@ -1116,7 +1115,7 @@ void CServer::Process_Move(CCritter* acl)
 
   if(!acl->info.map) return;
 
-  uint8_t dir=FLAG(move_params,BIN8(00000111));
+  uint8_t dir = GetBits(move_params, BIN8(00000111));
 
 //  FONLINE_LOG("Process_Move move_params=%d, dir=%d, how_move=%d",move_params,dir,how_move);
 
@@ -1175,7 +1174,7 @@ void CServer::Process_Move(CCritter* acl)
   switch(move_res)
   {
   case MR_STEP:
-    if(FLAG(PMOVE_RUN,move_params)) Skill_Sneak_UnSet(acl); //!!!!!! двойной вызов SetVisCr
+    if (GetBits(move_params, PMOVE_RUN)) Skill_Sneak_UnSet(acl); //!!!!!! двойной вызов SetVisCr
 
     SetVisCr(acl); //!!!!!!!
     SetVisibleObj(acl);
@@ -1443,14 +1442,14 @@ void CServer::Process_PickObject(CCritter* acl)
   switch(pick_obj->object->type)
   {
   case OBJ_TYPE_DOOR:
-    if(FLAG(GetTileFlags(acl->info.map,targ_x,targ_y),FT_PLAYER)) break;
+    if(GetBits(GetTileFlags(acl->info.map,targ_x,targ_y),FT_PLAYER)) break;
 
-    if(FLAG(GetTileFlags(acl->info.map,targ_x,targ_y),FT_DOOR_CLOSE))
+    if(GetBits(GetTileFlags(acl->info.map,targ_x,targ_y),FT_DOOR_CLOSE))
     {
       UnSetTileFlag(acl->info.map,targ_x,targ_y,FT_DOOR_CLOSE);
       SetTileFlag(acl->info.map,targ_x,targ_y,FT_DOOR_OPEN);
     }
-    else if(FLAG(GetTileFlags(acl->info.map,targ_x,targ_y),FT_DOOR_OPEN))
+    else if(GetBits(GetTileFlags(acl->info.map,targ_x,targ_y),FT_DOOR_OPEN))
     {
       UnSetTileFlag(acl->info.map,targ_x,targ_y,FT_DOOR_OPEN);
       SetTileFlag(acl->info.map,targ_x,targ_y,FT_DOOR_CLOSE);

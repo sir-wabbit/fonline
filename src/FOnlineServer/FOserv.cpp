@@ -16,10 +16,14 @@
   #include <sys/socket.h>
   #include <netinet/in.h>
   #include <netinet/ip.h>
+#else
+  #define FD_SETSIZE 1024
+  #include <windows.h>
 #endif
 
 #include <string>
 #include <algorithm>
+#include <cmath>
 
 #include <IniFile/IniFile.hpp>
 
@@ -139,7 +143,7 @@ CServer::CServer()
 CServer::~CServer()
 {
   Finish();
-  SAFEDELA(outBUF);
+  SafeDeleteArray(outBUF);
 
   self=NULL; //!Cvet
 }
@@ -253,7 +257,7 @@ void CServer::DisconnectClient(CritterID idchannel) {
   busy[idchannel]=0;
 
   if ((*it_ds).second->info.cond != COND_NOT_IN_GAME) {
-    SETFLAG((*it_ds).second->info.flags, FCRIT_DISCONNECT);
+    SetBits((*it_ds).second->info.flags, FCRIT_DISCONNECT);
 
     if((*it_ds).second->info.map) {
       SendA_Action((*it_ds).second, ACT_DISCONNECT, 0);
@@ -264,7 +268,7 @@ void CServer::DisconnectClient(CritterID idchannel) {
     sql.SaveDataPlayer(&(*it_ds).second->info);
   } else {
     FONLINE_LOG(".1.");
-    SAFEDEL((*it_ds).second); //!!!!!!!!BUG??? ВАЙ???!!!!
+    SafeDelete((*it_ds).second); //!!!!!!!!BUG??? ВАЙ???!!!!
     FONLINE_LOG(".2.");
   }
 
@@ -339,6 +343,8 @@ void CServer::RunGameLoop()
 
   TICK lt_ticks,lt_ticks2;
 //!Cvet ---
+
+  fd_set read_set,write_set,exc_set;
 
   while(!FOQuit)
   {
@@ -915,7 +921,7 @@ int CServer::Output(CCritter* acl)
   if(acl->bout.capacity>=outLEN)
   {
     while(acl->bout.capacity>=outLEN) outLEN<<=1;
-    SAFEDELA(outBUF);
+    SafeDeleteArray(outBUF);
     outBUF=new char[outLEN];
   }
 
@@ -962,11 +968,13 @@ int CServer::Init() {
 
   FONLINE_LOG("***   Starting initialization   ****");
 
-  //WSADATA WsaData;
-  //if (WSAStartup(0x0101, &WsaData)) {
-  //  FONLINE_LOG("WSAStartup error!");
-  //  goto SockEND;
-  //}
+  #ifdef _WIN32
+    WSADATA WsaData;
+    if (WSAStartup(0x0101, &WsaData)) {
+      FONLINE_LOG("WSAStartup error!");
+      goto SockEND;
+    }
+  #endif
   s = socket(AF_INET, SOCK_STREAM, 0);
 
   IniFile::RecordMap settings;

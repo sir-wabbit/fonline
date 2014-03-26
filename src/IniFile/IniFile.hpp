@@ -1,5 +1,4 @@
-#ifndef INI_FILE_HPP_
-#define INI_FILE_HPP_
+#pragma once
 
 #include <string>
 #include <map>
@@ -33,5 +32,3 @@ template<> INIFILE_API float GetValue(const RecordMap& ini, const std::string& k
 template<> INIFILE_API double GetValue(const RecordMap& ini, const std::string& key, double defValue);
 
 }; // namespace IniFile
-
-#endif /*INI_FILE_HPP_*/

@@ -1,5 +1,4 @@
-#ifndef __FOSERV_H__
-#define __FOSERV_H__
+#pragma once
 
 /********************************************************************
   created:  18:08:2004   23:48; edited: 2006,2007
@@ -194,18 +193,18 @@ typedef std::map<DHexTYPE, dyn_map*> dyn_map_map; //контейнер конт�
   { \
     CCritter -> info.st[(stat)] oper (count); \
     if (CCritter -> info.st[(stat)] > 9999) CCritter -> info.st[(stat)] = 9999;\
-    if (FLAG(CCritter -> info.flags, FCRIT_PLAYER) && !FLAG(CCritter -> info.flags, FCRIT_DISCONNECT)) { \
+    if (GetBits(CCritter -> info.flags, FCRIT_PLAYER) && !GetBits(CCritter -> info.flags, FCRIT_DISCONNECT)) { \
       Send_Param(CCritter,TYPE_STAT,(stat)); \
     } \
   }
 
 #define CHANGE_SKILL(CCritter,skill,oper,count) {CCritter##->info.sk[(skill)]##oper##(count);\
 if(CCritter##->info.sk[(skill)]>999) CCritter##->info.sk[(skill)]=999;\
-if(FLAG(CCritter##->info.flags,FCRIT_PLAYER)&&!FLAG(CCritter##->info.flags,FCRIT_DISCONNECT))\
+if(GetBits(CCritter##->info.flags,FCRIT_PLAYER)&&!GetBits(CCritter##->info.flags,FCRIT_DISCONNECT))\
 Send_Param(CCritter,TYPE_SKILL,(skill));}
 #define CHANGE_PERK(CCritter,perk,oper,count) {CCritter##->info.pe[(perk)]##oper##(count);\
 if(CCritter##->info.pe[(perk)]>9) CCritter##->info.pe[(perk)]=9;\
-if(FLAG(CCritter##->info.flags,FCRIT_PLAYER)&&!FLAG(CCritter##->info.flags,FCRIT_DISCONNECT))\
+if(GetBits(CCritter##->info.flags,FCRIT_PLAYER)&&!GetBits(CCritter##->info.flags,FCRIT_DISCONNECT))\
 Send_Param(CCritter,TYPE_PERK,(perk));}
 
 //дистанция
@@ -469,8 +468,12 @@ class CServer
   tile_info* GetTile(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y){return &tile[num_map][num_x][num_y];}
   uint16_t GetTileFlags(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y){return tile[num_map][num_x][num_y].flags;};
 
-  void SetTileFlag(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y, uint16_t flag){SETFLAG(tile[num_map][num_x][num_y].flags,flag);};
-  void UnSetTileFlag(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y, uint16_t flag){UNSETFLAG(tile[num_map][num_x][num_y].flags,flag);};
+  void SetTileFlag(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y, uint16_t flag) {
+    SetBits(tile[num_map][num_x][num_y].flags, flag);
+  }
+  void UnSetTileFlag(MapTYPE num_map, HexTYPE num_x, HexTYPE num_y, uint16_t flag) {
+    ClearBits(tile[num_map][num_x][num_y].flags,flag);
+  }
 
   void SetVisCr(CCritter* acl);
   int AddClIntoVisVec(CCritter* acl, CCritter* add_cl);
@@ -510,7 +513,6 @@ class CServer
   bool Active; // включен сервер
 
   int s; // socket
-  fd_set read_set,write_set,exc_set;
 
   void ClearClients(); //Del all
 //  void RemoveCCritter(CritterID id); //Del by id
@@ -600,6 +602,3 @@ public:
    CServer();
    ~CServer();
 };
-
-
-#endif // __FOSERV_H__

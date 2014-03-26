@@ -1,5 +1,4 @@
-#ifndef _SOCIALS_H_
-#define _SOCIALS_H_
+#pragma once
 
 #include <mysql/mysql.h>
 
@@ -34,5 +33,3 @@ void GetSocVicStr(int socid, char* SelfStr, char* VicStr, char* AllStr, crit_inf
 void GetSocVicErrStr(int socid, char* SelfStr, crit_info* self);
 
 int GetPossParams(int socid);
-
-#endif

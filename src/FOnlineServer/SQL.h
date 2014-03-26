@@ -1,5 +1,4 @@
-#ifndef __SQL_H__
-#define __SQL_H__
+#pragma once
 
 /********************************************************************
   created:  end of 2006; updated: begin of 2007
@@ -114,5 +113,3 @@ private:
   std::string unix_socket;
   uint32_t clientflag;
 };
-
-#endif // __SQL_H__
