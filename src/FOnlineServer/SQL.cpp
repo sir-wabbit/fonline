@@ -48,7 +48,7 @@ bool SQL::Initialize() {
   FONLINE_LOG("Разрешенные символы:|%s|. Все остальные будут заменяться на пробел.",load_char.c_str());
 
   for (size_t i = 0; i < load_char.size(); i++) {
-    true_char.insert(true_char_set::value_type(load_char[i]));
+    true_char.insert(load_char[i]);
   }
 
   mySQL = mysql_init(NULL);
@@ -58,14 +58,14 @@ bool SQL::Initialize() {
     return false;
   }
 
-  this->user = GetValue<std::string>(ini, "SQL.user", "root");
-  this->passwd = GetValue<std::string>(ini, "SQL.passwd", "");
-  this->host = GetValue<std::string>(ini, "SQL.host", "localhost");
-  this->db = GetValue<std::string>(ini, "SQL.db", "");
-  this->unix_socket = GetValue<std::string>(ini, "SQL.unix_socket", "");
+  std::string user = GetValue<std::string>(ini, "SQL.user", "root");
+  std::string passwd = GetValue<std::string>(ini, "SQL.passwd", "");
+  std::string host = GetValue<std::string>(ini, "SQL.host", "localhost");
+  std::string db = GetValue<std::string>(ini, "SQL.db", "");
+  std::string unix_socket = GetValue<std::string>(ini, "SQL.unix_socket", "");
 
-  this->port = GetValue<int>(ini, "SQL.port", 3306);
-  this->clientflag = GetValue<int>(ini, "SQL.clientflag", 0);
+  int port = GetValue<int>(ini, "SQL.port", 3306);
+  int clientflag = GetValue<int>(ini, "SQL.clientflag", 0);
 
   FONLINE_LOG("Accepted characters : %s", load_char.c_str());
   FONLINE_LOG("User : %s", user.c_str());
@@ -630,6 +630,10 @@ int SQL::NewPlayer(crit_info* info)
 
 int SQL::SaveDataPlayer(crit_info* info)
 {
+  char stats[ALL_STATS*4+1];
+  char skills[ALL_SKILLS*3+1];
+  char perks[ALL_PERKS+1];
+
   if(!CodeParams(stats,skills,perks,info))
   {
     FONLINE_LOG("!!!WORNING!!! SQL. Ошибка кодировки данных криттера");
@@ -675,6 +679,11 @@ int SQL::LoadDataPlayer(crit_info* info)
   strcpy(info->cases[2],mySQL_row[12]);
   strcpy(info->cases[3],mySQL_row[13]);
   strcpy(info->cases[4],mySQL_row[14]);
+
+  char stats[ALL_STATS*4+1];
+  char skills[ALL_SKILLS*3+1];
+  char perks[ALL_PERKS+1];
+
   strcpy(stats,mySQL_row[15]);
   strcpy(skills,mySQL_row[16]);
   strcpy(perks,mySQL_row[17]);
@@ -709,6 +718,10 @@ int SQL::NewNPC(crit_info* info)
 
 int SQL::SaveDataNPC(crit_info* info)
 {
+  char stats[ALL_STATS*4+1];
+  char skills[ALL_SKILLS*3+1];
+  char perks[ALL_PERKS+1];
+
   if(!CodeParams(stats,skills,perks,info))
   {
     FONLINE_LOG("!!!WORNING!!! SQL. Ошибка кодировки данных криттера");
@@ -752,6 +765,11 @@ int SQL::LoadDataNPC(crit_info* info)
   strcpy(info->cases[2],mySQL_row[9]);
   strcpy(info->cases[3],mySQL_row[10]);
   strcpy(info->cases[4],mySQL_row[11]);
+
+  char stats[ALL_STATS*4+1];
+  char skills[ALL_SKILLS*3+1];
+  char perks[ALL_PERKS+1];
+
   strcpy(stats,mySQL_row[12]);
   strcpy(skills,mySQL_row[13]);
   strcpy(perks,mySQL_row[14]);
