@@ -970,7 +970,7 @@ int CServer::Init() {
 	s = socket(AF_INET, SOCK_STREAM, 0);
 
 	IniFile::RecordMap settings;
-	if (!IniFile::LoadINI(".\\foserv.cfg", settings)) {
+	if (!IniFile::LoadINI("data/server.ini", settings)) {
     return false;
   }
 	//port=GetPrivateProfileInt("server","port",4000,".\\foserv.cfg");
