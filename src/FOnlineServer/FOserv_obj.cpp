@@ -97,7 +97,7 @@ int CServer::LoadAllStaticObjects()
 
 	if((cf=fopen("objects\\all_obj.st","rt"))==NULL)
 	{
-		FONLINE_LOG("Файл all_obj.st не найден\n");
+		FONLINE_LOG("Файл all_obj.st не найден");
 		return 0;
 	}
 
@@ -114,7 +114,7 @@ int CServer::LoadAllStaticObjects()
 		sprintf(tmpc,"objects\\%d.st",tmpi);
 		if((cf2=fopen(tmpc,"rt"))==NULL)
 		{
-			FONLINE_LOG("Файл |%s| не найден\n",tmpc);
+			FONLINE_LOG("Файл |%s| не найден",tmpc);
 			return 0;
 		}
 
@@ -154,14 +154,14 @@ int CServer::LoadAllStaticObjects()
 
 	fclose(cf);
 
-	FONLINE_LOG("OK (%d объектов)\n",cnt_obj);
+	FONLINE_LOG("OK (%d объектов)",cnt_obj);
 
 	return 1;
 }
 
 int CServer::LoadAllObj() //загрузка динамических объектов из mySQL
 {
-/*	FONLINE_LOG("Загрузка динамических объектов\n");
+/*	FONLINE_LOG("Загрузка динамических объектов");
 	//узнаем кол-во записей всего
 	int find_obj=sql.CountTable("objects","id");
 
@@ -204,7 +204,7 @@ int CServer::LoadAllObj() //загрузка динамических объек
 			num_obj++;
 		}
 
-	FONLINE_LOG("Загрузка динамических объектов прошла успешно\n");
+	FONLINE_LOG("Загрузка динамических объектов прошла успешно");
 */
 	return 1;
 }
@@ -252,7 +252,7 @@ void CServer::CreateObjToTile(MapTYPE c_map, HexTYPE c_x, HexTYPE c_y, uint16_t 
 
 	cur_obj_id++;
 
-FONLINE_LOG("Item Create to TL =%d\n",cur_obj_id);
+FONLINE_LOG("Item Create to TL =%d",cur_obj_id);
 }
 
 void CServer::CreateObjToPl(CritterID c_pl_idchannel, uint16_t num_st_obj)
@@ -295,7 +295,7 @@ void CServer::CreateObjToPl(CritterID c_pl_idchannel, uint16_t num_st_obj)
 
 	cur_obj_id++;
 
-FONLINE_LOG("Item Create to PL =%d\n",cur_obj_id);
+FONLINE_LOG("Item Create to PL =%d",cur_obj_id);
 }
 
 void CServer::DeleteObj(uint32_t id_obj)

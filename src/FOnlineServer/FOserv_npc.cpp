@@ -90,7 +90,7 @@ int CServer::NPC_LoadAll()
 
 	if((cf2=fopen(file_name, "rt"))==NULL)
 	{
-		FONLINE_LOG("Файл не найден |%s|\n", file_name);
+		FONLINE_LOG("Файл не найден |%s|", file_name);
 		return 0;
 	}
 
@@ -108,7 +108,7 @@ int CServer::NPC_LoadAll()
 
 		if(fscanf(cf2,"%d%s",&npc_id,&npc_name[0])!=2)
 		{
-			FONLINE_LOG("ошибка в чтении данных\n");
+			FONLINE_LOG("ошибка в чтении данных");
 			return 0;
 		}
 
@@ -121,7 +121,7 @@ int CServer::NPC_LoadAll()
 
 		if(npc_id<NPC_MIN_ID || npc_id>NPC_MAX_ID)
 		{
-			FONLINE_LOG("неверный ID\n");
+			FONLINE_LOG("неверный ID");
 			return 0;
 		}
 
@@ -133,7 +133,7 @@ int CServer::NPC_LoadAll()
 
 			if(!sql.LoadDataNPC(&npc->info))
 			{
-				FONLINE_LOG("Ошибка при загрузке основных параметров из БД\n");
+				FONLINE_LOG("Ошибка при загрузке основных параметров из БД");
 				return 0;
 			}
 		}
@@ -211,7 +211,7 @@ int CServer::NPC_LoadAll()
 
 			if(Err_load==true)
 			{
-				FONLINE_LOG("Ошибка при загрузке основных параметров из файла\n");
+				FONLINE_LOG("Ошибка при загрузке основных параметров из файла");
 				return 0;
 			}
 		}
@@ -222,7 +222,7 @@ int CServer::NPC_LoadAll()
 		int p_tmpi=0;
 		if((cf=fopen(file_name, "rt"))==NULL)
 		{
-			FONLINE_LOG("Файл не найден |%s|\n", file_name);
+			FONLINE_LOG("Файл не найден |%s|", file_name);
 			return 0;
 		}
 
@@ -242,7 +242,7 @@ int CServer::NPC_LoadAll()
 					if(!stricmp(p_tmp1,"[end_vars]")) break;
 				//имя
 			//		if(sql.GetInt("npc_vars_templates","COUNT(*)","name",p_tmp1))
-			//			{ FONLINE_LOG("Ошибка в переменных - реиндитификация\n"); return 0; }
+			//			{ FONLINE_LOG("Ошибка в переменных - реиндитификация"); return 0; }
 					strcpy(var_name,p_tmp1);
 
 				//count
@@ -258,7 +258,7 @@ int CServer::NPC_LoadAll()
 					var_max=p_tmpi;
 
 					if(var_count<var_min || var_count>var_max)
-						{ FONLINE_LOG("Ошибка в переменных - неверные данные\n"); return 0; }
+						{ FONLINE_LOG("Ошибка в переменных - неверные данные"); return 0; }
 
 					sql.Query("INSERT INTO npc_vars_templates (npc_id,name,count,min,max) VALUES('%d','%s','%d','%d','%d')",
 						npc->info.id,var_name,var_count,var_min,var_max);
@@ -350,7 +350,7 @@ int CServer::NPC_LoadAll()
 
 								new_demand->type=DEMAND_STAT;
 								it_d=stats_map.find(read_str2);
-								if(it_d==stats_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный стат %s\n", read_str2); return 0;}
+								if(it_d==stats_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный стат %s", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
@@ -363,7 +363,7 @@ int CServer::NPC_LoadAll()
 
 								new_demand->type=DEMAND_SKILL;
 								it_d=skills_map.find(read_str2);
-								if(it_d==skills_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный скилл %s\n", read_str2); return 0;}
+								if(it_d==skills_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный скилл %s", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
@@ -376,7 +376,7 @@ int CServer::NPC_LoadAll()
 
 								new_demand->type=DEMAND_PERK;
 								it_d=perks_map.find(read_str2);
-								if(it_d==perks_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный перк %s\n", read_str2); return 0;}
+								if(it_d==perks_map.end()) {SAFEDEL(new_demand); FONLINE_LOG("Неизвестный перк %s", read_str2); return 0;}
 								new_demand->param=(*it_d).second;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
@@ -389,7 +389,7 @@ int CServer::NPC_LoadAll()
 
 								new_demand->type=DEMAND_VAR;
 
-						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); FONLINE_LOG("Неизвестная переменная %s\n", read_str2); return 0;}
+						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); FONLINE_LOG("Неизвестная переменная %s", read_str2); return 0;}
 								new_demand->var_name=read_str2;
 								new_demand->oper=read_str3[0];
 								new_demand->count=read_int;
@@ -429,7 +429,7 @@ int CServer::NPC_LoadAll()
 							else
 							{
 								SAFEDEL(new_demand);
-								FONLINE_LOG("Неизвестное условие %s\n", read_str);
+								FONLINE_LOG("Неизвестное условие %s", read_str);
 								continue;
 							}
 							answ->demands.push_back(new_demand);
@@ -456,7 +456,7 @@ int CServer::NPC_LoadAll()
 
 								new_result->type=RESULT_STAT;
 								it_r=stats_map.find(read_str2);
-								if(it_r==stats_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный стат %s\n", read_str2); return 0;}
+								if(it_r==stats_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный стат %s", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
@@ -469,7 +469,7 @@ int CServer::NPC_LoadAll()
 
 								new_result->type=RESULT_SKILL;
 								it_r=skills_map.find(read_str2);
-								if(it_r==skills_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный скилл %s\n", read_str2); return 0;}
+								if(it_r==skills_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный скилл %s", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
@@ -482,7 +482,7 @@ int CServer::NPC_LoadAll()
 
 								new_result->type=RESULT_PERK;
 								it_r=perks_map.find(read_str2);
-								if(it_r==perks_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный перк %s\n", read_str2); return 0;}
+								if(it_r==perks_map.end()) {SAFEDEL(new_result); FONLINE_LOG("Неизвестный перк %s", read_str2); return 0;}
 								new_result->param=(*it_r).second;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
@@ -495,7 +495,7 @@ int CServer::NPC_LoadAll()
 
 								new_result->type=RESULT_VAR;
 
-						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); FONLINE_LOG("Неизвестная переменная %s\n", read_str2); return 0;}
+						//		if(!sql.GetInt("npc_vars_templates","COUNT(*)","name",read_str2)) {SAFEDEL(new_result); FONLINE_LOG("Неизвестная переменная %s", read_str2); return 0;}
 								new_result->var_name=read_str2;
 								new_result->oper=read_str3[0];
 								new_result->count=read_int;
@@ -542,7 +542,7 @@ int CServer::NPC_LoadAll()
 							else
 							{
 								SAFEDEL(new_result);
-								FONLINE_LOG("Неизвестный результат %s\n", read_str);
+								FONLINE_LOG("Неизвестный результат %s", read_str);
 								continue;
 							}
 							answ->results.push_back(new_result);
@@ -576,33 +576,33 @@ int CServer::NPC_LoadAll()
 		}
 		else
 		{
-			FONLINE_LOG("Файл не найден\n");
+			FONLINE_LOG("Файл не найден");
 			return 0;
 		}
 
 		if(!read_proc)
 		{
-			FONLINE_LOG("Ошибка при инициализации\n");
+			FONLINE_LOG("Ошибка при инициализации");
 			return 0;
 		}
 
 		if(!sql.CountRows("npc","id",npc->info.id))
 			if(!sql.NewNPC(&npc->info))
 			{
-				FONLINE_LOG("Ошибка регистрации НПЦ\n");
+				FONLINE_LOG("Ошибка регистрации НПЦ");
 				return 0;
 			}
 
 		if(AddCrToMap(npc,npc->info.map,npc->info.x,npc->info.y)!=TR_OK)
 		{
-			FONLINE_LOG("Не удалось высадить НПЦ\n");
+			FONLINE_LOG("Не удалось высадить НПЦ");
 			return 0;
 		}
 
 		pc[npc->info.id]=npc;
 		cr[npc->info.id]=npc;
 
-		FONLINE_LOG("OK\n");
+		FONLINE_LOG("OK");
 	}
 
 	fclose(cf2);
@@ -610,26 +610,26 @@ int CServer::NPC_LoadAll()
 	return 1;
 /*
 //Отладка
-	FONLINE_LOG("\n");
-	FONLINE_LOG("Отладочная инфа:\n");
+	FONLINE_LOG("");
+	FONLINE_LOG("Отладочная инфа:");
 
-	FONLINE_LOG("Имя:%s, к0:%s, к2:%s, к3:%s, к4:%s\n", npc->info.name, npc->info.cases[0],
+	FONLINE_LOG("Имя:%s, к0:%s, к2:%s, к3:%s, к4:%s", npc->info.name, npc->info.cases[0],
 		npc->info.cases[1], npc->info.cases[2], npc->info.cases[3], npc->info.cases[4]);
-	FONLINE_LOG("id:%d, карта:%d, x:%d, y:%d, ориентация:%d, тип нпц:%d\n", npc->info.id,
+	FONLINE_LOG("id:%d, карта:%d, x:%d, y:%d, ориентация:%d, тип нпц:%d", npc->info.id,
 		npc->info.map, npc->info.x, npc->info.y, npc->info.ori, npc->info.base_type);
 
 	npc_dialog* dlg=NULL;
 	answer* answ=NULL;
 
-	FONLINE_LOG("Всего диалогов: %d\n", npc->i_npc->dialogs.size());
+	FONLINE_LOG("Всего диалогов: %d", npc->i_npc->dialogs.size());
 
 	for(dialogs_map::iterator it=npc->i_npc->dialogs.begin(); it!=npc->i_npc->dialogs.end(); it++)
 	{
-		FONLINE_LOG("\n");
+		FONLINE_LOG("");
 
 		dlg=(*it).second;
 
-		FONLINE_LOG("Диалог:%d, текст №%d, время на прочтение:%d, нет ответа:%d\n", dlg->id, dlg->id_text,
+		FONLINE_LOG("Диалог:%d, текст №%d, время на прочтение:%d, нет ответа:%d", dlg->id, dlg->id_text,
 			dlg->time_break, dlg->not_answer);
 
 		for(answers_list::iterator it_a=dlg->answers.begin(); it_a!=dlg->answers.end(); it_a++)
@@ -660,11 +660,11 @@ int CServer::NPC_LoadAll()
 			else
 				FONLINE_LOG("результатов нет");
 
-			FONLINE_LOG("\n");
+			FONLINE_LOG("");
 		}
 	}
 
-	FONLINE_LOG("\n");
+	FONLINE_LOG("");
 
 	return 1;
 */
@@ -900,19 +900,19 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 	{
 		if(!send_dialog)
 		{
-			FONLINE_LOG("Диалог - Ошибка. Пустой указатель на предыдущий диалог\n");
+			FONLINE_LOG("Диалог - Ошибка. Пустой указатель на предыдущий диалог");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 		if(send_dialog->id==0 || send_dialog->id==1)
 		{
-			FONLINE_LOG("Диалог - Ошибка. ID диалога равна %d\n", send_dialog->id);
+			FONLINE_LOG("Диалог - Ошибка. ID диалога равна %d", send_dialog->id);
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 		if(num_answer+1 > send_dialog->answers.size())
 		{
-			FONLINE_LOG("Диалог - Ошибка. Ответ первышает максимальное значение ответов\n");
+			FONLINE_LOG("Диалог - Ошибка. Ответ первышает максимальное значение ответов");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
@@ -920,7 +920,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 		it_a=send_dialog->answers.begin()+num_answer;
 		if(!(*it_a))
 		{
-			FONLINE_LOG("Диалог - Ошибка. Пустой указатель ответа\n");
+			FONLINE_LOG("Диалог - Ошибка. Пустой указатель ответа");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
@@ -941,7 +941,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 		it_d=npc->i_npc->dialogs.find((*it_a)->link);
 		if(it_d==npc->i_npc->dialogs.end())
 		{
-			FONLINE_LOG("Диалог - Ошибка. Не найден диалог по ответу\n");
+			FONLINE_LOG("Диалог - Ошибка. Не найден диалог по ответу");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
@@ -949,7 +949,7 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 	//компануем диалог
 		if(!NPC_Dialog_Compile(npc,acl,(*it_d).second))
 		{
-			FONLINE_LOG("Диалог - Ошибка. Неудалось скомпоновать диалог\n");
+			FONLINE_LOG("Диалог - Ошибка. Неудалось скомпоновать диалог");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
@@ -987,14 +987,14 @@ void CServer::Process_Talk_NPC(CCritter* acl)
 
 		if(it_d==npc->i_npc->dialogs.end())
 		{
-			FONLINE_LOG("Диалог - Ошибка. Не найден диалог по предустановкам\n");
+			FONLINE_LOG("Диалог - Ошибка. Не найден диалог по предустановкам");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}
 	//компануем диалог
 		if(!NPC_Dialog_Compile(npc,acl,(*it_d).second))
 		{
-			FONLINE_LOG("Диалог - Ошибка. Неудалось скомпоновать диалог\n");
+			FONLINE_LOG("Диалог - Ошибка. Неудалось скомпоновать диалог");
 			NPC_Dialog_Close(npc,acl,NPC_SAY_ERROR);
 			return;
 		}

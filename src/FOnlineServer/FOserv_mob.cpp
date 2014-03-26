@@ -14,7 +14,7 @@
 int CServer::MOBs_LoadAllGroups()
 {
 
-	FONLINE_LOG("Загрузка групп мобов\n");
+	FONLINE_LOG("Загрузка групп мобов");
 
 	char ch1;
 	int num_group=0;
@@ -30,7 +30,7 @@ int CServer::MOBs_LoadAllGroups()
 
 	if(!(cf1=fopen(data_name, "rt")))
 	{
-		FONLINE_LOG("Файл не найден |%s|\n",data_name);
+		FONLINE_LOG("Файл не найден |%s|",data_name);
 		return 0;
 	}
 
@@ -47,7 +47,7 @@ int CServer::MOBs_LoadAllGroups()
 		fscanf(cf1,"%d",&num_group);
 		if(num_group<=0 || num_group>=MOBS_MAX_GROUPS)
 		{
-			FONLINE_LOG("неправильный номер группы\n");
+			FONLINE_LOG("неправильный номер группы");
 			return 0;
 		}
 		FONLINE_LOG("%d...",num_group);
@@ -55,7 +55,7 @@ int CServer::MOBs_LoadAllGroups()
 		cur_group=&mobs_gr[num_group];
 		if(cur_group->num)
 		{
-			FONLINE_LOG("дублирование группы\n");
+			FONLINE_LOG("дублирование группы");
 			return 0;
 		}
 		cur_group->num=num_group;
@@ -73,7 +73,7 @@ int CServer::MOBs_LoadAllGroups()
 			fscanf(cf1,"%s",&mob_name[0]);
 			if(!mob_name[0])
 			{
-				FONLINE_LOG("не удалось прочитать имя моба\n");
+				FONLINE_LOG("не удалось прочитать имя моба");
 				return 0;
 			}
 
@@ -86,7 +86,7 @@ int CServer::MOBs_LoadAllGroups()
 
 	if(!(cf=fopen(mob_path, "rt")))
 	{
-		FONLINE_LOG("Файл не найден |%s|\n",mob_path);
+		FONLINE_LOG("Файл не найден |%s|",mob_path);
 		return 0;
 	}
 
@@ -191,7 +191,7 @@ int CServer::MOBs_LoadAllGroups()
 
 				if(Err_load==true)
 				{
-					FONLINE_LOG("Ошибка при загрузке основных параметров из файла\n");
+					FONLINE_LOG("Ошибка при загрузке основных параметров из файла");
 					SAFEDEL(pmob);
 					return 0;
 				}
@@ -204,7 +204,7 @@ int CServer::MOBs_LoadAllGroups()
 			it_fm=prep_mob.find(std::string(mob_name));
 			if(it_fm==prep_mob.end())
 			{
-				FONLINE_LOG("Ошибка - не найден прототип\n");
+				FONLINE_LOG("Ошибка - не найден прототип");
 				return 0;
 			}
 
@@ -232,17 +232,17 @@ int CServer::MOBs_LoadAllGroups()
 
 		if(ch1!='@')
 		{
-			FONLINE_LOG("Read error.\n");
+			FONLINE_LOG("Read error.");
 			return 0;
 		}
 
 		if(!count_group || count_group>GM_MAX_GROUP)
 		{
-			FONLINE_LOG("нулевая группа или превышает лимит\n");
+			FONLINE_LOG("нулевая группа или превышает лимит");
 			return 0;
 		}
 
-		FONLINE_LOG("группа загружена\n");
+		FONLINE_LOG("группа загружена");
 
 		cur_group->mobs_count=count_group;
 		cur_group->mobs_level=0;
@@ -252,7 +252,7 @@ int CServer::MOBs_LoadAllGroups()
 
 	fclose(cf1);
 
-	FONLINE_LOG("Загрузка групп мобов прошла успешно\n");
+	FONLINE_LOG("Загрузка групп мобов прошла успешно");
 
 	return 1;
 }
@@ -302,7 +302,7 @@ void CServer::MOBs_Proccess()
 			}
 			else
 			{
-				FONLINE_LOG("!!!!MOB COND ERROR |%d|\n",mob->info.cond);
+				FONLINE_LOG("!!!!MOB COND ERROR |%d|",mob->info.cond);
 				continue;
 			}
 
@@ -314,7 +314,7 @@ void CServer::MOBs_Proccess()
 
 			if(!(ctx=ss->CreateContext()))
 			{
-				FONLINE_LOG("e1\n");
+				FONLINE_LOG("e1");
 				ctx->Release();
 				continue;
 			}
@@ -323,14 +323,14 @@ void CServer::MOBs_Proccess()
 
 			if(!mainFunc)
 			{
-				FONLINE_LOG("e2\n");
+				FONLINE_LOG("e2");
 				ctx->Release();
 				continue;
 			}
 
 			if(ctx->Prepare(mainFunc)<0)
 			{
-				FONLINE_LOG("e3\n");
+				FONLINE_LOG("e3");
 				ctx->Release();
 				continue;
 			}
@@ -339,7 +339,7 @@ void CServer::MOBs_Proccess()
 
 			if(ctx->Execute()<0)
 			{
-				FONLINE_LOG("e4\n");
+				FONLINE_LOG("e4");
 				ctx->Release();
 				continue;
 			}
@@ -351,7 +351,7 @@ void CServer::MOBs_Proccess()
 
 int CServer::MOBs_AddToEncaunter(uint16_t num_encaunter, uint8_t mobs_level)
 {
-FONLINE_LOG("Высаживаем мобов==========================================\n");
+FONLINE_LOG("Высаживаем мобов==========================================");
 	encaunter_info* cur_encaunter=&encaunter[num_encaunter];
 	uint16_t num_map=cur_encaunter->emap->num;
 
@@ -379,7 +379,7 @@ FONLINE_LOG("Высаживаем мобов====================================
 			cur_encaunter->start_hx[cur_encaunter->count_groups],
 			cur_encaunter->start_hx[cur_encaunter->count_groups])!=TR_OK)
 		{
-			FONLINE_LOG("Не удалось высадить моба!!!\n");
+			FONLINE_LOG("Не удалось высадить моба!!!");
 			continue;
 		}
 
@@ -391,8 +391,8 @@ FONLINE_LOG("Высаживаем мобов====================================
 	mobs_group_busy.insert(cur_mobs->num);
 	mobs_group_free.erase(cur_mobs->num);
 
-FONLINE_LOG("x=%d,y=%d\n",cur_encaunter->start_hx[cur_encaunter->count_groups-1],cur_encaunter->start_hx[cur_encaunter->count_groups-1]);
-FONLINE_LOG("Высадили мобов++++++++++++++++++++++++++++++++++++++++++++\n");
+FONLINE_LOG("x=%d,y=%d",cur_encaunter->start_hx[cur_encaunter->count_groups-1],cur_encaunter->start_hx[cur_encaunter->count_groups-1]);
+FONLINE_LOG("Высадили мобов++++++++++++++++++++++++++++++++++++++++++++");
 	return 1;
 }
 
@@ -400,7 +400,7 @@ void CServer::MOBs_EraseFromMap(uint16_t num_map)
 {
 	if(!num_map && num_map>=MAX_MAPS)
 	{
-		FONLINE_LOG("Ошибка - Попытка удалить мобов на несуществующей карте |%d|\n",num_map);
+		FONLINE_LOG("Ошибка - Попытка удалить мобов на несуществующей карте |%d|",num_map);
 		return;
 	}
 
@@ -428,7 +428,7 @@ void CServer::MOBs_RefreshGroup(uint16_t num_group)
 {
 	if(!num_group && num_group>=MOBS_MAX_GROUPS)
 	{
-		FONLINE_LOG("Ошибка - Попытка обновить несуществующую группу |%d|\n",num_group);
+		FONLINE_LOG("Ошибка - Попытка обновить несуществующую группу |%d|",num_group);
 		return;
 	}
 
@@ -438,7 +438,7 @@ void CServer::MOBs_RefreshGroup(uint16_t num_group)
 	for(cl_map::iterator it_m=cur_group->mobs.begin();it_m!=cur_group->mobs.end();++it_m)
 	{
 		cur_mob=(*it_m).second;
-		if(cur_mob->info.map) FONLINE_LOG("Ошибка - Не удаленный моб после очистки карты от мобов\n");
+		if(cur_mob->info.map) FONLINE_LOG("Ошибка - Не удаленный моб после очистки карты от мобов");
 
 		prep_mob_map::iterator it_pm = prep_mob.find(cur_mob->i_mob->name);
 		if(it_pm==prep_mob.end()) continue;

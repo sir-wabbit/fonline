@@ -16,11 +16,11 @@ int SocialsCount=0;
 
 void LoadSocials(MYSQL* mysql)
 {
-	FONLINE_LOG("Loading socials...\n");
+	FONLINE_LOG("Loading socials...");
 
 	/*if(mysql_query(mysql,"select * from socials"))
 	{
-		FONLINE_LOG("SQL error: %s\n",mysql_error(mysql));
+		FONLINE_LOG("SQL error: %s",mysql_error(mysql));
 		return;
 	}
 
@@ -327,12 +327,12 @@ int GetSocialId(char* cmd)
 {
 	if(!SocLoaded) return -1;
 
-	FONLINE_LOG("TrySocial: %s\n",cmd);
+	FONLINE_LOG("TrySocial: %s",cmd);
 
 	for(int i=0;i<SocialsCount;i++)
-		if(PartialRight(cmd,socials[i].cmd)) {FONLINE_LOG("TrySocial found: %s\n",socials[i].cmd);return i;}
+		if(PartialRight(cmd,socials[i].cmd)) {FONLINE_LOG("TrySocial found: %s",socials[i].cmd);return i;}
 
-	FONLINE_LOG("TrySocial: not found!\n");
+	FONLINE_LOG("TrySocial: not found!");
 	return -1;
 }
 
