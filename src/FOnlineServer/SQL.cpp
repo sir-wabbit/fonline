@@ -15,21 +15,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
+#include <assert.h>
 
 #include <IniFile/IniFile.hpp>
 
-SQL::SQL() {
-  Active=false;
-}
+SQL::SQL()
+  : mySQL(NULL)
+  , initialized(false)
+{ }
 
-SQL::~SQL()
-{
+SQL::~SQL() { }
 
-}
-
-int SQL::Init_mySQL()
-{
-  if(Active==true) return 1;
+bool SQL::Initialize() {
+  assert(!initialized);
 
   FONLINE_LOG("mySQL init begin");
 
@@ -53,11 +51,11 @@ int SQL::Init_mySQL()
     true_char.insert(true_char_set::value_type(load_char[i]));
   }
 
-  mySQL=mysql_init(NULL);
+  mySQL = mysql_init(NULL);
   if(!mySQL)
   {
     FONLINE_LOG("ошибка инициализации");
-    return 0;
+    return false;
   }
 
   this->user = GetValue<std::string>(ini, "SQL.user", "root");
@@ -76,10 +74,9 @@ int SQL::Init_mySQL()
   FONLINE_LOG("DB : %s", db.c_str());
   FONLINE_LOG("Socket : %s", unix_socket.c_str());
 
-  if(!mysql_real_connect(mySQL, host.c_str(), user.c_str(), passwd.c_str(), db.c_str(), port, unix_socket.c_str(), clientflag))
-  {
-    FONLINE_LOG("%s",mysql_error(mySQL));
-    return 0;
+  if (!mysql_real_connect(mySQL, host.c_str(), user.c_str(), passwd.c_str(), db.c_str(), port, unix_socket.c_str(), clientflag)) {
+    FONLINE_LOG("%s", mysql_error(mySQL));
+    return false;
   }
 
   Query("DROP TABLE IF EXISTS `log`");
@@ -363,21 +360,25 @@ int SQL::Init_mySQL()
   "PRIMARY KEY  (`id`)"
   ");");
 
-  Active=true;
+  initialized = true;
 
   FONLINE_LOG("mySQL init OK");
 
-  return 1;
+  return true;
 }
 
-void SQL::Finish_mySQL() {
-  mysql_close(mySQL);
-  mySQL=NULL;
+void SQL::Terminate() {
+  assert(initialized);
 
-  Active=false;
+  if (mySQL != NULL) {
+    mysql_close(mySQL);
+    mySQL = NULL;
+  }
+
+  initialized = false;
 }
 
-int SQL::Query(const char* query, ...) {
+bool SQL::Query(char const * const query, ...) {
   char str[2048];
 
   va_list list;
@@ -387,31 +388,26 @@ int SQL::Query(const char* query, ...) {
 
   if (mysql_query(mySQL, str)) {
     FONLINE_LOG("mySQL Query |%s| error: %s", str, mysql_error(mySQL));
-    return 0;
+    return false;
   }
 
-  return 1;
+  return true;
 }
 
-int SQL::Check(char* str)
-{
-  int i = 0;
-  bool cheat_fix = false;
+bool SQL::Check(char * const str) {
+  size_t i = 0;
+  bool foundInvalid = false;
 
   while (str[i]) {
     if (!true_char.count(str[i])) {
       str[i] = 0x20;
-      cheat_fix = true;
+      foundInvalid = true;
     }
 
     i++;
   }
 
-  if (cheat_fix == true) {
-    return 1;
-  }
-
-  return 0;
+  return foundInvalid;
 }
 
 int SQL::GetInt(const char* table, const char* find_row, const char* row, const char* row_vol)
@@ -427,9 +423,12 @@ int SQL::GetInt(const char* table, const char* find_row, const char* row, const 
 
   if(!(mySQL_res=mysql_store_result(mySQL))) return 0xFFFFFFFF;
 
-  if(!mysql_num_rows(mySQL_res)) return 0xFFFFFFFF;
+  if(!mysql_num_rows(mySQL_res)) {
+    mysql_free_result(mySQL_res);
+    return 0xFFFFFFFF;
+  }
 
-  mySQL_row=mysql_fetch_row(mySQL_res);
+  mySQL_row = mysql_fetch_row(mySQL_res);
 
   return atoi(mySQL_row[0]);
 }

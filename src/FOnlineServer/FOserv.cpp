@@ -129,7 +129,6 @@ CServer* CServer::self=NULL; //!Cvet
 CServer::CServer()
 {
   Active=0;
-  sql.mySQL=NULL;
   outLEN=4096;
   outBUF=new char[outLEN];
   last_id=0; // Никто не присоединился
@@ -1003,10 +1002,10 @@ int CServer::Init() {
     goto SockEND;
   }
 
-  if(!sql.Init_mySQL())
+  if(!sql.Initialize())
     goto SockEND;
 
-  LoadSocials(sql.mySQL);
+  LoadSocials(/*sql.mySQL*/);
 
 //!Cvet ++++++++++++++++++++++++++++++++++++++++
   FONLINE_LOG("cr=%d",sizeof(CCritter));
@@ -1105,7 +1104,7 @@ void CServer::Finish()
   ClearStaticObjects();
   ClearClients();
   UnloadSocials();
-  sql.Finish_mySQL();
+  sql.Terminate();
 
   FONLINE_LOG("Server stopped");
 
