@@ -30,7 +30,7 @@
   typedef __int64 OffsetType;
 #elif defined(__MINGW32__)
   extern int __cdecl _fseeki64(FILE *, __int64, int);
-	extern __int64 __cdecl _ftelli64(FILE *);
+  extern __int64 __cdecl _ftelli64(FILE *);
   #define ftell64(a) _ftelli64(a)
   #define fseek64(a,b,c) _fseeki64(a,b,c)
   typedef __int64 OffsetType;
@@ -49,257 +49,257 @@
 int64_t CPlainFile::seek (int64_t dist, int from) {
   fseek64(hFile, dist, from);
   return ftell64(hFile);
-	/*long absPos;
-	if (from == FILE_CURRENT)
-		absPos = tell() + dist;
-	else if (from == FILE_END)
-		absPos = fileSize + dist;
-	else if (from == FILE_BEGIN)
-		absPos = dist;
-	else
-		return 0xFFFFFFFF;
+  /*long absPos;
+  if (from == FILE_CURRENT)
+    absPos = tell() + dist;
+  else if (from == FILE_END)
+    absPos = fileSize + dist;
+  else if (from == FILE_BEGIN)
+    absPos = dist;
+  else
+    return 0xFFFFFFFF;
 
-	if (absPos < 0)
-		absPos = 0;
-	else if (absPos > fileSize)
-		absPos = fileSize;
-	long res = SetFilePointer (hFile, absPos + beginPos, NULL, FILE_BEGIN);
-	if (res != 0xFFFFFFFF)
-		res -= beginPos;
-	return res;*/
+  if (absPos < 0)
+    absPos = 0;
+  else if (absPos > fileSize)
+    absPos = fileSize;
+  long res = SetFilePointer (hFile, absPos + beginPos, NULL, FILE_BEGIN);
+  if (res != 0xFFFFFFFF)
+    res -= beginPos;
+  return res;*/
 }
 int CPlainFile::read (void* buf, long toRead, long* read) {
-	int64_t left = fileSize - tell();
-	if (left < toRead)
-		toRead = (long) left;
-	int err = fread(buf, 1, toRead, hFile);
-	return err == toRead;
+  int64_t left = fileSize - tell();
+  if (left < toRead)
+    toRead = (long) left;
+  int err = fread(buf, 1, toRead, hFile);
+  return err == toRead;
 }
 
 
 int64_t CPackedFile::seek (int64_t dist, int from) {
-	if (from == FILE_CURRENT) {
-		if (!skipper) skipper = new uint8_t [BUFF_SIZE];
-		if (dist > 0)
-			skip (dist);
-		else if (dist < 0) {
-			dist = curPos + dist;
-			reset();
-			skip (dist);
-		}
-	} else if (from == FILE_END) {
-		if (dist < 0) {
-			if (!skipper) skipper = new uint8_t [BUFF_SIZE];
-			if (curPos > dist)
-				reset();
-			skip (dist - curPos);
-		} else
-			curPos = fileSize;
-	} else {
-		if (dist < 0)
-			reset();
-		else {
-			if (!skipper) skipper = new uint8_t [BUFF_SIZE];
-			if (curPos > dist)
-				reset();
-			skip (dist - curPos);
-		}
-	}
-	return curPos;
+  if (from == FILE_CURRENT) {
+    if (!skipper) skipper = new uint8_t [BUFF_SIZE];
+    if (dist > 0)
+      skip (dist);
+    else if (dist < 0) {
+      dist = curPos + dist;
+      reset();
+      skip (dist);
+    }
+  } else if (from == FILE_END) {
+    if (dist < 0) {
+      if (!skipper) skipper = new uint8_t [BUFF_SIZE];
+      if (curPos > dist)
+        reset();
+      skip (dist - curPos);
+    } else
+      curPos = fileSize;
+  } else {
+    if (dist < 0)
+      reset();
+    else {
+      if (!skipper) skipper = new uint8_t [BUFF_SIZE];
+      if (curPos > dist)
+        reset();
+      skip (dist - curPos);
+    }
+  }
+  return curPos;
 }
 void CPackedFile::skip (int64_t dist) {
-	if (!dist)
-		return;
-	if (curPos + dist >= fileSize) {
-		curPos = fileSize;
-		return;
-	}
-	long res;
-	while (dist > 0) {
-		res = (long) ((dist > BUFF_SIZE) ? BUFF_SIZE : dist);
-		if (!read (skipper, res, &res) || !res)
-			break;
-		dist -= res;
-	}
+  if (!dist)
+    return;
+  if (curPos + dist >= fileSize) {
+    curPos = fileSize;
+    return;
+  }
+  long res;
+  while (dist > 0) {
+    res = (long) ((dist > BUFF_SIZE) ? BUFF_SIZE : dist);
+    if (!read (skipper, res, &res) || !res)
+      break;
+    dist -= res;
+  }
 }
 
 
 int InflatorStream::read (void* buf, long toRead, long* read) {
-	int res = Z_OK;
+  int res = Z_OK;
 
-	if (!buf) return 0;
-	if (!toRead || curPos >= fileSize) {
-		*read = 0;
-		return 1;
-	}
+  if (!buf) return 0;
+  if (!toRead || curPos >= fileSize) {
+    *read = 0;
+    return 1;
+  }
 
-	if (!inBuf) inBuf = new uint8_t [BUFF_SIZE];
+  if (!inBuf) inBuf = new uint8_t [BUFF_SIZE];
 
-	stream. next_out = (uint8_t*)buf;
-	stream. avail_out = toRead;
+  stream. next_out = (uint8_t*)buf;
+  stream. avail_out = toRead;
 
-	long oldTotOut = stream. total_out;
+  long oldTotOut = stream. total_out;
 
-	long left = packedSize + beginPos - ftell(hFile);
+  long left = packedSize + beginPos - ftell(hFile);
 
-	while (stream. avail_out && res == Z_OK) {
-		if ((!stream. avail_in) && left > 0) {
-			stream. next_in = inBuf;
-			stream. avail_in = fread(inBuf, 1, (left>BUFF_SIZE)?BUFF_SIZE:left, hFile);
-			//ReadFile (hFile, inBuf, (left>BUFF_SIZE)?BUFF_SIZE:left, (LPDWORD)&stream. avail_in, NULL);
-			left -= stream. avail_in;
-		}
-		unsigned long progress = stream. total_out;
-		res = inflate (&stream, Z_NO_FLUSH);
-		if (progress == stream. total_out && left <= 0)
-			break;
-	}
-	*read = stream. total_out - oldTotOut;
-	curPos += *read;
+  while (stream. avail_out && res == Z_OK) {
+    if ((!stream. avail_in) && left > 0) {
+      stream. next_in = inBuf;
+      stream. avail_in = fread(inBuf, 1, (left>BUFF_SIZE)?BUFF_SIZE:left, hFile);
+      //ReadFile (hFile, inBuf, (left>BUFF_SIZE)?BUFF_SIZE:left, (LPDWORD)&stream. avail_in, NULL);
+      left -= stream. avail_in;
+    }
+    unsigned long progress = stream. total_out;
+    res = inflate (&stream, Z_NO_FLUSH);
+    if (progress == stream. total_out && left <= 0)
+      break;
+  }
+  *read = stream. total_out - oldTotOut;
+  curPos += *read;
 
-	if (!(*read))
-		fileSize = curPos; // looks like a joke, but it is not
+  if (!(*read))
+    fileSize = curPos; // looks like a joke, but it is not
 
-	return (res == Z_OK || res == Z_STREAM_END);
+  return (res == Z_OK || res == Z_STREAM_END);
 }
 
 
 // binary search
 int findIndex (long pos, block* blocks, int count) {
-	if (pos < 0 || !blocks)
-		return -1;
-	int b = 0, e = count, m;
-	int ob, oe;
-	int i = -1;
-	while (i == -1) {
-		m = (b + e)/2;
-		ob = b; oe = e;
-		if ( blocks[m]. filePos <= pos && pos < blocks[m+1]. filePos )
-			i = m;
-		if (pos < blocks[m]. filePos)
-			e = m - 1;
-		else if (pos >= blocks[m+1]. filePos)
-			b = m + 1;
-		if ( b < ob || b > oe || e < ob || e > oe)
-			break;
-	}
-	return i;
+  if (pos < 0 || !blocks)
+    return -1;
+  int b = 0, e = count, m;
+  int ob, oe;
+  int i = -1;
+  while (i == -1) {
+    m = (b + e)/2;
+    ob = b; oe = e;
+    if ( blocks[m]. filePos <= pos && pos < blocks[m+1]. filePos )
+      i = m;
+    if (pos < blocks[m]. filePos)
+      e = m - 1;
+    else if (pos >= blocks[m+1]. filePos)
+      b = m + 1;
+    if ( b < ob || b > oe || e < ob || e > oe)
+      break;
+  }
+  return i;
 }
 
 #ifdef USE_LZ_BLOCKS
 void C_LZ_BlockFile::skip (long dist) {
-	if (!dist)
-		return;
-	long absPos = curPos + dist;
-	if (absPos >= fileSize) {
-		curPos = fileSize;
-		return;
-	}
+  if (!dist)
+    return;
+  long absPos = curPos + dist;
+  if (absPos >= fileSize) {
+    curPos = fileSize;
+    return;
+  }
 
-	if (!blocks)
-		allocateBlocks();
+  if (!blocks)
+    allocateBlocks();
 
-	int block = -1;
-	if (absPos < blocks[knownBlocks-1]. filePos)
-		block = findIndex (absPos, blocks, knownBlocks-1);
-	else
-		block = knownBlocks - 1;
+  int block = -1;
+  if (absPos < blocks[knownBlocks-1]. filePos)
+    block = findIndex (absPos, blocks, knownBlocks-1);
+  else
+    block = knownBlocks - 1;
 
-	if (block == -1)
-		return;
-	if (block != currentBlock-1) {
-		decompressor->clear();
-		fseek(hFile, blocks[block]. archPos, SEEK_END);
-		//SetFilePointer (hFile, blocks[block]. archPos, NULL, FILE_BEGIN);
-		dist = absPos - blocks[block]. filePos;
-		currentBlock = block;
-		curPos = blocks[block]. filePos;
-	}
-	while (dist>0) {
-		long res;
-		if (!read (skipper, (dist>BUFF_SIZE)? BUFF_SIZE: dist, &res) || !res)
-			break;
-		dist -= res;
-	}
+  if (block == -1)
+    return;
+  if (block != currentBlock-1) {
+    decompressor->clear();
+    fseek(hFile, blocks[block]. archPos, SEEK_END);
+    //SetFilePointer (hFile, blocks[block]. archPos, NULL, FILE_BEGIN);
+    dist = absPos - blocks[block]. filePos;
+    currentBlock = block;
+    curPos = blocks[block]. filePos;
+  }
+  while (dist>0) {
+    long res;
+    if (!read (skipper, (dist>BUFF_SIZE)? BUFF_SIZE: dist, &res) || !res)
+      break;
+    dist -= res;
+  }
 }
 #endif
 int C_LZ_BlockFile::read (void* buf, long toRead, long* read) {
-	if (!buf) return 0;
-	if (!toRead || curPos >= fileSize) {
-		*read = 0;
-		return 1;
-	}
+  if (!buf) return 0;
+  if (!toRead || curPos >= fileSize) {
+    *read = 0;
+    return 1;
+  }
 
-	if (!inBuf) inBuf = new uint8_t [BUFF_SIZE];
+  if (!inBuf) inBuf = new uint8_t [BUFF_SIZE];
 #ifdef USE_LZ_BLOCKS
-	if (!blocks)
-		allocateBlocks();
+  if (!blocks)
+    allocateBlocks();
 #endif
 
-	long res = 0,
-		tot = 0;
+  long res = 0,
+    tot = 0;
 
-	while (toRead && curPos < fileSize) {
-		if ( !decompressor->left() ) {
-			unsigned short lhdr;
-			size_t read_cnt;
-			fread(&lhdr, 2, 1, hFile);
-			//ReadFile (hFile, &lhdr, 2, &read_cnt, NULL);
-			lhdr = ((lhdr & 0xFF00) >> 8) + ((lhdr & 0x00FF) << 8);
+  while (toRead && curPos < fileSize) {
+    if ( !decompressor->left() ) {
+      unsigned short lhdr;
+      size_t read_cnt;
+      fread(&lhdr, 2, 1, hFile);
+      //ReadFile (hFile, &lhdr, 2, &read_cnt, NULL);
+      lhdr = ((lhdr & 0xFF00) >> 8) + ((lhdr & 0x00FF) << 8);
       read_cnt = fread(inBuf, 1, lhdr & 0x7FFF, hFile);
       //ReadFile (hFile, inBuf, lhdr & 0x7FFF, &read_cnt, NULL);
-			decompressor->takeNewData (inBuf, read_cnt,	(lhdr & 0x8000) == 0);
+      decompressor->takeNewData (inBuf, read_cnt, (lhdr & 0x8000) == 0);
 #ifdef USE_LZ_BLOCKS
-			currentBlock++;
-			if (currentBlock == knownBlocks) {
-				blocks [currentBlock]. filePos = blocks [currentBlock - 1]. filePos + decompressor->left();
-				blocks [currentBlock]. archPos = blocks [currentBlock - 1]. archPos + (lhdr & 0x7FFF) + 2;
-				knownBlocks++;
-			}
+      currentBlock++;
+      if (currentBlock == knownBlocks) {
+        blocks [currentBlock]. filePos = blocks [currentBlock - 1]. filePos + decompressor->left();
+        blocks [currentBlock]. archPos = blocks [currentBlock - 1]. archPos + (lhdr & 0x7FFF) + 2;
+        knownBlocks++;
+      }
 #endif
-		}
+    }
 
-		res = decompressor->getUnpacked ((unsigned char*)buf, toRead);
-		if (!res)
-			break;
-		buf = (unsigned char*)buf + res;
-		curPos += res;
-		tot += res;
-		toRead -= res;
-	}
+    res = decompressor->getUnpacked ((unsigned char*)buf, toRead);
+    if (!res)
+      break;
+    buf = (unsigned char*)buf + res;
+    curPos += res;
+    tot += res;
+    toRead -= res;
+  }
 
-	*read = tot;
-	if (!(*read))
-		fileSize = curPos;
-	return 1;
+  *read = tot;
+  if (!(*read))
+    fileSize = curPos;
+  return 1;
 }
 #ifdef USE_LZ_BLOCKS
 void C_LZ_BlockFile::allocateBlocks() {
-	long oldFilePos = ftell();
+  long oldFilePos = ftell();
 
 // get count of blocks:
-	long blockCnt = 0,
-		blocksSize = 0;
-	unsigned short lhdr;
-	fseek(hFile, beginPos, SEEK_SET);
-	//SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
-	while (blocksSize < packedSize) {
-		uint32_t dummy;
-		fread(hFile, &lhdr, 2);
-		//ReadFile (hFile, &lhdr, 2, &dummy, NULL);
-		lhdr = ((lhdr & 0xFF00) >> 8) + ((lhdr & 0x007F) << 8);
-		blocksSize += lhdr;
-		blockCnt++;
-		fseek(hFile, lhdr, SEEK_CUR);
-		//SetFilePointer (hFile, lhdr, NULL, FILE_CURRENT);
-	}
+  long blockCnt = 0,
+    blocksSize = 0;
+  unsigned short lhdr;
+  fseek(hFile, beginPos, SEEK_SET);
+  //SetFilePointer (hFile, beginPos, NULL, FILE_BEGIN);
+  while (blocksSize < packedSize) {
+    uint32_t dummy;
+    fread(hFile, &lhdr, 2);
+    //ReadFile (hFile, &lhdr, 2, &dummy, NULL);
+    lhdr = ((lhdr & 0xFF00) >> 8) + ((lhdr & 0x007F) << 8);
+    blocksSize += lhdr;
+    blockCnt++;
+    fseek(hFile, lhdr, SEEK_CUR);
+    //SetFilePointer (hFile, lhdr, NULL, FILE_CURRENT);
+  }
 
-	blocks = new block [blockCnt + 1];
-	blocks[0]. filePos = 0;
-	blocks[0]. archPos = beginPos;
-	knownBlocks = 1;
+  blocks = new block [blockCnt + 1];
+  blocks[0]. filePos = 0;
+  blocks[0]. archPos = beginPos;
+  knownBlocks = 1;
 
   fseek(hFile, oldFilePos, SEEK_SET);
-	//SetFilePointer (hFile, oldFilePos, NULL, FILE_BEGIN);
+  //SetFilePointer (hFile, oldFilePos, NULL, FILE_BEGIN);
 }
 #endif

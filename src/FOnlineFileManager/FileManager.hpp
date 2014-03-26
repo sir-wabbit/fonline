@@ -40,8 +40,8 @@
 
 #define PT_TXT_GAME     18
 
-#define PT_SERVER_MAPS	19
-#define PT_SERVER_MASKS	20
+#define PT_SERVER_MAPS  19
+#define PT_SERVER_MASKS 20
 
 FONLINE_FILEMANAGER_API extern const char* pathlst[50];
 

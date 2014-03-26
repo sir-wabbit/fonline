@@ -2,13 +2,13 @@
 #define __KEYB_H__
 
 /********************************************************************
-	created:	05:01:2005   22:04
-	edit:		07:02:2007   15:15
+  created:  05:01:2005   22:04
+  edit:   07:02:2007   15:15
 
-	author:		Oleg Mareskin
-	edit:		Anton Tsvetinsky aka Cvet
-	
-	purpose:	
+  author:   Oleg Mareskin
+  edit:   Anton Tsvetinsky aka Cvet
+
+  purpose:
 *********************************************************************/
 
 #include <stdint.h>

@@ -6,8 +6,8 @@
 
 	author:		Oleg Mareskin
 	add/edit:	Denis Balikhin, Anton Cvetinsky (Cvet)
-	
-	purpose:	
+
+	purpose:
 *********************************************************************/
 /*
 
@@ -31,7 +31,7 @@ struct IntRect
 	IntRect(int al,int at,int ar,int ab):l(al),t(at),r(ar),b(ab){};
 
 	int& operator[](int index) //!Cvet +++
-	{ 
+	{
 		switch(index)
 		{
 		case 0: return l;

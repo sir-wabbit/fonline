@@ -16,13 +16,13 @@ void LoadSettings();
 
 #define CFG_FILE ".\\data\\FOnline.cfg"
 /********************************************************************
-	created:	2005   22:04
-	edit:		2007   15:15
+  created:  2005   22:04
+  edit:   2007   15:15
 
-	author:		Oleg Mareskin
-	edit:		Denis Balikhin, Anton Tsvetinsky
-	
-	purpose:	
+  author:   Oleg Mareskin
+  edit:   Denis Balikhin, Anton Tsvetinsky
+
+  purpose:
 *********************************************************************/
 
 //!Cvet ++++++
@@ -109,9 +109,9 @@ extern int opt_sleep; //!Cvet sleep
 extern bool opt_msgbox_invert; //!Cvet message box invert
 
 extern int opt_change_lang; //!Cvet change language
-#define CHANGE_LANG_CTRL_SHIFT	0 //!Cvet change language
-#define CHANGE_LANG_ALT_SHIFT	1 //!Cvet change language
-#define CHANGE_LANG_RCTRL		2 //!Cvet change language
+#define CHANGE_LANG_CTRL_SHIFT  0 //!Cvet change language
+#define CHANGE_LANG_ALT_SHIFT 1 //!Cvet change language
+#define CHANGE_LANG_RCTRL   2 //!Cvet change language
 
 //!Cvet colors ++++++++++++++++++++++++
 extern uint32_t opt_gcolor_default;
@@ -146,16 +146,16 @@ extern uint32_t opt_roof_alpha;
 #define SUB_SCEN_MISC   5
 
 //!Cvet ++++++++++++++++++
-#define SUB_ITEM_ARMOR	0
-#define SUB_ITEM_CONT	1
+#define SUB_ITEM_ARMOR  0
+#define SUB_ITEM_CONT 1
 #define SUB_ITEM_DRUG   2
-#define SUB_ITEM_WEAPON	3
-#define SUB_ITEM_AMMO	4
-#define SUB_ITEM_MISC	5
-#define SUB_ITEM_KEY	6
+#define SUB_ITEM_WEAPON 3
+#define SUB_ITEM_AMMO 4
+#define SUB_ITEM_MISC 5
+#define SUB_ITEM_KEY  6
 
-#define SUB_MISC_EXITGR	0
-#define SUB_MISC_MISC	1
+#define SUB_MISC_EXITGR 0
+#define SUB_MISC_MISC 1
 //!Cvet ------------------
 
 // анимация для интерфейса

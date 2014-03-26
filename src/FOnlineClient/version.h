@@ -1,5 +1,5 @@
-#ifndef __VERSION_H__ 
-#define __VERSION_H__ 
+#ifndef __VERSION_H__
+#define __VERSION_H__
 #define MAJORNO 2
 #define MINORNO 0
 #define BUILDNO 97
