@@ -20,22 +20,16 @@ const uint8_t NPC_VAR_GLOBAL  =1;
 
 typedef std::set<char> true_char_set;
 
-class SQL
-{
+class SQL {
 public:
-
   SQL();
   ~SQL();
 
-  MYSQL* mySQL;
-  MYSQL_RES* mySQL_res;
-  MYSQL_ROW mySQL_row;
+  bool Initialize();
+  void Terminate();
 
-  int Init_mySQL();
-  void Finish_mySQL();
-
-  int Query(const char* query, ...);
-  int Check(char* str);
+  bool Query(const char* query, ...);
+  bool Check(char* str);
 
   int GetInt(const char* table, const char* find_row, const char* row, const char* row_vol);
   int GetInt(const char* table, const char* find_row, const char* row, int row_vol);
@@ -93,11 +87,14 @@ public:
   void PrintTableInLog(const char* table, const char* rows);
 
 private:
+  MYSQL* mySQL;
+  MYSQL_RES* mySQL_res;
+  MYSQL_ROW mySQL_row;
 
   int CodeParams(char* stats, char* skills, char* perks, crit_info* info);
   int DecodeParams(const char* stats, const char* skills, const char* perks, crit_info* info);
 
-  bool Active;
+  bool initialized;
   true_char_set true_char;
 
   char stats[ALL_STATS*4+1];

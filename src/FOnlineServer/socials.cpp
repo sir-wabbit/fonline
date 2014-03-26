@@ -14,7 +14,7 @@ soc_def* socials=NULL;
 int SocLoaded=0;
 int SocialsCount=0;
 
-void LoadSocials(MYSQL* mysql)
+void LoadSocials(/*MYSQL* mysql*/)
 {
   FONLINE_LOG("Loading socials...");
 

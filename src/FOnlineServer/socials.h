@@ -21,7 +21,7 @@ struct soc_def
 #define	SOC_NOSELF		1
 #define	SOC_PARAMSOK	2
 
-void LoadSocials(MYSQL* mysql);
+void LoadSocials(/*MYSQL* mysql*/);
 void UnloadSocials();
 void ParseSymbolStr(char* symstr,char* resstr, crit_info* self, crit_info* victim);
 
