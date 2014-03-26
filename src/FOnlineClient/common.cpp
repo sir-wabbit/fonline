@@ -102,42 +102,42 @@ void LoadSettings()
 
   RecordMap ini;
   bool result = LoadINI("data/FOnline.ini", ini);
-  
+
   opt_fullscr = GetValue(ini, "FEngine.fullscr", 1);
   opt_vsync = GetValue(ini, "FEngine.vsync", 1);
-	opt_dbgclear = GetValue(ini, "FEngine.dbgclear", 1);
-	opt_light = GetValue(ini, "FEngine.light", 1);
-	
-	opt_scroll_delay = GetValue(ini, "FEngine.scroll_delay", 0);
-	opt_scroll_step = GetValue(ini, "FEngine.scroll_step", 1);
-	
-	opt_mouse_speed = GetValue(ini, "FEngine.mouse_speed", 1);
-	opt_text_delay = GetValue(ini, "FEngine.text_delay", 3000);
-	opt_screen_mode = GetValue(ini, "FEngine.screen_mode", 0);
-	if (opt_screen_mode > 2 || opt_screen_mode < 0) opt_screen_mode = 0; //!Cvet
-	
-	opt_flushval = GetValue(ini, "SprMan.flushval", 256);
-	opt_basetex = GetValue(ini, "SprMan.basetex", 256);
+  opt_dbgclear = GetValue(ini, "FEngine.dbgclear", 1);
+  opt_light = GetValue(ini, "FEngine.light", 1);
 
-	opt_sleep = GetValue(ini, "FEngine.sleep", 0);
-	if (opt_sleep < 0 || opt_sleep > 10) opt_sleep = 0;
+  opt_scroll_delay = GetValue(ini, "FEngine.scroll_delay", 0);
+  opt_scroll_step = GetValue(ini, "FEngine.scroll_step", 1);
+
+  opt_mouse_speed = GetValue(ini, "FEngine.mouse_speed", 1);
+  opt_text_delay = GetValue(ini, "FEngine.text_delay", 3000);
+  opt_screen_mode = GetValue(ini, "FEngine.screen_mode", 0);
+  if (opt_screen_mode > 2 || opt_screen_mode < 0) opt_screen_mode = 0; //!Cvet
+
+  opt_flushval = GetValue(ini, "SprMan.flushval", 256);
+  opt_basetex = GetValue(ini, "SprMan.basetex", 256);
+
+  opt_sleep = GetValue(ini, "FEngine.sleep", 0);
+  if (opt_sleep < 0 || opt_sleep > 10) opt_sleep = 0;
 
   //msgbox_invert
   opt_msgbox_invert = GetValue(ini, "Game.invert", false);
 
   //lang
-	opt_change_lang = GetValue(ini, "Game.lang_change", CHANGE_LANG_CTRL_SHIFT);
-	if (opt_change_lang != CHANGE_LANG_CTRL_SHIFT && opt_change_lang != CHANGE_LANG_ALT_SHIFT && opt_change_lang != CHANGE_LANG_RCTRL)
-		opt_change_lang = CHANGE_LANG_CTRL_SHIFT;
+  opt_change_lang = GetValue(ini, "Game.lang_change", CHANGE_LANG_CTRL_SHIFT);
+  if (opt_change_lang != CHANGE_LANG_CTRL_SHIFT && opt_change_lang != CHANGE_LANG_ALT_SHIFT && opt_change_lang != CHANGE_LANG_RCTRL)
+    opt_change_lang = CHANGE_LANG_CTRL_SHIFT;
 
 //colors
-	uint32_t get_dword=0;
+  uint32_t get_dword=0;
 
-	get_dword = GetValue(ini, "Game.color_game_default", 0);
-	if (get_dword) opt_gcolor_default=get_dword;
+  get_dword = GetValue(ini, "Game.color_game_default", 0);
+  if (get_dword) opt_gcolor_default=get_dword;
 
-	get_dword = GetValue(ini, "Game.color_crit_names", 0);
-	if(get_dword) opt_tcolor_namecrit=get_dword;
+  get_dword = GetValue(ini, "Game.color_crit_names", 0);
+  if(get_dword) opt_tcolor_namecrit=get_dword;
 
   get_dword = GetValue(ini, "Game.color_text_default", 0);
   if(get_dword) opt_tcolor_default=get_dword;
@@ -151,29 +151,29 @@ void LoadSettings()
   if(get_dword) opt_tcolor_social=get_dword;
 
 //alpha
-	get_dword=GetValue(ini, "Game.roof_alpha",0);
-	if(get_dword) opt_roof_alpha=get_dword;
-	
-//!Cvet -------------------
-	
-  opt_masterpath = GetValue<std::string>(ini, "system.master_dat","");
-	opt_critterpath = GetValue<std::string>(ini, "system.critter_dat","");
-	opt_fopath = GetValue<std::string>(ini, "FileMan.fonline_dat","");
+  get_dword=GetValue(ini, "Game.roof_alpha",0);
+  if(get_dword) opt_roof_alpha=get_dword;
 
-	opt_rhost = GetValue<std::string>(ini, "server.remote_host","localhost");
-	opt_rport = GetValue(ini, "server.remote_port", 4000);
-	opt_name = GetValue<std::string>(ini, "server.chosen_name", "none");
-	char key[255];
-	for(int i=0;i<5;i++)
-	{
-		sprintf(key,"server.case%d",i);
-		opt_cases[i] = GetValue<std::string>(ini, key, "none");
-	}
-	opt_gender = GetValue<std::string>(ini, "server.chosen_gender","male");
+//!Cvet -------------------
+
+  opt_masterpath = GetValue<std::string>(ini, "system.master_dat","");
+  opt_critterpath = GetValue<std::string>(ini, "system.critter_dat","");
+  opt_fopath = GetValue<std::string>(ini, "FileMan.fonline_dat","");
+
+  opt_rhost = GetValue<std::string>(ini, "server.remote_host","localhost");
+  opt_rport = GetValue(ini, "server.remote_port", 4000);
+  opt_name = GetValue<std::string>(ini, "server.chosen_name", "none");
+  char key[255];
+  for(int i=0;i<5;i++)
+  {
+    sprintf(key,"server.case%d",i);
+    opt_cases[i] = GetValue<std::string>(ini, key, "none");
+  }
+  opt_gender = GetValue<std::string>(ini, "server.chosen_gender","male");
 
   opt_crfol = opt_fopath;
   if (opt_crfol != "" && opt_crfol[opt_crfol.size() - 1] != '\\') {
     opt_crfol += "\\";
   }
-	opt_crfol += "art\\critters\\critters.fol";
+  opt_crfol += "art\\critters\\critters.fol";
 }

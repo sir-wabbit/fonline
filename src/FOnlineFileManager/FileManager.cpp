@@ -116,29 +116,29 @@ bool IsDir(const char* path) {
 
 const char* pathlst[50]=
 {
-	"art\\critters\\",
-	"art\\intrface\\",
-	"art\\inven\\",
-	"art\\items\\",
-	"art\\misc\\",
-	"art\\scenery\\",
-	"art\\skilldex\\",
-	"art\\splash\\",
-	"art\\tiles\\",
-	"art\\walls\\",
+  "art\\critters\\",
+  "art\\intrface\\",
+  "art\\inven\\",
+  "art\\items\\",
+  "art\\misc\\",
+  "art\\scenery\\",
+  "art\\skilldex\\",
+  "art\\splash\\",
+  "art\\tiles\\",
+  "art\\walls\\",
 
-	"maps\\",
+  "maps\\",
 
-	"proto\\items\\",
-	"proto\\misc\\",
-	"proto\\scenery\\",
-	"proto\\tiles\\",
-	"proto\\walls\\",
+  "proto\\items\\",
+  "proto\\misc\\",
+  "proto\\scenery\\",
+  "proto\\tiles\\",
+  "proto\\walls\\",
 
-	"sound\\music\\",
-	"sound\\sfx\\",
+  "sound\\music\\",
+  "sound\\sfx\\",
 
-	"text\\english\\game\\",
+  "text\\english\\game\\",
 
   "maps\\",
   "maps\\wm_mask\\",
@@ -173,41 +173,41 @@ int FileManager::Init(const char* masterDatPath, const char* critterDatPath, con
   assert(critterDatPath[0] != 0);
   assert(fonlineDatPath[0] != 0);
 
-	FONLINE_LOG("FileManager Initialization...\n");
+  FONLINE_LOG("FileManager Initialization...\n");
 
-	// FIXME[12.12.2012 alex]: copypasta
+  // FIXME[12.12.2012 alex]: copypasta
 
-	master_dat[0] = 0;
-	strcat(master_dat, masterDatPath);
+  master_dat[0] = 0;
+  strcat(master_dat, masterDatPath);
 
-	if (!IsDir(master_dat)) {
+  if (!IsDir(master_dat)) {
     lpDAT.Init(master_dat);
 
     if(lpDAT.error == ERR_CANNOT_OPEN_FILE) {
       ReportErrorMessage("FileManager Init>","файл %s не найден",master_dat);
       return 0;
     }
-	} else {
-	  strcat(master_dat, "/");
-	}
+  } else {
+    strcat(master_dat, "/");
+  }
 
-	crit_dat[0] = 0;
-	strcat(crit_dat, critterDatPath);
+  crit_dat[0] = 0;
+  strcat(crit_dat, critterDatPath);
 
-	if (!IsDir(crit_dat)) {
-		lpDATcr.Init(crit_dat);
+  if (!IsDir(crit_dat)) {
+    lpDATcr.Init(crit_dat);
 
-		if(lpDATcr.error==ERR_CANNOT_OPEN_FILE) {
-			ReportErrorMessage("FileManager Init>","файл %s не найден",crit_dat);
-			return 0;
-		}
-	}
-	else {
-	  strcat(crit_dat, "/");
-	}
+    if(lpDATcr.error==ERR_CANNOT_OPEN_FILE) {
+      ReportErrorMessage("FileManager Init>","файл %s не найден",crit_dat);
+      return 0;
+    }
+  }
+  else {
+    strcat(crit_dat, "/");
+  }
 
   fo_dat[0] = 0;
-	strcpy(fo_dat, fonlineDatPath);
+  strcpy(fo_dat, fonlineDatPath);
   if (!IsDir(fo_dat)) {
     // FIXME[12.12.2012 alex]: not supported yet.
     assert(false);
@@ -215,16 +215,16 @@ int FileManager::Init(const char* masterDatPath, const char* critterDatPath, con
     strcat(fo_dat, "/");
   }
 
-	FONLINE_LOG("FileManager Initialization complete\n");
-	initialized=1;
-	return 1;
+  FONLINE_LOG("FileManager Initialization complete\n");
+  initialized=1;
+  return 1;
 }
 
 void FileManager::Clear()
 {
-	FONLINE_LOG("FileManager Clear...\n");
-	UnloadFile();
-	FONLINE_LOG("FileManager Clear complete\n");
+  FONLINE_LOG("FileManager Clear...\n");
+  UnloadFile();
+  FONLINE_LOG("FileManager Clear complete\n");
 }
 
 void FileManager::UnloadFile() {
@@ -239,198 +239,198 @@ int FileManager::LoadFile(const char* fileName, int pathType)
   assert(fileName != NULL);
   assert(initialized);
 
-	UnloadFile();
+  UnloadFile();
 
-	char path[1024]="";
-	char pfname[1024]="";
+  char path[1024]="";
+  char pfname[1024]="";
 
-	strcpy(pfname, pathlst[pathType]);
-	strcat(pfname, fileName);
+  strcpy(pfname, pathlst[pathType]);
+  strcat(pfname, fileName);
 
-	strcpy(path, fo_dat);
-	strcat(path, pfname);
+  strcpy(path, fo_dat);
+  strcat(path, pfname);
 
-	//данные fo
+  //данные fo
   if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
     return 1;
   }
 
-	if (pathType == PT_ART_CRITTERS) {
-		if (!lpDATcr.IsLoaded()) {
-		  FONLINE_LOG("Loading from normal FS.\n");
-			//попрбуем загрузить из critter_dat если это каталог
-			strcpy(path,crit_dat);
-			strcat(path,pfname);
+  if (pathType == PT_ART_CRITTERS) {
+    if (!lpDATcr.IsLoaded()) {
+      FONLINE_LOG("Loading from normal FS.\n");
+      //попрбуем загрузить из critter_dat если это каталог
+      strcpy(path,crit_dat);
+      strcat(path,pfname);
 
       if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
         return 1;
       } else {
         return 0; //а вот не вышло
       }
-		}
+    }
 
-		if (lpDATcr.DATOpenFile(pfname) != false) {
-			fileSize = lpDATcr.DATGetFileSize();
+    if (lpDATcr.DATOpenFile(pfname) != false) {
+      fileSize = lpDATcr.DATGetFileSize();
 
-			buffer = new uint8_t[fileSize+1];
-			size_t br;
+      buffer = new uint8_t[fileSize+1];
+      size_t br;
 
-			lpDATcr.DATReadFile(buffer,fileSize,&br);
+      lpDATcr.DATReadFile(buffer,fileSize,&br);
 
-			buffer[fileSize]=0;
+      buffer[fileSize]=0;
 
-			position=0;
-			return 1;
-		}
+      position=0;
+      return 1;
+    }
 
-	}
+  }
 
-	if(!lpDAT.IsLoaded())
-	{
-	  FONLINE_LOG("Loading from normal FS.\n");
-		//попрбуем загрузить из master_dat если это каталог
-		strcpy(path,master_dat);
-		strcat(path,pfname);
+  if(!lpDAT.IsLoaded())
+  {
+    FONLINE_LOG("Loading from normal FS.\n");
+    //попрбуем загрузить из master_dat если это каталог
+    strcpy(path,master_dat);
+    strcat(path,pfname);
 
     if (::LoadFile(path, (void**) &buffer, (size_t*) &fileSize)) {
       return 1;
     } else return 0; //а вот не вышло
-	}
+  }
 
-	if (lpDAT.DATOpenFile(pfname) != false) {
-		fileSize = lpDAT.DATGetFileSize();
+  if (lpDAT.DATOpenFile(pfname) != false) {
+    fileSize = lpDAT.DATGetFileSize();
 
-		buffer = new uint8_t[fileSize+1];
-		size_t br;
+    buffer = new uint8_t[fileSize+1];
+    size_t br;
 
-		lpDAT.DATReadFile(buffer,fileSize,&br);
+    lpDAT.DATReadFile(buffer,fileSize,&br);
 
-		buffer[fileSize]=0;
+    buffer[fileSize]=0;
 
-		position=0;
-		return 1;
-	}
+    position=0;
+    return 1;
+  }
 
-	FONLINE_LOG("FileMngr - Файл %s не найден\n",pfname);//!Cvet
-	return 0;
+  FONLINE_LOG("FileMngr - Файл %s не найден\n",pfname);//!Cvet
+  return 0;
 }
 
 void FileManager::SetCurrentPosition(uint32_t pos)
 {
-	if(pos<fileSize) position=pos;
+  if(pos<fileSize) position=pos;
 }
 
 void FileManager::GoForward(uint32_t offs)
 {
-	if((position+offs)<fileSize) position+=offs;
+  if((position+offs)<fileSize) position+=offs;
 }
 
 
 int FileManager::GetStr(char* str,uint32_t len)
 {
-	if(position>=fileSize) return 0;
+  if(position>=fileSize) return 0;
 
-	int rpos=position;
-	int wpos=0;
-	for(;wpos<len && rpos<fileSize;rpos++)
-	{
-		if(buffer[rpos]==0xD)
-		{
-			rpos+=2;
-			break;
-		}
+  int rpos=position;
+  int wpos=0;
+  for(;wpos<len && rpos<fileSize;rpos++)
+  {
+    if(buffer[rpos]==0xD)
+    {
+      rpos+=2;
+      break;
+    }
 
-		str[wpos++]=buffer[rpos];
-	}
-	str[wpos]=0;
-	position=rpos;
+    str[wpos++]=buffer[rpos];
+  }
+  str[wpos]=0;
+  position=rpos;
 
-	return 1;
+  return 1;
 }
 
 int FileManager::Read(void* ptr, size_t size)
 {
-	if(position+size>fileSize) return 0;
+  if(position+size>fileSize) return 0;
 
-	memcpy(ptr,buffer+position,size);
+  memcpy(ptr,buffer+position,size);
 
-	position+=size;
+  position+=size;
 
-	return 1;
+  return 1;
 }
 
 uint8_t FileManager::GetByte() //!Cvet
 {
-	if(position>=fileSize) return 0;
-	uint8_t res=0;
+  if(position>=fileSize) return 0;
+  uint8_t res=0;
 
-	res=buffer[position++];
+  res=buffer[position++];
 
-	return res;
+  return res;
 }
 
 uint16_t FileManager::GetWord()
 {
-	if(position>=fileSize) return 0;
-	uint16_t res=0;
+  if(position>=fileSize) return 0;
+  uint16_t res=0;
 
-	uint8_t *cres=(uint8_t*)&res;
-	cres[1]=buffer[position++];
-	cres[0]=buffer[position++];
+  uint8_t *cres=(uint8_t*)&res;
+  cres[1]=buffer[position++];
+  cres[0]=buffer[position++];
 
-	return res;
+  return res;
 }
 
 uint16_t FileManager::GetRWord() //!Cvet
 {
-	if(position>=fileSize) return 0;
-	uint16_t res=0;
+  if(position>=fileSize) return 0;
+  uint16_t res=0;
 
-	uint8_t *cres=(uint8_t*)&res;
-	cres[0]=buffer[position++];
-	cres[1]=buffer[position++];
+  uint8_t *cres=(uint8_t*)&res;
+  cres[0]=buffer[position++];
+  cres[1]=buffer[position++];
 
-	return res;
+  return res;
 }
 
 uint32_t FileManager::GetDWord()
 {
-	if(position>=fileSize) return 0;
-	uint32_t res=0;
-	uint8_t *cres=(uint8_t*)&res;
-	for(int i=3;i>=0;i--)
-	{
-		cres[i]=buffer[position++];
-	}
+  if(position>=fileSize) return 0;
+  uint32_t res=0;
+  uint8_t *cres=(uint8_t*)&res;
+  for(int i=3;i>=0;i--)
+  {
+    cres[i]=buffer[position++];
+  }
 
-	return res;
+  return res;
 }
 
 uint32_t FileManager::GetRDWord() //!Cvet
 {
-	if(position>=fileSize) return 0;
-	uint32_t res=0;
-	uint8_t *cres=(uint8_t*)&res;
-	for(int i=0;i<=3;i++)
-	{
-		cres[i]=buffer[position++];
-	}
+  if(position>=fileSize) return 0;
+  uint32_t res=0;
+  uint8_t *cres=(uint8_t*)&res;
+  for(int i=0;i<=3;i++)
+  {
+    cres[i]=buffer[position++];
+  }
 
-	return res;
+  return res;
 }
 
 int FileManager::GetFullPath(char* fname, int PathType, char* get_path) //!Cvet полный путь к файлу
 {
-	get_path[0]=0;
-	strcpy(get_path,fo_dat);
-	strcat(get_path,pathlst[PathType]);
-	strcat(get_path,fname);
+  get_path[0]=0;
+  strcpy(get_path,fo_dat);
+  strcat(get_path,pathlst[PathType]);
+  strcat(get_path,fname);
 
   if (FileExists(get_path)) {
     return 1;
   }
 
-	FONLINE_LOG("Файл:|%s|\n",get_path);
+  FONLINE_LOG("Файл:|%s|\n",get_path);
 
-	return 0;
+  return 0;
 }

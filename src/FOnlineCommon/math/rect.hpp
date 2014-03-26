@@ -11,7 +11,7 @@ struct Rect {
   T right;
   T top;
   T bottom;
-  
+
   T operator[] (size_t index) const {
     switch(index)
     {
@@ -21,13 +21,13 @@ struct Rect {
     case 3: return bottom;
     default: break;
     }
-    
+
     assert(0 <= index && index <= 3);
-    
+
     // XXX[2.12.2012 alex]: we have to return *something*
     return left;
   }
-  
+
   T& operator[] (size_t index) {
     switch(index)
     {
@@ -39,7 +39,7 @@ struct Rect {
     }
 
     assert(0 <= index && index <= 3);
-    
+
     // XXX[2.12.2012 alex]: we have to return *something*
     return left;
   }

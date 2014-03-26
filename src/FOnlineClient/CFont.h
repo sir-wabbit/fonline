@@ -2,12 +2,12 @@
 #define __CFONT_H__
 
 /********************************************************************
-	created:	01:12:2004   07:20
+  created:  01:12:2004   07:20
 
-	author:		Oleg Mareskin
-	edit:		Anton Tsvetinsky aka Cvet
-	
-	purpose:	
+  author:   Oleg Mareskin
+  edit:   Anton Tsvetinsky aka Cvet
+
+  purpose:
 *********************************************************************/
 
 #include "CSpriteManager.h"
@@ -23,65 +23,65 @@ struct Letter
 //!Cvet +++++++++++++
 struct Font
 {
-	LPDIRECT3DTEXTURE8 fontSurface;
+  LPDIRECT3DTEXTURE8 fontSurface;
 
-	Letter letters[256];
-	int eth;
-	int etw;
-	int *maxx;
-	USHORT max_cnt;
-	int cur_pos;
-	FLOAT xyarr[256][4];
+  Letter letters[256];
+  int eth;
+  int etw;
+  int *maxx;
+  USHORT max_cnt;
+  int cur_pos;
+  FLOAT xyarr[256][4];
 };
 
-#define MAX_FONT		3
+#define MAX_FONT    3
 
-#define FONT_DEF		0
-#define FONT_NUM		1
-#define FONT_BIG_NUM	2
-#define FONT_NOT_NUM	3
+#define FONT_DEF    0
+#define FONT_NUM    1
+#define FONT_BIG_NUM  2
+#define FONT_NOT_NUM  3
 //!Cvet -------------
 
-#define FT_NOBREAK		1
-#define FT_CENTERX		2
-#define FT_CENTERY		4
-#define FT_BOTTOM		8
+#define FT_NOBREAK    1
+#define FT_CENTERX    2
+#define FT_CENTERY    4
+#define FT_BOTTOM   8
 //!Cvet +++
-#define FT_UPPER		16 //текст выводиться начиная с нижней границы
-#define FT_COLORIZE		32 //раскрасска. без флага цвет береться из передоваемого аргумента col
+#define FT_UPPER    16 //текст выводиться начиная с нижней границы
+#define FT_COLORIZE   32 //раскрасска. без флага цвет береться из передоваемого аргумента col
 //!Cvet ---
 
 class CFOFont
 {
 public:
 
-	int Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB);
-	void Clear();
+  int Init(LPDIRECT3DDEVICE8 lpD3Device,LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB);
+  void Clear();
 
-	void PreRestore();
-	void PostRestore(LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB);
+  void PreRestore();
+  void PostRestore(LPDIRECT3DVERTEXBUFFER8 aVB,LPDIRECT3DINDEXBUFFER8 aIB);
 
-	void RenderText(RECT rect, char* astr, uint32_t flags, uint32_t col=NULL, int num_font=FONT_DEF);
-	
+  void RenderText(RECT rect, char* astr, uint32_t flags, uint32_t col=NULL, int num_font=FONT_DEF);
+
   CFOFont();
-	~CFOFont();
+  ~CFOFont();
 private:
 
-	int Flush(int* cur_pos); //!Cvet int* cur_pos
+  int Flush(int* cur_pos); //!Cvet int* cur_pos
 
-	bool crtd;
+  bool crtd;
 
-	int spr_cnt;//на сколько спрайтов рассчитан. при достижении рисуется сам.
+  int spr_cnt;//на сколько спрайтов рассчитан. при достижении рисуется сам.
 
-	LPDIRECT3DDEVICE8 lpDevice;
+  LPDIRECT3DDEVICE8 lpDevice;
 
-	LPDIRECT3DVERTEXBUFFER8 lpVB;//буфер с вершинами для спрайтов
-	LPDIRECT3DINDEXBUFFER8 lpIB;//буфер с индексами
+  LPDIRECT3DVERTEXBUFFER8 lpVB;//буфер с вершинами для спрайтов
+  LPDIRECT3DINDEXBUFFER8 lpIB;//буфер с индексами
 
-	//Буфер вершин в системной памяти для постоянно меняющихся спрайтов
-	Vertex* lpWaitBuf;
+  //Буфер вершин в системной памяти для постоянно меняющихся спрайтов
+  Vertex* lpWaitBuf;
 
-	Font fonts[MAX_FONT];
+  Font fonts[MAX_FONT];
 };
 
 

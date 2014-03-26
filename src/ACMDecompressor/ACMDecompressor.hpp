@@ -20,9 +20,9 @@ namespace ACMDecompressor {
 
 struct Context {
   // File reading
-  //	FileReadFunction read_file; // file reader function
+  //  FileReadFunction read_file; // file reader function
 
-  //	int hFile; // file handle, can be anything, e.g. ptr to reader-object
+  //  int hFile; // file handle, can be anything, e.g. ptr to reader-object
   uint8_t* hFile;
   uint32_t fileLen;
   int fileCur;
@@ -36,7 +36,7 @@ struct Context {
   int availBits; // count of new bits
 
   // Parameters of ACM stream
-  int	packAttrs, someSize, packAttrs2, someSize2;
+  int packAttrs, someSize, packAttrs2, someSize2;
 
   // Unpacking buffers
   int *decompBuff, *someBuff;
@@ -71,22 +71,22 @@ ACMDECOMPRESSOR_API int ReadAndDecompress(Context* ctx, unsigned short* buffer, 
 class CACMUnpacker {
 public:
   // CACMUnpacker (FileReadFunction readFunc, int fileHandle, int &channels, int &frequency, int &samples);
-	ACMDECOMPRESSOR_API CACMUnpacker (uint8_t* fileHandle, uint32_t fileLenght, int &channels, int &frequency, int &samples) {
-	  memset(&ctx, 0, sizeof(ctx));
+  ACMDECOMPRESSOR_API CACMUnpacker (uint8_t* fileHandle, uint32_t fileLenght, int &channels, int &frequency, int &samples) {
+    memset(&ctx, 0, sizeof(ctx));
     ACMDecompressor::Init(&ctx, fileHandle, fileLenght, channels, frequency, samples);
-	}
-		// samples = count of sound samples (one sample is 16bits)
-	ACMDECOMPRESSOR_API ~CACMUnpacker() {
+  }
+    // samples = count of sound samples (one sample is 16bits)
+  ACMDECOMPRESSOR_API ~CACMUnpacker() {
     ACMDecompressor::Close(&ctx);
-	}
+  }
 
-	ACMDECOMPRESSOR_API int readAndDecompress (unsigned short* buff, int count) {
+  ACMDECOMPRESSOR_API int readAndDecompress (unsigned short* buff, int count) {
     return ACMDecompressor::ReadAndDecompress(&ctx, buff, count);
-	}
-		// read sound samples from ACM stream
-		// buff  - buffer to place decompressed samples
-		// count - size of buffer (in bytes)
-		// return: count of actually decompressed bytes
+  }
+    // read sound samples from ACM stream
+    // buff  - buffer to place decompressed samples
+    // count - size of buffer (in bytes)
+    // return: count of actually decompressed bytes
 
 private:
   ACMDecompressor::Context ctx;

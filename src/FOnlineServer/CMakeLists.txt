@@ -27,6 +27,6 @@ include_directories(..)
 
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
-    include_directories(${ZLIB_INCLUDE_DIRS})
-    target_link_libraries(FOnlineServer ${ZLIB_LIBRARIES})
+  include_directories(${ZLIB_INCLUDE_DIRS})
+  target_link_libraries(FOnlineServer ${ZLIB_LIBRARIES})
 endif(ZLIB_FOUND)
