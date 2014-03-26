@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 		goto GAMELOOPEND;
 	}
 
-	//FONLINE_LOG("Version of Server: %d\n", FOSERVICE_VERSION);
+	//FONLINE_LOG("Version of Server: %d", FOSERVICE_VERSION);
 
 	if (!serv.Init()) {
 		goto GAMELOOPEND;
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
 
 	serv.RunGameLoop();
 
-	FONLINE_LOG("***   Finishing Game loop   ***\n\n");
+	FONLINE_LOG("***   Finishing Game loop   ***\n");
 
 	FONLINE_LOG("Всего циклов:%d\n"
 		"Средняя продолжительность цикла:%d\n"

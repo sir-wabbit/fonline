@@ -191,7 +191,7 @@ int CServer::ConnectClient(int serv) {
 	int NewCl = ::accept(serv, (sockaddr*) &from, &addrsize);
 
 	if (NewCl == -1) {
-		FONLINE_LOG("Invalid socket #%d\n", NewCl);
+		FONLINE_LOG("Invalid socket #%d", NewCl);
 		return 0;
 	}
 
@@ -204,7 +204,7 @@ int CServer::ConnectClient(int serv) {
   ncl->zstrm.opaque = NULL;
 
 	if (deflateInit(&ncl->zstrm, Z_DEFAULT_COMPRESSION) != Z_OK) {
-		FONLINE_LOG("DeflateInit error forSockID=%d\n",NewCl);
+		FONLINE_LOG("DeflateInit error forSockID=%d",NewCl);
 		ncl->state = STATE_DISCONNECT; //!!!!!
 		return 0;
 	}
@@ -220,7 +220,7 @@ int CServer::ConnectClient(int serv) {
 	}
 
 	if(free_place == -1) {
-		FONLINE_LOG("Нет свободного канала\n", NewCl);
+		FONLINE_LOG("Нет свободного канала", NewCl);
 		ncl->state = STATE_DISCONNECT;
 		return 0;
 	}
@@ -231,7 +231,7 @@ int CServer::ConnectClient(int serv) {
 
  	NumClients++; //инкремент кол-ва подключенных клиентов
 
-	FONLINE_LOG("OK. Канал=%d. Всего клиентов в игре: %d\n", ncl->info.idchannel, NumClients);
+	FONLINE_LOG("OK. Канал=%d. Всего клиентов в игре: %d", ncl->info.idchannel, NumClients);
 
 	return 1;
 }
@@ -242,7 +242,7 @@ void CServer::DisconnectClient(CritterID idchannel) {
 	cl_map::iterator it_ds=cl.find(idchannel);
 	if(it_ds==cl.end())
 	{
-		FONLINE_LOG("WARNING: Could not find the client.\n");
+		FONLINE_LOG("WARNING: Could not find the client.");
 		return;
 	}
 
@@ -273,15 +273,15 @@ void CServer::DisconnectClient(CritterID idchannel) {
 
 	NumClients--;
 
-	FONLINE_LOG("Отсоединение завершено. Всего клиентов в игре: %d\n",NumClients);
+	FONLINE_LOG("Отсоединение завершено. Всего клиентов в игре: %d",NumClients);
 }
 
 void CServer::RemoveCritter(CritterID id)
 {
-	FONLINE_LOG("Удаляем криттера id=%d\n",id);
+	FONLINE_LOG("Удаляем криттера id=%d",id);
 
 	cl_map::iterator it=cr.find(id);
-	if(it==cr.end()) { FONLINE_LOG("!!!WORNING!!! RemoveCritter - клиент не найден id=%d\n",id); return; } // Значит не нашел обьекта на карте
+	if(it==cr.end()) { FONLINE_LOG("!!!WORNING!!! RemoveCritter - клиент не найден id=%d",id); return; } // Значит не нашел обьекта на карте
 
 	if((*it).second->info.map)
 	{
@@ -294,7 +294,7 @@ void CServer::RemoveCritter(CritterID id)
 
 //	NumCritters--;
 
-	FONLINE_LOG("Криттер удален\n");
+	FONLINE_LOG("Криттер удален");
 }
 //!Cvet ----
 
@@ -311,7 +311,7 @@ void CServer::RunGameLoop()
 
 	ticks=GetMilliseconds();
 
-	FONLINE_LOG("***   Starting Game loop   ***\n");
+	FONLINE_LOG("***   Starting Game loop   ***");
 
 //!Cvet сбор статистики +++
 	loop_time=0;
@@ -381,7 +381,7 @@ void CServer::RunGameLoop()
 			c=(*it).second;
 			if((FD_ISSET(c->s,&read_set))&&(c->state!=STATE_DISCONNECT)) {
 				if(!Input(c)) {
-				  FONLINE_LOG("Could not recieve data from a client.\n");
+				  FONLINE_LOG("Could not recieve data from a client.");
 				  c->state=STATE_DISCONNECT;
 				}
 		  }
@@ -462,22 +462,22 @@ void CServer::RunGameLoop()
 		{
 			usleep(delta * 1000);
 		}
-		else lags_count++;//FONLINE_LOG("\nLag for%d ms\n",-delta);
+		else lags_count++;//FONLINE_LOG("\nLag for%d ms",-delta);
 	}
 
-	//FONLINE_LOG("***   Finishing Game loop   ***\n\n");
+	//FONLINE_LOG("***   Finishing Game loop   ***\n");
 }
 
 int CServer::Input(CCritter* acl) {
 	int len = recv(acl->s, inBUF, 2048, 0);
 	if (len < 0 || !len) {// если клиент отвалился
-		FONLINE_LOG("SOCKET_ERROR forSockID=%d\n", acl->s);
+		FONLINE_LOG("SOCKET_ERROR forSockID=%d", acl->s);
 		return 0;
 	}
 
 	if(len==2048 || (acl->bin.writePosition+len>=acl->bin.capacity))
 	{
-		FONLINE_LOG("FLOOD_CONTROL forSockID=%d\n",acl->s);
+		FONLINE_LOG("FLOOD_CONTROL forSockID=%d",acl->s);
 		return 0; // если флудит игрок
 	}
 
@@ -505,7 +505,7 @@ void CServer::Process(CCritter* acl) // Лист Событий
 				Process_CreateClient(acl);
 				break;
 			default:
-				FONLINE_LOG("Неправильное MSG: %d от SockID %d при приеме LOGIN или CREATE_CCritter!\n",msg,acl->s);
+				FONLINE_LOG("Неправильное MSG: %d от SockID %d при приеме LOGIN или CREATE_CCritter!",msg,acl->s);
 				acl->state=STATE_DISCONNECT;
 				Send_LoginMsg(acl,8);
 				acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
@@ -531,7 +531,7 @@ void CServer::Process(CCritter* acl) // Лист Событий
 				Process_MapLoaded(acl);
 				break;
 			default:
-				FONLINE_LOG("Неправильное MSG: %d от SockID %d при STATE_LOGINOK!\n",msg,acl->s);
+				FONLINE_LOG("Неправильное MSG: %d от SockID %d при STATE_LOGINOK!",msg,acl->s);
 		//		acl->state=STATE_DISCONNECT;
 		//		Send_LoginMsg(acl,8);
 		//		acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
@@ -595,7 +595,7 @@ void CServer::Process(CCritter* acl) // Лист Событий
 			Process_RuleGlobal(acl);
 			break;
 		default:
-			FONLINE_LOG("Wrong MSG: %d from SockID %d при приеме игровых сообщений!\n",msg,acl->s);
+			FONLINE_LOG("Wrong MSG: %d from SockID %d при приеме игровых сообщений!",msg,acl->s);
 			//acl->state=STATE_DISCONNECT;
 			acl->bin.Reset(); //!Cvet при неправильном пакете данных  - удаляеться весь список
 			return;
@@ -614,7 +614,7 @@ void CServer::Process_GetText(CCritter* acl)
 // 	if(acl->state!=STATE_GAME)
 	if(acl->bin.IsError() || len>MAX_TEXT)
 	{
-		FONLINE_LOG("Wrong MSG data forProcess_GetText from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data forProcess_GetText from SockID %d!",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
@@ -624,12 +624,12 @@ void CServer::Process_GetText(CCritter* acl)
 
 	if(acl->bin.IsError())
 	{
-		FONLINE_LOG("Wrong MSG data forProcess_GetText - partial recv from SockID %d!\n",acl->s);
+		FONLINE_LOG("Wrong MSG data forProcess_GetText - partial recv from SockID %d!",acl->s);
 		acl->state=STATE_DISCONNECT;
 		return;
 	}
 
-//	FONLINE_LOG("GetText: %s\n",str);
+//	FONLINE_LOG("GetText: %s",str);
 
 	char* param;
 	char* next;
@@ -776,7 +776,7 @@ void CServer::Process_GetText(CCritter* acl)
 		}
 		break;
 	case CMD_EXIT: //выход ~exit
-		FONLINE_LOG("CMD_EXIT for %s\n",acl->info.name);
+		FONLINE_LOG("CMD_EXIT for %s",acl->info.name);
 		acl->state=STATE_DISCONNECT;
 		break;
 	case CMD_CRITID: //узнать ИД криттера по его имени ~id name -> crid/"false"
@@ -810,7 +810,7 @@ void CServer::Process_GetText(CCritter* acl)
 	}
 //!Cvet ------------------------------------------
 
-//	FONLINE_LOG("self: %s\not: %s\n",self_str,o_str);
+//	FONLINE_LOG("self: %s\not: %s",self_str,o_str);
 }
 
 void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
@@ -829,7 +829,7 @@ void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
 	CCritter* victim=NULL;
 	param=GetParam(aparam,&next);
 
-//	FONLINE_LOG("ProcessSocial: %s\n",param?param:"NULL");
+//	FONLINE_LOG("ProcessSocial: %s",param?param:"NULL");
 
 	if(param && param[0] && GetPossParams(socid)!=SOC_NOPARAMS)
 	{
@@ -850,7 +850,7 @@ void CServer::ProcessSocial(CCritter* sender,uint16_t socid,char* aparam)
 	else
 		GetSocNoStr(socid,SelfStr,AllStr,&sender->info);
 
-//	FONLINE_LOG("self: %s\nvic: %s\nall: %s\n",SelfStr,VicStr,AllStr);
+//	FONLINE_LOG("self: %s\nvic: %s\nall: %s",SelfStr,VicStr,AllStr);
 	self_len=strlen(SelfStr);
 	vic_len=strlen(VicStr);
 	all_len=strlen(AllStr);
@@ -929,20 +929,20 @@ int CServer::Output(CCritter* acl)
 
 	if(deflate(&acl->zstrm,Z_SYNC_FLUSH)!=Z_OK)
 	{
-		FONLINE_LOG("Deflate error forSockID=%d\n",acl->s);
+		FONLINE_LOG("Deflate error forSockID=%d",acl->s);
 		acl->state = STATE_DISCONNECT;
 		return 0;
 	}
 
 	int tosend = acl->zstrm.next_out-(unsigned char*)outBUF;
-	FONLINE_LOG("idchannel=%d, send %d->%d bytes\n",acl->info.idchannel,acl->bout.writePosition,tosend);
+	FONLINE_LOG("idchannel=%d, send %d->%d bytes",acl->info.idchannel,acl->bout.writePosition,tosend);
 	int sendpos = 0;
 	while(sendpos < tosend) {
 		int bsent = send(acl->s, outBUF + sendpos, tosend - sendpos, 0);
 		sendpos += bsent;
 
 		if (bsent < 0) {
-			FONLINE_LOG("SOCKET_ERROR whilesend forSockID=%d\n", acl->s);
+			FONLINE_LOG("SOCKET_ERROR whilesend forSockID=%d", acl->s);
 			acl->state = STATE_DISCONNECT;
 			return 0;
 		}
@@ -960,7 +960,7 @@ int CServer::Init() {
 
 	Active = 0;
 
-	FONLINE_LOG("***   Starting initialization   ****\n");
+	FONLINE_LOG("***   Starting initialization   ****");
 
 	//WSADATA WsaData;
 	//if (WSAStartup(0x0101, &WsaData))	{
@@ -988,7 +988,7 @@ int CServer::Init() {
 		goto SockEND;
 	}
 
-	FONLINE_LOG("OK\n");
+	FONLINE_LOG("OK");
 
 	if (listen(s, 5) < 0) {
 		FONLINE_LOG("listen error!");
@@ -1001,13 +1001,13 @@ int CServer::Init() {
 	LoadSocials(sql.mySQL);
 
 //!Cvet ++++++++++++++++++++++++++++++++++++++++
-	FONLINE_LOG("cr=%d\n",sizeof(CCritter));
-	FONLINE_LOG("ci=%d\n",sizeof(crit_info));
-	FONLINE_LOG("mi=%d\n",sizeof(mob_info));
+	FONLINE_LOG("cr=%d",sizeof(CCritter));
+	FONLINE_LOG("ci=%d",sizeof(crit_info));
+	FONLINE_LOG("mi=%d",sizeof(mob_info));
 
 	//if(!InitScriptSystem())
 	//{
-	//	FONLINE_LOG("Script System Init FALSE\n");
+	//	FONLINE_LOG("Script System Init FALSE");
 	//	goto SockEND;
 	//}
 
@@ -1024,31 +1024,31 @@ int CServer::Init() {
 
 	//загрузка объектов
 	if (!LoadAllStaticObjects()) {
-		FONLINE_LOG("Загрузка статических объектов прошла со сбоями!!!\n");
+		FONLINE_LOG("Загрузка статических объектов прошла со сбоями!!!");
 		goto SockEND;
 	}
 	//создаем всех клиентов
 	if (!LoadAllPlayers()) {
-		FONLINE_LOG("Создание игроков прошли со сбоями!!!\n");
+		FONLINE_LOG("Создание игроков прошли со сбоями!!!");
 		goto SockEND;
 	}
 	//создаем всю динамику
 	if (!LoadAllObj()) {
-		FONLINE_LOG("Создание динамических объектов прошла со сбоями!!!\n");
+		FONLINE_LOG("Создание динамических объектов прошла со сбоями!!!");
 		goto SockEND;
 	}
 	//загружаем НПЦ
 	if (!NPC_LoadAll()) {
-		FONLINE_LOG("Загрузка НПЦ прошла со сбоями!!!\n");
+		FONLINE_LOG("Загрузка НПЦ прошла со сбоями!!!");
 		goto SockEND;
 	}
 	//загружаем мобов
 	if (!MOBs_LoadAllGroups()) {
-		FONLINE_LOG("Загрузка Мобов прошла со сбоями!!!\n");
+		FONLINE_LOG("Загрузка Мобов прошла со сбоями!!!");
 		goto SockEND;
 	}
 
-//	FONLINE_LOG("Создаем объекты\n");
+//	FONLINE_LOG("Создаем объекты");
 
 //	CreateObjToPl(101,1200);
 //	CreateObjToPl(102,1100);
@@ -1076,7 +1076,7 @@ int CServer::Init() {
 //	sql.PrintTableInLog("objects","*");
 
 	Active=1;
-	FONLINE_LOG("***   Initializing complete   ****\n\n");
+	FONLINE_LOG("***   Initializing complete   ****\n");
 	return 1;
 
 SockEND:
@@ -1099,7 +1099,7 @@ void CServer::Finish()
 	UnloadSocials();
 	sql.Finish_mySQL();
 
-	FONLINE_LOG("Server stopped\n");
+	FONLINE_LOG("Server stopped");
 
 	Active=0;
 }
