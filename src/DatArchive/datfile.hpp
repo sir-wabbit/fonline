@@ -1,5 +1,4 @@
-#ifndef _DATFILE_H_
-#define _DATFILE_H_
+#pragma once
 
 #include <map>
 #include <string>
@@ -103,6 +102,3 @@ private:
 
   IOStream* reader;
 };
-
-
-#endif

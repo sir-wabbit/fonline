@@ -1,5 +1,4 @@
-#ifndef __CFONT_H__
-#define __CFONT_H__
+#pragma once
 
 /********************************************************************
   created:  01:12:2004   07:20
@@ -83,6 +82,3 @@ private:
 
   Font fonts[MAX_FONT];
 };
-
-
-#endif //__CFONT_H__

@@ -1,5 +1,4 @@
-#ifndef _CSPRITEMGR_H_
-#define _CSPRITEMGR_H_
+#pragma once
 
 #include <d3dx8.h>
 #include <dinput.h>
@@ -286,5 +285,3 @@ private:
 
   uint32_t col;
 };
-
-#endif

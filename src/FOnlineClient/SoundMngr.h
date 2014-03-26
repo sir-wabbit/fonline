@@ -1,5 +1,4 @@
-#ifndef _CSOUNDMNGR_H_
-#define _CSOUNDMNGR_H_
+#pragma once
 
 /********************************************************************
   created:  19:01:2007   00:00;
@@ -63,5 +62,3 @@ private:
 
   bool active;
 };
-
-#endif //_CSOUNDMNGR_H_

@@ -1,5 +1,4 @@
-#ifndef __KEYB_H__
-#define __KEYB_H__
+#pragma once
 
 /********************************************************************
   created:  05:01:2005   22:04
@@ -19,6 +18,3 @@
 void InitKeyboard();
 void ClearKeyb();
 int GetChar(uint16_t DIK,char* str,int* position,uint16_t max,int lang,int shift); //!Cvet int* position
-
-
-#endif //__KEYB_H__

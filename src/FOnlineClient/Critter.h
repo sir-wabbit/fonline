@@ -1,5 +1,4 @@
-#ifndef __CRITTER_H__
-#define __CRITTER_H__
+#pragma once
 
 #include "CSpriteManager.h"
 #include "CFont.h"
@@ -166,5 +165,3 @@ private:
 
 //список critters, которые присутствуют
 typedef std::map<CritterID, CCritter*> crit_map;
-
-#endif//__CRITTER_H__

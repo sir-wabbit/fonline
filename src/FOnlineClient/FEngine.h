@@ -1,5 +1,4 @@
-#ifndef _FENGINE_H_
-#define _FENGINE_H_
+#pragma once
 
 #include <zlib.h>
 
@@ -633,6 +632,3 @@ private:
   void StrChangeValue(char* str, int value){for(int i=0;str[i];++i)str[i]+=value;};
 //!Cvet ------------------------------------------------------
 };
-
-
-#endif
