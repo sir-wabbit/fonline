@@ -1,5 +1,4 @@
-#ifndef __NETPROTO_H__
-#define __NETPROTO_H__
+#pragma once
 
 #include <set>
 #include <map>
@@ -1172,6 +1171,3 @@ const uint8_t GM_RULE_COMMAND_DELPREPCRIT =13;//+r-a*cr_id//удалить со 
 #define STATE_LOGINOK   5 //!Cvet
 
 #define STATE_INIT_NET    6
-
-
-#endif //__NETPROTO_H__

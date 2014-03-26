@@ -1,5 +1,4 @@
-#ifndef _CHEXFIELD_H_
-#define _CHEXFIELD_H_
+#pragma once
 
 #include "CSpriteManager.h"
 #include "Critter.h"
@@ -333,6 +332,3 @@ private:
   int IsVisible(int nx, int ny,uint16_t id);
 
 };
-
-//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-#endif

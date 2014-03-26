@@ -1,5 +1,4 @@
-#ifndef DATARCHIVE_DATARCHIVE_HPP_
-#define DATARCHIVE_DATARCHIVE_HPP_
+#pragma once
 
 #ifdef _WIN32
   #ifdef DATARCHIVE_DLL
@@ -12,5 +11,3 @@
 #endif
 
 #include "datfile.hpp"
-
-#endif  // DATARCHIVE_DATARCHIVE_HPP_

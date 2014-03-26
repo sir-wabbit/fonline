@@ -1,5 +1,4 @@
-#ifndef _GAP_FDAT_CFILE_H
-#define _GAP_FDAT_CFILE_H
+#pragma once
 
 #include <stdio.h>
 #include <stdint.h>
@@ -151,5 +150,3 @@ protected:
     void allocateBlocks();
   #endif
 };
-
-#endif

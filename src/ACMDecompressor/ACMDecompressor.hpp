@@ -1,5 +1,4 @@
-#ifndef __ACM_STREAM_UNPACK
-#define __ACM_STREAM_UNPACK
+#pragma once
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -91,5 +90,3 @@ public:
 private:
   ACMDecompressor::Context ctx;
 };
-
-#endif

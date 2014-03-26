@@ -1,5 +1,4 @@
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#pragma once
 
 #include <Windows.h>
 
@@ -161,5 +160,3 @@ extern uint32_t opt_roof_alpha;
 // анимация для интерфейса
 #define engage 0
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-
-#endif
